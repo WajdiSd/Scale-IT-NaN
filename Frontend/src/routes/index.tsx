@@ -7,20 +7,6 @@ import Root from './Root';
 
 // lazy load all the views
 
-// auth
-const Login = React.lazy(() => import('../pages/auth/Login'));
-const Logout = React.lazy(() => import('../pages/auth/Logout'));
-const Confirm = React.lazy(() => import('../pages/auth/Confirm'));
-const ForgetPassword = React.lazy(() => import('../pages/auth/ForgetPassword'));
-const Register = React.lazy(() => import('../pages/auth/Register'));
-const LockScreen = React.lazy(() => import('../pages/auth/LockScreen'));
-
-// landing
-const Landing = React.lazy(() => import('../pages/landing/'));
-
-// dashboard
-const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Ecommerce/'));
-const AnalyticsDashboard = React.lazy(() => import('../pages/dashboard/Analytics/'));
 
 // apps
 const CalendarApp = React.lazy(() => import('../pages/apps/Calendar/'));
@@ -38,46 +24,6 @@ const Kanban = React.lazy(() => import('../pages/apps/Tasks/Board/'));
 // - file
 const FileManager = React.lazy(() => import('../pages/apps/FileManager'));
 
-// extra pages
-const Error404 = React.lazy(() => import('../pages/error/Error404'));
-const Error500 = React.lazy(() => import('../pages/error/Error500'));
-// -other
-const Starter = React.lazy(() => import('../pages/other/Starter'));
-const Profile = React.lazy(() => import('../pages/other/Profile'));
-const Activity = React.lazy(() => import('../pages/other/Activity'));
-const Invoice = React.lazy(() => import('../pages/other/Invoice'));
-const Maintenance = React.lazy(() => import('../pages/other/Maintenance'));
-const Pricing = React.lazy(() => import('../pages/other/Pricing'));
-
-// uikit
-const UIElements = React.lazy(() => import('../pages/uikit'));
-
-// widgets
-const Widgets = React.lazy(() => import('../pages/widgets/'));
-
-// icons
-const Unicons = React.lazy(() => import('../pages/icons/Unicons'));
-const FeatherIcons = React.lazy(() => import('../pages/icons/Feather/'));
-const BootstrapIcon = React.lazy(() => import('../pages/icons/Bootstrap/'));
-
-// forms
-const BasicForms = React.lazy(() => import('../pages/forms/Basic'));
-const FormAdvanced = React.lazy(() => import('../pages/forms/Advanced'));
-const FormValidation = React.lazy(() => import('../pages/forms/Validation'));
-const FormWizard = React.lazy(() => import('../pages/forms/Wizard'));
-const FileUpload = React.lazy(() => import('../pages/forms/FileUpload'));
-const Editors = React.lazy(() => import('../pages/forms/Editors'));
-
-// charts
-const Charts = React.lazy(() => import('../pages/charts/'));
-
-// tables
-const BasicTables = React.lazy(() => import('../pages/tables/Basic'));
-const AdvancedTables = React.lazy(() => import('../pages/tables/Advanced'));
-
-// maps
-const GoogleMaps = React.lazy(() => import('../pages/maps/GoogleMaps'));
-const VectorMaps = React.lazy(() => import('../pages/maps/VectorMaps'));
 
 export interface RoutesProps {
     path: RouteProps['path'];
@@ -99,27 +45,6 @@ const rootRoute: RoutesProps = {
     route: Route,
 };
 
-// dashboards
-const dashboardRoutes: RoutesProps = {
-    path: '/dashboard',
-    name: 'Dashboards',
-    icon: 'airplay',
-    header: 'Navigation',
-    children: [
-        {
-            path: '/dashboard/ecommerce',
-            name: 'Ecommerce',
-            component: EcommerceDashboard,
-            route: PrivateRoute,
-        },
-        {
-            path: '/dashboard/analytics',
-            name: 'Analytics',
-            component: AnalyticsDashboard,
-            route: PrivateRoute,
-        },
-    ],
-};
 
 const calendarAppRoutes: RoutesProps = {
     path: '/apps/calendar',
@@ -231,36 +156,7 @@ const extrapagesRoutes: RoutesProps = {
     icon: 'package',
     header: 'Custom',
     children: [
-        {
-            path: '/pages/starter',
-            name: 'Starter',
-            component: Starter,
-            route: PrivateRoute,
-        },
-        {
-            path: '/pages/profile',
-            name: 'Profile',
-            component: Profile,
-            route: PrivateRoute,
-        },
-        {
-            path: '/pages/activity',
-            name: 'Activity',
-            component: Activity,
-            route: PrivateRoute,
-        },
-        {
-            path: '/pages/invoice',
-            name: 'Invoice',
-            component: Invoice,
-            route: PrivateRoute,
-        },
-        {
-            path: '/pages/pricing',
-            name: 'Pricing',
-            component: Pricing,
-            route: PrivateRoute,
-        },
+       
     ],
 };
 
@@ -271,196 +167,9 @@ const uiRoutes: RoutesProps = {
     icon: 'package',
     header: 'UI Elements',
     children: [
-        {
-            path: '/components/ui-elements',
-            name: 'UIElements',
-            component: UIElements,
-            route: PrivateRoute,
-        },
-        {
-            path: '/components/widgets',
-            name: 'Widgets',
-            component: Widgets,
-            route: PrivateRoute,
-        },
-        {
-            path: '/icons',
-            name: 'Icons',
-            children: [
-                {
-                    path: '/icons/unicons',
-                    name: 'Unicons',
-                    component: Unicons,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/icons/feather',
-                    name: 'Feather',
-                    component: FeatherIcons,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/icons/bootstrap',
-                    name: 'Bootstrap Icon',
-                    component: BootstrapIcon,
-                    route: PrivateRoute,
-                },
-            ],
-        },
-        {
-            path: '/forms',
-            name: 'Forms',
-            children: [
-                {
-                    path: '/forms/basic',
-                    name: 'Basic Elements',
-                    component: BasicForms,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/forms/advanced',
-                    name: 'Form Advanced',
-                    component: FormAdvanced,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/forms/validation',
-                    name: 'Form Validation',
-                    component: FormValidation,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/forms/wizard',
-                    name: 'Form Wizard',
-                    component: FormWizard,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/forms/upload',
-                    name: 'File Upload',
-                    component: FileUpload,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/forms/editors',
-                    name: 'Editors',
-                    component: Editors,
-                    route: PrivateRoute,
-                },
-            ],
-        },
-        {
-            path: '/components/charts',
-            name: 'Charts',
-            component: Charts,
-            route: PrivateRoute,
-        },
-        {
-            path: '/tables',
-            name: 'Tables',
-            children: [
-                {
-                    path: '/tables/basic',
-                    name: 'Basic',
-                    component: BasicTables,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/tables/advanced',
-                    name: 'Advanced',
-                    component: AdvancedTables,
-                    route: PrivateRoute,
-                },
-            ],
-        },
-        {
-            path: '/maps',
-            name: 'Maps',
-            children: [
-                {
-                    path: '/maps/googlemaps',
-                    name: 'Google Maps',
-                    component: GoogleMaps,
-                    route: PrivateRoute,
-                },
-                {
-                    path: '/maps/vectorMaps',
-                    name: 'Google Maps',
-                    component: VectorMaps,
-                    route: PrivateRoute,
-                },
-            ],
-        },
+       
     ],
 };
-
-// auth
-const authRoutes: RoutesProps[] = [
-    {
-        path: '/auth/login',
-        name: 'Login',
-        component: Login,
-        route: Route,
-    },
-    {
-        path: '/auth/register',
-        name: 'Register',
-        component: Register,
-        route: Route,
-    },
-    {
-        path: '/auth/confirm',
-        name: 'Confirm',
-        component: Confirm,
-        route: Route,
-    },
-    {
-        path: '/auth/forget-password',
-        name: 'Forget Password',
-        component: ForgetPassword,
-        route: Route,
-    },
-    {
-        path: '/auth/lock-screen',
-        name: 'Lock Screen',
-        component: LockScreen,
-        route: Route,
-    },
-    {
-        path: '/auth/logout',
-        name: 'Logout',
-        component: Logout,
-        route: Route,
-    },
-];
-
-// public routes
-const otherPublicRoutes: RoutesProps[] = [
-    {
-        path: '/landing',
-        name: 'landing',
-        component: Landing,
-        route: Route,
-    },
-    {
-        path: '/maintenance',
-        name: 'Maintenance',
-        component: Maintenance,
-        route: Route,
-    },
-    {
-        path: '/error-404',
-        name: 'Error - 404',
-        component: Error404,
-        route: Route,
-    },
-    {
-        path: '/error-500',
-        name: 'Error - 500',
-        component: Error500,
-        route: Route,
-    },
-];
 
 // flatten the list of all nested routes
 const flattenRoutes = (routes: RoutesProps[]) => {
@@ -478,9 +187,7 @@ const flattenRoutes = (routes: RoutesProps[]) => {
 };
 
 // All routes
-const authProtectedRoutes = [rootRoute, dashboardRoutes, ...appRoutes, extrapagesRoutes, uiRoutes];
-const publicRoutes = [...authRoutes, ...otherPublicRoutes];
+const authProtectedRoutes = [rootRoute, ...appRoutes, extrapagesRoutes, uiRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
-const publicProtectedFlattenRoutes = flattenRoutes([...publicRoutes]);
-export { publicRoutes, authProtectedRoutes, authProtectedFlattenRoutes, publicProtectedFlattenRoutes };
+export { authProtectedRoutes, authProtectedFlattenRoutes };

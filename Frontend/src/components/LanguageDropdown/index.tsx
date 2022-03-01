@@ -5,10 +5,8 @@ import classNames from 'classnames';
 import FeatherIcon from 'feather-icons-react';
 
 import enFlag from './flags/us.jpg';
-import germanyFlag from './flags/germany.jpg';
-import italyFlag from './flags/italy.jpg';
-import spainFlag from './flags/spain.jpg';
-import russiaFlag from './flags/russia.jpg';
+import frFlag from './flags/french.jpg';
+
 
 // get the languages
 const Languages = [
@@ -17,21 +15,9 @@ const Languages = [
         flag: enFlag,
     },
     {
-        name: 'German',
-        flag: germanyFlag,
-    },
-    {
-        name: 'Italian',
-        flag: italyFlag,
-    },
-    {
-        name: 'Spanish',
-        flag: spainFlag,
-    },
-    {
-        name: 'Russian',
-        flag: russiaFlag,
-    },
+        name : 'French',
+        flag: frFlag,
+    }
 ];
 
 const LanguageDropdown = () => {

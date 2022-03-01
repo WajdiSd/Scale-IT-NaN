@@ -15,7 +15,7 @@ import DetachedLayout from '../layouts/Detached';
 import HorizontalLayout from '../layouts/Horizontal/';
 import TwoColumnLayout from '../layouts/TwoColumn/';
 
-import { authProtectedFlattenRoutes, publicProtectedFlattenRoutes } from './index';
+import { authProtectedFlattenRoutes } from './index';
 
 interface RoutesProps {}
 
@@ -49,26 +49,6 @@ const Routes = (props: RoutesProps) => {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path={publicProtectedFlattenRoutes.map((r: any) => r['path'])}>
-                    <DefaultLayout {...props} layout={layout}>
-                        <Switch>
-                            {publicProtectedFlattenRoutes.map((route: any, index: number) => {
-                                return (
-                                    !route.children && (
-                                        <route.route
-                                            key={index}
-                                            path={route.path}
-                                            roles={route.roles}
-                                            exact={route.exact}
-                                            component={route.component}
-                                        />
-                                    )
-                                );
-                            })}
-                        </Switch>
-                    </DefaultLayout>
-                </Route>
-
                 <Route path={authProtectedFlattenRoutes.map((r: any) => r['path'])}>
                     <Layout {...props}>
                         <Switch>
