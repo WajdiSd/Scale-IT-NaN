@@ -40,6 +40,10 @@ const memberSchema = mongoose.Schema(
       type: Number,
       required: [true, "Please add a rate of the overtime"],
     },
+    isValidated: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -17,6 +17,7 @@ const registerMember = asyncHandler(async (req, res) => {
     isHR,
     phone,
     gender,
+    isValidated,
   } = req.body;
   if (
     !firstName ||
@@ -27,7 +28,8 @@ const registerMember = asyncHandler(async (req, res) => {
     !rateHour ||
     !isHR ||
     !phone ||
-    !gender
+    !gender ||
+    !isValidated
   ) {
     res.status(400);
     throw new Error("please add all fields");
@@ -55,6 +57,7 @@ const registerMember = asyncHandler(async (req, res) => {
     isHR,
     phone,
     gender,
+    isValidated,
     password: hashedPassword,
   });
 
