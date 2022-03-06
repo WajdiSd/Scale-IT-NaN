@@ -11,7 +11,10 @@ import { configureStore } from './redux/store';
 
 ReactDOM.render(
     <Provider store={configureStore({})}>
+        
+        {/* <Provider store={storeSlice}> */}
         <App />
+        {/* </Provider> */}
     </Provider>,
     document.getElementById('root')
 );

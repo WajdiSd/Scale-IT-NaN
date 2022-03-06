@@ -1,5 +1,11 @@
 import React from 'react';
 import { Route, RouteProps } from 'react-router-dom';
+import Confirm from '../pages/auth/Confirm';
+import ForgetPassword from '../pages/auth/ForgetPassword';
+import LockScreen from '../pages/auth/LockScreen';
+import Login from '../pages/auth/Login';
+import Logout from '../pages/auth/Logout';
+import Register from '../pages/auth/Register';
 
 // components
 import PrivateRoute from './PrivateRoute';
@@ -23,6 +29,12 @@ const TaskList = React.lazy(() => import('../pages/apps/Tasks/List/'));
 const Kanban = React.lazy(() => import('../pages/apps/Tasks/Board/'));
 // - file
 const FileManager = React.lazy(() => import('../pages/apps/FileManager'));
+//landing
+const Landing = React.lazy(() => import('../pages/landing/'));
+
+// extra pages
+const Error404 = React.lazy(() => import('../pages/error/Error404'));
+const Error500 = React.lazy(() => import('../pages/error/Error500'));
 
 
 export interface RoutesProps {
@@ -186,8 +198,72 @@ const flattenRoutes = (routes: RoutesProps[]) => {
     return flatRoutes;
 };
 
+// auth
+const authRoutes: RoutesProps[] = [
+    {
+        path: '/auth/login',
+        name: 'Login',
+        component: Login,
+        route: Route,
+    },
+    {
+        path: '/auth/register',
+        name: 'Register',
+        component: Register,
+        route: Route,
+    },
+    {
+        path: '/auth/confirm',
+        name: 'Confirm',
+        component: Confirm,
+        route: Route,
+    },
+    {
+        path: '/auth/forget-password',
+        name: 'Forget Password',
+        component: ForgetPassword,
+        route: Route,
+    },
+    {
+        path: '/auth/lock-screen',
+        name: 'Lock Screen',
+        component: LockScreen,
+        route: Route,
+    },
+    {
+        path: '/auth/logout',
+        name: 'Logout',
+        component: Logout,
+        route: Route,
+    },
+];
+// public routes
+const otherPublicRoutes: RoutesProps[] = [
+    {
+        path: '/landing',
+        name: 'landing',
+        component: Landing,
+        route: Route,
+    },
+    {
+        path: '/error-404',
+        name: 'Error - 404',
+        component: Error404,
+        route: Route,
+    },
+    {
+        path: '/error-500',
+        name: 'Error - 500',
+        component: Error500,
+        route: Route,
+    },
+];
+
+
 // All routes
 const authProtectedRoutes = [rootRoute, ...appRoutes, extrapagesRoutes, uiRoutes];
+const publicRoutes = [...authRoutes, ...otherPublicRoutes];
 
 const authProtectedFlattenRoutes = flattenRoutes([...authProtectedRoutes]);
-export { authProtectedRoutes, authProtectedFlattenRoutes };
+const publicProtectedFlattenRoutes = flattenRoutes([...publicRoutes]);
+export { publicRoutes, authProtectedRoutes, authProtectedFlattenRoutes, publicProtectedFlattenRoutes };

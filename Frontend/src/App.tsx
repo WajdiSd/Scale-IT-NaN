@@ -1,4 +1,6 @@
 import Routes from './routes/Routes';
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from './redux/store';
 
 import { configureFakeBackend } from './helpers';
 
@@ -12,7 +14,13 @@ import './assets/scss/Theme.scss';
 // configure fake backend
 configureFakeBackend();
 
+
+
 const App = () => {
+    const isLoading = useSelector((state: RootState) => state)
+    console.log("zazea");
+    
+console.log(isLoading);
     return (
         <>
             <Routes></Routes>
