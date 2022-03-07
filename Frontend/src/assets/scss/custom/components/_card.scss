@@ -4,37 +4,23 @@
 
 .card {
     margin-bottom: $grid-gutter-width;
-}
-
-.card-link + .card-link{
-    /*rtl:ignore*/
-    margin-left: $card-spacer-x;
-    /*rtl:ignore*/
-    margin-right: 0;
+    box-shadow: $box-shadow-sm;
+    border-radius: 0.25rem;
 }
 
 .card-drop {
+    display: inline-block;
     font-size: 20px;
-    line-height: 0;
+    line-height: 30px;
     color: inherit;
-}
-
-.card-widgets {
-    float: right;
-    height: 16px;
-    > a {
-        color: inherit;
-        font-size: 18px;
-        display: inline-block;
-        line-height: 1;
-
-        &.collapsed {
-            i {
-                &:before {
-                    content: "\F0415";
-                }
-            }
-        }
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    text-align: center;
+    margin-top: -6px;
+    &:hover {
+        background-color: $gray-200;
+        color: $dark;
     }
 }
 
@@ -45,42 +31,8 @@
     margin-top: 0;
 }
 
-
-//Card disable loading (Custom Cards)
-.card-disabled {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    border-radius: $card-border-radius;
-    background: $card-overlay-bg;
-    cursor: progress;
-
-    .card-portlets-loader {
-        background-color: $card-overlay-color;
-        animation: rotatebox 1.2s infinite ease-in-out;
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        border-radius: 3px;
-        margin-left: - ($grid-gutter-width * 0.5);
-        margin-top: - ($grid-gutter-width * 0.5);
-    }
-}
-
-@keyframes rotatebox {
-    0% {
-        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    }
-    50% {
-        transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    }
-    100% {
-        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    }
+.card-nav {
+    margin: -0.5rem 0;
 }
 
 // Custom card box
@@ -93,14 +45,11 @@
 }
 
 .header-title {
-    font-size: 15px;
-    margin: 0 0 7px 0;
-    font-weight: 600;
-    text-transform: uppercase;
+    font-size: 1.04rem;
+    font-weight: 700;
 }
 
 .sub-header {
-    font-size: 0.875rem;
     margin-bottom: $grid-gutter-width;
-    color: $text-muted;
+    color: $gray-600;
 }

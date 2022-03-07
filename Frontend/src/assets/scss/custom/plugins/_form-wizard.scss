@@ -12,7 +12,6 @@
     }
     .step-content{
         background-color: transparent !important;
-        text-align: left;
     }
 }
 
@@ -57,21 +56,8 @@
     >ul.step-anchor{
         background: $gray-300;
         border-bottom-color: $gray-300;
+        
         >li{
-            a{
-                padding: 10px 0 10px 45px;
-                &:hover{
-                    padding: 10px 0 10px 45px;
-                    isolation: inherit;
-                }
-            }
-
-            &:first-child{
-                a{
-                    padding-left: 15px;
-                }
-            }
-
             >a, >a:hover{
                 background: $gray-300;
                 color: $gray-600;
@@ -79,47 +65,18 @@
 
             >a{
                 &::after{
-                    border-left-color: $gray-300 !important;
-                    content: " ";
-                    display: block;
-                    width: 0;
-                    height: 0;
-                    border-top: 50px solid transparent;
-                    border-bottom: 50px solid transparent;
-                    border-left: 30px solid transparent;
-                    border-right: 0;
-                    position: absolute;
-                    top: 50%;
-                    margin-top: -50px;
-                    left: 100%;
-                    z-index: 2;
+                    border-left-color: $gray-300!important;
                 }
                 &::before{
-                    border-left-color: $gray-300 !important;
-                    content: " ";
-                    display: block;
-                    width: 0;
-                    height: 0;
-                    border-top: 50px solid transparent;
-                    border-bottom: 50px solid transparent;
-                    border-left: 30px solid transparent;
-                    border-right: 0;
-                    position: absolute;
-                    top: 50%;
-                    margin-top: -50px;
-                    margin-left: 1px;
-                    left: 100%;
-                    z-index: 1;
+                    border-left-color: $gray-400 !important;
                 }
             }
             &.active{
                 >a{
                     background: $primary !important;
                     border-color: $primary !important;
-                    isolation: inherit;
                     &:after{
                         border-left-color: $primary !important;
-                        border-right: 0 !important;
                     }
                 }
             }
@@ -128,14 +85,11 @@
                 >a{
                     background: lighten($primary, 24%) !important;
                     border-color: lighten($primary, 24%) !important;
-                    color: $primary !important;
                     &:after{
                         border-left-color: lighten($primary, 24%) !important;
-                        border-right: 0 !important;
                     }
                     &::before{
-                        border-left-color: lighten($primary, 24%) !important;
-                        border-right: 0 !important;
+                        border-left-color: $primary !important;
                     }
                 }
             }
@@ -153,8 +107,7 @@
             background-color:$gray-300;
         }
         >li{
-            margin-left: 40px;
-            margin-right: 0;
+            
             >a{
                 font-size: 14px;
                 width: 40px;
@@ -221,7 +174,7 @@
                 }
 
                 &:after{
-                    left: 44%;
+                    left: 45%;
                     bottom: -8px;
                     background: $gray-400;
                 }
@@ -248,17 +201,6 @@
         }
     }
 }
-[dir="rtl"] .sw-theme-dots{
-    >ul.step-anchor{
-        >li{
-            >a{
-                &:after{
-                    left: 40%;
-                }
-            }
-        }
-    }
-}
 
 
 
@@ -273,57 +215,24 @@
             }
         }
     }
-    .sw-theme-arrows{
-        >ul.step-anchor{            
-            >li{
-                a{
-                    padding: 10px 15px;
-                }
-            }
-        }
-    }
     .sw-theme-circles{
         >ul.step-anchor{
-            margin-bottom: 10px;
-            &::before{
-                width: 0px;
-            }
-            >li{
-                margin-bottom: 10px;
-                >a{
-                    >small{
-                        bottom: 14px;
-                        left: 76px;
-                    }
+            >li>a{
+                >small{
+                    bottom: 14px;
+                    left: 76px;
                 }
             }
         }
     }
     .sw-theme-dots{
         >ul.step-anchor{
-            &::before{
-                left: 10px;
-                right: 0;
-                margin-right: 10px;
-                margin-left: 0px;
-            }
             >li{
-                margin: 0 20px;
-                >a{
-                    text-align: left;
-                    &::before{
-                        left: -23px;
-                        margin-right: 10px;
-                        margin-left: 0px;
-                    }
-                    &::after {
-                        top: -36px;
-                        left: -35px !important;
-                        margin-right: 10px;
-                        margin-left: 0px;
-                    }
+                >a:after {
+                    top: -36px;
+                    left: -31px !important;
                 }
             }
         }
-    }   
+    }
 }

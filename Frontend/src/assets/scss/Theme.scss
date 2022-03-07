@@ -1,9 +1,12 @@
-// Styles
+/*
+Template Name: Minton - Responsive Bootstrap 4 Admin Dashboard
+Author: CoderThemes
+Version: 1.0.0
+Website: https://coderthemes.com/
+Contact: support@coderthemes.com
+File: Main Css File
+*/
 
-// Main styles
-
-@import './bootstrap.scss';
-@import './app.scss';
-
-// Shreyu Icons
-@import './icons.scss';
+@import 'bootstrap';
+@import 'icons';
+@import 'app';

@@ -7,9 +7,11 @@
         display: inline-block;
         padding-left: 8px;
         position: relative;
-        font-weight: 500;
+        font-weight: normal;
         margin-bottom: 0;
         &::before {
+            -o-transition: border 0.5s ease-in-out;
+            -webkit-transition: border 0.5s ease-in-out;
             background-color: $white;
             border-radius: 50%;
             border: 2px solid $gray-600;
@@ -24,6 +26,12 @@
             outline: none !important;
         }
         &::after {
+            -moz-transition: -moz-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+            -ms-transform: scale(0, 0);
+            -o-transform: scale(0, 0);
+            -o-transition: -o-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+            -webkit-transform: scale(0, 0);
+            -webkit-transition: -webkit-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
             background-color: $gray-700;
             border-radius: 50%;
             content: " ";
@@ -56,6 +64,9 @@
     }
     input[type="radio"]:checked+label {
         &::after {
+            -ms-transform: scale(1, 1);
+            -o-transform: scale(1, 1);
+            -webkit-transform: scale(1, 1);
             transform: scale(1, 1);
         }
     }
