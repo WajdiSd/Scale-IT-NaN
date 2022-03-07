@@ -9,24 +9,15 @@ const isUserAuthenticated = () => {
     const user = getLoggedInUser();
     if (!user) {
         return false;
-    }
-    const decoded = jwtDecode(user.token);
-    const currentTime = Date.now() / 1000;
-    if (decoded.exp < currentTime) {
-        console.warn('access token expired');
-        return false;
-    } else {
-        return true;
-    }
+    } else return true;
 };
 
 /**
  * Returns the logged in user
  */
 const getLoggedInUser = () => {
-    const cookies = new Cookies();
-    const user = cookies.get('user');
-    return user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
 };
 
 export { isUserAuthenticated, getLoggedInUser };

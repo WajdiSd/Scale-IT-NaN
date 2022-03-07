@@ -46,6 +46,7 @@
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
     "redux-saga": "^1.1.1",
+    "redux-thunk": "^2.4.1",
     "sortablejs": "^1.10.0"
   },
   "scripts": {

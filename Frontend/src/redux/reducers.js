@@ -6,6 +6,7 @@ import Auth from './auth/reducers';
 import AppMenu from './appMenu/reducers';
 import authReducer from '../rdx/user/authSlice';
 
+console.log(authReducer);
 export default combineReducers({
     Auth,
     AppMenu,

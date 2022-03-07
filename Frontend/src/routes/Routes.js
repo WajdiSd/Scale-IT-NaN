@@ -40,7 +40,6 @@ const HorizontalLayout = Loadable({
 });
 
 class Routes extends Component {
-
     // returns the layout
     getLayout = () => {
         if (!isUserAuthenticated()) return AuthLayout;
@@ -56,41 +55,38 @@ class Routes extends Component {
                 break;
         }
         return layoutCls;
-    }
+    };
 
     render() {
         const Layout = this.getLayout();
-        
+
         // rendering the router with layout
-        return <BrowserRouter>
-            <Layout {...this.props}>
-                <Switch>
-                    {routes.map((route, index) => {
-                        return (
-                            !route.children ?
+        return (
+            <BrowserRouter>
+                <Layout {...this.props}>
+                    <Switch>
+                        {routes.map((route, index) => {
+                            return !route.children ? (
                                 <route.route
                                     key={index}
                                     path={route.path}
                                     roles={route.roles}
                                     exact={route.exact}
                                     component={route.component}></route.route>
-                                : null
-                        );
-                    })}
-                </Switch>
-            </Layout>
-        </BrowserRouter>
+                            ) : null;
+                        })}
+                    </Switch>
+                </Layout>
+            </BrowserRouter>
+        );
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         layout: state.Layout,
-        user: state.Auth.user,
+        user: state.authReducer.user,
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(Routes);
+export default connect(mapStateToProps, null)(Routes);
