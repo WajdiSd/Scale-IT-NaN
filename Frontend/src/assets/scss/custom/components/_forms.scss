@@ -2,16 +2,10 @@
 // forms.scss
 //
 
-.form-control {
-    &::placeholder {
-        color: shade-color($gray-500, 7%);
-    }
-}
-
 // Form-control light
 .form-control-light {
-    background-color: $input-light-bg !important;
-    border-color: $input-light-bg !important;
+    background-color: $gray-100;
+    border-color: $gray-100;
 }
 
 
@@ -45,44 +39,9 @@ input.form-control[type="range"] {
     }
 }
 
-// Search box 
-.search-bar {
-
-    .form-control {
-        padding-left: 40px;
-        padding-right: 20px;
-        border-radius: 30px;
+// Input
+input {
+    &:focus {
+        outline: none;
     }
-
-    span {
-        position: absolute;
-        z-index: 10;
-        font-size: 16px;
-        line-height: $input-height;
-        left: 13px;
-        top: -2px;
-        color: $text-muted;
-    }
-}
-
-// Show Password
-.password-eye {
-    &:before {
-        font-family: feather!important;
-        content: "\e86a";
-        font-style: normal;
-        font-weight: 400;
-        font-variant: normal;
-        vertical-align: middle;
-        line-height: 1.2;
-        font-size: 16px;
-    }
-}
-
-.show-password {
-    .password-eye {
-        &:before {
-            content: "\e86e";
-        }
-    }  
 }

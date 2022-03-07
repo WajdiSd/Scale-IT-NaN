@@ -1,49 +1,32 @@
-import axiosInstance from "../../config/axiosInstance";
+import axios from "axios";
 
-const API_URL = "/api/members/";
+const API_URL = "/api/users/";
 
-// Register member
-const register = async (memberData) => {
-  // const response = await axios.post(API_URL, memberData);
-  const response = await axiosInstance.post(API_URL, memberData);
+// Register user
+const register = async (userData) => {
+  const response = await axios.post(API_URL, userData);
 
   if (response.data) {
-    localStorage.setItem("member", JSON.stringify(response.data));
-    axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${response.data.token}`;
-    axiosInstance.defaults.headers[
-      "Authorization"
-    ] = `Bearer ${response.data.token}`;
-
-    console.log(axiosInstance);
+    localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
 };
 
-// Login member
-const login = async (memberData) => {
-  // const response = await axios.post(API_URL + "login", userData);
-  const response = await axiosInstance.post(API_URL + "login", memberData);
+// Login user
+const login = async (userData) => {
+  const response = await axios.post(API_URL + "login", userData);
 
   if (response.data) {
-    localStorage.setItem("member", JSON.stringify(response.data));
-    axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${response.data.token}`;
-    axiosInstance.defaults.headers[
-      "Authorization"
-    ] = `Bearer ${response.data.token}`;
-    console.log(axiosInstance);
+    localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
 };
 
-// Logout member
+// Logout user
 const logout = () => {
-  localStorage.removeItem("member");
+  localStorage.removeItem("user");
 };
 
 const authService = {

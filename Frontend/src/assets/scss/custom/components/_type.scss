@@ -16,67 +16,61 @@ h5,
 h6 {
     margin: 10px 0;
     font-family: $font-family-secondary;
-    color: $text-color-h;
+    color: $gray-700;
+    font-weight: $font-weight-semibold;
 }
 
+p {
+    line-height: 1.6;
+}
 
 // Font sizes (Custom)
-.fs-11 {
+.font-size-11 {
     font-size: 11px !important;
 }
 
-.fs-12 {
+.font-size-12 {
     font-size: 12px !important;
 }
 
-.fs-13 {
+.font-size-13 {
     font-size: 13px !important;
 }
 
-.fs-14 {
+.font-size-14 {
     font-size: 14px !important;
 }
 
-.fs-15 {
+.font-size-15 {
     font-size: 15px !important;
 }
 
-.fs-16 {
+.font-size-16 {
     font-size: 16px !important;
 }
 
-.fs-17 {
+.font-size-17 {
     font-size: 17px !important;
 }
 
-.fs-18 {
+.font-size-18 {
     font-size: 18px !important;
 }
 
-.fs-19 {
+.font-size-19 {
     font-size: 19px !important;
 }
 
-.fs-20 {
+.font-size-20 {
     font-size: 20px !important;
 }
 
-.fs-22 {
+.font-size-22 {
     font-size: 22px !important;
 }
 
-.fs-24 {
+.font-size-24 {
     font-size: 24px !important;
-}
-
-// Font Weight
-
-.fw-medium {
-    font-weight: $font-weight-medium;
-}
-
-.fw-semibold {
-    font-weight: $font-weight-semibold;
 }
 
 // text utilies

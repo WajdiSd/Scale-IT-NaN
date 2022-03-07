@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'unicons';
-    src: url('../fonts/unicons.svg?2256574#unicons') format('svg');
+    src: url('../../../fonts/unicons.svg?2256574#unicons') format('svg');
   }
 }
 */
@@ -43,7 +43,6 @@
  
   /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
-  vertical-align: middle;
  
   /* Animation center compensation - margins should be symmetric */
   /* remove if not needed */
