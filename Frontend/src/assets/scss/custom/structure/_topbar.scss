@@ -2,84 +2,37 @@
 // topbar.scss
 //
 
-// Logo
-.logo {
-    display: block;
-
-    span.logo-lg {
-        display: block;
-    }
-
-    span.logo-sm {
-        display: none;
-    }
-
-    .logo-lg-text-dark {
-        color: $dark;
-        font-weight: $font-weight-bold;
-        font-size: 22px;
-        text-transform: uppercase;
-    }
-
-    .logo-lg-text-light {
-        color: $white;
-        font-weight: $font-weight-bold;
-        font-size: 22px;
-        text-transform: uppercase;
-    }
-}
-
-.logo-box {
-    height: $topbar-height;
-    width: $leftbar-width;
-    float: left;
-    transition: all .1s ease-out;
-    padding: 0 24px;
-    background: $bg-topbar-dark;
-    border-right: 1px solid $bg-topbar-dark;
-
-    .logo {
-        line-height: $topbar-height;
-    }
-}
-
-.logo-light {
-    display: $logo-light-display;
-}
-
-.logo-dark {
-    display: $logo-dark-display;
-}
 
 .navbar-custom {
-    background-color: $bg-topbar-dark;
-    padding: 0 10px 0 0;
+    padding: 0 22px 0 37px;
     position: fixed;
-    left: 0;
-    right: 0;
+    top: 0px;
+    left: 0px;
+    right: 0px;
     height: $topbar-height;
-    border-bottom: 1px solid $bg-topbar-dark;
-    z-index: 1001;
+    z-index: 100;
+    background-color: $bg-topbar-light;
+    box-shadow: $box-shadow-sm;
 
     .topnav-menu {
-        >li {
+        > li {
             float: left;
         }
-
         .nav-link {
-            padding: 0 12px;
-            color: rgba($white, 0.6);
+            padding: 0 15px;
+            color: $menu-item;
             min-width: 32px;
             display: block;
             line-height: $topbar-height;
             text-align: center;
             max-height: $topbar-height;
+            cursor: pointer;
 
             svg {
                 height: 20px;
                 width: 20px;
-                color: rgba($white,  0.6);
-                fill: rgba($white, 0.12);
+                color: $menu-item;
+                fill: rgba($menu-item, 0.12);
             }
 
             &:hover,
@@ -92,84 +45,109 @@
             }
         }
     }
-
-    .container-fluid {
-        padding: 0;
+    .dropdown.show {
+        .nav-link {
+            background-color: rgba($white,0.05);
+        }   
     }
 
-     /* Search */
+    .menu-left {
+        overflow: hidden;
+    }
+
+    /* Search */
     .app-search {
-        height: $topbar-height;
-        display: grid;
-        width: 180px;
-        margin-right: 20px;
-        align-items: center;
-
-        .react-select__placeholder,
-        input::placeholder {
-            font-size: 0.8125rem;
-            color: rgba($white, 0.3);
-            margin: 0;
+        padding: 17px 0;
+        overflow: hidden;
+        margin-left: 15px;
+        margin-right: 15px;
+        form {
+            max-width: 320px;
         }
-        
-        .react-select__menu {
-            overflow: hidden;
-            width: 320px !important;
-            margin-top: 0;
-        }
-
-        .react-select__input,
-        .react-select__value-container {
-            color: $white !important;
-            padding: 0;
-        }
-
-        .form-control,
-        .react-select__control {
-            border: none;
+        .form-control {
+            border: 1px solid transparent;
             height: 38px;
-            padding-left: 20px;
-            padding-right: 0;
-            color: $white;
-            background-color: rgba($white, 0.07);
+            padding-left: 40px;
+            padding-right: 20px;
+            background-color: $body-bg;
             box-shadow: none;
-            // border-radius: 30px 30px 30px 30px;
-        }
+            border-radius: .3rem;
 
-        .input-group-text {
-            margin-left: 0 !important;
-            z-index: 4;
+            &:focus {
+                background-color: $white;
+                border: 1px solid $body-bg;
+            }
         }
-
-        .btn {
-            // background-color: rgba($white, 0.07);
-            border-color: transparent;
-            color: rgba($white, 0.3);
-            border-radius: 0 30px 30px 0;
-            box-shadow: none !important;
+        svg {
+            position: absolute;
+            z-index: 10;
+            font-size: 18px;
+            color: $gray-500;
+            line-height: 38px;
+            left: 10px;
+            top: 10px;
+            width: 20px;
+            height: 20px
         }
     }
+    
 
     .button-menu-mobile {
         border: none;
-        color: $white;
-        display: inline-block;
+        color: $gray-500;
+        display: block;
         height: $topbar-height;
         line-height: $topbar-height;
         width: 60px;
         background-color: transparent;
-        border: none;
-        padding: 0;
+        font-size: 24px;
         cursor: pointer;
+        margin-right: 45px;
+
+        &.disable-btn {
+            display: none;
+        }
+
+        .menu-icon {
+            display: inline-block;
+        }
+        .close-icon {
+            display: none;
+        }
+
+        &.open {
+            .menu-icon {
+                display: none;
+            }
+            .close-icon {
+                display: inline-block;
+            }
+        }
     }
 
-    .button-menu-mobile.disable-btn {
-        display: none;
+    // Logo
+    .logo {
+        // width: $leftbar-width;
+
+        span.logo-sm {
+            display: none;
+        }
     }
 }
 
+.text-logo {
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
 
 /* Notification */
+@keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+}
+
 .noti-scroll {
     max-height: 230px;
 }
@@ -179,14 +157,27 @@
 
     .noti-title {
         background-color: transparent;
-        padding: 15px 20px;
+        padding: 7px 20px 15px;
+    }
+
+    .noti-icon {
+        font-size: 21px;
+        vertical-align: middle;
     }
 
     .noti-icon-badge {
         display: inline-block;
         position: absolute;
-        top: 14px;
-        right: 8px;
+        top: 24px;
+        right: 16px;
+        width: 12px;
+        height: 12px;
+        background-color: $danger;
+        border: 2px solid $bg-topbar-light;
+        border-radius: 50%;
+        box-shadow: $box-shadow-lg;
+        animation: blinker 3s linear infinite;
+        animation-fill-mode: initial;
     }
 
     .notify-item {
@@ -196,6 +187,7 @@
             float: left;
             height: 36px;
             width: 36px;
+            font-size: 16px;
             line-height: 36px;
             text-align: center;
             margin-right: 10px;
@@ -210,15 +202,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             color: $gray-800;
-
+            line-height: 1.5;
+            
             b {
                 font-weight: 500;
             }
-
             small {
                 display: block;
             }
-
             span {
                 display: block;
                 overflow: hidden;
@@ -227,29 +218,26 @@
                 font-size: 13px;
             }
         }
-
+        
         .user-msg {
             margin-left: 45px;
             white-space: normal;
             line-height: 16px;
         }
     }
-
-    .profile-dropdown {
+    .profile-dropdown-items {
         .notify-item {
-            padding: 7px 20px;
+            padding: $dropdown-item-padding-y $dropdown-item-padding-x;
         }
     }
 }
 
-.noti-icon {
-    font-size: 21px;
-    vertical-align: middle;
+.profile-dropdown {
+    display: none;
 }
 
-.profile-dropdown {
-    min-width: 170px !important;
-
+.profile-dropdown-items {
+    width: 170px;
     i {
         vertical-align: middle;
         margin-right: 5px;
@@ -258,205 +246,34 @@
 
 .nav-user {
     padding: 0 12px !important;
-
     img {
         height: 32px;
         width: 32px;
     }
 }
 
-@include media-breakpoint-down(lg) {
-    .logo-box {
-        width: $leftbar-width-condensed !important;
-        padding-right: 0 !important;
-        border-bottom: 1px solid $gray-300;
 
-        .logo-lg {
-            display: none !important;
-        }
-
-        .logo-sm {
-            display: block !important;
-        }
-    }
-}
-
-@media (max-width: 600px) {
+@media (max-width: 1024px){
     .navbar-custom {
-        .dropdown {
-            position: static;
+        left: 0;
+        padding: 0 10px;
+        margin: 0px;
+        .button-menu-mobile.disable-btn {
+            display: block;
 
-            .dropdown-menu {
-                left: 10px !important;
-                right: 10px !important;
-            }
+        }
+
+        .logo{
+            display: none;
         }
     }
 }
 
-
-// Light Topbar
-
-body[data-topbar-color="light"] {
-    .navbar-custom {
-        background-color: $bg-topbar-light !important;
-        border-bottom: 1px solid $gray-300;
-
-        .topnav-menu {
-            .nav-link {
-                color: $dark;
-
-                svg {
-                    color: $dark;
-                    fill: rgba($dark, 0.12);
-                }
-
-                &:hover,
-                &:focus,
-                &:active {
-                    svg {
-                        color: $menu-item-active;
-                        fill: rgba($menu-item-active, 0.10);
-                    }
-                }
-            }
-        }   
-
-        .button-menu-mobile {
-            color: $dark;
-        }
-
-        /* Search */
-        .app-search {
-            
-        .react-select__placeholder,
-            input::placeholder {
-                color: $gray-500 !important;
-            }
-
-            .react-select__input,
-            .react-select__value-container {
-                color: $dark !important;
-                padding: 0;
-            }
-
-            .form-control,
-            .react-select__control {
-                color: $dark !important;
-                background-color: $gray-200;
-                border-color: $gray-200;
-            }
-
-            .btn {
-                background-color: $gray-200;
-                color: $gray-400;
-            }
-        }
-    }
-
-    .logo-box {
-        background: $bg-leftbar;
-        border-right: 1px solid $gray-300;
-    }
-
-    .logo-dark {
-        display: block;
-    }
-
-    .logo-light {
-        display: none;
-    }
-}
-
-@include media-breakpoint-down(lg) {
-    body[data-layout-mode="horizontal"] {
-
-        // Navbar Button - Horizontal
-        .navbar-toggle {
-            border: 0;
-            position: relative;
-            padding: 0;
-            margin: 0;
-            cursor: pointer;
-
-            .lines {
-                width: 25px;
-                display: block;
-                position: relative;
-                height: 16px;
-                transition: all .5s ease;
-                margin-top: calc(#{$topbar-height - 16px} * 0.5);
-            }
-
-            span {
-                height: 2px;
-                width: 100%;
-                background-color: $gray-700;
-                display: block;
-                margin-bottom: 5px;
-                transition: transform .5s ease;
-            }
-
-            &.open {
-                span {
-                    position: absolute;
-
-                    &:first-child {
-                        top: 7px;
-                        transform: rotate(45deg);
-                    }
-
-                    &:nth-child(2) {
-                        visibility: hidden;
-                    }
-
-                    &:last-child {
-                        width: 100%;
-                        top: 7px;
-                        transform: rotate(-45deg);
-                    }
-                }
-            }
+@include media-breakpoint-down(xs) {
+    .navbar-custom{
+        .page-title{
+            display: none;
         }
     }
 }
 
-body[data-layout-mode="horizontal"] {
-    .button-menu-mobile {
-        display: none;
-    }
-
-    .logo-box {
-        width: auto;
-        padding-right: 50px;
-        background-color: transparent;
-        padding-left: 0;
-        border: none !important;
-    }
-
-    @media  (max-width: 1366px) {
-        .logo-box {
-            padding-left: 20px;
-        }
-    }
-}
-
-@media (max-width: 360px) {
-    .navbar-custom {
-        .topnav-menu {
-            
-            .nav-link {
-                padding: 0 12px;
-            }
-        }
-        .button-menu-mobile {
-            width: 45px;
-        }
-    }
-}
-
-body[data-layout-mode="two-column"] { 
-    .logo-box {
-        display: none;
-    }
-}

@@ -64,7 +64,6 @@
         margin-bottom: 30px;
         margin-top: 30px;
         position: relative;
-        text-align: center;
     }
     .timeline-box {
         display: block;
@@ -89,6 +88,7 @@
     .timeline {
         .time-show {
             right: 69px;
+            text-align: right;
         }
         .timeline-box {
             margin-left: 15px;
@@ -169,6 +169,7 @@
 @include media-breakpoint-down(sm) {
     .timeline {
         .time-show {
+            text-align: center;
             position: relative;
         }
         .event-date{

@@ -1,7 +1,7 @@
 /*
-Template Name: Shreyu - Responsive Bootstrap 5 Admin Dashboard
+Template Name: Shreyu - Responsive Bootstrap 4 Admin Dashboard
 Author: CoderThemes
-Version: 2.0.0
+Version: 1.0.0
 Website: https://coderthemes.com/
 Contact: support@coderthemes.com
 File: Custom Bootstrap Css File
@@ -10,12 +10,11 @@ File: Custom Bootstrap Css File
 //Core files
 @import "./node_modules/bootstrap/scss/functions";
 @import "./node_modules/bootstrap/scss/variables";
-@import "config/variables-dark";
+@import "variables-dark";
 @import "./node_modules/bootstrap/scss/bootstrap";
 
 //Components
 @import "custom/components/accordions";
-@import "custom/components/alerts";
 @import "custom/components/badge";
 @import "custom/components/backgrounds";
 @import "custom/components/breadcrumb";

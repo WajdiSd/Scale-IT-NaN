@@ -13,26 +13,17 @@
     }
 }
 
-// Grid
-.grid-structure {
-    .grid-container {
-        background-color: $table-striped-bg;
-        margin-bottom: 10px;
-        font-size: 0.8rem;
-        font-weight: $font-weight-semibold;
-        padding: 10px 20px;
-    }
-}
 
 // Icon demo ( Demo only )
 .icons-list-demo {
-    div.col-sm-6 {
+    div {
         cursor: pointer;
         line-height: 45px;
         white-space: nowrap;
         text-overflow: ellipsis;
         display: block;
         overflow: hidden;
+        color: $gray-600;
         p {
             margin-bottom: 0;
             line-height: inherit;
@@ -46,18 +37,21 @@
         height: 50px;
         line-height: 50px;
         margin-right: 12px;
-        color: $text-muted;
-        border-radius: 3px;
+        border-radius: 50%;
         display: inline-block;
         transition: all 0.2s;
     }
-    .col-md-4 {
+    .col-lg-4 {
         border-radius: 3px;
         background-clip: padding-box;
-        margin-bottom: 10px;
-        &:hover,
-        &:hover i {
-            color: $primary;
+        margin-top: 10px;
+
+        &:hover {
+            i {
+                background-color: $primary;
+                color: $white;
+                text-shadow: 5px 5px rgba($white, 0.2);
+            }
         }
     }
 }
@@ -76,14 +70,4 @@
             vertical-align: middle;
         }
     }
-}
-
-
-// Scrollspy
-
-.scrollspy-example {
-    position: relative;
-    height: 200px;
-    margin-top: .5rem;
-    overflow: auto;
 }
