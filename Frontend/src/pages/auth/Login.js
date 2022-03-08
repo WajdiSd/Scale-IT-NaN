@@ -18,7 +18,7 @@ import {
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Mail, Lock } from 'react-feather';
 
-import { loginUser } from '../../redux/actions';
+import { login } from '../../rdx/user/authSlice';
 import { isUserAuthenticated } from '../../helpers/authUtils';
 import Loader from '../../components/Loader';
 import logo from '../../assets/images/logo.png';
@@ -51,7 +51,7 @@ class Login extends Component {
      * Handles the submit
      */
     handleValidSubmit = (event, values) => {
-        this.props.loginUser(values.username, values.password, this.props.history);
+        this.props.login(values.username, values.password);
     };
 
     /**
@@ -207,4 +207,4 @@ const mapStateToProps = (state) => {
     return { user, loading, error };
 };
 
-export default connect(mapStateToProps, { loginUser })(Login);
+export default connect(mapStateToProps, { login })(Login);

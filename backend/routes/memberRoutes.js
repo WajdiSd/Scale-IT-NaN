@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   registerMember,
   loginMember,
+  verifyMember,
   getMe,
   recoverPwdViaMail,
   recoverPwdViaSms,
@@ -15,6 +16,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", registerMember);
+router.post("/verify/:id", verifyMember);
 router.post("/login", loginMember);
 router.get("/me",protect, getMe);
 
