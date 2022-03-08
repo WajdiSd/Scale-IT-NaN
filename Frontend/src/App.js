@@ -8,7 +8,7 @@ import { configureFakeBackend } from './helpers';
 // Themes
 
 // default
-import './assets/scss/theme.scss';
+import './assets/scss/Theme.scss';
 import { Route } from 'react-router-dom';
 
 // dark
