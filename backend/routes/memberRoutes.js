@@ -22,11 +22,11 @@ router.get("/me",protect, getMe);
 router.post("/recoverPwdViaMail", recoverPwdViaMail);
 router.post("/recoverPwdViaSms", recoverPwdViaSms);
 router.post("/verifyCode/:verifcode", verifyCode);
-router.post("/updatepwd/:email", updatepwd);
+router.put("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)
-router.post("/deleteaccount/:iduser", deleteUser);
-router.post("/updateaccount/:iduser", updateUser);
+router.put("/deleteaccount/:iduser", deleteUser);
+router.put("/updateaccount/:iduser", updateUser);
 
 
 
