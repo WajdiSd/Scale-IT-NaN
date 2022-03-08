@@ -211,7 +211,7 @@ const verifyCode = asyncHandler(async (req, res) => {
 // @desc Recover password 
 // @route post /api/members/updatepwd/:email
 // @access public
-  const updatepwd = asyncHandler(async (req, res) => {
+const updatepwd = asyncHandler(async (req, res) => {
   //Filter by email, get password
   if (codeCheck){ 
   const filter = { email: req.params.email };
@@ -240,6 +240,48 @@ const verifyCode = asyncHandler(async (req, res) => {
   });}
 });
 
+// Delete account
+// @desc delete account == set isValidated to 0 ( invalid for archive )
+// @route post /api/members/deleteaccount/:iduser
+// @access public
+const deleteUser = asyncHandler(async (req, res) => {
+  //Filter by email, get password
+  const filter = { _id: req.params.iduser };
+  const update = { isValidated: 0 }
+
+  let member = await Member.findOneAndUpdate(filter, update, {
+    new: true
+  });
+  res.status(200).json({
+    id: member.id,
+    isValidated: member.isValidated,
+    email: member.email,
+  });
+});
+
+
+// Update account
+// @desc update account 
+// @route post /api/members/updateaccount/:iduser
+// @access public
+const updateUser = asyncHandler(async (req, res) => {
+  //
+const entries = Object.keys(req.body)
+const updates = {}
+
+// constructing dynamic query : get the informations entered in BODY
+for (let i = 0; i < entries.length; i++) {
+  updates[entries[i]] = Object.values(req.body)[i]
+  }
+// update members fields according to the BODY
+Member.updateOne({_id: req.params.iduser} , {$set: updates} ,
+function (err , success) {
+  if (err) throw (err);
+    else {
+    res.send({msg: "update success"})
+    ;}})
+});  
+
 module.exports = {
   registerMember,
   loginMember,
@@ -247,5 +289,7 @@ module.exports = {
   recoverPwdViaMail,
   recoverPwdViaSms,
   verifyCode,
-  updatepwd
+  updatepwd,
+  deleteUser,
+  updateUser
 };
