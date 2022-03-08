@@ -185,16 +185,7 @@ const loginMember = asyncHandler(async (req, res) => {
 // @route get /api/members/me
 // @access private
 const getMe = asyncHandler(async (req, res) => {
-<<<<<<< HEAD
-  const {
-    _id,
-    firstName,
-    email
-  } = await Member.findById(req.member.id);
-
-=======
   const { _id, firstName, email } = await Member.findById(req.member.id);
->>>>>>> 27cca56c3117b95ec24d34516b70ef50c5f4030d
   res.status(200).json({
     id: _id,
     firstName,
