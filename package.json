@@ -6,8 +6,11 @@
     "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.0",
+    "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",

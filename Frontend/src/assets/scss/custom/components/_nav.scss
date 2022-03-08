@@ -12,11 +12,6 @@
         margin-bottom: -2px;
     }
 
-    .nav-link {
-        cursor: pointer;
-        outline: none;
-    }
-
     li {
         a {
             border-color: transparent !important;
@@ -46,7 +41,6 @@
     .nav-link {
         background-color: transparent;
         color: $body-color;
-        outline: none;
     }
 
     .nav-link.active,
@@ -63,6 +57,7 @@
     li {
         >a {
             background-color: $gray-300;
+            margin: 0 5px;
         }
     }
 }

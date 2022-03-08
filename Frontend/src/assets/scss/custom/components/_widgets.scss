@@ -19,7 +19,7 @@
     list-style: none;
     height: 332px;
     padding: 0 7px;
-    outline: none;
+
     li {
         margin-bottom: 24px;
     }
@@ -27,7 +27,7 @@
     .chat-avatar {
         float: left;
         text-align: center;
-        width: 38px;
+        width: 34px;
 
         img {
             border-radius: 100%;
@@ -47,7 +47,7 @@
         display: inline-block;
         padding: 4px 12px;
         position: relative;
-        // min-width: 160px;
+        min-width: 160px;
 
         i {
             display: block;
@@ -135,14 +135,7 @@
         box-shadow: none;
         border: $border-width solid $border-color !important;
     }
-}
-
-.activity-widget{
-    .activity-list{
-        border-bottom: 1px solid $gray-200;
-        padding: 12px 0px;
-        &:last-child{
-            border: none;
-        }
+    .flatpickr-input {
+        display: none;
     }
 }

@@ -1,12 +1,54 @@
-//
+// 
 // layouts.scss
 //
 
-body[data-layout-width="boxed"] {
+// scrollable-layout
+
+@include media-breakpoint-up(xl) {
+.scrollable-layout{
+    padding-bottom: 0;
+    #wrapper {
+        display: flex;
+    }
+
+    .left-side-menu{
+        position: relative;
+        min-width: 250px;
+        min-height: 100vh;
+    }
+
+    .navbar-custom {
+        position: absolute;
+    }
+
+    .content-page {
+        margin-left: 0;
+        width: 100%;
+        padding-bottom: 60px;
+    }
+
+    &.left-side-menu-condensed{
+        .left-side-menu{
+            min-width: 70px;
+        }
+        .content-page {
+            margin-left: 0px!important;
+        }
+    }
+}
+
+}
+
+// boxed-layout
+
+.boxed-layout {
+    background: darken($body-bg, 2%);
+
     #wrapper {
         max-width: $boxed-layout-width;
         margin: 0 auto;
-        box-shadow: $box-shadow-lg;
+        box-shadow: $box-shadow;
+        background: $body-bg;
     }
 
     .navbar-custom {
@@ -17,55 +59,13 @@ body[data-layout-width="boxed"] {
     .footer {
         margin: 0 auto;
         max-width: calc(#{$boxed-layout-width} - #{$leftbar-width});
+        background: $body-bg;
     }
 
-    &[data-sidebar-size="condensed"] {
+    &.left-side-menu-condensed {
+        min-height: auto;
         .footer {
-            max-width: calc(#{$boxed-layout-width} - #{$leftbar-width-condensed});
-        }
-    }
-
-    &[data-sidebar-size="compact"] {
-        .footer {
-            max-width: calc(#{$boxed-layout-width} - #{$leftbar-width-sm});
-        }
-    }
-}
-
-// Body min-height set
-@include media-breakpoint-up(md) {
-    body[data-layout-width="boxed"][data-sidebar-size="condensed"] {
-        .content-page {
-            min-height: calc(#{$body-min-height} - #{$leftbar-width-condensed});
-        }
-    }
-}
-
-// Scrollable Layout
-@include media-breakpoint-up(xl) {
-    body[data-layout-menu-position="scrollable"]:not([data-sidebar-size="condensed"]):not([data-sidebar-size="compact"]):not([data-layout-mode="two-column"]) {
-        padding-bottom: 0;
-
-        #wrapper {
-            display: flex;
-        }
-
-        .navbar-custom,
-        .topnav {
-            position: absolute;
-        }
-
-        .left-side-menu {
-            position: relative;
-            min-width: $leftbar-width;
-            max-width: $leftbar-width;
-            padding: 20px 0 calc(#{$topbar-height} + 20px);
-        }
-
-        .content-page {
-            margin-left: 0;
-            width: 100%;
-            padding-bottom: 60px;
+            max-width: calc(#{$boxed-layout-width} - #{$leftbar-width-collapsed});
         }
     }
 }
