@@ -171,12 +171,19 @@ const loginMember = asyncHandler(async (req, res) => {
   });
 
   if (member && (await bcrypt.compare(password, member.password))) {
-    res.json({
-      _id: member.id,
-      firstName: member.firstName,
-      email: member.email,
-      token: generateToken(member._id),
-    });
+    if(member.isValidated){
+      res.status(200);
+      res.json({
+        _id: member.id,
+        firstName: member.firstName,
+        email: member.email,
+        token: generateToken(member._id),
+      });
+    }else{
+      res.status(400);
+      throw new Error("Account not verified");
+    }
+    
   } else {
     res.status(400);
     throw new Error("Invalid credentials");

@@ -61,7 +61,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Login() {
-  const { method } = useAuth();
+  //const { method } = useAuth();
 
   const smUp = useResponsive('up', 'sm');
 
@@ -104,20 +104,16 @@ export default function Login() {
                 <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
               </Box>
 
-              <Tooltip title={capitalCase(method)} placement="right">
+              <Tooltip title={capitalCase("LOGIN")} placement="right">
                 <>
                   <Image
                     disabledEffect
-                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_${method}.png`}
+                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_firebase.png`}
                     sx={{ width: 32, height: 32 }}
                   />
                 </>
               </Tooltip>
             </Stack>
-
-            <Alert severity="info" sx={{ mb: 3 }}>
-              Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-            </Alert>
 
             <LoginForm />
 
