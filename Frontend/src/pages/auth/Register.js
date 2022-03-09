@@ -1,178 +1,143 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, Link } from 'react-router-dom'
+import { capitalCase } from 'change-case';
+import { Link as RouterLink } from 'react-router-dom';
+// @mui
+import { styled } from '@mui/material/styles';
+import { Box, Card, Link, Container, Typography, Tooltip } from '@mui/material';
+// hooks
+import useAuth from '../../hooks/useAuth';
+import useResponsive from '../../hooks/useResponsive';
+// routes
+import { PATH_AUTH } from '../../routes/paths';
+// components
+import Page from '../../components/Page';
+import Logo from '../../components/Logo';
+import Image from '../../components/Image';
+// sections
+import { RegisterForm } from '../../sections/auth/register';
 
-import { Container, Row, Col, Card, CardBody, Label, FormGroup, Button, Alert, InputGroup, InputGroupAddon, CustomInput } from 'reactstrap';
-import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Mail, Lock, User } from 'react-feather';
+// ----------------------------------------------------------------------
 
-import { registerUser } from '../../redux/actions';
-import { isUserAuthenticated } from '../../helpers/authUtils';
-import Loader from '../../components/Loader';
-import logo from '../../assets/images/logo.png';
+const RootStyle = styled('div')(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+  },
+}));
 
-class Register extends Component {
-    _isMounted = false;
+const HeaderStyle = styled('header')(({ theme }) => ({
+  top: 0,
+  zIndex: 9,
+  lineHeight: 0,
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'absolute',
+  padding: theme.spacing(3),
+  justifyContent: 'space-between',
+  [theme.breakpoints.up('md')]: {
+    alignItems: 'flex-start',
+    padding: theme.spacing(7, 5, 0, 7),
+  },
+}));
 
-    constructor(props) {
-        super(props);
+const SectionStyle = styled(Card)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 464,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  margin: theme.spacing(2, 0, 2, 2),
+}));
 
-        this.handleValidSubmit = this.handleValidSubmit.bind(this);
-    }
+const ContentStyle = styled('div')(({ theme }) => ({
+  maxWidth: 480,
+  margin: 'auto',
+  display: 'flex',
+  minHeight: '100vh',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  padding: theme.spacing(12, 0),
+}));
 
-    componentDidMount() {
-        this._isMounted = true;
-        document.body.classList.add('authentication-bg');
-    }
+// ----------------------------------------------------------------------
 
-    componentWillUnmount() {
-        this._isMounted = false;
-        document.body.classList.remove('authentication-bg');
-    }
+export default function Register() {
+  const { method } = useAuth();
 
-    /**
-     * Handles the submit
-     */
-    handleValidSubmit = (event, values) => {
-        this.props.registerUser(values.fullname, values.email, values.password);
-    }
+  const smUp = useResponsive('up', 'sm');
+  const mdUp = useResponsive('up', 'md');
 
-    /**
-     * Redirect to root
-     */
-    renderRedirectToRoot = () => {
-        const isAuthTokenValid = isUserAuthenticated();
-        if (isAuthTokenValid) {
-            return <Redirect to='/' />
-        }
-    }
+  return (
+    <Page title="Register">
+      <RootStyle>
+        <HeaderStyle>
+          <Logo />
+          {smUp && (
+            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
+              Already have an account?{' '}
+              <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.login}>
+                Login
+              </Link>
+            </Typography>
+          )}
+        </HeaderStyle>
 
-    /**
-     * Redirect to confirm
-     */
-    renderRedirectToConfirm = () => {
-        return <Redirect to='/account/confirm' />;
-    }
+        {mdUp && (
+          <SectionStyle>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+              Manage the job more effectively with Minimal
+            </Typography>
+            <Image
+              alt="register"
+              src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_register.png"
+            />
+          </SectionStyle>
+        )}
 
-    render() {
-        const isAuthTokenValid = isUserAuthenticated();
-        return (
-            <React.Fragment>
+        <Container>
+          <ContentStyle>
+            <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" gutterBottom>
+                  Get started absolutely free.
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>Free forever. No credit card needed.</Typography>
+              </Box>
+              <Tooltip title={capitalCase(method)}>
+                <>
+                  <Image
+                    disabledEffect
+                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_${method}.png`}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                </>
+              </Tooltip>
+            </Box>
 
-                {this.renderRedirectToRoot()}
+            <RegisterForm />
 
-                {Object.keys(this.props.user || {}).length > 0 && this.renderRedirectToConfirm()}
+            <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+              By registering, I agree to Minimal&nbsp;
+              <Link underline="always" color="text.primary" href="#">
+                Terms of Service
+              </Link>
+              and
+              <Link underline="always" color="text.primary" href="#">
+                Privacy Policy
+              </Link>
+              .
+            </Typography>
 
-                {(this._isMounted || !isAuthTokenValid) && <div className="account-pages mt-5 mb-5">
-                    <Container>
-                        <Row className="justify-content-center">
-                            <Col xl={10}>
-                                <Card className="">
-                                    <CardBody className="p-0">
-                                        <Row>
-                                            <Col md={6} className="p-5 position-relative">
-                                                { /* preloader */}
-                                                {this.props.loading && <Loader />}
-
-                                                <div className="mx-auto mb-5">
-                                                    <a href="/">
-                                                        <img src={logo} alt="" height="24" />
-                                                        <h3 className="d-inline align-middle ml-1 text-logo">Shreyu</h3>
-                                                    </a>
-                                                </div>
-
-                                                <h6 className="h5 mb-0 mt-4">Welcome back!</h6>
-                                                <p className="text-muted mt-1 mb-4">Enter your email address and password to access admin panel.</p>
-
-
-                                                {this.props.error && <Alert color="danger" isOpen={this.props.error ? true : false}>
-                                                    <div>{this.props.error}</div>
-                                                </Alert>}
-
-                                                <AvForm onValidSubmit={this.handleValidSubmit} className="authentication-form">
-                                                    <AvGroup className="">
-                                                        <Label for="fullname">Username</Label>
-                                                        <InputGroup>
-                                                            <InputGroupAddon addonType="prepend">
-                                                                <span className="input-group-text">
-                                                                    <User className="icon-dual" />
-                                                                </span>
-                                                            </InputGroupAddon>
-                                                            <AvInput type="text" name="fullname" id="fullname" placeholder="Shreyu N" required />
-                                                        </InputGroup>
-
-                                                        <AvFeedback>This field is invalid</AvFeedback>
-                                                    </AvGroup>
-                                                    <AvGroup className="">
-                                                        <Label for="email">Email</Label>
-                                                        <InputGroup>
-                                                            <InputGroupAddon addonType="prepend">
-                                                                <span className="input-group-text">
-                                                                    <Mail className="icon-dual" />
-                                                                </span>
-                                                            </InputGroupAddon>
-                                                            <AvInput type="email" name="email" id="email" placeholder="hello@coderthemes.com" required />
-                                                        </InputGroup>
-
-                                                        <AvFeedback>This field is invalid</AvFeedback>
-                                                    </AvGroup>
-
-
-                                                    <AvGroup className="mb-3">
-                                                        <Label for="password">Password</Label>
-                                                        <InputGroup>
-                                                            <InputGroupAddon addonType="prepend">
-                                                                <span className="input-group-text">
-                                                                    <Lock className="icon-dual" />
-                                                                </span>
-                                                            </InputGroupAddon>
-                                                            <AvInput type="password" name="password" id="password" placeholder="Enter your password" required />
-                                                        </InputGroup>
-                                                        <AvFeedback>This field is invalid</AvFeedback>
-                                                    </AvGroup>
-
-                                                    <AvGroup check className="mb-4">
-                                                        <CustomInput type="checkbox" id="terms" defaultChecked="true" className="pl-1" label="I accept Terms and Conditions" />
-                                                    </AvGroup>
-
-                                                    <FormGroup className="form-group mb-0 text-center">
-                                                        <Button color="primary" className="btn-block">Sign Up</Button>
-                                                    </FormGroup>
-                                                </AvForm>
-                                            </Col>
-
-                                            <Col md={6} className="d-none d-md-inline-block">
-                                                <div className="auth-page-sidebar">
-                                                    <div className="overlay"></div>
-                                                    <div className="auth-user-testimonial">
-                                                        <p className="font-size-24 font-weight-bold text-white mb-1">I simply love it!</p>
-                                                        <p className="lead">"It's a elegent templete. I love it very much!"</p>
-                                                        <p>- Admin User</p>
-                                                    </div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-
-                        <Row className="mt-1">
-                            <Col className="col-12 text-center">
-                                <p className="text-muted">Already have an account? <Link to="/account/login" className="text-primary font-weight-bold ml-1">Sign In</Link></p>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>}
-            </React.Fragment>
-        )
-    }
+            {!smUp && (
+              <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
+                Already have an account?{' '}
+                <Link variant="subtitle2" to={PATH_AUTH.login} component={RouterLink}>
+                  Login
+                </Link>
+              </Typography>
+            )}
+          </ContentStyle>
+        </Container>
+      </RootStyle>
+    </Page>
+  );
 }
-
-
-const mapStateToProps = (state) => {
-    const { user, loading, error } = state.Auth;
-    return { user, loading, error };
-};
-
-export default connect(mapStateToProps, { registerUser })(Register);

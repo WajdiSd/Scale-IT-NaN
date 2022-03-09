@@ -1,32 +1,38 @@
-import React, { Component } from 'react';
-import Routes from './routes/Routes';
-import { useSelector, useDispatch } from 'react-redux';
+// routes
+import Router from './routes';
+// theme
+import ThemeProvider from './theme';
+// components
+import Settings from './components/settings';
+import RtlLayout from './components/RtlLayout';
+import { ChartStyle } from './components/chart';
+import ScrollToTop from './components/ScrollToTop';
+import { ProgressBarStyle } from './components/ProgressBar';
+import NotistackProvider from './components/NotistackProvider';
+import ThemeColorPresets from './components/ThemeColorPresets';
+import ThemeLocalization from './components/ThemeLocalization';
+import MotionLazyContainer from './components/animate/MotionLazyContainer';
 
-// setup fake backend
-import { configureFakeBackend } from './helpers';
+// ----------------------------------------------------------------------
 
-// Themes
-
-// default
-import './assets/scss/Theme.scss';
-import { Route } from 'react-router-dom';
-
-// dark
-// import './assets/scss/theme-dark.scss';
-
-// rtl
-// import './assets/scss/theme-rtl.scss';
-
-// configure fake backend
-configureFakeBackend();
-
-/**
- * Main app component
- */
-export const App = () => {
-    const reducerState = useSelector((state) => state);
-    console.log(reducerState);
-    return <Routes></Routes>;
-};
-
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider>
+      <ThemeColorPresets>
+        <ThemeLocalization>
+          <RtlLayout>
+            <NotistackProvider>
+              <MotionLazyContainer>
+                <ProgressBarStyle />
+                <ChartStyle />
+                <Settings />
+                <ScrollToTop />
+                <Router />
+              </MotionLazyContainer>
+            </NotistackProvider>
+          </RtlLayout>
+        </ThemeLocalization>
+      </ThemeColorPresets>
+    </ThemeProvider>
+  );
+}

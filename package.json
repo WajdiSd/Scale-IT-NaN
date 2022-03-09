@@ -6,7 +6,6 @@
     "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.0",
     "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
@@ -18,8 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.4",
     "nodemailer": "^6.7.2",
-    "nodemailer-express-handlebars": "^5.0.0",
-    "redux-thunk": "^2.4.1"
+    "nodemailer-express-handlebars": "^5.0.0"
   },
   "devDependencies": {
     "concurrently": "^7.0.0",

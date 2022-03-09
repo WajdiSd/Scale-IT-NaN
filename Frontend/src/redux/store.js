@@ -1,16 +1,25 @@
-// @flow
-import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import reducers from './reducers';
-import sagas from './sagas';
+import { configureStore } from '@reduxjs/toolkit';
+import { useDispatch as useAppDispatch, useSelector as useAppSelector } from 'react-redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import { rootPersistConfig, rootReducer } from './rootReducer';
 
-const sagaMiddleware = createSagaMiddleware();
-const middlewares = [sagaMiddleware];
+// ----------------------------------------------------------------------
 
-export function configureStore(initialState: {}) {
-    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = configureStore({
+  reducer: persistReducer(rootPersistConfig, rootReducer),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }),
+});
 
-    const store = createStore(reducers, initialState, composeEnhancers(applyMiddleware(...middlewares)));
-    sagaMiddleware.run(sagas);
-    return store;
-}
+const persistor = persistStore(store);
+
+const { dispatch } = store;
+
+const useSelector = useAppSelector;
+
+const useDispatch = () => useAppDispatch();
+
+export { store, persistor, dispatch, useSelector, useDispatch };
