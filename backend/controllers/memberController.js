@@ -112,12 +112,14 @@ const verifyMember = asyncHandler(async (req, res) => {
       Member.findById({
         _id: req.params.id
       }, (err, member) => {
-        console.log(member)
+        if(err){
+          res.status(400);
+          res.send("invalid member id");
+        }
         if (member.isValidated) {
           res.status(300).json({
             "message": "member is already validated"
           });
-          return;
         } else {
           const filter = {
             _id: member._id
@@ -138,18 +140,18 @@ const verifyMember = asyncHandler(async (req, res) => {
             res.status(201).json({
               "message": "Member account confirmed."
             });
-            return;
           } else {
             res.status(400);
-            res.json("invalid member data");
-            return;
+            throw new Error("invalid member data");
           }
         }
       });
     }
-    res.status(400);
-    res.json("invalid member id");
-    return;
+    else if(err){
+      res.status(400);
+      res.send("invalid member id");
+    }
+      
   });
 });
 
