@@ -15,12 +15,15 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import { dispatch } from 'src/redux/store';
+import {login, reset} from 'src/redux/slices/authSlice'
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
-  const { login } = useAuth();
-
+  const  userStore = useAuth();
+  console.log(userStore);
   const isMountedRef = useIsMountedRef();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -48,9 +51,12 @@ export default function LoginForm() {
     formState: { errors, isSubmitting },
   } = methods;
 
+  const dispatch = useDispatch();
+
   const onSubmit = async (data) => {
     try {
-      await login(data.email, data.password);
+      //await login(data.email, data.password);
+      dispatch(login(data))
     } catch (error) {
       console.error(error);
       reset();
@@ -64,6 +70,7 @@ export default function LoginForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
+        {!!userStore.isError && <Alert severity="error">{userStore.message}</Alert>}
 
         <RHFTextField name="email" label="Email address" />
 

@@ -12,10 +12,17 @@ import NotistackProvider from './components/NotistackProvider';
 import ThemeColorPresets from './components/ThemeColorPresets';
 import ThemeLocalization from './components/ThemeLocalization';
 import MotionLazyContainer from './components/animate/MotionLazyContainer';
+import { useSelector } from './redux/store';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
+
+  const test = useSelector(
+    (state) => state.auth
+  )
+    console.log(test);
+
   return (
     <ThemeProvider>
       <ThemeColorPresets>
