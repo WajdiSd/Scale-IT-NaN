@@ -13,6 +13,8 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import MyAvatar from '../../../components/MyAvatar';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
+import { useDispatch } from 'react-redux';
+import { logout, reset } from 'src/redux/slices/authSlice';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +38,7 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const navigate = useNavigate();
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const isMountedRef = useIsMountedRef();
 
@@ -52,9 +54,12 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
+  const dispatch = useDispatch();
+
   const handleLogout = async () => {
     try {
-      await logout();
+      dispatch(logout());
+      dispatch(reset());
       navigate(PATH_AUTH.login, { replace: true });
 
       if (isMountedRef.current) {
