@@ -15,7 +15,9 @@ import { FormProvider, RHFTextField ,RHFSelect} from '../../../components/hook-f
 
 import {register} from 'src/redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-
+import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
@@ -56,11 +58,17 @@ export default function RegisterForm() {
     formState: { errors, isSubmitting },
   } = methods;
   const dispatch = useDispatch();
+  //const history = useHistory();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       console.log(data);
       dispatch(register(data));
+      toast.info('We have sent you a verification email. Please check your inbox.');
+
+      //history.push("/auth/login");
+      navigate("/auth/login");
       //await register(data.email, data.password, data.firstName, data.lastName, data.phone, data.gender);
     } catch (error) {
       console.error(error);
