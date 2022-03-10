@@ -17,9 +17,6 @@ const registerMember = asyncHandler(async (req, res) => {
     lastName,
     email,
     password,
-    rateOvertime,
-    rateHour,
-    isHR,
     phone,
     gender,
   } = req.body;
@@ -29,9 +26,6 @@ const registerMember = asyncHandler(async (req, res) => {
     !lastName ||
     !email ||
     !password ||
-    !rateOvertime ||
-    !rateHour ||
-    !isHR ||
     !phone ||
     !gender
   ) {
@@ -58,9 +52,6 @@ const registerMember = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     email,
-    rateOvertime,
-    rateHour,
-    isHR,
     phone,
     gender,
     password: hashedPassword,
