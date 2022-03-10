@@ -11,12 +11,18 @@ import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFTextField ,RHFSelect} from '../../../components/hook-form';
 
+import {register} from 'src/redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
-  const { register } = useAuth();
+  const userStore = useAuth();
+  //const { register } = useAuth();
 
   const isMountedRef = useIsMountedRef();
 
@@ -27,6 +33,8 @@ export default function RegisterForm() {
     lastName: Yup.string().required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
+    phone: Yup.string().required('Phone number is required'),
+    gender: Yup.string().required('Gender required')
   });
 
   const defaultValues = {
@@ -34,6 +42,8 @@ export default function RegisterForm() {
     lastName: '',
     email: '',
     password: '',
+    phone: '',
+    gender: '',
   };
 
   const methods = useForm({
@@ -43,15 +53,23 @@ export default function RegisterForm() {
 
   const {
     reset,
-
     setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = methods;
+  const dispatch = useDispatch();
+  //const history = useHistory();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.firstName, data.lastName);
+      console.log(data);
+      dispatch(register(data));
+      toast.info('We have sent you a verification email. Please check your inbox.');
+
+      //history.push("/auth/login");
+      navigate("/auth/login");
+      //await register(data.email, data.password, data.firstName, data.lastName, data.phone, data.gender);
     } catch (error) {
       console.error(error);
       reset();
@@ -87,6 +105,13 @@ export default function RegisterForm() {
             ),
           }}
         />
+
+        <RHFTextField name="phone" label="Phone number" />
+
+        <RHFSelect name="gender" label="Gender" >
+          <option>female</option>
+          <option>male</option>
+        </RHFSelect>
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           Register
