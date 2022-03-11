@@ -61,7 +61,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Register() {
-  const { method } = useAuth();
+  //const { method } = useAuth();
 
   const smUp = useResponsive('up', 'sm');
   const mdUp = useResponsive('up', 'md');
@@ -84,7 +84,7 @@ export default function Register() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the job more effectively with Minimal
+              Manage the job more effectively with Scale'IT
             </Typography>
             <Image
               alt="register"
@@ -102,7 +102,7 @@ export default function Register() {
                 </Typography>
                 <Typography sx={{ color: 'text.secondary' }}>Free forever. No credit card needed.</Typography>
               </Box>
-              <Tooltip title={capitalCase(method)}>
+              {/* <Tooltip title={capitalCase(method)}>
                 <>
                   <Image
                     disabledEffect
@@ -110,7 +110,7 @@ export default function Register() {
                     sx={{ width: 32, height: 32 }}
                   />
                 </>
-              </Tooltip>
+              </Tooltip> */}
             </Box>
 
             <RegisterForm />
