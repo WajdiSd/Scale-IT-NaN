@@ -61,6 +61,8 @@ function SettingsProvider({ children }) {
   };
 
   const onChangeColor = (event) => {
+    console.log("event.target.value");
+    console.log(event.target.value);
     setSettings({
       ...settings,
       themeColorPresets: event.target.value,
