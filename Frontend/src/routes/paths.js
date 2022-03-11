@@ -14,7 +14,8 @@ export const PATH_AUTH = {
   login: path(ROOTS_AUTH, '/login'),
   register: path(ROOTS_AUTH, '/register'),
   resetPassword: path(ROOTS_AUTH, '/reset-password'),
-  verify: path(ROOTS_AUTH, '/verify')
+  verify: path(ROOTS_AUTH, '/verify'),
+  confirm: path(ROOTS_AUTH, '/confirm/:id')
 };
 
 export const PATH_PAGE = {
