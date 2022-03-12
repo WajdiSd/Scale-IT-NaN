@@ -38,8 +38,8 @@ const menuConfig = [
       {
         subheader: 'Authentication',
         items: [
-          { title: 'Login', path: PATH_AUTH.loginUnprotected },
-          { title: 'Register', path: PATH_AUTH.registerUnprotected },
+          { title: 'Login', path: PATH_AUTH.login },
+          { title: 'Register', path: PATH_AUTH.register },
           { title: 'Reset password', path: PATH_AUTH.resetPassword },
           { title: 'Verify code', path: PATH_AUTH.verify },
         ],
