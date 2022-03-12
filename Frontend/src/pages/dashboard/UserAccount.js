@@ -67,7 +67,6 @@ export default function UserAccount() {
             { name: 'Account Settings' },
           ]}
         />
-
         <Tabs
           value={currentTab}
           scrollButtons="auto"
@@ -79,7 +78,6 @@ export default function UserAccount() {
             <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
           ))}
         </Tabs>
-
         <Box sx={{ mb: 5 }} />
 
         {ACCOUNT_TABS.map((tab) => {
