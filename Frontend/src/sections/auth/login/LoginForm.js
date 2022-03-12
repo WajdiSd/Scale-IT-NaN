@@ -23,7 +23,6 @@ import { useDispatch } from 'react-redux';
 
 export default function LoginForm() {
   const  userStore = useAuth();
-  console.log(userStore);
   const isMountedRef = useIsMountedRef();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -35,8 +34,8 @@ export default function LoginForm() {
   });
 
   const defaultValues = {
-    email: 'demo@minimals.cc',
-    password: 'demo1234',
+    email: '',
+    password: '',
     remember: true,
   };
 

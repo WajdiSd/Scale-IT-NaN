@@ -13,9 +13,11 @@ const axiosInstance = axios.create({
 });
 
 export const setAuthToken = (config) => {
+  const token = JSON.parse(localStorage.getItem('user'))
+
   if (token) {
   //applying token
-  config.headers.Authorization = `Bearer ${token}`
+  config.headers.Authorization = `Bearer ${token['token']}`
   } else {
   //deleting the token from header
     delete config.headers.Authorization;
@@ -30,7 +32,7 @@ return Promise.reject(error);
 // Add a request interceptor
 axiosInstance.interceptors.request.use(function (config) {
   // Do something before request is sent
-  //setAuthToken(config);
+  setAuthToken(config);
   return config;
 }, function (error) {
   // Do something with request error

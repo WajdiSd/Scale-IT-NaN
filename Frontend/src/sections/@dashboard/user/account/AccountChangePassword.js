@@ -9,6 +9,11 @@ import { LoadingButton } from '@mui/lab';
 // components
 import { FormProvider, RHFTextField } from '../../../../components/hook-form';
 
+import useAuth from '../../../../hooks/useAuth';
+import { useDispatch } from 'react-redux';
+import { updateUserPassword } from 'src/redux/slices/authSlice';
+
+
 // ----------------------------------------------------------------------
 
 export default function AccountChangePassword() {
@@ -37,11 +42,32 @@ export default function AccountChangePassword() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const  userStore = useAuth();
+
+  const dispatch = useDispatch();
+
+  const onSubmit = async (data) => {
+    data = {
+      ...data,
+      id: userStore.user._id
+    }
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      dispatch(updateUserPassword(data)).then((res)=>{
+        if(res.error){
+          enqueueSnackbar(res.payload,{
+            variant: 'error',
+          })
+        }else{
+          enqueueSnackbar(res.payload)
+        }
+      }).catch((e)=>{
+        enqueueSnackbar(e,{
+          variant: 'error',
+        })
+      });
+      /*await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
-      enqueueSnackbar('Update success!');
+      enqueueSnackbar('Update success!');*/
     } catch (error) {
       console.error(error);
     }
