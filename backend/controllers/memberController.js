@@ -17,9 +17,6 @@ const registerMember = asyncHandler(async (req, res) => {
     lastName,
     email,
     password,
-    rateOvertime,
-    rateHour,
-    isHR,
     phone,
     gender,
   } = req.body;
@@ -29,9 +26,6 @@ const registerMember = asyncHandler(async (req, res) => {
     !lastName ||
     !email ||
     !password ||
-    !rateOvertime ||
-    !rateHour ||
-    !isHR ||
     !phone ||
     !gender
   ) {
@@ -58,14 +52,11 @@ const registerMember = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     email,
-    rateOvertime,
-    rateHour,
-    isHR,
     phone,
     gender,
     password: hashedPassword,
   });
-
+  //auth/confirm
   if (member) {
 
     var mailOptions = {
@@ -74,7 +65,7 @@ const registerMember = asyncHandler(async (req, res) => {
       subject: 'Welcome!',
       template: 'email', // the name of the template file i.e email.handlebars
       context: {
-        link: process.env.BACKEND_BASE_URL + "members/verify/" + member._id, // replace {{link}}
+        link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + member._id, // replace {{link}}
       }
     };
 
@@ -171,17 +162,30 @@ const loginMember = asyncHandler(async (req, res) => {
   });
 
   if (member && (await bcrypt.compare(password, member.password))) {
+<<<<<<< HEAD
     if (member.isValidated) {
+=======
+    if(member.isValidated){
+      res.status(200);
+>>>>>>> ae2572738bd2a468a37b0f3d0999c6b00e8d85e3
       res.json({
         _id: member.id,
         firstName: member.firstName,
         email: member.email,
         token: generateToken(member._id),
       });
+<<<<<<< HEAD
     } else {
       res.status(400);
       throw new Error("Please validate your account");
     }
+=======
+    }else{
+      res.status(400);
+      throw new Error("Account not verified");
+    }
+    
+>>>>>>> ae2572738bd2a468a37b0f3d0999c6b00e8d85e3
   } else {
     res.status(400);
     throw new Error("Invalid credentials");

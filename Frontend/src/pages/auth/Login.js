@@ -1,210 +1,133 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, Link } from 'react-router-dom';
+import { capitalCase } from 'change-case';
+import { Link as RouterLink } from 'react-router-dom';
+// @mui
+import { styled } from '@mui/material/styles';
+import { Box, Card, Stack, Link, Alert, Tooltip, Container, Typography } from '@mui/material';
+// routes
+import { PATH_AUTH } from '../../routes/paths';
+// hooks
+import useAuth from '../../hooks/useAuth';
+import useResponsive from '../../hooks/useResponsive';
+// components
+import Page from '../../components/Page';
+import Logo from '../../components/Logo';
+import Image from '../../components/Image';
+// sections
+import { LoginForm } from '../../sections/auth/login';
 
-import {
-    Container,
-    Row,
-    Col,
-    Card,
-    CardBody,
-    Label,
-    FormGroup,
-    Button,
-    Alert,
-    InputGroup,
-    InputGroupAddon,
-} from 'reactstrap';
-import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Mail, Lock } from 'react-feather';
+// ----------------------------------------------------------------------
 
-import { login } from '../../rdx/user/authSlice';
-import { isUserAuthenticated } from '../../helpers/authUtils';
-import Loader from '../../components/Loader';
-import logo from '../../assets/images/logo.png';
+const RootStyle = styled('div')(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+  },
+}));
 
-class Login extends Component {
-    _isMounted = false;
+const HeaderStyle = styled('header')(({ theme }) => ({
+  top: 0,
+  zIndex: 9,
+  lineHeight: 0,
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'absolute',
+  padding: theme.spacing(3),
+  justifyContent: 'space-between',
+  [theme.breakpoints.up('md')]: {
+    alignItems: 'flex-start',
+    padding: theme.spacing(7, 5, 0, 7),
+  },
+}));
 
-    constructor(props) {
-        super(props);
+const SectionStyle = styled(Card)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 464,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  margin: theme.spacing(2, 0, 2, 2),
+}));
 
-        this.handleValidSubmit = this.handleValidSubmit.bind(this);
-        this.state = {
-            username: 'test',
-            password: 'test',
-        };
-    }
+const ContentStyle = styled('div')(({ theme }) => ({
+  maxWidth: 480,
+  margin: 'auto',
+  display: 'flex',
+  minHeight: '100vh',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  padding: theme.spacing(12, 0),
+}));
 
-    componentDidMount() {
-        this._isMounted = true;
+// ----------------------------------------------------------------------
 
-        document.body.classList.add('authentication-bg');
-    }
+export default function Login() {
+  //const { method } = useAuth();
 
-    componentWillUnmount() {
-        this._isMounted = false;
-        document.body.classList.remove('authentication-bg');
-    }
+  const smUp = useResponsive('up', 'sm');
 
-    /**
-     * Handles the submit
-     */
-    handleValidSubmit = (event, values) => {
-        this.props.login(values.username, values.password);
-    };
+  const mdUp = useResponsive('up', 'md');
 
-    /**
-     * Redirect to root
-     */
-    renderRedirectToRoot = () => {
-        const isAuthTokenValid = isUserAuthenticated();
-        if (isAuthTokenValid) {
-            return <Redirect to="/" />;
-        }
-    };
+  return (
+    <Page title="Login">
+      <RootStyle>
+        <HeaderStyle>
+          <Logo />
+          {smUp && (
+            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
+              Don’t have an account? {''}
+              <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.register}>
+                Get started
+              </Link>
+            </Typography>
+          )}
+        </HeaderStyle>
 
-    render() {
-        const isAuthTokenValid = isUserAuthenticated();
-        return (
-            <React.Fragment>
-                {this.renderRedirectToRoot()}
+        {mdUp && (
+          <SectionStyle>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+              Hi, Welcome Back
+            </Typography>
+            <Image
+              alt="login"
+              src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_login.png"
+            />
+          </SectionStyle>
+        )}
 
-                {(this._isMounted || !isAuthTokenValid) && (
-                    <div className="account-pages my-5">
-                        <Container>
-                            <Row className="justify-content-center">
-                                <Col xl={10}>
-                                    <Card className="">
-                                        <CardBody className="p-0">
-                                            <Row>
-                                                <Col md={6} className="p-5 position-relative">
-                                                    {/* preloader */}
-                                                    {this.props.loading && <Loader />}
+        <Container maxWidth="sm">
+          <ContentStyle>
+            <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" gutterBottom>
+                  Sign in to Minimal
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
+              </Box>
 
-                                                    <div className="mx-auto mb-5">
-                                                        <a href="/">
-                                                            <img src={logo} alt="" height="24" />
-                                                            <h3 className="d-inline align-middle ml-1 text-logo">
-                                                                Shreyu
-                                                            </h3>
-                                                        </a>
-                                                    </div>
+              <Tooltip title={capitalCase("LOGIN")} placement="right">
+                <>
+                  <Image
+                    disabledEffect
+                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_firebase.png`}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                </>
+              </Tooltip>
+            </Stack>
 
-                                                    <h6 className="h5 mb-0 mt-4">Welcome back!</h6>
-                                                    <p className="text-muted mt-1 mb-4">
-                                                        Enter your email address and password to access admin panel.
-                                                    </p>
+            <LoginForm />
 
-                                                    {this.props.error && (
-                                                        <Alert color="danger" isOpen={this.props.error ? true : false}>
-                                                            <div>{this.props.error}</div>
-                                                        </Alert>
-                                                    )}
-
-                                                    <AvForm
-                                                        onValidSubmit={this.handleValidSubmit}
-                                                        className="authentication-form">
-                                                        <AvGroup className="">
-                                                            <Label for="username">Username</Label>
-                                                            <InputGroup>
-                                                                <InputGroupAddon addonType="prepend">
-                                                                    <span className="input-group-text">
-                                                                        <Mail className="icon-dual" />
-                                                                    </span>
-                                                                </InputGroupAddon>
-                                                                <AvInput
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    placeholder="hello@coderthemes.com"
-                                                                    value={this.state.username}
-                                                                    required
-                                                                />
-                                                            </InputGroup>
-
-                                                            <AvFeedback>This field is invalid</AvFeedback>
-                                                        </AvGroup>
-
-                                                        <AvGroup className="mb-3">
-                                                            <Label for="password">Password</Label>
-                                                            <Link
-                                                                to="/account/forget-password"
-                                                                className="float-right text-muted text-unline-dashed ml-1">
-                                                                Forgot your password?
-                                                            </Link>
-                                                            <InputGroup>
-                                                                <InputGroupAddon addonType="prepend">
-                                                                    <span className="input-group-text">
-                                                                        <Lock className="icon-dual" />
-                                                                    </span>
-                                                                </InputGroupAddon>
-                                                                <AvInput
-                                                                    type="password"
-                                                                    name="password"
-                                                                    id="password"
-                                                                    placeholder="Enter your password"
-                                                                    value={this.state.password}
-                                                                    required
-                                                                />
-                                                            </InputGroup>
-                                                            <AvFeedback>This field is invalid</AvFeedback>
-                                                        </AvGroup>
-
-                                                        <FormGroup className="form-group mb-0 text-center">
-                                                            <Button color="primary" className="btn-block">
-                                                                Log In
-                                                            </Button>
-                                                        </FormGroup>
-
-                                                        <p className="mt-3">
-                                                            <strong>Username:</strong> test &nbsp;&nbsp;{' '}
-                                                            <strong>Password:</strong> test
-                                                        </p>
-                                                    </AvForm>
-                                                </Col>
-
-                                                <Col md={6} className="d-none d-md-inline-block">
-                                                    <div className="auth-page-sidebar">
-                                                        <div className="overlay"></div>
-                                                        <div className="auth-user-testimonial">
-                                                            <p className="font-size-24 font-weight-bold text-white mb-1">
-                                                                I simply love it!
-                                                            </p>
-                                                            <p className="lead">
-                                                                "It's a elegent templete. I love it very much!"
-                                                            </p>
-                                                            <p>- Admin User</p>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                            </Row>
-
-                            <Row className="mt-3">
-                                <Col className="col-12 text-center">
-                                    <p className="text-muted">
-                                        Don't have an account?{' '}
-                                        <Link to="/account/register" className="text-primary font-weight-bold ml-1">
-                                            Sign Up
-                                        </Link>
-                                    </p>
-                                </Col>
-                            </Row>
-                        </Container>
-                    </div>
-                )}
-            </React.Fragment>
-        );
-    }
+            {!smUp && (
+              <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                Don’t have an account?{' '}
+                <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.register}>
+                  Get started
+                </Link>
+              </Typography>
+            )}
+          </ContentStyle>
+        </Container>
+      </RootStyle>
+    </Page>
+  );
 }
-
-const mapStateToProps = (state) => {
-    const { user, loading, error } = state.Auth;
-    return { user, loading, error };
-};
-
-export default connect(mapStateToProps, { login })(Login);
