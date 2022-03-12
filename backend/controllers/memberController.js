@@ -162,30 +162,19 @@ const loginMember = asyncHandler(async (req, res) => {
   });
 
   if (member && (await bcrypt.compare(password, member.password))) {
-<<<<<<< HEAD
-    if (member.isValidated) {
-=======
     if(member.isValidated){
       res.status(200);
->>>>>>> ae2572738bd2a468a37b0f3d0999c6b00e8d85e3
       res.json({
         _id: member.id,
         firstName: member.firstName,
         email: member.email,
         token: generateToken(member._id),
       });
-<<<<<<< HEAD
-    } else {
-      res.status(400);
-      throw new Error("Please validate your account");
-    }
-=======
     }else{
       res.status(400);
       throw new Error("Account not verified");
     }
     
->>>>>>> ae2572738bd2a468a37b0f3d0999c6b00e8d85e3
   } else {
     res.status(400);
     throw new Error("Invalid credentials");
@@ -247,12 +236,11 @@ const recoverPwdViaMail = asyncHandler(async (req, res) => {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-      res.status(400).json('error');
     } else {
       console.log("Email sent: " + info.response);
-      res.status(200).json('Email sent: ' + info.response);
     }
   });
+  res.status(200);
 });
 
 // Forget password
@@ -318,12 +306,12 @@ const updatepwd = asyncHandler(async (req, res) => {
     const { password } = req.body;
 
     //hash password and update it
-    const salt = await bcrypt.genSalt(10);
+    /*const salt = await bcrypt.genSalt(10);
    const hashedPassword = await bcrypt.hash(password, salt);
-   const update = { password: hashedPassword };
+   const update = { password: hashedPassword };*/
 
     //try without hashing password
-    //const update = { password: req.body.password };
+    const update = { password: req.body.password };
 
     let member = await Member.findOneAndUpdate(filter, update, {
       new: true,
@@ -348,10 +336,10 @@ const updatepwd = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   //Filter by email, get password
   const filter = { _id: req.params.iduser };
-  const update = { isValidated: 0 };
+  const update = { isValidated: 0 }
 
   let member = await Member.findOneAndUpdate(filter, update, {
-    new: true,
+    new: true
   });
   res.status(200).json({
     id: member.id,
@@ -360,31 +348,28 @@ const deleteUser = asyncHandler(async (req, res) => {
   });
 });
 
+
 // Update account
-// @desc update account
+// @desc update account 
 // @route post /api/members/updateaccount/:iduser
 // @access public
 const updateUser = asyncHandler(async (req, res) => {
   //
-  const entries = Object.keys(req.body);
-  const updates = {};
+const entries = Object.keys(req.body)
+const updates = {}
 
-  // constructing dynamic query : get the informations entered in BODY
-  for (let i = 0; i < entries.length; i++) {
-    updates[entries[i]] = Object.values(req.body)[i];
+// constructing dynamic query : get the informations entered in BODY
+for (let i = 0; i < entries.length; i++) {
+  updates[entries[i]] = Object.values(req.body)[i]
   }
-  // update members fields according to the BODY
-  Member.updateOne(
-    { _id: req.params.iduser },
-    { $set: updates },
-    function (err, success) {
-      if (err) throw err;
-      else {
-        res.send({ msg: "update success" });
-      }
-    }
-  );
-});
+// update members fields according to the BODY
+Member.updateOne({_id: req.params.iduser} , {$set: updates} ,
+function (err , success) {
+  if (err) throw (err);
+    else {
+    res.send({msg: "update success"})
+    ;}})
+});  
 
 module.exports = {
   registerMember,
