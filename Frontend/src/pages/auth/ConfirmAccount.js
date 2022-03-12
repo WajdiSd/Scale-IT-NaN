@@ -10,7 +10,6 @@ import { PATH_AUTH, PATH_DASHBOARD } from '../../routes/paths';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 // sections
-import { VerifyCodeForm } from '../../sections/auth/verify-code';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';

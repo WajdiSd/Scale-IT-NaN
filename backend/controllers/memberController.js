@@ -209,7 +209,7 @@ const generateToken = (id) => {
 const recoverPwdViaMail = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const member = await Member.findOne({ email });
-
+  console.log(email);
   //Declaration des variables, config mail
   var nodemailer = require("nodemailer");
   //Coordonnees pour l envoi du mail

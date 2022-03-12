@@ -50,7 +50,7 @@ export default function VerifyCode() {
             </Typography>
 
             <Box sx={{ mt: 5, mb: 3 }}>
-              <VerifyCodeForm />
+              {/* <VerifyCodeForm /> */}
             </Box>
 
             <Typography variant="body2" align="center">

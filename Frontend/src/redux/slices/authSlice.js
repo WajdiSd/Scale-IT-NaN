@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+//import VerifyCode from "src/pages/auth/VerifyCode";
 import authService from "../service/authService";
 
 // Get user from localStorage
@@ -43,7 +44,7 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   }
 });
 
-// Login user
+// Verify user Account
 export const verifyAccount = createAsyncThunk("auth/verify", async (id, thunkAPI) => {
   try {
     return await authService.verifyUser(id);
@@ -59,6 +60,65 @@ export const verifyAccount = createAsyncThunk("auth/verify", async (id, thunkAPI
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
+/**
+ * forgot password steps 
+ */
+
+//send mail to user
+export const sendMail = createAsyncThunk(
+  "auth/sendMail", 
+  async(userEmail, thunkAPI) => {
+    try {
+      return await authService.sendMail(userEmail);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// change Password 
+export const changePassword = createAsyncThunk("auth/changePassword", async (userEmail,newPassword) => {
+  try {
+    return await authService.changePassword(userEmail,newPassword);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const verifyCodeRecoverPwd = createAsyncThunk("auth/verifyCodeRecoverPwd", async (userEmail,code) => {
+  try {
+    return await authService.verifyCodeRecoverPwd(userEmail,code);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
+export const verifyCode = createAsyncThunk("auth/verifyCode", async (code) => {
+  try {
+    return await authService.verifyCode(code);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
 
 export const authSlice = createSlice({
   name: "auth",
@@ -116,7 +176,28 @@ export const authSlice = createSlice({
       .addCase(verifyAccount.fulfilled, (state) => {
         console.log("verifyAccount fulfilled")
         return action.payload
-      });
+      })
+      .addCase(sendMail.fulfilled, (state) => {
+        console.log("sendMail fulfilled")
+        return action.payload
+      })
+      .addCase(sendMail.rejected, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCodeRecoverPwd.fulfilled, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCodeRecoverPwd.rejected, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCode.fulfilled, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCode.rejected, (state, action) => {
+        return action.payload
+      })
+      
+      
   },
 });
 

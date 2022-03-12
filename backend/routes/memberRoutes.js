@@ -23,7 +23,7 @@ router.get("/me",protect, getMe);
 //Reset Password
 router.post("/recoverPwdViaMail", recoverPwdViaMail);
 router.post("/recoverPwdViaSms", recoverPwdViaSms);
-router.post("/verifyCode/:verifcode", verifyCode);
+router.put("/verifyCode/:verifcode", verifyCode);
 router.put("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)

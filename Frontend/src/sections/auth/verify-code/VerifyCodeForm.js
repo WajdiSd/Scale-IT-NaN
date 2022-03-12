@@ -11,9 +11,14 @@ import { LoadingButton } from '@mui/lab';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 
+import { useDispatch } from 'react-redux';
+
+import {verifyCodeRecoverPwd} from '../../../redux/slices/authSlice';
+
+//import { AccountChangePassword } from '../../../account/AccountChangePassword';
 // ----------------------------------------------------------------------
 
-export default function VerifyCodeForm() {
+export default function VerifyCodeForm(email) {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -23,8 +28,6 @@ export default function VerifyCodeForm() {
     code2: Yup.string().required('Code is required'),
     code3: Yup.string().required('Code is required'),
     code4: Yup.string().required('Code is required'),
-    code5: Yup.string().required('Code is required'),
-    code6: Yup.string().required('Code is required'),
   });
 
   const defaultValues = {
@@ -32,8 +35,6 @@ export default function VerifyCodeForm() {
     code2: '',
     code3: '',
     code4: '',
-    code5: '',
-    code6: '',
   };
 
   const {
@@ -55,14 +56,17 @@ export default function VerifyCodeForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = async (data) => {
+  const dispatch = useDispatch();
+  const onSubmit = async (data,code) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('code:', Object.values(data).join(''));
-
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      // console.log('code:', Object.values(data).join(''));
       enqueueSnackbar('Verify success!');
-
-      navigate(PATH_DASHBOARD.root, { replace: true });
+      code = Object.values(data).join('');
+      dispatch(verifyCodeRecoverPwd(code));
+      console.log("email:"+email+" code:"+code);
+      //navigate(PATH_DASHBOARD.root, { replace: true });
+      // <AccountChangePassword/>
     } catch (error) {
       console.error(error);
     }
@@ -87,7 +91,7 @@ export default function VerifyCodeForm() {
     const fieldIntIndex = Number(fieldIndex);
 
     if (value.length >= maxLength) {
-      if (fieldIntIndex < 6) {
+      if (fieldIntIndex < 4) {
         const nextfield = document.querySelector(`input[name=code${fieldIntIndex + 1}]`);
 
         if (nextfield !== null) {

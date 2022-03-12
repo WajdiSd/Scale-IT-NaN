@@ -10,6 +10,8 @@ import { LoadingButton } from '@mui/lab';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { sendMail } from '../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -35,10 +37,12 @@ export default function ResetPasswordForm({ onSent, onGetEmail }) {
     formState: { isSubmitting },
   } = methods;
 
+  const dispatch= useDispatch();
   const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
       if (isMountedRef.current) {
+        dispatch(sendMail(data.email));
+
         onSent();
         onGetEmail(data.email);
       }

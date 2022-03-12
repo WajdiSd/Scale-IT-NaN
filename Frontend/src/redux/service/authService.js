@@ -27,15 +27,11 @@ const login = async (userData) => {
     ] = `Bearer ${response.data.token}`;
   }
 
-
-
   return response.data;
 };
 
 // Login user
 const verifyUser = async (id) => {
-  console.log("id");
-  console.log(id);
   const response = await axiosInstance.put(API_URL+"verify/"+id);
   return response.data;
 };
@@ -45,11 +41,33 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
+
+const sendMail = async(userEmail) => {
+  console.log("USER EMAIL",userEmail);
+const data = {
+  email: userEmail
+}
+  const response = await axiosInstance.post(API_URL+"recoverPwdViaMail/",data);
+  return response.data;
+}
+//change password
+const changePassword = async(userEmail,newPassword) => {
+  const response = await axiosInstance.put(API_URL+"changePassword/"+userEmail,newPassword);
+  return response.data;
+}
+
+const verifyCode = async(code) => {
+  const response = await axiosInstance.put(API_URL+"verifyCode/"+code);
+  return response.data;
+}
 const authService = {
   register,
   logout,
   login,
   verifyUser,
+  changePassword,
+  sendMail,
+  verifyCode
 };
 
 export default authService;
