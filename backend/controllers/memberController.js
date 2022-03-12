@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const Member = require("../models/memberModel");
-const transporter = require("../config/nodemailer")
+const transporter = require("../config/nodemailer");
 
 //Recover
 var code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -12,30 +12,16 @@ var codeCheck = false;
 // @route post /api/members
 // @access public
 const registerMember = asyncHandler(async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    phone,
-    gender,
-  } = req.body;
+  const { firstName, lastName, email, password, phone, gender } = req.body;
 
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !password ||
-    !phone ||
-    !gender
-  ) {
+  if (!firstName || !lastName || !email || !password || !phone || !gender) {
     res.status(400);
     throw new Error("please add all fields");
   }
 
   //check if member exists with email
   const memberExist = await Member.findOne({
-    email
+    email,
   });
 
   if (memberExist) {
@@ -58,17 +44,15 @@ const registerMember = asyncHandler(async (req, res) => {
   });
   //auth/confirm
   if (member) {
-
     var mailOptions = {
       from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
       to: email, // list of receivers
-      subject: 'Welcome!',
-      template: 'email', // the name of the template file i.e email.handlebars
+      subject: "Welcome!",
+      template: "email", // the name of the template file i.e email.handlebars
       context: {
         link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + member._id, // replace {{link}}
-      }
+      },
     };
-
 
     // trigger the sending of the E-mail
     transporter.sendMail(mailOptions, function (error, info) {
@@ -76,7 +60,7 @@ const registerMember = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error(error);
       } else {
-        console.log('Message sent: ' + info.response);
+        console.log("Message sent: " + info.response);
         res.status(201).json({
           _id: member._id,
           firstName: member.firstName,
@@ -95,74 +79,77 @@ const registerMember = asyncHandler(async (req, res) => {
 // @route post /api/members/verify/:id
 // @access public
 const verifyMember = asyncHandler(async (req, res) => {
+  Member.exists(
+    {
+      _id: req.params.id,
+    },
+    (err, member) => {
+      if (member) {
+        Member.findById(
+          {
+            _id: req.params.id,
+          },
+          (err, member) => {
+            if (err) {
+              res.status(400);
+              res.send("invalid member id");
+            }
+            if (member.isValidated) {
+              res.status(300).json({
+                message: "member is already validated",
+              });
+            } else {
+              const filter = {
+                _id: member._id,
+              };
 
-  Member.exists({
-    "_id": req.params.id
-  }, (err, member) => {
-    if (member) {
-      Member.findById({
-        _id: req.params.id
-      }, (err, member) => {
-        if(err){
-          res.status(400);
-          res.send("invalid member id");
-        }
-        if (member.isValidated) {
-          res.status(300).json({
-            "message": "member is already validated"
-          });
-        } else {
-          const filter = {
-            _id: member._id
-          };
-
-          // create a document that sets the plot of the movie
-          const updateDoc = {
-            $set: {
-              isValidated: true
-            },
-          };
-          async function updateUser() {
-            return await Member.updateOne(filter, updateDoc);
-
+              // create a document that sets the plot of the movie
+              const updateDoc = {
+                $set: {
+                  isValidated: true,
+                },
+              };
+              async function updateUser() {
+                return await Member.updateOne(filter, updateDoc);
+              }
+              const result = updateUser();
+              if (result) {
+                res.status(201).json({
+                  message: "Member account confirmed.",
+                });
+              } else {
+                res.status(400);
+                throw new Error("invalid member data");
+              }
+            }
           }
-          const result = updateUser();
-          if (result) {
-            res.status(201).json({
-              "message": "Member account confirmed."
-            });
-          } else {
-            res.status(400);
-            throw new Error("invalid member data");
-          }
-        }
-      });
+        );
+      } else if (err) {
+        res.status(400);
+        res.send("invalid member id");
+      }
     }
-    else if(err){
-      res.status(400);
-      res.send("invalid member id");
-    }
-      
-  });
+  );
 });
 
 // @desc Authenticate a member
 // @route post /api/members/login
 // @access public
 const loginMember = asyncHandler(async (req, res) => {
-  const {
-    email,
-    password
-  } = req.body;
+  const { email, password } = req.body;
 
   console.log(req.body);
   // Check for member email
   const member = await Member.findOne({
-    email
+    email,
   });
 
   if (member && (await bcrypt.compare(password, member.password))) {
-    if(member.isValidated){
+    if (member.isDeleted) {
+      res.status(400);
+      throw new Error("Account has been deleted");
+    }
+    if (member.isValidated) {
       res.status(200);
       res.json({
         _id: member.id,
@@ -170,11 +157,10 @@ const loginMember = asyncHandler(async (req, res) => {
         email: member.email,
         token: generateToken(member._id),
       });
-    }else{
+    } else {
       res.status(400);
       throw new Error("Account not verified");
     }
-    
   } else {
     res.status(400);
     throw new Error("Invalid credentials");
@@ -195,11 +181,15 @@ const getMe = asyncHandler(async (req, res) => {
 
 //generate JWT
 const generateToken = (id) => {
-  return jwt.sign({
-    id
-  }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  return jwt.sign(
+    {
+      id,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "30d",
+    }
+  );
 };
 
 // Forget password
@@ -334,42 +324,55 @@ const updatepwd = asyncHandler(async (req, res) => {
 // @route post /api/members/deleteaccount/:iduser
 // @access public
 const deleteUser = asyncHandler(async (req, res) => {
+  // const memberToDelete = await Member.findById({ _id: req.params.iduser });
+  // console.log(memberToDelete);
+  // if (memberToDelete == null) {
+  //   res.status(400);
+  //   throw new Error("member id not valid");
+  // }
   //Filter by email, get password
   const filter = { _id: req.params.iduser };
-  const update = { isValidated: 0 }
+  const update = { isDeleted: true };
 
   let member = await Member.findOneAndUpdate(filter, update, {
-    new: true
-  });
-  res.status(200).json({
-    id: member.id,
-    isValidated: member.isValidated,
-    email: member.email,
-  });
+    new: true,
+  })
+    .then((member) => res.status(200).json(member))
+    .catch((err) => {
+      res.status(400);
+      throw new Error("invalid member id");
+      // res.status(200).json({
+      //   id: member.id,
+      //   isDeleted: member.isDeleted,
+      //   email: member.email,
+      // });
+    });
 });
-
-
 // Update account
-// @desc update account 
+// @desc update account
 // @route post /api/members/updateaccount/:iduser
 // @access public
 const updateUser = asyncHandler(async (req, res) => {
   //
-const entries = Object.keys(req.body)
-const updates = {}
+  const entries = Object.keys(req.body);
+  const updates = {};
 
-// constructing dynamic query : get the informations entered in BODY
-for (let i = 0; i < entries.length; i++) {
-  updates[entries[i]] = Object.values(req.body)[i]
+  // constructing dynamic query : get the informations entered in BODY
+  for (let i = 0; i < entries.length; i++) {
+    updates[entries[i]] = Object.values(req.body)[i];
   }
-// update members fields according to the BODY
-Member.updateOne({_id: req.params.iduser} , {$set: updates} ,
-function (err , success) {
-  if (err) throw (err);
-    else {
-    res.send({msg: "update success"})
-    ;}})
-});  
+  // update members fields according to the BODY
+  Member.updateOne(
+    { _id: req.params.iduser },
+    { $set: updates },
+    function (err, success) {
+      if (err) throw err;
+      else {
+        res.send({ msg: "update success" });
+      }
+    }
+  );
+});
 
 module.exports = {
   registerMember,
@@ -381,5 +384,5 @@ module.exports = {
   verifyCode,
   updatepwd,
   deleteUser,
-  updateUser
+  updateUser,
 };
