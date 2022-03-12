@@ -23,6 +23,14 @@ const login = async (userData) => {
   return response.data;
 };
 
+// delete user
+const deleteUser = async (id) => {
+  console.log("id");
+  console.log(id);
+  const response = await axiosInstance.put(API_URL+"verify/"+id);
+  return response.data;
+};
+
 // Logout user
 const logout = () => {
   localStorage.removeItem("user");

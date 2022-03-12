@@ -27,7 +27,7 @@ router.post("/verifyCode/:verifcode", verifyCode);
 router.post("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)
-router.put("/deleteaccount/:iduser", deleteUser);
+router.put("/deleteaccount/:iduser", protect, deleteUser);
 router.post("/updateaccount/:iduser", updateUser);
 
 module.exports = router;
