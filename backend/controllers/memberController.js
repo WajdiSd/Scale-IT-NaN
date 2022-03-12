@@ -56,7 +56,7 @@ const registerMember = asyncHandler(async (req, res) => {
     gender,
     password: hashedPassword,
   });
-
+  //auth/confirm
   if (member) {
 
     var mailOptions = {
@@ -65,7 +65,7 @@ const registerMember = asyncHandler(async (req, res) => {
       subject: 'Welcome!',
       template: 'email', // the name of the template file i.e email.handlebars
       context: {
-        link: process.env.BACKEND_BASE_URL + "members/verify/" + member._id, // replace {{link}}
+        link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + member._id, // replace {{link}}
       }
     };
 

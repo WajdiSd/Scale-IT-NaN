@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment, Alert } from '@mui/material';
+import { Stack, IconButton, InputAdornment, Alert, Box, Button, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useAuth from '../../../hooks/useAuth';
@@ -15,9 +15,12 @@ import { FormProvider, RHFTextField ,RHFSelect} from '../../../components/hook-f
 
 import {register} from 'src/redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { PATH_AUTH } from '../../../routes/paths';
+
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SentIcon } from 'src/assets';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
@@ -27,6 +30,8 @@ export default function RegisterForm() {
   const isMountedRef = useIsMountedRef();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
@@ -63,12 +68,13 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
+      //console.log(data);
+      setEmail(data.email)
       dispatch(register(data));
-      toast.info('We have sent you a verification email. Please check your inbox.');
+      //toast.info('We have sent you a verification email. Please check your inbox.');
 
       //history.push("/auth/login");
-      navigate("/auth/login");
+      //navigate("/auth/login");
       //await register(data.email, data.password, data.firstName, data.lastName, data.phone, data.gender);
     } catch (error) {
       console.error(error);
@@ -81,6 +87,12 @@ export default function RegisterForm() {
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+
+  {!userStore.isAuthenticated ? 
+  (
+    <>
+      {!userStore.user ? 
+      (
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
@@ -117,6 +129,33 @@ export default function RegisterForm() {
           Register
         </LoadingButton>
       </Stack>
+      ):
+      (
+      <Box sx={{ textAlign: 'center' }}>
+                      <SentIcon sx={{ mb: 5, mx: 'auto', height: 160 }} />
+
+                      <Typography variant="h3" gutterBottom>
+                        Email confirmation sent successfully
+                      </Typography>
+                      <Typography>
+                        We have sent a confirmation email to &nbsp;
+                        <strong>{email}</strong>
+                        <br />
+                        Please check your email.
+                      </Typography>
+
+                      <Button size="large" variant="contained" component={RouterLink} to={PATH_AUTH.login} sx={{ mt: 5 }}>
+                        Back
+                      </Button>
+      </Box>
+      )
+      }
+    </>
+      
+  ):
+  (null)
+  }
     </FormProvider>
+    
   );
 }

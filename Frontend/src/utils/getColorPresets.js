@@ -75,6 +75,6 @@ export default function getColorPresets(presetsKey) {
     blue: bluePreset,
     orange: orangePreset,
     red: redPreset,
-    default: defaultPreset,
+    default: bluePreset,
   }[presetsKey];
 }

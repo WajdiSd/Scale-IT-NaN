@@ -30,7 +30,7 @@ return Promise.reject(error);
 // Add a request interceptor
 axiosInstance.interceptors.request.use(function (config) {
   // Do something before request is sent
-  setAuthToken(config);
+  //setAuthToken(config);
   return config;
 }, function (error) {
   // Do something with request error
@@ -44,9 +44,5 @@ axiosInstance.interceptors.response.use(
   (error) => errorHandler(error)
 );
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
-);
 
 export default axiosInstance;

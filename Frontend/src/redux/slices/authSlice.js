@@ -43,6 +43,19 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   }
 });
 
+// Login user
+export const verifyAccount = createAsyncThunk("auth/verify", async (id, thunkAPI) => {
+  try {
+    return await authService.verifyUser(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
@@ -99,6 +112,10 @@ export const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
 
+      })
+      .addCase(verifyAccount.fulfilled, (state) => {
+        console.log("verifyAccount fulfilled")
+        return action.payload
       });
   },
 });
