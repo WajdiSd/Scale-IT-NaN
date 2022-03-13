@@ -12,11 +12,12 @@ import { FormProvider, RHFTextField } from '../../../../components/hook-form';
 import useAuth from '../../../../hooks/useAuth';
 import { useDispatch } from 'react-redux';
 import { updateUserPassword } from 'src/redux/slices/authSlice';
+//import { updateUserPassword } from 'src/redux/slices/authSlice';
 
 
 // ----------------------------------------------------------------------
 
-export default function AccountChangePassword() {
+export default function AccountChangePassword(email) {
   const { enqueueSnackbar } = useSnackbar();
 
   const ChangePassWordSchema = Yup.object().shape({
@@ -47,12 +48,22 @@ export default function AccountChangePassword() {
   const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
-    data = {
-      ...data,
-      email: userStore.user.email
+    if(userStore.isAuthenticated){
+      data = {
+        ...data,
+        email: userStore.user.email
+      }
+    } else {
+      data = {
+        ...data,
+        email: email.email
+      }
     }
+    console.log(data);
+    console.log(email);
     try {
       dispatch(updateUserPassword(data)).then((res)=>{
+        console.log(res);
         if(res.error){
           enqueueSnackbar(res.payload,{
             variant: 'error',
@@ -65,9 +76,7 @@ export default function AccountChangePassword() {
           variant: 'error',
         })
       });
-      /*await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar('Update success!');*/
+      
     } catch (error) {
       console.error(error);
     }

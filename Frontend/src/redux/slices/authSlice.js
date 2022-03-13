@@ -36,8 +36,17 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
 });
 
 // Verify user Account
-export const verifyAccount = createAsyncThunk("auth/verify", async (id, thunkAPI) => {
-// Login user
+// verif user
+export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI) => {
+  try {
+    return await authService.verifyUser(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+// update User Password
 export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
   try {
     return await authService.updateUserPassword(obj);
@@ -83,21 +92,6 @@ export const sendMail = createAsyncThunk(
     }
   }
 );
-
-// change Password 
-export const changePassword = createAsyncThunk("auth/changePassword", async (obj,thunkAPI) => {
-  try {
-    const [userEmail,newPassword] = obj;
-    return await authService.changePassword(userEmail,newPassword);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    return thunkAPI.rejectWithValue(message);
-  }
-});
-
 export const verifyCode = createAsyncThunk("auth/verifyCode", async (code, thunkAPI) => {
   try {
     return await authService.verifyCode(code);
