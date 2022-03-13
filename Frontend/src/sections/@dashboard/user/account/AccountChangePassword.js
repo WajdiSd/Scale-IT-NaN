@@ -49,7 +49,7 @@ export default function AccountChangePassword() {
   const onSubmit = async (data) => {
     data = {
       ...data,
-      id: userStore.user._id
+      email: userStore.user.email
     }
     try {
       dispatch(updateUserPassword(data)).then((res)=>{

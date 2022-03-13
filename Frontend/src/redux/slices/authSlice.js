@@ -152,6 +152,7 @@ export const authSlice = createSlice({
         console.log('updated pass fulfilled');
         state.isLoading = false;
         state.isAuthenticated = false;
+        state.isError = false;
         state.user = null;
       });
   },

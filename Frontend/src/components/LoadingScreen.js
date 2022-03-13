@@ -6,6 +6,7 @@ import { Box } from '@mui/material';
 //
 import Logo from './Logo';
 import ProgressBar from './ProgressBar';
+import Label from './Label';
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +47,7 @@ export default function LoadingScreen({ isDashboard, ...other }) {
             }}
           >
             <Logo disabledLink sx={{ width: 64, height: 64 }} />
+            
           </m.div>
 
           <Box

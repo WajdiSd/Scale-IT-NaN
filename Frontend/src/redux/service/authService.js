@@ -30,7 +30,7 @@ const login = async (userData) => {
 
 // verif user
 const updateUserPassword = async (obj) => {
-  const response = await axiosInstance.put(API_URL + 'updateUserPassword/' + obj.id, obj);
+  const response = await axiosInstance.put(API_URL + 'updateUserPassword/' + obj.email, obj);
   return response.data;
 };
 

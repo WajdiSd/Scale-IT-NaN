@@ -18,7 +18,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", registerMember);
 router.put("/verify/:id", verifyMember);
-router.put("/updateUserPassword/:id", protect, updateUserPassword);
+router.put("/updateUserPassword/:email", protect, updateUserPassword);
 router.post("/login", loginMember);
 router.get("/me", protect, getMe);
 

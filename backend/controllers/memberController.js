@@ -154,6 +154,7 @@ const loginMember = asyncHandler(async (req, res) => {
       res.json({
         _id: member.id,
         firstName: member.firstName,
+        lastName: member.lastName,
         email: member.email,
         token: generateToken(member._id),
       });
@@ -327,7 +328,7 @@ const updateUserPassword = asyncHandler(async (req, res) => {
   //Filter by email, get password
   const user = await Member.findById(req.member.id);
 
-    const filter = { _id: req.params.id };
+    const filter = { email: req.params.email };
     const { oldPassword, newPassword } = req.body;
     if(await bcrypt.compare(oldPassword, user.password)){
       const salt = await bcrypt.genSalt(10);
