@@ -81,7 +81,8 @@ const authService = {
   verifyUser,
   changePassword,
   sendMail,
-  verifyCode
+  verifyCode,
+  updateUserPassword,
 };
 
 export default authService;

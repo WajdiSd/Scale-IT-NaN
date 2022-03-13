@@ -38,6 +38,7 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
 // Verify user Account
 // verif user
 export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI) => {
+
   try {
     return await authService.verifyUser(id);
   } catch (error) {
@@ -49,8 +50,12 @@ export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI
 // update User Password
 export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
   try {
+    console.log(obj);
     return await authService.updateUserPassword(obj);
   } catch (error) {
+    console.log("error");
+    console.log(error);
+
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);

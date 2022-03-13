@@ -12,6 +12,8 @@ import { FormProvider, RHFTextField } from '../../../../components/hook-form';
 import useAuth from '../../../../hooks/useAuth';
 import { useDispatch } from 'react-redux';
 import { updateUserPassword } from 'src/redux/slices/authSlice';
+import { useNavigate } from 'react-router';
+import { PATH_AUTH } from 'src/routes/paths';
 //import { updateUserPassword } from 'src/redux/slices/authSlice';
 
 
@@ -31,6 +33,9 @@ export default function AccountChangePassword(email) {
     newPassword: '',
     confirmNewPassword: '',
   };
+
+  const navigate = useNavigate();
+
 
   const methods = useForm({
     resolver: yupResolver(ChangePassWordSchema),
@@ -59,8 +64,6 @@ export default function AccountChangePassword(email) {
         email: email.email
       }
     }
-    console.log(data);
-    console.log(email);
     try {
       dispatch(updateUserPassword(data)).then((res)=>{
         console.log(res);
@@ -70,6 +73,7 @@ export default function AccountChangePassword(email) {
           })
         }else{
           enqueueSnackbar(res.payload)
+          navigate(PATH_AUTH.login, { replace: true });
         }
       }).catch((e)=>{
         enqueueSnackbar(e,{
