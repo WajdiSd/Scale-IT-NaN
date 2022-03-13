@@ -138,7 +138,6 @@ const verifyMember = asyncHandler(async (req, res) => {
 const loginMember = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(req.body);
   // Check for member email
   const member = await Member.findOne({
     email,
@@ -206,7 +205,6 @@ const generateToken = (id) => {
 const recoverPwdViaMail = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const member = await Member.findOne({ email });
-  console.log(email);
   //Declaration des variables, config mail
   var nodemailer = require("nodemailer");
   //Coordonnees pour l envoi du mail
@@ -396,37 +394,35 @@ const updateUser = asyncHandler(async (req, res) => {
   //
   const entries = Object.keys(req.body);
   const updates = {};
-  const id = req.params.iduser;
   const data = req.body;
-  delete data[0].id;
   // constructing dynamic query : get the informations entered in BODY
   // for (let i = 0; i < entries.length; i++) {
   //   updates[entries[i]] = Object.values(data)[i];
   // }
-  delete data[0].id;
-
-  console.log('updates in controller');
-  console.log(data);
 
   // update members fields according to the BODY
   const filter = { _id: req.params.iduser };
   let member = await Member.findOneAndUpdate(filter, data, {
     new: true,
+  }).then((user,err)=>{
+    if(err){
+      res.status(400);
+      throw new Error("update failed");    }
+    res.status(200).json({
+      _id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      city: user.city,
+      country: user.country,
+      zipCode: user.zipCode,
+      about: user.about,
+      address: user.address,
+      state: user.state,
+    });
   });
-  res.status(200).json({
-    id: member.id,
-    password: member.password,
-    email: member.email,
-    firstName: member.firstName,
-    lastName: member.lastName,
-    phone: member.phone,
-    city: member.city,
-    country: member.country,
-    zipCode: member.zipCode,
-    about: member.about,
-    address: member.address,
-    state: member.state,
-  });
+  
 });
 
 module.exports = {

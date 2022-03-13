@@ -28,7 +28,6 @@ export default function AccountGeneral() {
   
 
   const authState = useSelector((state) => state.auth);
-  console.log(authState);
 
   const { user } = useAuth();
 
@@ -52,7 +51,6 @@ export default function AccountGeneral() {
     city: user?.city || '',
     zipCode: user?.zipCode || '',
     about: user?.about || '',
-    isPublic: user?.isPublic || '',
   };
 
   const methods = useForm({
@@ -68,17 +66,21 @@ export default function AccountGeneral() {
 
   const dispatch = useDispatch();
   const onSubmit = async (data) => {
-    console.log("data:")
-      console.log(data)
+    
     try {
-      console.log("data in account general:")
-      console.log(data)
       data = {
         ...data,
         id: user._id
       }
-      dispatch(updateUser(data));
-      enqueueSnackbar('Update success!');
+      dispatch(updateUser(data)).then((res)=>{
+        if(res.error){
+          enqueueSnackbar(res.payload,{
+            variant: 'error',
+          })
+        }else{
+          enqueueSnackbar('Update success!');
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -128,7 +130,6 @@ export default function AccountGeneral() {
                 }
               />
 
-              <RHFSwitch name="isPublic" labelPlacement="start" label="Public Profile" sx={{ mt: 5 }} />
             </Card>
           </Grid>
 

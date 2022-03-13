@@ -15,9 +15,9 @@ const register = async (userData) => {
 };
 
 const updateUser = async(userData) => {
-  const response = await axiosInstance.put(API_URL+"updateaccount/"+userData.id,userData);
-  console.log("userData----");
-  console.log(userData);
+  const id = userData.id;
+  delete userData.id;
+  const response = await axiosInstance.put(API_URL+"updateaccount/"+id,userData);
   return response.data;
 }
 // Login user
@@ -41,16 +41,11 @@ const updateUserPassword = async (obj) => {
 
 // verif user
 const verifyUser = async (id) => {
-  console.log('id');
-  console.log(id);
   const response = await axiosInstance.put(API_URL + 'verify/' + id);
   return response.data;
 };
 // delete user
 const deleteUser = async (id) => {
-  console.log('id');
-  console.log(id);
-  console.log(axiosInstance.defaults);
   const response = await axiosInstance.put(API_URL + 'deleteaccount/' + id);
   return response.data;
 };
@@ -61,7 +56,6 @@ const logout = () => {
 
 
 const sendMail = async(userEmail) => {
-  console.log("USER EMAIL",userEmail);
 const data = {
   email: userEmail
 }
@@ -88,7 +82,8 @@ const authService = {
   sendMail,
   verifyCode,
   updateUserPassword,
-  updateUser
+  updateUser,
+  deleteUser,
 };
 
 export default authService;
