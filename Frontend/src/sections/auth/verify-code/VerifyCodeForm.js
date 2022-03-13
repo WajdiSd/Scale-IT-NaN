@@ -72,7 +72,7 @@ export default function VerifyCodeForm({onSuccess}) {
         }
           else{
             if(res.payload.codeCheck){
-            enqueueSnackbar('Verify success!');
+            enqueueSnackbar('Valid code!');
             onSuccess();
           } else {
             enqueueSnackbar('Incorrect code!',{
