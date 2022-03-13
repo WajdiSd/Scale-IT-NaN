@@ -36,6 +36,24 @@ const memberSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    address : {
+      type: String
+    },
+    state: {
+      type: String
+    },
+    country : {
+      type : String
+    },
+    city : {
+      type : String
+    },
+    zipCode : { 
+      type: String
+    },
+    about: {
+      type: String
+    }
   },
   {
     timestamps: true,

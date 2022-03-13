@@ -16,7 +16,7 @@ import { countries } from '../../../../_mock';
 // components
 import { FormProvider, RHFSwitch, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../../components/hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { DeleteAccount } from '../../../../redux/slices/authSlice';
+import { DeleteAccount, updateUser } from '../../../../redux/slices/authSlice';
 import { useNavigate } from 'react-router';
 import { PATH_AUTH, PATH_DASHBOARD } from '../../../../routes/paths';
 
@@ -32,15 +32,20 @@ export default function AccountGeneral() {
 
   const { user } = useAuth();
 
-  const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
-  });
+   const UpdateUserSchema = Yup.object().shape({
+     firstName: Yup.string().required('First name is required'),
+      lastName: Yup.string().required('Last name is required'),
+      email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+      phone: Yup.string().required('Phone number is required'),
+
+   });
 
   const defaultValues = {
-    displayName: user?.displayName || '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     email: user?.email || '',
     photoURL: user?.photoURL || '',
-    phoneNumber: user?.phoneNumber || '',
+    phone: user?.phone || '',
     country: user?.country || '',
     address: user?.address || '',
     state: user?.state || '',
@@ -61,9 +66,18 @@ export default function AccountGeneral() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const dispatch = useDispatch();
+  const onSubmit = async (data) => {
+    console.log("data:")
+      console.log(data)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log("data in account general:")
+      console.log(data)
+      data = {
+        ...data,
+        id: user._id
+      }
+      dispatch(updateUser(data));
       enqueueSnackbar('Update success!');
     } catch (error) {
       console.error(error);
@@ -128,10 +142,10 @@ export default function AccountGeneral() {
                   gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
                 }}
               >
-                <RHFTextField name="displayName" label="Name" />
+                <RHFTextField name="firstName" label="First Name" />
+                <RHFTextField name="lastName" label="Last Name" />
                 <RHFTextField name="email" label="Email Address" />
-
-                <RHFTextField name="phoneNumber" label="Phone Number" />
+                <RHFTextField name="phone" label="Phone Number" />
                 <RHFTextField name="address" label="Address" />
 
                 <RHFSelect name="country" label="Country" placeholder="Country">

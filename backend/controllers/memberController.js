@@ -156,6 +156,12 @@ const loginMember = asyncHandler(async (req, res) => {
         firstName: member.firstName,
         lastName: member.lastName,
         email: member.email,
+        phone: member.phone,
+        address: member.address,
+        city: member.city,
+        state: member.state,
+        zip: member.zip,
+        about: member.about,
         token: generateToken(member._id),
       });
     } else {
@@ -390,22 +396,37 @@ const updateUser = asyncHandler(async (req, res) => {
   //
   const entries = Object.keys(req.body);
   const updates = {};
-
+  const id = req.params.iduser;
+  const data = req.body;
+  delete data[0].id;
   // constructing dynamic query : get the informations entered in BODY
-  for (let i = 0; i < entries.length; i++) {
-    updates[entries[i]] = Object.values(req.body)[i];
-  }
+  // for (let i = 0; i < entries.length; i++) {
+  //   updates[entries[i]] = Object.values(data)[i];
+  // }
+  delete data[0].id;
+
+  console.log('updates in controller');
+  console.log(data);
+
   // update members fields according to the BODY
-  Member.updateOne(
-    { _id: req.params.iduser },
-    { $set: updates },
-    function (err, success) {
-      if (err) throw err;
-      else {
-        res.send({ msg: "update success" });
-      }
-    }
-  );
+  const filter = { _id: req.params.iduser };
+  let member = await Member.findOneAndUpdate(filter, data, {
+    new: true,
+  });
+  res.status(200).json({
+    id: member.id,
+    password: member.password,
+    email: member.email,
+    firstName: member.firstName,
+    lastName: member.lastName,
+    phone: member.phone,
+    city: member.city,
+    country: member.country,
+    zipCode: member.zipCode,
+    about: member.about,
+    address: member.address,
+    state: member.state,
+  });
 });
 
 module.exports = {
