@@ -12,13 +12,13 @@ import { LoadingButton } from '@mui/lab';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 
 import { useDispatch } from 'react-redux';
-
-import {verifyCodeRecoverPwd} from '../../../redux/slices/authSlice';
+import { verifyCode } from '../../../redux/slices/authSlice';
+import { AccountChangePassword } from 'src/sections/@dashboard/user/account';
 
 //import { AccountChangePassword } from '../../../account/AccountChangePassword';
 // ----------------------------------------------------------------------
 
-export default function VerifyCodeForm(email) {
+export default function VerifyCodeForm({onSuccess}) {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -57,19 +57,39 @@ export default function VerifyCodeForm(email) {
   }, []);
 
   const dispatch = useDispatch();
-  const onSubmit = async (data,code) => {
+  const onSubmit = async (data) => {
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 500));
+     
       // console.log('code:', Object.values(data).join(''));
-      enqueueSnackbar('Verify success!');
-      code = Object.values(data).join('');
-      dispatch(verifyCodeRecoverPwd(code));
-      console.log("email:"+email+" code:"+code);
-      //navigate(PATH_DASHBOARD.root, { replace: true });
-      // <AccountChangePassword/>
+      
+      
+      dispatch(verifyCode(Object.values(data).join(''))).then((res)=>{
+        console.log(res);
+        if(res.error){
+          enqueueSnackbar('Verify Failure!',{
+            variant: 'error',
+          });
+        }
+          else{
+            if(res.payload.codeCheck){
+            enqueueSnackbar('Verify success!');
+            onSuccess();
+          } else {
+            enqueueSnackbar('Incorrect code!',{
+              variant: 'error',
+            });
+          }
+           
+        }
+      }
+      ).catch((e)=>{
+        console.log("e:",e);
+      });
+      // 
     } catch (error) {
       console.error(error);
     }
+    //code1 = Object.values(data).join('');
   };
 
   const handlePasteClipboard = (event) => {

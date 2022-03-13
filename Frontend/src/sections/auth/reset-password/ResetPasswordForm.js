@@ -51,6 +51,7 @@ export default function ResetPasswordForm({ onSent, onGetEmail }) {
     }
   };
 
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>

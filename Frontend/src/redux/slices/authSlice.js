@@ -83,8 +83,9 @@ export const sendMail = createAsyncThunk(
 );
 
 // change Password 
-export const changePassword = createAsyncThunk("auth/changePassword", async (userEmail,newPassword) => {
+export const changePassword = createAsyncThunk("auth/changePassword", async (obj,thunkAPI) => {
   try {
+    const [userEmail,newPassword] = obj;
     return await authService.changePassword(userEmail,newPassword);
   } catch (error) {
     const message =
@@ -95,19 +96,7 @@ export const changePassword = createAsyncThunk("auth/changePassword", async (use
   }
 });
 
-export const verifyCodeRecoverPwd = createAsyncThunk("auth/verifyCodeRecoverPwd", async (userEmail,code) => {
-  try {
-    return await authService.verifyCodeRecoverPwd(userEmail,code);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    return thunkAPI.rejectWithValue(message);
-  }
-})
-
-export const verifyCode = createAsyncThunk("auth/verifyCode", async (code) => {
+export const verifyCode = createAsyncThunk("auth/verifyCode", async (code, thunkAPI) => {
   try {
     return await authService.verifyCode(code);
   } catch (error) {
@@ -182,12 +171,6 @@ export const authSlice = createSlice({
         return action.payload
       })
       .addCase(sendMail.rejected, (state, action) => {
-        return action.payload
-      })
-      .addCase(verifyCodeRecoverPwd.fulfilled, (state, action) => {
-        return action.payload
-      })
-      .addCase(verifyCodeRecoverPwd.rejected, (state, action) => {
         return action.payload
       })
       .addCase(verifyCode.fulfilled, (state, action) => {

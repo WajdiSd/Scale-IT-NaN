@@ -1,5 +1,6 @@
 import axios from "axios";
 import axiosInstance from "src/utils/axios";
+import { dispatch } from "../store";
 
 const API_URL = "members/";
 
@@ -60,6 +61,7 @@ const verifyCode = async(code) => {
   const response = await axiosInstance.put(API_URL+"verifyCode/"+code);
   return response.data;
 }
+
 const authService = {
   register,
   logout,
