@@ -1,5 +1,6 @@
+//import VerifyCode from "src/pages/auth/VerifyCode";
+import authService from "../service/authService";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authService from '../service/authService';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -34,22 +35,27 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   }
 });
 
-// Login user
-export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
+// Verify user Account
+// verif user
+export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI) => {
+
   try {
-    return await authService.updateUserPassword(obj);
+    return await authService.verifyUser(id);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
   }
 });
-
-// verif user
-export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI) => {
+// update User Password
+export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
   try {
-    return await authService.verifyUser(id);
+    console.log(obj);
+    return await authService.updateUserPassword(obj);
   } catch (error) {
+    console.log("error");
+    console.log(error);
+
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
@@ -70,6 +76,39 @@ export const DeleteAccount = createAsyncThunk('auth/delete', async (id, thunkAPI
 export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout();
 });
+/**
+ * forgot password steps 
+ */
+
+//send mail to user
+export const sendMail = createAsyncThunk(
+  "auth/sendMail", 
+  async(userEmail, thunkAPI) => {
+    try {
+      return await authService.sendMail(userEmail);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const verifyCode = createAsyncThunk("auth/verifyCode", async (code, thunkAPI) => {
+  try {
+    return await authService.verifyCode(code);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -124,8 +163,21 @@ export const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(verifyAccount.fulfilled, (state) => {
-        console.log('verifyAccount fulfilled');
-        return action.payload;
+        console.log("verifyAccount fulfilled")
+        return action.payload
+      })
+      .addCase(sendMail.fulfilled, (state) => {
+        console.log("sendMail fulfilled")
+        return action.payload
+      })
+      .addCase(sendMail.rejected, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCode.fulfilled, (state, action) => {
+        return action.payload
+      })
+      .addCase(verifyCode.rejected, (state, action) => {
+        return action.payload
       })
       .addCase(DeleteAccount.pending, (state) => {
         console.log(' DeleteAccount pending');

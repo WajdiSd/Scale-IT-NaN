@@ -200,7 +200,7 @@ const generateToken = (id) => {
 const recoverPwdViaMail = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const member = await Member.findOne({ email });
-
+  console.log(email);
   //Declaration des variables, config mail
   var nodemailer = require("nodemailer");
   //Coordonnees pour l envoi du mail
@@ -326,9 +326,9 @@ const updatepwd = asyncHandler(async (req, res) => {
 // @access public
 const updateUserPassword = asyncHandler(async (req, res) => {
   //Filter by email, get password
-  const user = await Member.findById(req.member.id);
+  const filter = { email: req.params.email };
 
-    const filter = { email: req.params.email };
+  const user = await Member.findOne(filter);
     const { oldPassword, newPassword } = req.body;
     if(await bcrypt.compare(oldPassword, user.password)){
       const salt = await bcrypt.genSalt(10);

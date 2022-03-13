@@ -18,15 +18,15 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", registerMember);
 router.put("/verify/:id", verifyMember);
-router.put("/updateUserPassword/:email", protect, updateUserPassword);
+router.put("/updateUserPassword/:email", updateUserPassword);
 router.post("/login", loginMember);
 router.get("/me", protect, getMe);
 
 //Reset Password
 router.post("/recoverPwdViaMail", recoverPwdViaMail);
 router.post("/recoverPwdViaSms", recoverPwdViaSms);
-router.post("/verifyCode/:verifcode", verifyCode);
-router.post("/updatepwd/:email", updatepwd);
+router.put("/verifyCode/:verifcode", verifyCode);
+router.put("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)
 router.put("/deleteaccount/:iduser", protect, deleteUser);
