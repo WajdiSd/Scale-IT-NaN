@@ -145,7 +145,7 @@ export default function AccountGeneral() {
               >
                 <RHFTextField name="firstName" label="First Name" />
                 <RHFTextField name="lastName" label="Last Name" />
-                <RHFTextField name="email" label="Email Address" />
+                <RHFTextField disabled name="email" label="Email Address" />
                 <RHFTextField name="phone" label="Phone Number" />
                 <RHFTextField name="address" label="Address" />
 
