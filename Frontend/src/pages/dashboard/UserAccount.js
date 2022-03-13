@@ -1,7 +1,7 @@
 import { capitalCase } from 'change-case';
 import { useState } from 'react';
 // @mui
-import { Container, Tab, Box, Tabs } from '@mui/material';
+import { Container, Tab, Box, Tabs, Button } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -20,13 +20,26 @@ import {
   AccountNotifications,
   AccountChangePassword,
 } from '../../sections/@dashboard/user/account';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 // ----------------------------------------------------------------------
 
 export default function UserAccount() {
   const { themeStretch } = useSettings();
 
+  const authState = useSelector((state) => state.auth);
+
   const [currentTab, setCurrentTab] = useState('general');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const deleteUserAccount = () => {
+    console.log(authState.user._id);
+    dispatch(DeleteAccount(authState.user._id)).then(() => {
+      navigate(PATH_AUTH.login, { replace: true });
+    });
+    // navigate(PATH_AUTH.login, { replace: true });
+  };
 
   const ACCOUNT_TABS = [
     {
@@ -67,7 +80,6 @@ export default function UserAccount() {
             { name: 'Account Settings' },
           ]}
         />
-
         <Tabs
           value={currentTab}
           scrollButtons="auto"
@@ -79,7 +91,6 @@ export default function UserAccount() {
             <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
           ))}
         </Tabs>
-
         <Box sx={{ mb: 5 }} />
 
         {ACCOUNT_TABS.map((tab) => {
@@ -87,6 +98,8 @@ export default function UserAccount() {
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;
         })}
       </Container>
+      <Button sx={{ mt: 5 }} onClick={deleteUserAccount} color="error">Delete Account</Button>
+
     </Page>
   );
 }

@@ -77,7 +77,7 @@ export default function MainHeader() {
           <Logo />
 
           <Label color="info" sx={{ ml: 1 }}>
-            v3.0.0
+            v1.0.0
           </Label>
           <Box sx={{ flexGrow: 1 }} />
 

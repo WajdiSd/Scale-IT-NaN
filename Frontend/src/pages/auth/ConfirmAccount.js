@@ -38,10 +38,10 @@ export default function ConfirmAccount() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     try {
       //await login(data.email, data.password);
-      dispatch(verifyAccount(id))
-      enqueueSnackbar("Account verified");
-      navigate(PATH_DASHBOARD.root, { replace: true });
-
+      dispatch(verifyAccount(id)).then(res=>{
+        enqueueSnackbar(res.payload);
+        navigate(PATH_DASHBOARD.root, { replace: true });
+      });
     } catch (error) {
       console.error(error);
     }
