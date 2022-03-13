@@ -30,6 +30,6 @@ router.put("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)
 router.put("/deleteaccount/:iduser", protect, deleteUser);
-router.post("/updateaccount/:iduser", updateUser);
+router.put("/updateaccount/:iduser", updateUser);
 
 module.exports = router;

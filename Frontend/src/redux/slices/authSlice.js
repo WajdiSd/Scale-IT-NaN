@@ -50,10 +50,8 @@ export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI
 // update User Password
 export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
   try {
-    console.log(obj);
     return await authService.updateUserPassword(obj);
   } catch (error) {
-    console.log("error");
     console.log(error);
 
     const message =
@@ -66,6 +64,19 @@ export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', as
 export const DeleteAccount = createAsyncThunk('auth/delete', async (id, thunkAPI) => {
   try {
     return await authService.deleteUser(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
+//update user info
+export const updateUser = createAsyncThunk('auth/updateUser', async (data, thunkAPI) => {
+  try {
+    
+    return await authService.updateUser(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -149,7 +160,6 @@ export const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         console.log('rejected');
-        console.log(action);
 
         state.isLoading = false;
         state.isError = true;
@@ -162,11 +172,11 @@ export const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
-      .addCase(verifyAccount.fulfilled, (state) => {
+      .addCase(verifyAccount.fulfilled, (state, action) => {
         console.log("verifyAccount fulfilled")
         return action.payload
       })
-      .addCase(sendMail.fulfilled, (state) => {
+      .addCase(sendMail.fulfilled, (state, action) => {
         console.log("sendMail fulfilled")
         return action.payload
       })
@@ -190,7 +200,6 @@ export const authSlice = createSlice({
       })
       .addCase(DeleteAccount.rejected, (state, action) => {
         console.log('rejected');
-        console.log(action);
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -206,7 +215,18 @@ export const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isError = false;
         state.user = null;
-      });
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        console.log('updateUser rejected');
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        console.log("action")
+        state.isLoading = false;
+        state.isError = false;
+        state.user = action.payload;
+      })
   },
 });
 

@@ -62,7 +62,7 @@ export default function AccountNotifications() {
   const onSubmit = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar('Update success!');
+      //enqueueSnackbar('Update success!');
     } catch (error) {
       console.error(error);
     }

@@ -138,7 +138,6 @@ const verifyMember = asyncHandler(async (req, res) => {
 const loginMember = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(req.body);
   // Check for member email
   const member = await Member.findOne({
     email,
@@ -156,6 +155,12 @@ const loginMember = asyncHandler(async (req, res) => {
         firstName: member.firstName,
         lastName: member.lastName,
         email: member.email,
+        phone: member.phone,
+        address: member.address,
+        city: member.city,
+        state: member.state,
+        zip: member.zip,
+        about: member.about,
         token: generateToken(member._id),
       });
     } else {
@@ -200,7 +205,6 @@ const generateToken = (id) => {
 const recoverPwdViaMail = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const member = await Member.findOne({ email });
-  console.log(email);
   //Declaration des variables, config mail
   var nodemailer = require("nodemailer");
   //Coordonnees pour l envoi du mail
@@ -390,22 +394,35 @@ const updateUser = asyncHandler(async (req, res) => {
   //
   const entries = Object.keys(req.body);
   const updates = {};
-
+  const data = req.body;
   // constructing dynamic query : get the informations entered in BODY
-  for (let i = 0; i < entries.length; i++) {
-    updates[entries[i]] = Object.values(req.body)[i];
-  }
+  // for (let i = 0; i < entries.length; i++) {
+  //   updates[entries[i]] = Object.values(data)[i];
+  // }
+
   // update members fields according to the BODY
-  Member.updateOne(
-    { _id: req.params.iduser },
-    { $set: updates },
-    function (err, success) {
-      if (err) throw err;
-      else {
-        res.send({ msg: "update success" });
-      }
-    }
-  );
+  const filter = { _id: req.params.iduser };
+  let member = await Member.findOneAndUpdate(filter, data, {
+    new: true,
+  }).then((user,err)=>{
+    if(err){
+      res.status(400);
+      throw new Error("update failed");    }
+    res.status(200).json({
+      _id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      city: user.city,
+      country: user.country,
+      zipCode: user.zipCode,
+      about: user.about,
+      address: user.address,
+      state: user.state,
+    });
+  });
+  
 });
 
 module.exports = {
