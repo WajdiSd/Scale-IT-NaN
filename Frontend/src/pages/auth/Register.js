@@ -70,7 +70,7 @@ export default function Register() {
     <Page title="Register">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+        <img src="/logo/logo_full.png" style={{ height: 50 }} />
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Already have an account?{' '}
