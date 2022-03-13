@@ -11,12 +11,14 @@ const {
   updatepwd,
   deleteUser,
   updateUser,
+  updateUserPassword,
 } = require("../controllers/memberController");
 
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", registerMember);
 router.put("/verify/:id", verifyMember);
+router.put("/updateUserPassword/:email", protect, updateUserPassword);
 router.post("/login", loginMember);
 router.get("/me", protect, getMe);
 

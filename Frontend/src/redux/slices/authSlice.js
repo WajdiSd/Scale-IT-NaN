@@ -34,6 +34,17 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   }
 });
 
+// Login user
+export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', async (obj, thunkAPI) => {
+  try {
+    return await authService.updateUserPassword(obj);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // verif user
 export const verifyAccount = createAsyncThunk('auth/verify', async (id, thunkAPI) => {
   try {
@@ -131,6 +142,18 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(updateUserPassword.rejected, (state, action) => {
+        console.log('updated pass rejected');
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(updateUserPassword.fulfilled, (state, action) => {
+        console.log('updated pass fulfilled');
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.isError = false;
+        state.user = null;
       });
   },
 });

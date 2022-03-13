@@ -13,6 +13,8 @@ const register = async (userData) => {
   return response.data;
 };
 
+
+
 // Login user
 const login = async (userData) => {
   const response = await axiosInstance.post(API_URL + 'login', userData);
@@ -23,6 +25,12 @@ const login = async (userData) => {
     axiosInstance.defaults.headers['Authorization'] = `Bearer ${response.data.token}`;
   }
 
+  return response.data;
+};
+
+// verif user
+const updateUserPassword = async (obj) => {
+  const response = await axiosInstance.put(API_URL + 'updateUserPassword/' + obj.email, obj);
   return response.data;
 };
 
@@ -54,6 +62,7 @@ const authService = {
   login,
   verifyUser,
   deleteUser,
+  updateUserPassword,
 };
 
 export default authService;

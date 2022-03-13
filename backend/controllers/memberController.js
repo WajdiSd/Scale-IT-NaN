@@ -154,6 +154,7 @@ const loginMember = asyncHandler(async (req, res) => {
       res.json({
         _id: member.id,
         firstName: member.firstName,
+        lastName: member.lastName,
         email: member.email,
         token: generateToken(member._id),
       });
@@ -296,12 +297,12 @@ const updatepwd = asyncHandler(async (req, res) => {
     const { password } = req.body;
 
     //hash password and update it
-    /*const salt = await bcrypt.genSalt(10);
+   const salt = await bcrypt.genSalt(10);
    const hashedPassword = await bcrypt.hash(password, salt);
-   const update = { password: hashedPassword };*/
+   const update = { password: hashedPassword };
 
     //try without hashing password
-    const update = { password: req.body.password };
+    //const update = { password: req.body.password };
 
     let member = await Member.findOneAndUpdate(filter, update, {
       new: true,
@@ -317,6 +318,39 @@ const updatepwd = asyncHandler(async (req, res) => {
       codeCheck,
     });
   }
+});
+
+// modif password
+// @desc Recover password
+// @route post /api/members/updatepwd/:email
+// @access public
+const updateUserPassword = asyncHandler(async (req, res) => {
+  //Filter by email, get password
+  const user = await Member.findById(req.member.id);
+
+    const filter = { email: req.params.email };
+    const { oldPassword, newPassword } = req.body;
+    if(await bcrypt.compare(oldPassword, user.password)){
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      const update = { password: hashedPassword };
+   
+       let member = await Member.findOneAndUpdate(filter, update, {
+         new: true,
+       });
+       if(member){
+        res.status(200).json(
+          "Password successfully changed."
+         );
+       }else{
+        res.status(400);
+        throw new Error("userID does not match");
+       }
+       
+    }else{
+      res.status(400);
+      throw new Error("Password does not match!");
+    }   
 });
 
 // Delete account
@@ -385,4 +419,5 @@ module.exports = {
   updatepwd,
   deleteUser,
   updateUser,
+  updateUserPassword,
 };

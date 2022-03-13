@@ -25,8 +25,7 @@ import { PATH_AUTH, PATH_DASHBOARD } from '../../../../routes/paths';
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
 
   const authState = useSelector((state) => state.auth);
   console.log(authState);
@@ -70,14 +69,7 @@ export default function AccountGeneral() {
       console.error(error);
     }
   };
-
-  const deleteUserAccount = () => {
-    console.log(authState.user._id);
-    dispatch(DeleteAccount(authState.user._id)).then(() => {
-      navigate(PATH_AUTH.login, { replace: true });
-    });
-    // navigate(PATH_AUTH.login, { replace: true });
-  };
+  
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -168,7 +160,6 @@ export default function AccountGeneral() {
           </Grid>
         </Grid>
       </FormProvider>
-      <Button onClick={deleteUserAccount}>Delete Account</Button>
     </>
   );
 }
