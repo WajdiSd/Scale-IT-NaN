@@ -14,7 +14,12 @@ const register = async (userData) => {
   return response.data;
 };
 
-
+const updateUser = async(userData) => {
+  const response = await axiosInstance.put(API_URL+"updateaccount/"+userData.id,userData);
+  console.log("userData----");
+  console.log(userData);
+  return response.data;
+}
 // Login user
 const login = async (userData) => {
   const response = await axiosInstance.post(API_URL + 'login', userData);
@@ -83,6 +88,7 @@ const authService = {
   sendMail,
   verifyCode,
   updateUserPassword,
+  updateUser
 };
 
 export default authService;

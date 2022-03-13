@@ -73,6 +73,20 @@ export const DeleteAccount = createAsyncThunk('auth/delete', async (id, thunkAPI
   }
 });
 
+
+//update user info
+export const updateUser = createAsyncThunk('auth/updateUser', async (data, thunkAPI) => {
+  try {
+    console.log("data in updateUser");
+    console.log(data);
+    return await authService.updateUser(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout();
 });
@@ -206,7 +220,17 @@ export const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isError = false;
         state.user = null;
-      });
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        console.log('updated pass rejected');
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        console.log('updated pass rejected');
+        state.isError = false;
+        state.user = action.payload;
+      })
   },
 });
 
