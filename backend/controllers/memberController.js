@@ -203,6 +203,8 @@ const generateToken = (id) => {
 // @route post /api/members/recoverPwdViaMail
 // @access public
 const recoverPwdViaMail = asyncHandler(async (req, res) => {
+  var verifCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+  code = verifCode;
   const { email } = req.body;
   const member = await Member.findOne({ email });
   //Declaration des variables, config mail
@@ -243,7 +245,10 @@ const recoverPwdViaMail = asyncHandler(async (req, res) => {
 // @route post /api/members/recoverPwdViaSms
 // @access public
 const recoverPwdViaSms = asyncHandler(async (req, res) => {
+  var verifCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+  code = verifCode;
   const { email } = req.body;
+  console.log(req.body)
   const member = await Member.findOne({ email });
 
   //Declaration des variables, config SMS
@@ -298,11 +303,10 @@ const updatepwd = asyncHandler(async (req, res) => {
   //Filter by email, get password
   if (codeCheck) {
     const filter = { email: req.params.email };
-    const { password } = req.body;
-
+    const { newPassword } = req.body;
     //hash password and update it
    const salt = await bcrypt.genSalt(10);
-   const hashedPassword = await bcrypt.hash(password, salt);
+   const hashedPassword = await bcrypt.hash(newPassword, salt);
    const update = { password: hashedPassword };
 
     //try without hashing password
@@ -311,11 +315,7 @@ const updatepwd = asyncHandler(async (req, res) => {
     let member = await Member.findOneAndUpdate(filter, update, {
       new: true,
     });
-    res.status(200).json({
-      id: member.id,
-      password: member.password,
-      email: member.email,
-    });
+    res.status(200).json("Password successfully changed.");
   } else {
     res.status(200).json({
       code,

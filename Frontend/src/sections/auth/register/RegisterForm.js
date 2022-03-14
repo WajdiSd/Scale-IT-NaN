@@ -125,7 +125,7 @@ export default function RegisterForm() {
           <option>male</option>
         </RHFSelect>
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={userStore.isLoading}>
           Register
         </LoadingButton>
       </Stack>
