@@ -16,6 +16,7 @@ import { SentIcon,PlanFreeIcon } from '../../assets';
 import VerifyCode from './VerifyCode';
 import { VerifyCodeForm } from 'src/sections/auth/verify-code';
 import { AccountChangePassword } from 'src/sections/@dashboard/user/account';
+import AccountChangePasswordExt from 'src/sections/@dashboard/user/account/AccountChangePasswordExt';
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +49,7 @@ export default function ResetPassword() {
                   Forgot your password?
                 </Typography>
                 <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-                  Please enter the email address associated with your account and We will email you a link to reset your
+                  Please enter the email address associated with your account and We will send you a code to reset your
                   password.
                 </Typography>
 
@@ -67,7 +68,7 @@ export default function ResetPassword() {
                   Request sent successfully
                 </Typography>
                 <Typography>
-                  We have sent a confirmation email to &nbsp;
+                  We have sent a confirmation code to &nbsp;
                   <strong>{email}</strong>
                   <br />
                   Please check your email.
@@ -86,7 +87,7 @@ export default function ResetPassword() {
                 <Box sx={{ textAlign: 'center' }}>
                 <PlanFreeIcon sx={{ mb: 5, mx: 'auto', height: 160 }} />
 
-                <AccountChangePassword email={email}/>
+                <AccountChangePasswordExt email={email}/>
 
                 <Button fullWidth size="large" component={RouterLink} to={PATH_AUTH.login} sx={{ mt: 1 }}>
                   Back

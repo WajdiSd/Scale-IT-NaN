@@ -97,7 +97,7 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={userStore.isLoading}>
         Login
       </LoadingButton>
     </FormProvider>

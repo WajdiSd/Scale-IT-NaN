@@ -4,15 +4,17 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // @mui
-import { Stack } from '@mui/material';
+import { ButtonGroup, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { sendMail } from '../../../redux/slices/authSlice';
+import { sendCode } from '../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-
+import { useState } from 'react';
+import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
+import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
 // ----------------------------------------------------------------------
 
 ResetPasswordForm.propTypes = {
@@ -29,8 +31,15 @@ export default function ResetPasswordForm({ onSent, onGetEmail }) {
 
   const methods = useForm({
     resolver: yupResolver(ResetPasswordSchema),
-    defaultValues: { email: 'demo@minimals.cc' },
+    defaultValues: { email: '' },
   });
+
+  const [isEmail, setIsEmail] = useState(true);
+
+
+  const chooseMethod = (e) =>{
+    setIsEmail(e.target.value==="email")
+  }
 
   const {
     handleSubmit,
@@ -39,9 +48,13 @@ export default function ResetPasswordForm({ onSent, onGetEmail }) {
 
   const dispatch= useDispatch();
   const onSubmit = async (data) => {
+    data = {
+      ...data,
+      isEmail : isEmail
+    }
     try {
       if (isMountedRef.current) {
-        dispatch(sendMail(data.email));
+        dispatch(sendCode(data));
 
         onSent();
         onGetEmail(data.email);
@@ -56,10 +69,16 @@ export default function ResetPasswordForm({ onSent, onGetEmail }) {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         <RHFTextField name="email" label="Email address" />
+        <ButtonGroup onClick={chooseMethod}>
+          <LoadingButton startIcon={<ForwardToInboxIcon />} value="email" fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+            Send via Email
+          </LoadingButton>
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Reset Password
-        </LoadingButton>
+          <LoadingButton startIcon={<PhoneIphoneOutlinedIcon />} value="phone" fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+            Send via SMS
+          </LoadingButton>
+
+          </ButtonGroup>
       </Stack>
     </FormProvider>
   );

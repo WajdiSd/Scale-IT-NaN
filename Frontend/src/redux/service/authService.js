@@ -55,16 +55,24 @@ const logout = () => {
 };
 
 
-const sendMail = async(userEmail) => {
+const sendCode = async(userData) => {
 const data = {
-  email: userEmail
+  email: userData.email
 }
-  const response = await axiosInstance.post(API_URL+"recoverPwdViaMail/",data);
+
+//control to check if the code will be sent via mail or sms
+let path = "";
+if(userData.isEmail)
+  path = "recoverPwdViaMail/";
+else
+path = "recoverPwdViaSms/";
+
+  const response = await axiosInstance.post(API_URL+path,data);
   return response.data;
 }
 //change password
-const changePassword = async(userEmail,newPassword) => {
-  const response = await axiosInstance.put(API_URL+"changePassword/"+userEmail,newPassword);
+const resetUserPassword = async(obj) => {
+  const response = await axiosInstance.put(API_URL+"updatepwd/"+obj.email,obj);
   return response.data;
 }
 
@@ -78,8 +86,8 @@ const authService = {
   logout,
   login,
   verifyUser,
-  changePassword,
-  sendMail,
+  resetUserPassword,
+  sendCode,
   verifyCode,
   updateUserPassword,
   updateUser,

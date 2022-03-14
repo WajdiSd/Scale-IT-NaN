@@ -60,6 +60,19 @@ export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', as
   }
 });
 
+// update User Password
+export const resetUserPassword = createAsyncThunk('auth/resetUserPassword', async (obj, thunkAPI) => {
+  try {
+    return await authService.resetUserPassword(obj);
+  } catch (error) {
+    console.log(error);
+
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // delete user
 export const DeleteAccount = createAsyncThunk('auth/delete', async (id, thunkAPI) => {
   try {
@@ -92,11 +105,11 @@ export const logout = createAsyncThunk('auth/logout', async () => {
  */
 
 //send mail to user
-export const sendMail = createAsyncThunk(
-  "auth/sendMail", 
-  async(userEmail, thunkAPI) => {
+export const sendCode = createAsyncThunk(
+  "auth/sendCode", 
+  async(data, thunkAPI) => {
     try {
-      return await authService.sendMail(userEmail);
+      return await authService.sendCode(data);
     } catch (error) {
       const message =
         (error.response &&
@@ -176,11 +189,11 @@ export const authSlice = createSlice({
         console.log("verifyAccount fulfilled")
         return action.payload
       })
-      .addCase(sendMail.fulfilled, (state, action) => {
-        console.log("sendMail fulfilled")
+      .addCase(sendCode.fulfilled, (state, action) => {
+        console.log("sendCode fulfilled")
         return action.payload
       })
-      .addCase(sendMail.rejected, (state, action) => {
+      .addCase(sendCode.rejected, (state, action) => {
         return action.payload
       })
       .addCase(verifyCode.fulfilled, (state, action) => {
@@ -226,6 +239,20 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.user = action.payload;
+      })
+      .addCase(resetUserPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.isError = false;
+        state.user = null;
+      })
+      .addCase(resetUserPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(resetUserPassword.pending, (state, action) => {
+        state.isLoading = true;
+        state.isError = false;
       })
   },
 });
