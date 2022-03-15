@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/members", require("./routes/memberRoutes"));
+app.use("/api/workspace", require("./routes/workspaceRoutes"));
 
 app.use(errorHandler);
 
