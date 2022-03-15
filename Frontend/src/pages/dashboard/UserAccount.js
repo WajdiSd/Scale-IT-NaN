@@ -1,5 +1,6 @@
 import { capitalCase } from 'change-case';
 import { useState } from 'react';
+import React from 'react';
 // @mui
 import { Container, Tab, Box, Tabs, Button } from '@mui/material';
 // routes
@@ -22,7 +23,13 @@ import {
 } from '../../sections/@dashboard/user/account';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { DeleteAccount } from 'src/redux/slices/authSlice';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 // ----------------------------------------------------------------------
 
 export default function UserAccount() {
@@ -36,9 +43,20 @@ export default function UserAccount() {
   const deleteUserAccount = () => {
     console.log(authState.user._id);
     dispatch(DeleteAccount(authState.user._id)).then(() => {
-      navigate(PATH_AUTH.login, { replace: true });
+      //navigate(PATH_AUTH.login, { replace: true });
+      window.location.reload();
     });
     // navigate(PATH_AUTH.login, { replace: true });
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const ACCOUNT_TABS = [
@@ -98,8 +116,26 @@ export default function UserAccount() {
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;
         })}
       </Container>
-      <Button sx={{ mt: 5 }} onClick={deleteUserAccount} color="error">Delete Account</Button>
-
+      <Button sx={{ mt: 5 }} onClick={handleClickOpen} color="error">
+        Delete Account
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete your account ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">Your account will be permanetly deleted</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={deleteUserAccount} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Page>
   );
 }
