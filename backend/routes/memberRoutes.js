@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   registerMember,
   loginMember,
+  verifyMember,
   getMe,
   recoverPwdViaMail,
   recoverPwdViaSms,
@@ -10,26 +11,25 @@ const {
   updatepwd,
   deleteUser,
   updateUser,
+  updateUserPassword,
 } = require("../controllers/memberController");
 
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", registerMember);
+router.put("/verify/:id", verifyMember);
+router.put("/updateUserPassword/:email", updateUserPassword);
 router.post("/login", loginMember);
-router.get("/me",protect, getMe);
+router.get("/me", protect, getMe);
 
 //Reset Password
 router.post("/recoverPwdViaMail", recoverPwdViaMail);
 router.post("/recoverPwdViaSms", recoverPwdViaSms);
-router.post("/verifyCode/:verifcode", verifyCode);
-router.post("/updatepwd/:email", updatepwd);
+router.put("/verifyCode/:verifcode", verifyCode);
+router.put("/updatepwd/:email", updatepwd);
 
 //CRUD user (update/delete)
-router.post("/deleteaccount/:iduser", deleteUser);
-router.post("/updateaccount/:iduser", updateUser);
-
-
-
-
+router.put("/deleteaccount/:iduser", protect, deleteUser);
+router.put("/updateaccount/:iduser", updateUser);
 
 module.exports = router;

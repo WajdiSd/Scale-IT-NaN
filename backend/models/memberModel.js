@@ -28,22 +28,32 @@ const memberSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a phone number"],
     },
-    isHR: {
-      type: Boolean,
-      required: [true],
-    },
-    rateHour: {
-      type: Number,
-      required: [true, "Please add a rate of the hour"],
-    },
-    rateOvertime: {
-      type: Number,
-      required: [true, "Please add a rate of the overtime"],
-    },
     isValidated: {
       type: Boolean,
       default: false,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    address : {
+      type: String
+    },
+    state: {
+      type: String
+    },
+    country : {
+      type : String
+    },
+    city : {
+      type : String
+    },
+    zipCode : { 
+      type: String
+    },
+    about: {
+      type: String
+    }
   },
   {
     timestamps: true,

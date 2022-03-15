@@ -1,29 +1,41 @@
-import React from 'react';
+import { useEffect } from 'react';
+// @mui
+import { Card, Container } from '@mui/material';
+// redux
+import { useDispatch } from '../../redux/store';
+import { getConversations, getContacts } from '../../redux/slices/chat';
+// routes
+import { PATH_DASHBOARD } from '../../routes/paths';
+// hooks
+import useSettings from '../../hooks/useSettings';
+// components
+import Page from '../../components/Page';
+import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import { ChatSidebar, ChatWindow } from '../../sections/@dashboard/chat';
 
-import ChatList from '../../components/ChatList';
+// ----------------------------------------------------------------------
 
-import profilePic from '../../assets/images/users/avatar-7.jpg';
-import profilePic2 from '../../assets/images/users/avatar-4.jpg';
+export default function Chat() {
+  const { themeStretch } = useSettings();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getConversations());
+    dispatch(getContacts());
+  }, [dispatch]);
 
-const Chat = () => {
-    const chatMessages = [
-        { id: 1, userPic: profilePic2, userName: 'Geneva', text: 'Hello!', postedOn: '10:00' },
-        {
-            id: 2,
-            userPic: profilePic,
-            userName: 'Shreyu',
-            text: 'Hi, How are you? What about our next meeting?',
-            postedOn: '10:01',
-        },
-        { id: 3, userPic: profilePic2, userName: 'Geneva', text: 'Yeah everything is fine', postedOn: '10:02' },
-        { id: 4, userPic: profilePic, userName: 'Shreyu', text: "Wow that's great!", postedOn: '10:03' },
-        { id: 5, userPic: profilePic, userName: 'Shreyu', text: 'Cool!', postedOn: '10:03' },
-    ];
-
-    return (
-        <ChatList messages={chatMessages}></ChatList>
-    );
-};
-
-export default Chat;
+  return (
+    <Page title="Chat">
+      <Container maxWidth={themeStretch ? false : 'xl'}>
+        <HeaderBreadcrumbs
+          heading="Chat"
+          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Chat' }]}
+        />
+        <Card sx={{ height: '72vh', display: 'flex' }}>
+          <ChatSidebar />
+          <ChatWindow />
+        </Card>
+      </Container>
+    </Page>
+  );
+}
