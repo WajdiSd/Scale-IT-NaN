@@ -16,7 +16,6 @@ const getWorkspaces = asyncHandler(async (req, res) => {
 // @route post /api/workspace
 // @access public
 const addWorkspace = asyncHandler(async (req, res) => {
-  const memb = await Member.findById(req.params.id);
   const { name, description } = req.body;
   if (!name || !description) {
     res.status(400);
@@ -30,24 +29,57 @@ const addWorkspace = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("workspace already exists");
   }
-
-  const obj = {
-    member: req.params.id,
+  //ss
+  const invitedMember = {
+    member: req.params.idmember,
     isHR: true,
   };
-  //create workspace
-  const wkspc = await Workspace.create({
-    name,
-    description,
-    $push: { "assigned_members.member_workspace": obj },
-  });
-  console.log(wkspc);
 
-  if (wkspc) {
-    res.status(201).json(wkspc);
+  //create workspace
+  const workspace = await Workspace.findOneAndUpdate(
+    {},
+    {
+      name,
+      description,
+      $push: { assigned_members: invitedMember },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  if (workspace) {
+    res.status(201).json(workspace);
   } else {
     res.status(400);
     throw new Error("invalid workspace data");
+  }
+});
+
+// @desc add new workspace
+// @route put /api/workspace/:iduser/:idworkspace
+// @access public
+const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
+  //get workspace and remove member
+  const workspace = await Workspace.findOneAndUpdate(
+    { _id: req.params.idworkspace },
+    {
+      $pull: { assigned_members: { member: req.params.idmember } },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+  console.log(workspace);
+
+  if (workspace) {
+    res.status(200).json(workspace);
+  } else {
+    res.status(400).json({
+      message: "couldn't remove member from workspace !",
+    });
   }
 });
 
@@ -55,7 +87,7 @@ const addWorkspace = asyncHandler(async (req, res) => {
 // @desc update workspace
 // @route post /api/workspace/update/:id
 // @access public
-const updateWksp = asyncHandler(async (req, res) => {
+const updateWorkspace = asyncHandler(async (req, res) => {
   //
   const entries = Object.keys(req.body);
   const updates = {};
@@ -79,6 +111,7 @@ const updateWksp = asyncHandler(async (req, res) => {
 
 module.exports = {
   addWorkspace,
-  updateWksp,
+  updateWorkspace,
   getWorkspaces,
+  removeMemberFromWorkspace,
 };
