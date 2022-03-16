@@ -14,13 +14,17 @@ const workspaceSchema = mongoose.Schema(
       type: Boolean,
       required: [true],
     },
-    members: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Member"
-      }
-    ]
-   
+    assigned_members:[
+        {members:
+          { member: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Member"
+            },
+          isHR: {type: Boolean,default: false},
+          rateHour :{ type : Number},
+          rateovertime : {type : Number}
+          ,}
+        }]
   },
 );
 

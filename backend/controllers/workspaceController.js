@@ -48,7 +48,8 @@ const addWorkspace = asyncHandler(async (req, res) => {
       description: wkspc.description,
       token: generateToken(wkspc._id),
     });
-  } else {
+  } 
+  else {
     res.status(400);
     throw new Error("invalid workspace data");
   }

@@ -54,12 +54,14 @@ const memberSchema = mongoose.Schema(
     about: {
       type: String
     },
-    workspaces: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Workspace"
-      }
-    ]
+    joined_workspaces:[
+      {workspace:
+        { workspace: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Workspace"
+          }
+        }
+      }]
   },
   {
     timestamps: true,
