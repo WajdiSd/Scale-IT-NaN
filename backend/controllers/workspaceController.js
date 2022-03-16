@@ -114,49 +114,88 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 // @route post /api/workspace/update/:id
 // @access public
 const inviteOneMember = asyncHandler(async (req, res) => {
-  memberEmail = req.body.email;
-  memberIsHR = req.body.memberIsHR;
-  memberRateHour = req.body.memberRateHour;
-  memberRateOverTime = req.body.memberRateOverTime;
-  let workspace = await Workspace.findOne({_id: req.params.id});
+  const idworkspace = req.params.id;
+  const memberEmail = req.body.email;
+  const memberIsHR = req.body.memberIsHR;
+  const memberRateHour = req.body.memberRateHour;
+  const memberRateOverTime = req.body.memberRateOverTime;
   let member = await Member.findOne({email: memberEmail});
-  if (!workspace) {
-    res.status(404);
-    throw new Error("workspace not found");
-  } else if (!member) {
-    res.status(404);
-    throw new Error("member not found");
-  }
-
   member.isHR = memberIsHR;
   member.rateHour = memberRateHour;
   member.rateOverTime = memberRateOverTime;
-
-  // await Workspace.updateOne({_id : workspace._id},
-  //   {$push : {
-  //     "assigned_members.member" : member
-  //   },
-  //   "assigned_members.isHR" : memberIsHR,
   
-  // }
-  //   )  
-
-
-  
-  //await Workspace.updateOne({_id : workspace._id},$push:{assigned_members: {member: member._id, isHR: memberIsHR, rateHour: memberRateHour, rateOverTime: memberRateOverTime}})
-    console.log("------");
-    console.log(workspace.assigned_members.member);
-
+  if (!member) {
+    res.status(404);
+    throw new Error("member not found");
+  } else if (member.isDeleted||!member.isValidated) {
+    res.status(400);
+    throw new Error("member not validated");
+  } 
+  const workspace = await Workspace.findOneAndUpdate(
+    { _id: idworkspace },
+    {
+      $push: { assigned_members: { member: member } },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+  if (!workspace) {
+    res.status(404);
+    throw new Error("workspace not found");
+  } 
   res.send({
     status: 200,
     message: "member invited to workspace successfully",
+    data : {
+      workspace: workspace,
+      member: member
+    }
 
   })
 })
+
+const fetchUsersByWorkspace = asyncHandler(async(req, res) => {
+  const workspaceId = req.params.idworkspace;
+  console.log(workspaceId)
+  const workspace = await Workspace.findOne({_id: workspaceId});
+  console.log(workspace);
+  let members = [];
+  for(let i = 0; i < workspace.assigned_members.length; i++){
+    let  member = await workspace.assigned_members[i];
+    const fullMember = await Member.findOne({_id: member.member});
+    console.log("--------------")
+    console.log(member);
+
+    console.log(fullMember);
+    member.firstName = fullMember.firstName;
+    member.lastName = fullMember.lastName? fullMember.lastName : "";
+    member.email = fullMember.email? fullMember.email : "";
+    member.gender = fullMember.gender? fullMember.gender : "";
+    member.phone = fullMember.phone? fullMember.phone: "";
+    member.address = fullMember.address? fullMember.address : "";
+    member.state = fullMember.state? fullMember.state : "";
+    member.country = fullMember.country? fullMember.country : "";
+    member.city = fullMember.city? fullMember.city : "";
+    member.zipCode = fullMember.zipCode? fullMember.zipCode : "";
+    member.about = fullMember.about? fullMember.about : "";
+    console.log("new member");
+    console.log(member);
+    members.push(member);
+  }
+  const filter = {}
+  if (!members) {
+    throw new Error("members not found");
+  }
+  return res.status(200).json(members);
+});
+
 module.exports = {
   addWorkspace,
   updateWorkspace,
   inviteOneMember,
   getWorkspaces,
   removeMemberFromWorkspace,
+  fetchUsersByWorkspace
 };
