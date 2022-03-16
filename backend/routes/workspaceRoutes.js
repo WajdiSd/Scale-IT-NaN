@@ -5,13 +5,14 @@ const {
   updateWorkspace,
   getWorkspaces,
   removeMemberFromWorkspace,
+  deleteWorkspace,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/add/:idmember", addWorkspace);
 router.put("/update/:id", updateWorkspace);
-router.get("/:id", getWorkspaces);
+router.get("/:idmember", getWorkspaces);
 router.put("/removemember/:idmember/:idworkspace", removeMemberFromWorkspace);
-
+router.put("/deleteworkspace/:idworkspace", deleteWorkspace);
 module.exports = router;
