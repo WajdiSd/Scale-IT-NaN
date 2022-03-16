@@ -23,25 +23,25 @@ const addWorkspace = asyncHandler(async (req, res) => {
   }
 
   //check if workspace exists with name
-  // const workspaceExist = await Workspace.findOne({ name });
+  const workspaceExist = await Workspace.findOne({ name });
 
-  // if (workspaceExist) {
-  //   res.status(400);
-  //   throw new Error("workspace already exists");
-  // }
+  if (workspaceExist) {
+    res.status(400);
+    throw new Error("workspace already exists");
+  }
 
-  const obj = {
+  const invitedMember = {
     member: req.params.idmember,
     isHR: false,
   };
 
   //create workspace
-  const wkspc = await Workspace.findOneAndUpdate(
-    { _id: "623219d79a63206559f548ce" },
+  const workspace = await Workspace.findOneAndUpdate(
+    {},
     {
       name,
       description,
-      $push: { assigned_members: obj },
+      $push: { assigned_members: invitedMember },
     },
     {
       upsert: true,
@@ -49,8 +49,8 @@ const addWorkspace = asyncHandler(async (req, res) => {
     }
   );
 
-  if (wkspc) {
-    res.status(201).json(wkspc);
+  if (workspace) {
+    res.status(201).json(workspace);
   } else {
     res.status(400);
     throw new Error("invalid workspace data");
@@ -61,7 +61,7 @@ const addWorkspace = asyncHandler(async (req, res) => {
 // @desc update workspace
 // @route post /api/workspace/update/:id
 // @access public
-const updateWksp = asyncHandler(async (req, res) => {
+const updateWorkspace = asyncHandler(async (req, res) => {
   //
   const entries = Object.keys(req.body);
   const updates = {};
@@ -85,6 +85,6 @@ const updateWksp = asyncHandler(async (req, res) => {
 
 module.exports = {
   addWorkspace,
-  updateWksp,
+  updateWorkspace,
   getWorkspaces,
 };
