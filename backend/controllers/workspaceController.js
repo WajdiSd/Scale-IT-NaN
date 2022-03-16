@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const Workspace = require("../models/workspaceModel");
+const Member = require("../models/memberModel");
 
 //generate JWT
 const generateToken = (id) => {
@@ -78,7 +79,52 @@ function (err , success) {
     ;}})
 });  
 
+// Update workspace
+// @desc update workspace 
+// @route post /api/workspace/update/:id
+// @access public
+const inviteOneMember = asyncHandler(async (req, res) => {
+  memberEmail = req.body.email;
+  memberIsHR = req.body.memberIsHR;
+  memberRateHour = req.body.memberRateHour;
+  memberRateOverTime = req.body.memberRateOverTime;
+  let workspace = await Workspace.findOne({_id: req.params.id});
+  let member = await Member.findOne({email: memberEmail});
+  if (!workspace) {
+    res.status(404);
+    throw new Error("workspace not found");
+  } else if (!member) {
+    res.status(404);
+    throw new Error("member not found");
+  }
+
+  member.isHR = memberIsHR;
+  member.rateHour = memberRateHour;
+  member.rateOverTime = memberRateOverTime;
+
+  // await Workspace.updateOne({_id : workspace._id},
+  //   {$push : {
+  //     "assigned_members.member" : member
+  //   },
+  //   "assigned_members.isHR" : memberIsHR,
+  
+  // }
+  //   )  
+
+
+  
+  //await Workspace.updateOne({_id : workspace._id},$push:{assigned_members: {member: member._id, isHR: memberIsHR, rateHour: memberRateHour, rateOverTime: memberRateOverTime}})
+    console.log("------");
+    console.log(workspace.assigned_members.member);
+
+  res.send({
+    status: 200,
+    message: "member invited to workspace successfully",
+
+  })
+})
 module.exports = {
   addWorkspace,
-  updateWksp
+  updateWksp,
+  inviteOneMember
 };
