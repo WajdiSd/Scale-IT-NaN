@@ -10,22 +10,25 @@ const workspaceSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a description"],
     },
-    archive: {
+    isDeleted: {
       type: Boolean,
-      required: [true],
+      default: false,
     },
-    assigned_members:[
-        {members:
-          { member: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Member"
-            },
-          isHR: {type: Boolean,default: false},
-          rateHour :{ type : Number},
-          rateovertime : {type : Number}
-          ,}
-        }]
+    assigned_members: [
+      {
+        member: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Member",
+        },
+        isHR: { type: Boolean, default: false },
+        rateHour: { type: Number },
+        rateovertime: { type: Number },
+      },
+    ],
   },
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Workspace", workspaceSchema);
