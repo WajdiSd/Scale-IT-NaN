@@ -81,6 +81,11 @@ const verifyCode = async(code) => {
   return response.data;
 }
 
+const resendEmail = async(id) => {
+  const response = await axiosInstance.post(API_URL+"resendEmail/"+id);
+  return response.data;
+}
+
 const authService = {
   register,
   logout,
@@ -92,6 +97,7 @@ const authService = {
   updateUserPassword,
   updateUser,
   deleteUser,
+  resendEmail,
 };
 
 export default authService;

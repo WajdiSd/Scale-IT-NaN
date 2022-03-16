@@ -29,7 +29,24 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
     return await authService.login(user);
   } catch (error) {
-    const message =
+    console.log("ezrzr")
+    console.log(error.response)
+    console.log(error.data)
+    let message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      if(error.response.data.message && error.response.data._id){
+        return thunkAPI.rejectWithValue({message : error.response.data.message, _id: error.response.data._id});
+      }
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// resend email
+export const resendEmail = createAsyncThunk('auth/resendEmail', async (id, thunkAPI) => {
+  try {
+    return await authService.resendEmail(id);
+  } catch (error) {
+    let message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
   }
@@ -173,11 +190,10 @@ export const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         console.log('rejected');
-
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
-        state.user = null;
+        state.message = action.payload.message ? action.payload.message : action.payload;
+        state.user = action.payload._id? {_id : action.payload._id} : null
       })
       .addCase(logout.fulfilled, (state) => {
         console.log('logout fulfilled');
@@ -188,6 +204,16 @@ export const authSlice = createSlice({
       .addCase(verifyAccount.fulfilled, (state, action) => {
         console.log("verifyAccount fulfilled")
         return action.payload
+      })
+
+      .addCase(resendEmail.fulfilled, (state, action) => {
+        console.log("resendEmail fulfilled")
+        return action.payload
+      })
+      .addCase(resendEmail.rejected, (state, action) => {
+        console.log("resendEmail rejected")
+        state.isError = true;
+        state.message = action.payload;
       })
       .addCase(sendCode.fulfilled, (state, action) => {
         console.log("sendCode fulfilled")

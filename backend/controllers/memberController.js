@@ -75,6 +75,38 @@ const registerMember = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Register new member
+// @route post /api/members
+// @access public
+const resendEmail = asyncHandler(async (req, res) => {
+console.log("resending");
+const member = await Member.findOne({
+  _id : req.params.id,
+});
+    var mailOptions = {
+      from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
+      to: member.email, // list of receivers
+      subject: "Welcome!",
+      template: "email", // the name of the template file i.e email.handlebars
+      context: {
+        link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + req.params.id, // replace {{link}}
+      },
+    };
+
+    // trigger the sending of the E-mail
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        res.status(400);
+        throw new Error(error);
+      } else {
+        console.log("Message sent: " + info.response);
+        res.status(201).json({
+         message : "Message sent"
+        });
+      }
+    });
+});
+
 // @desc Verify member
 // @route post /api/members/verify/:id
 // @access public
@@ -165,7 +197,11 @@ const loginMember = asyncHandler(async (req, res) => {
       });
     } else {
       res.status(400);
-      throw new Error("Account not verified");
+      //throw new Error();
+      res.json({
+        _id: member.id,
+        message: "Account not verified",
+      });
     }
   } else {
     res.status(400);
@@ -444,4 +480,5 @@ module.exports = {
   deleteUser,
   updateUser,
   updateUserPassword,
+  resendEmail,
 };
