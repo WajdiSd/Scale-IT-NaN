@@ -34,18 +34,17 @@ const addWorkspace = asyncHandler(async (req, res) => {
     isHR: true,
   };
 
+  const createdworkspace = await Workspace.create({
+    name,
+    description,
+  });
   //create workspace
   const workspace = await Workspace.findOneAndUpdate(
-    {},
+    { _id: createdworkspace._id },
     {
-      name,
-      description,
       $push: { assigned_members: invitedMember },
     },
-    {
-      upsert: true,
-      new: true,
-    }
+    { upsert: true, new: true }
   );
 
   if (workspace) {
