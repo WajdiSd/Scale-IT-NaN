@@ -53,11 +53,18 @@ const memberSchema = mongoose.Schema(
     },
     about: {
       type: String
-    }
+    },
+    workspaces: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Workspace"
+      }
+    ]
   },
   {
     timestamps: true,
-  }
+  },
+  
 );
 
 module.exports = mongoose.model("Member", memberSchema);

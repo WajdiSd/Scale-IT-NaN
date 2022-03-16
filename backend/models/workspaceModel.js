@@ -13,7 +13,13 @@ const workspaceSchema = mongoose.Schema(
     archive: {
       type: Boolean,
       required: [true],
-    }
+    },
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Member"
+      }
+    ]
    
   },
 );
