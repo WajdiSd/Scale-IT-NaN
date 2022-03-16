@@ -16,7 +16,6 @@ const getWorkspaces = asyncHandler(async (req, res) => {
 // @route post /api/workspace
 // @access public
 const addWorkspace = asyncHandler(async (req, res) => {
-  const memb = await Member.findById(req.params.id);
   const { name, description } = req.body;
   if (!name || !description) {
     res.status(400);
@@ -24,24 +23,31 @@ const addWorkspace = asyncHandler(async (req, res) => {
   }
 
   //check if workspace exists with name
-  const workspaceExist = await Workspace.findOne({ name });
+  // const workspaceExist = await Workspace.findOne({ name });
 
-  if (workspaceExist) {
-    res.status(400);
-    throw new Error("workspace already exists");
-  }
+  // if (workspaceExist) {
+  //   res.status(400);
+  //   throw new Error("workspace already exists");
+  // }
 
   const obj = {
-    member: req.params.id,
-    isHR: true,
+    member: req.params.idmember,
+    isHR: false,
   };
+
   //create workspace
-  const wkspc = await Workspace.create({
-    name,
-    description,
-    $push: { "assigned_members.member_workspace": obj },
-  });
-  console.log(wkspc);
+  const wkspc = await Workspace.findOneAndUpdate(
+    { _id: "623219d79a63206559f548ce" },
+    {
+      name,
+      description,
+      $push: { assigned_members: obj },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
 
   if (wkspc) {
     res.status(201).json(wkspc);

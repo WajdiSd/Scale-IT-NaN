@@ -21,6 +21,7 @@ const workspaceSchema = mongoose.Schema(
           ref: "Member",
         },
         isHR: { type: Boolean, default: false },
+        isProjectManager: { type: Boolean, default: false },
         rateHour: { type: Number },
         rateovertime: { type: Number },
       },
