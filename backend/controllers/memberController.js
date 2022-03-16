@@ -260,7 +260,7 @@ const recoverPwdViaSms = asyncHandler(async (req, res) => {
   //Coordonnees pour envoyer l SMS
   const from = "Scale IT";
   const to = member.phone;
-  //Sens SMS :
+  /*Sens SMS :
   const text = "Use code : " + code + " , to reset password!";
   vonage.message.sendSms(from, to, text, (err, responseData) => {
     if (err) {
@@ -274,7 +274,13 @@ const recoverPwdViaSms = asyncHandler(async (req, res) => {
         );
       }
     }
-  });
+  });*/
+  res.status(200).json(
+    code,
+    codeCheck,
+    from,
+    to);
+
 });
 
 // verify code
@@ -386,6 +392,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       // });
     });
 });
+
 // Update account
 // @desc update account
 // @route post /api/members/updateaccount/:iduser
