@@ -40,7 +40,7 @@ export default function ConfirmAccount() {
       //await login(data.email, data.password);
       dispatch(verifyAccount(id)).then(res=>{
         console.log(res);
-        enqueueSnackbar(res.payload);
+        enqueueSnackbar(res.payload.message? res.payload.message : res.payload);
         navigate(PATH_DASHBOARD.root, { replace: true });
       });
     } catch (error) {
