@@ -36,37 +36,28 @@ const memberSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    address : {
-      type: String
+    address: {
+      type: String,
     },
     state: {
-      type: String
+      type: String,
     },
-    country : {
-      type : String
+    country: {
+      type: String,
     },
-    city : {
-      type : String
+    city: {
+      type: String,
     },
-    zipCode : { 
-      type: String
+    zipCode: {
+      type: String,
     },
     about: {
-      type: String
+      type: String,
     },
-    joined_workspaces:[
-      {workspace:
-        { workspace: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Workspace"
-          }
-        }
-      }]
   },
   {
     timestamps: true,
-  },
-  
+  }
 );
 
 module.exports = mongoose.model("Member", memberSchema);
