@@ -23,16 +23,16 @@ const addWorkspace = asyncHandler(async (req, res) => {
   }
 
   //check if workspace exists with name
-  const workspaceExist = await Workspace.findOne({ name });
+  // const workspaceExist = await Workspace.findOne({ name });
 
-  if (workspaceExist) {
-    res.status(400);
-    throw new Error("workspace already exists");
-  }
+  // if (workspaceExist) {
+  //   res.status(400);
+  //   throw new Error("workspace already exists");
+  // }
 
   const invitedMember = {
     member: req.params.idmember,
-    isHR: false,
+    isHR: true,
   };
 
   //create workspace
@@ -54,6 +54,32 @@ const addWorkspace = asyncHandler(async (req, res) => {
   } else {
     res.status(400);
     throw new Error("invalid workspace data");
+  }
+});
+
+// @desc add new workspace
+// @route put /api/workspace/:iduser/:idworkspace
+// @access public
+const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
+  //get workspace and remove member
+  const workspace = await Workspace.findOneAndUpdate(
+    { _id: req.params.idworkspace },
+    {
+      $pull: { assigned_members: { member: req.params.idmember } },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+  console.log(workspace);
+
+  if (workspace) {
+    res.status(200).json(workspace);
+  } else {
+    res.status(400).json({
+      message: "couldn't remove member from workspace !",
+    });
   }
 });
 
@@ -87,4 +113,5 @@ module.exports = {
   addWorkspace,
   updateWorkspace,
   getWorkspaces,
+  removeMemberFromWorkspace,
 };
