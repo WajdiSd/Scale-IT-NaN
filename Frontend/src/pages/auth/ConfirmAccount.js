@@ -39,6 +39,7 @@ export default function ConfirmAccount() {
     try {
       //await login(data.email, data.password);
       dispatch(verifyAccount(id)).then(res=>{
+        console.log(res);
         enqueueSnackbar(res.payload);
         navigate(PATH_DASHBOARD.root, { replace: true });
       });

@@ -22,6 +22,7 @@ import {
 } from '../../sections/@dashboard/user/account';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { DeleteAccount } from 'src/redux/slices/authSlice';
 
 // ----------------------------------------------------------------------
 
