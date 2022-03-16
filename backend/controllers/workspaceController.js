@@ -23,12 +23,12 @@ const addWorkspace = asyncHandler(async (req, res) => {
   }
 
   //check if workspace exists with name
-  // const workspaceExist = await Workspace.findOne({ name });
+  const workspaceExist = await Workspace.findOne({ name });
 
-  // if (workspaceExist) {
-  //   res.status(400);
-  //   throw new Error("workspace already exists");
-  // }
+  if (workspaceExist) {
+    res.status(400);
+    throw new Error("workspace already exists");
+  }
 
   const invitedMember = {
     member: req.params.idmember,
