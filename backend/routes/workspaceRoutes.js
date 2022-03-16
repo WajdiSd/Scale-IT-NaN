@@ -6,7 +6,8 @@ const {
   inviteOneMember,
   getWorkspaces,
   removeMemberFromWorkspace,
-  fetchUsersByWorkspace
+  fetchUsersByWorkspace,
+  deleteWorkspace,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -16,8 +17,9 @@ router.put("/invite-member/:id", inviteOneMember);
 
 router.post("/add/:idmember", addWorkspace);
 router.put("/update/:id", updateWorkspace);
-router.get("/:id", getWorkspaces);
+router.get("/:idmember", getWorkspaces);
 router.put("/removemember/:idmember/:idworkspace", removeMemberFromWorkspace);
 router.get("/fetch-users/:idworkspace", fetchUsersByWorkspace);
 
+router.put("/deleteworkspace/:idworkspace", deleteWorkspace);
 module.exports = router;

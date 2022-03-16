@@ -2,12 +2,12 @@ const asyncHandler = require("express-async-handler");
 const Workspace = require("../models/workspaceModel");
 const Member = require("../models/memberModel");
 
-// @desc Get goals
+// @desc Get workspaces by member
 // @route get /api/workspace
 // @access private
 const getWorkspaces = asyncHandler(async (req, res) => {
   const workspaces = await Workspace.find({
-    "assigned_members.member": req.params.id,
+    "assigned_members.member": req.params.idmember,
   });
   res.status(200).json(workspaces);
 });
@@ -23,13 +23,12 @@ const addWorkspace = asyncHandler(async (req, res) => {
   }
 
   //check if workspace exists with name
-  // const workspaceExist = await Workspace.findOne({ name });
+  const workspaceExist = await Workspace.findOne({ name });
 
-  // if (workspaceExist) {
-  //   res.status(400);
-  //   throw new Error("workspace already exists");
-  // }
-
+  if (workspaceExist) {
+    res.status(400);
+    throw new Error("workspace already exists");
+  }
   const invitedMember = {
     member: req.params.idmember,
     isHR: true,
@@ -83,9 +82,27 @@ const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
   }
 });
 
+// Delete account
+// @desc delete workspace == set isDeleted to false
+// @route put /api/workspace/deleteworkspace/:idworkspace
+// @access private
+const deleteWorkspace = asyncHandler(async (req, res) => {
+  const filter = { _id: req.params.idworkspace };
+  const update = { isDeleted: true };
+
+  let deletedworkspace = await Workspace.findOneAndUpdate(filter, update, {
+    new: true,
+  })
+    .then((deletedworkspace) => res.status(200).json(deletedworkspace))
+    .catch((err) => {
+      res.status(400);
+      throw new Error("invalid workspace id");
+    });
+});
+
 // Update workspace
 // @desc update workspace
-// @route post /api/workspace/update/:id
+// @route put /api/workspace/update/:id
 // @access public
 const updateWorkspace = asyncHandler(async (req, res) => {
   //
@@ -96,7 +113,7 @@ const updateWorkspace = asyncHandler(async (req, res) => {
   for (let i = 0; i < entries.length; i++) {
     updates[entries[i]] = Object.values(req.body)[i];
   }
-  // update members fields according to the BODY
+  // update workspace fields according to the BODY
   Workspace.updateOne(
     { _id: req.params.id },
     { $set: updates },
@@ -197,5 +214,6 @@ module.exports = {
   inviteOneMember,
   getWorkspaces,
   removeMemberFromWorkspace,
-  fetchUsersByWorkspace
+  fetchUsersByWorkspace,
+  deleteWorkspace,
 };

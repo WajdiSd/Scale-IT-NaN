@@ -16,8 +16,9 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 import { dispatch } from 'src/redux/store';
-import {login, reset} from 'src/redux/slices/authSlice'
+import {login, resendEmail, reset} from 'src/redux/slices/authSlice'
 import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,19 @@ export default function LoginForm() {
   } = methods;
 
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const resendMail = async () =>{
+    dispatch(resendEmail(userStore.user._id)).then((res)=>{
+      if(!res.error){
+          enqueueSnackbar(res.payload.message);
+
+    }
+    })
+    .catch((e)=>{
+      console.log("e:",e);
+    });
+  }
 
   const onSubmit = async (data) => {
     try {
@@ -70,7 +84,15 @@ export default function LoginForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-        {!!userStore.isError && <Alert severity="error">{userStore.message}</Alert>}
+        {!!userStore.isError && <Alert severity="error">{userStore.message}
+        {userStore.message == "Account not verified"? 
+        <Link component={RouterLink} variant="subtitle2" to='' sx={{ ml: 3 }} onClick={resendMail}>
+           Resend email
+        </Link>
+        :
+        null
+        }
+        </Alert>}
 
         <RHFTextField name="email" label="Email address" />
 

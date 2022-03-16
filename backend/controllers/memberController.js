@@ -75,6 +75,38 @@ const registerMember = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Register new member
+// @route post /api/members
+// @access public
+const resendEmail = asyncHandler(async (req, res) => {
+console.log("resending");
+const member = await Member.findOne({
+  _id : req.params.id,
+});
+    var mailOptions = {
+      from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
+      to: member.email, // list of receivers
+      subject: "Welcome!",
+      template: "email", // the name of the template file i.e email.handlebars
+      context: {
+        link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + req.params.id, // replace {{link}}
+      },
+    };
+
+    // trigger the sending of the E-mail
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        res.status(400);
+        throw new Error(error);
+      } else {
+        console.log("Message sent: " + info.response);
+        res.status(201).json({
+         message : "Message sent"
+        });
+      }
+    });
+});
+
 // @desc Verify member
 // @route post /api/members/verify/:id
 // @access public
@@ -165,7 +197,11 @@ const loginMember = asyncHandler(async (req, res) => {
       });
     } else {
       res.status(400);
-      throw new Error("Account not verified");
+      //throw new Error();
+      res.json({
+        _id: member.id,
+        message: "Account not verified",
+      });
     }
   } else {
     res.status(400);
@@ -248,7 +284,7 @@ const recoverPwdViaSms = asyncHandler(async (req, res) => {
   var verifCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   code = verifCode;
   const { email } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   const member = await Member.findOne({ email });
 
   //Declaration des variables, config SMS
@@ -275,12 +311,7 @@ const recoverPwdViaSms = asyncHandler(async (req, res) => {
       }
     }
   });*/
-  res.status(200).json(
-    code,
-    codeCheck,
-    from,
-    to);
-
+  res.status(200).json(code, codeCheck, from, to);
 });
 
 // verify code
@@ -311,9 +342,9 @@ const updatepwd = asyncHandler(async (req, res) => {
     const filter = { email: req.params.email };
     const { newPassword } = req.body;
     //hash password and update it
-   const salt = await bcrypt.genSalt(10);
-   const hashedPassword = await bcrypt.hash(newPassword, salt);
-   const update = { password: hashedPassword };
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const update = { password: hashedPassword };
 
     //try without hashing password
     //const update = { password: req.body.password };
@@ -339,33 +370,30 @@ const updateUserPassword = asyncHandler(async (req, res) => {
   const filter = { email: req.params.email };
 
   const user = await Member.findOne(filter);
-    const { oldPassword, newPassword } = req.body;
-    if(await bcrypt.compare(oldPassword, user.password)){
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-      const update = { password: hashedPassword };
-   
-       let member = await Member.findOneAndUpdate(filter, update, {
-         new: true,
-       });
-       if(member){
-        res.status(200).json(
-          "Password successfully changed."
-         );
-       }else{
-        res.status(400);
-        throw new Error("userID does not match");
-       }
-       
-    }else{
+  const { oldPassword, newPassword } = req.body;
+  if (await bcrypt.compare(oldPassword, user.password)) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const update = { password: hashedPassword };
+
+    let member = await Member.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    if (member) {
+      res.status(200).json("Password successfully changed.");
+    } else {
       res.status(400);
-      throw new Error("Password does not match!");
-    }   
+      throw new Error("userID does not match");
+    }
+  } else {
+    res.status(400);
+    throw new Error("Password does not match!");
+  }
 });
 
 // Delete account
-// @desc delete account == set isValidated to 0 ( invalid for archive )
-// @route post /api/members/deleteaccount/:iduser
+// @desc delete account == set isDeleted to false
+// @route put /api/members/deleteaccount/:iduser
 // @access public
 const deleteUser = asyncHandler(async (req, res) => {
   // const memberToDelete = await Member.findById({ _id: req.params.iduser });
@@ -411,10 +439,11 @@ const updateUser = asyncHandler(async (req, res) => {
   const filter = { _id: req.params.iduser };
   let member = await Member.findOneAndUpdate(filter, data, {
     new: true,
-  }).then((user,err)=>{
-    if(err){
+  }).then((user, err) => {
+    if (err) {
       res.status(400);
-      throw new Error("update failed");    }
+      throw new Error("update failed");
+    }
     res.status(200).json({
       _id: user._id,
       email: user.email,
@@ -429,7 +458,6 @@ const updateUser = asyncHandler(async (req, res) => {
       state: user.state,
     });
   });
-  
 });
 
 module.exports = {
@@ -444,4 +472,5 @@ module.exports = {
   deleteUser,
   updateUser,
   updateUserPassword,
+  resendEmail,
 };
