@@ -2,9 +2,15 @@
   "root": true,
   "env": {
     "browser": true,
+    "es2021": true,
     "node": true
   },
   "extends": [
+    "plugin:react/recommended",
+    "standard",
+    "plugin:react/jsx-runtime",
+    "plugin:testing-library/react",
+    "plugin:jest/all",
     "airbnb",
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended",
@@ -16,8 +22,14 @@
     "prettier"
   ],
   "parser": "@babel/eslint-parser",
+  "settings": {
+      "react": {
+          "version": "detect"
+      }
+  },
   "parserOptions": {
     "ecmaVersion": 8,
+    "sourceType": "module",
     "requireConfigFile": false,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
