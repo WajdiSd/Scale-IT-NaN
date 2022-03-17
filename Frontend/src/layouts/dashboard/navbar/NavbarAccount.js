@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Link, Button, Typography } from '@mui/material';
 // hooks
 import useAuth from '../../../hooks/useAuth';
+import useResponsive from '../../../hooks/useResponsive';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
@@ -32,38 +33,48 @@ NavbarAccount.propTypes = {
 export default function NavbarAccount({ isCollapse }) {
   const { user } = useAuth();
 
-  return (
-    <Link underline="none" color="inherit" component={RouterLink} to={PATH_DASHBOARD.user.account}>
-      <RootStyle
-        sx={{
-          ...(isCollapse && {
-            bgcolor: 'transparent',
-          }),
-        }}
-      >
-        <MyAvatar />
+  const isDesktop = useResponsive('up', 'lg');
 
-        <Box
+  return (
+    <>
+      <Link underline="none" color="inherit" component={RouterLink} to={PATH_DASHBOARD.user.account}>
+        <RootStyle
           sx={{
-            ml: 2,
-            transition: (theme) =>
-              theme.transitions.create('width', {
-                duration: theme.transitions.duration.shorter,
-              }),
             ...(isCollapse && {
-              ml: 0,
-              width: 0,
+              bgcolor: 'transparent',
             }),
           }}
         >
-          <Typography variant="subtitle2" noWrap>
-            {user?.firstName} {user?.lastName}
-          </Typography>
-          <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
-            {user?.role}
-          </Typography>
-        </Box>
-      </RootStyle>
-    </Link>
+          <MyAvatar />
+
+          <Box
+            sx={{
+              ml: 2,
+              transition: (theme) =>
+                theme.transitions.create('width', {
+                  duration: theme.transitions.duration.shorter,
+                }),
+              ...(isCollapse && {
+                ml: 0,
+                width: 0,
+              }),
+            }}
+          >
+            <Typography variant="subtitle2" noWrap>
+              {user?.firstName} {user?.lastName}
+            </Typography>
+            <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
+              {user?.role}
+            </Typography>
+          </Box>
+        </RootStyle>
+      </Link>
+
+      {!isDesktop && (
+        <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
+          Invite Project Members
+        </Button>
+      )}
+    </>
   );
 }

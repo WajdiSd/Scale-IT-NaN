@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar } from '@mui/material';
+import { Box, Stack, Button, AppBar, Toolbar } from '@mui/material';
 // hooks
 import useOffSetTop from '../../../hooks/useOffSetTop';
 import useResponsive from '../../../hooks/useResponsive';
@@ -9,6 +9,8 @@ import useResponsive from '../../../hooks/useResponsive';
 import cssStyles from '../../../utils/cssStyles';
 // config
 import { HEADER, NAVBAR } from '../../../config';
+// routes
+import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import Logo from '../../../components/Logo';
 import Iconify from '../../../components/Iconify';
@@ -81,8 +83,14 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
+        {isDesktop && (
+          <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
+            Invite Project Members
+          </Button>
+        )}
+
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover /> */}
           <NotificationsPopover />
           <ContactsPopover />
           <AccountPopover />
