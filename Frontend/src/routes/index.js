@@ -12,6 +12,7 @@ import AuthGuard from '../guards/AuthGuard';
 import { PATH_AFTER_LOGIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+import WorkspaceInvite from 'src/pages/dashboard/WorkspaceInvite';
 
 // ----------------------------------------------------------------------
 
@@ -80,6 +81,13 @@ export default function Router() {
             { path: 'product/:name/edit', element: <EcommerceProductCreate /> },
             { path: 'checkout', element: <EcommerceCheckout /> },
             { path: 'invoice', element: <EcommerceInvoice /> },
+          ],
+        },
+        {
+          path: 'workspace',
+          children: [
+            { element: <Navigate to="/dashboard/workspace" replace />, index: true },
+            { path: 'invite', element: <WorkspaceInvite /> },
           ],
         },
         {

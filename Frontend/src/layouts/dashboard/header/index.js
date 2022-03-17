@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar } from '@mui/material';
+import { Box, Stack, Button, AppBar, Toolbar } from '@mui/material';
 // hooks
 import useOffSetTop from '../../../hooks/useOffSetTop';
 import useResponsive from '../../../hooks/useResponsive';
@@ -81,8 +81,14 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
+        {isDesktop && (
+          <Button target="_blank" rel="noopener" variant="contained">
+            Invite Project Members
+          </Button>
+        )}
+
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover /> */}
           <NotificationsPopover />
           <ContactsPopover />
           <AccountPopover />
