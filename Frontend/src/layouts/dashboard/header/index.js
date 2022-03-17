@@ -79,15 +79,16 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         )}
 
         <Searchbar />
-
         <Box sx={{ flexGrow: 1 }} />
 
-        <Button target="_blank" rel="noopener" variant="contained">
-          Invite new Members!
-        </Button>
+        {isDesktop && (
+          <Button target="_blank" rel="noopener" variant="contained">
+            Invite Project Members
+          </Button>
+        )}
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover /> */}
           <NotificationsPopover />
           <ContactsPopover />
           <AccountPopover />
