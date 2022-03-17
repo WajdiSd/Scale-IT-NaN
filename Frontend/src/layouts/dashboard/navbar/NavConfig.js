@@ -21,6 +21,7 @@ const ICONS = {
   analytics: getIcon('ic_analytics'),
   dashboard: getIcon('ic_dashboard'),
   booking: getIcon('ic_booking'),
+  workspace: getIcon('ic_custom_workspaces'),
 };
 
 const navConfig = [
@@ -42,6 +43,14 @@ const navConfig = [
   {
     subheader: 'management',
     items: [
+      // MANAGEMENT : WORKSPACE
+      {
+        title: 'workspace',
+        path: PATH_DASHBOARD.workspace.root,
+        icon: ICONS.workspace,
+        children: [{ title: 'invite', path: PATH_DASHBOARD.workspace.memberInvite }],
+      },
+
       // MANAGEMENT : USER
       {
         title: 'user',
