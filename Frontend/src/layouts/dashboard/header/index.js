@@ -84,7 +84,7 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Box sx={{ flexGrow: 1 }} />
 
         {isDesktop && (
-          <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
+          <Button href={PATH_DASHBOARD.workspaces.memberInvite} variant="contained">
             Invite Project Members
           </Button>
         )}
