@@ -17,11 +17,14 @@ import {
   AnalyticsConversionRates,
 } from '../../sections/@dashboard/general/analytics';
 import WorkspaceInviteFriends from '../../sections/@dashboard/workspace/WorkspaceInviteFriends';
+import { email } from '../../_mock/email';
 
 // ----------------------------------------------------------------------
 
 export default function WorkspaceInvite() {
   const { themeStretch } = useSettings();
+
+  console.log(email);
 
   return (
     <Page title="Workspace: Invite Members">
@@ -32,7 +35,7 @@ export default function WorkspaceInvite() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-            <WorkspaceInviteFriends />
+            <WorkspaceInviteFriends emails={email} />
           </Grid>
 
           <Grid item xs={12} md={12} lg={12}></Grid>
