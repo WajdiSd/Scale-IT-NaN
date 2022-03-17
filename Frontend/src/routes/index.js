@@ -84,9 +84,12 @@ export default function Router() {
           ],
         },
         {
-          path: 'workspace',
+          path: 'workspaces',
           children: [
-            { element: <Navigate to="/dashboard/workspace" replace />, index: true },
+            { element: <Navigate to="/dashboard/workspaces/list" replace />, index: true },
+            { path: 'list', element: <GeneralWorkspace /> },
+            { path: 'details/:id', element: <WorkspaceDetails /> },
+            
             { path: 'invite', element: <WorkspaceInvite /> },
           ],
         },
@@ -172,6 +175,7 @@ const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const ConfirmAccount = Loadable(lazy(() => import('../pages/auth/ConfirmAccount')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
+const GeneralWorkspace = Loadable(lazy(() => import('../pages/dashboard/GeneralWorkspace')));
 const GeneralEcommerce = Loadable(lazy(() => import('../pages/dashboard/GeneralEcommerce')));
 const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
 const GeneralBanking = Loadable(lazy(() => import('../pages/dashboard/GeneralBanking')));
@@ -186,6 +190,7 @@ const BlogPosts = Loadable(lazy(() => import('../pages/dashboard/BlogPosts')));
 const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')));
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
+const WorkspaceDetails = Loadable(lazy(() => import('../pages/dashboard/WorkspaceDetails')));
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));

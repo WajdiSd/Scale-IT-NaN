@@ -51,9 +51,11 @@ export const PATH_DASHBOARD = {
   },
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
   kanban: path(ROOTS_DASHBOARD, '/kanban'),
-  workspace: {
-    root: path(ROOTS_DASHBOARD, '/workspace'),
-    memberInvite: path(ROOTS_DASHBOARD, '/workspace/invite'),
+  workspaces: {
+    root: path(ROOTS_DASHBOARD, '/workspaces'),
+    memberInvite: path(ROOTS_DASHBOARD, '/workspaces/invite'),
+    details: path(ROOTS_DASHBOARD, '/workspaces/details/'),
+    list: path(ROOTS_DASHBOARD, '/workspaces/list'),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),

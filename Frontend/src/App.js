@@ -19,7 +19,7 @@ import { useSelector } from './redux/store';
 export default function App() {
 
   const test = useSelector(
-    (state) => state.auth
+    (state) => state
   )
     console.log(test);
 
