@@ -8,6 +8,7 @@ const Member = require("../models/memberModel");
 const getWorkspaces = asyncHandler(async (req, res) => {
   const workspaces = await Workspace.find({
     "assigned_members.member": req.params.idmember,
+    isDeleted: false,
   });
   res.status(200).json(workspaces);
 });
@@ -59,25 +60,45 @@ const addWorkspace = asyncHandler(async (req, res) => {
 // @route put /api/workspace/:iduser/:idworkspace
 // @access public
 const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
-  //get workspace and remove member
-  const workspace = await Workspace.findOneAndUpdate(
-    { _id: req.params.idworkspace },
-    {
-      $pull: { assigned_members: { member: req.params.idmember } },
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
-  console.log(workspace);
-
-  if (workspace) {
-    res.status(200).json(workspace);
+  //verif member who wants to remove is member and HR
+  var verif = false;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
   } else {
-    res.status(400).json({
-      message: "couldn't remove member from workspace !",
-    });
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      //get workspace and remove member
+      const workspace = await Workspace.findOneAndUpdate(
+        { _id: req.params.idworkspace },
+        {
+          $pull: { assigned_members: { member: req.params.idmember } },
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+      console.log(workspace);
+
+      if (workspace) {
+        res.status(200).json(workspace);
+      } else {
+        res.status(400).json({
+          message: "couldn't remove member from workspace !",
+        });
+      }
+    } else {
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
   }
 });
 
@@ -86,17 +107,36 @@ const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
 // @route put /api/workspace/deleteworkspace/:idworkspace
 // @access private
 const deleteWorkspace = asyncHandler(async (req, res) => {
-  const filter = { _id: req.params.idworkspace };
-  const update = { isDeleted: true };
+  var verif = false;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      const filter = { _id: req.params.idworkspace };
+      const update = { isDeleted: true };
 
-  let deletedworkspace = await Workspace.findOneAndUpdate(filter, update, {
-    new: true,
-  })
-    .then((deletedworkspace) => res.status(200).json(deletedworkspace))
-    .catch((err) => {
-      res.status(400);
-      throw new Error("invalid workspace id");
-    });
+      let deletedworkspace = await Workspace.findOneAndUpdate(filter, update, {
+        new: true,
+      })
+        .then((deletedworkspace) => res.status(200).json(deletedworkspace))
+        .catch((err) => {
+          res.status(400);
+          throw new Error("invalid workspace id");
+        });
+    } else {
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
+  }
 });
 
 // Update workspace
@@ -104,27 +144,45 @@ const deleteWorkspace = asyncHandler(async (req, res) => {
 // @route put /api/workspace/update/:id
 // @access public
 const updateWorkspace = asyncHandler(async (req, res) => {
-  //
-  const entries = Object.keys(req.body);
-  const updates = {};
-
-  // constructing dynamic query : get the informations entered in BODY
-  for (let i = 0; i < entries.length; i++) {
-    updates[entries[i]] = Object.values(req.body)[i];
-  }
-  // update workspace fields according to the BODY
-  Workspace.updateOne(
-    { _id: req.params.id },
-    { $set: updates },
-    function (err, success) {
-      if (err) throw err;
-      else {
-        res.send({ msg: "update success" });
-      }
+  var verif = false;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
     }
-  );
-});
+    if (verif) {
+      //
+      const entries = Object.keys(req.body);
+      const updates = {};
 
+      // constructing dynamic query : get the informations entered in BODY
+      for (let i = 0; i < entries.length; i++) {
+        updates[entries[i]] = Object.values(req.body)[i];
+      }
+      // update workspace fields according to the BODY
+      Workspace.updateOne(
+        { _id: req.params.idworkspace },
+        { $set: updates },
+        function (err, success) {
+          if (err) throw err;
+          else {
+            res.send({ msg: "update success" });
+          }
+        }
+      );
+    } else {
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
+  }
+});
 
 // Assign Project Manager
 // @desc update workspace
@@ -133,33 +191,35 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 const assignProjectManager = asyncHandler(async (req, res) => {
   //first step: verify if there is already a PM
   var verif = false;
-  const workspace = await Workspace.findById(req.params.idworkspace)
+  const workspace = await Workspace.findById(req.params.idworkspace);
   for (let i = 0; i < workspace.assigned_members.length; i++) {
-    if (workspace.assigned_members[i].isProjectManager == true)
-        verif = true;
-    }
-  //If yes, we cannot assign another
-  if(verif){
-  res.send({ msg: "There s already a project manager" });
+    if (workspace.assigned_members[i].isProjectManager == true) verif = true;
   }
- //if no , assign this member
- else{
-  // find member in this workspace
-  Workspace.updateOne(
-    {  _id: req.params.idworkspace,
-      "assigned_members.member" : req.params.idmember},
+  //If yes, we cannot assign another
+  if (verif) {
+    res.send({ msg: "There's already a project manager" });
+  }
+  //if no , assign this member
+  else {
+    // find member in this workspace
+    Workspace.updateOne(
+      {
+        _id: req.params.idworkspace,
+        "assigned_members.member": req.params.idmember,
+      },
       {
         $set: {
-            "assigned_members.$.isProjectManager": true,
-         }
+          "assigned_members.$.isProjectManager": true,
+        },
       },
       function (err, success) {
         if (err) throw err;
         else {
           res.send({ msg: "Added project manager" });
         }
-      });   }  
-
+      }
+    );
+  }
 });
 
 // Assign Project Manager
@@ -167,26 +227,25 @@ const assignProjectManager = asyncHandler(async (req, res) => {
 // @route post /api/workspace/deletePM/:idworkspace/:idMember
 // @access public
 const deleteProjectManager = asyncHandler(async (req, res) => {
-
   // find member in this workspace
   Workspace.updateOne(
-    {  _id: req.params.idworkspace,
-      "assigned_members.member" : req.params.idmember},
-      {
-        $set: {
-            "assigned_members.$.isProjectManager": false,
-         }
+    {
+      _id: req.params.idworkspace,
+      "assigned_members.member": req.params.idmember,
+    },
+    {
+      $set: {
+        "assigned_members.$.isProjectManager": false,
       },
-      function (err, success) {
-        if (err) throw err;
-        else {
-          res.send({ msg: "deleted project manager" });
-        }
-      });    
-
+    },
+    function (err, success) {
+      if (err) throw err;
+      else {
+        res.send({ msg: "deleted project manager" });
+      }
+    }
+  );
 });
-
-
 
 module.exports = {
   addWorkspace,
