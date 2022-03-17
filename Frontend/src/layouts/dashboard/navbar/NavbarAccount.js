@@ -71,7 +71,7 @@ export default function NavbarAccount({ isCollapse }) {
       </Link>
 
       {!isDesktop && (
-        <Button target="_blank" rel="noopener" variant="contained">
+        <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
           Invite Project Members
         </Button>
       )}

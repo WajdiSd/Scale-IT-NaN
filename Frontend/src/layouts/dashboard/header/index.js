@@ -9,6 +9,8 @@ import useResponsive from '../../../hooks/useResponsive';
 import cssStyles from '../../../utils/cssStyles';
 // config
 import { HEADER, NAVBAR } from '../../../config';
+// routes
+import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import Logo from '../../../components/Logo';
 import Iconify from '../../../components/Iconify';
@@ -82,7 +84,7 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Box sx={{ flexGrow: 1 }} />
 
         {isDesktop && (
-          <Button target="_blank" rel="noopener" variant="contained">
+          <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
             Invite Project Members
           </Button>
         )}
