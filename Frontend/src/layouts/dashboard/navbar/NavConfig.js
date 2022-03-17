@@ -48,7 +48,7 @@ const navConfig = [
         title: 'workspace',
         path: PATH_DASHBOARD.workspace.root,
         icon: ICONS.workspace,
-        children: [{ title: 'invite', path: PATH_DASHBOARD.workspace.memberInvite }],
+        children: [{ title: 'invite members', path: PATH_DASHBOARD.workspace.memberInvite }],
       },
 
       // MANAGEMENT : USER
