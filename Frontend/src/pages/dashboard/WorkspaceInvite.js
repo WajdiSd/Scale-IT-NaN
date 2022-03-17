@@ -31,11 +31,16 @@ export default function WorkspaceInvite() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AnalyticsWidgetSummary title="Salary Total" total={714000} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AnalyticsWidgetSummary
+              title="Workspace Members"
+              total={1352831}
+              color="info"
+              icon={'ant-design:apple-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
