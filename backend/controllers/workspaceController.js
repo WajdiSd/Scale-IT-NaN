@@ -131,7 +131,7 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 // @route post /api/workspace/assignPM/:idworkspace/:idMember
 // @access public
 const assignProjectManager = asyncHandler(async (req, res) => {
-  //first step: verify if there is already a ProjectManager
+  /*first step: verify if there is already a ProjectManager
   var verif = false;
   const workspace = await Workspace.findById(req.params.idworkspace)
   for (let i = 0; i < workspace.assigned_members.length; i++) {
@@ -143,7 +143,7 @@ const assignProjectManager = asyncHandler(async (req, res) => {
   res.send({ msg: "There s already a project manager" });
   }
     //if no , assign this member
-  else{
+  else{*/
 
   // find workspace and member in this workspace
   Workspace.updateOne(
@@ -159,7 +159,7 @@ const assignProjectManager = asyncHandler(async (req, res) => {
         else {
           res.send({ msg: "Added project manager" });
         }
-      });   }  
+      });   
 
 });
 
