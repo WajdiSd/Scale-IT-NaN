@@ -167,7 +167,7 @@ export default function WorkspaceInviteFriends({ emails }) {
                 }}
               />
               <Button onClick={addManager} color="warning" variant="contained">
-                Add Member
+                Add Manager
               </Button>
             </Stack>
             <Stack
@@ -206,6 +206,13 @@ export default function WorkspaceInviteFriends({ emails }) {
                 <Typography variant="h6">No managers added yet.</Typography>
               )}
             </Stack>
+          </Stack>
+
+          {/* Submit Users Button */}
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <Button onClick={addManager} color="warning" variant="contained">
+              Submit Invitations
+            </Button>
           </Stack>
         </Stack>
       </ContentStyle>
