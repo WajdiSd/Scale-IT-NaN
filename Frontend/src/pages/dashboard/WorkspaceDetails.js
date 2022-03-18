@@ -22,6 +22,7 @@ import {
   ProfileGallery,
   ProfileFollowers,
 } from '../../sections/@dashboard/user/profile';
+import General from 'src/sections/@dashboard/workspace/General';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   const { user } = useAuth();
 
-  const [currentTab, setCurrentTab] = useState('profile');
+  const [currentTab, setCurrentTab] = useState('General');
   const [findFriends, setFindFriends] = useState('');
 
   const handleChangeTab = (newValue) => {
@@ -60,22 +61,23 @@ export default function WorkspaceDetails() {
 
   const PROFILE_TABS = [
     {
-      value: 'profile',
+      value: 'General',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <Profile myProfile={_userAbout} posts={_userFeeds} />,
+      component: <General myProfile={_userAbout} posts={_userFeeds} />,
     },
     {
-      value: 'followers',
-      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
-    },
-    {
-      value: 'friends',
+      value: 'Members',
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
       component: <ProfileFriends friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />,
     },
     {
-      value: 'gallery',
+      value: 'Projects',
+      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
+      component: <ProfileFollowers followers={_userFollowers} />,
+    },
+    
+    {
+      value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
       component: <ProfileGallery gallery={_userGallery} />,
     },
