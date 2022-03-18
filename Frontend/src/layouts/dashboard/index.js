@@ -13,6 +13,7 @@ import { HEADER, NAVBAR } from '../../config';
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
+import { useLocation } from 'react-router';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,8 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
+  const { pathname } = useLocation();
+
   const { collapseClick, isCollapse } = useCollapseDrawer();
 
   const { themeLayout } = useSettings();
@@ -49,6 +52,11 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
   const verticalLayout = themeLayout === 'vertical';
+
+  const isInWorkspace = () => pathname.includes('/workspace/');
+
+  const isHr = false;
+  const isProjectManager = false;
 
   if (verticalLayout) {
     return (
@@ -88,9 +96,21 @@ export default function DashboardLayout() {
         minHeight: { lg: 1 },
       }}
     >
-      <DashboardHeader isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
+      <DashboardHeader
+        isCollapse={isCollapse}
+        isInWorkspace={isInWorkspace()}
+        isHr={isHr}
+        isProjectManager={isProjectManager}
+        onOpenSidebar={() => setOpen(true)}
+      />
 
-      <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <NavbarVertical
+        isOpenSidebar={open}
+        isInWorkspace={isInWorkspace()}
+        isHr={isHr}
+        isProjectManager={isProjectManager}
+        onCloseSidebar={() => setOpen(false)}
+      />
 
       <MainStyle collapseClick={collapseClick}>
         <Outlet />

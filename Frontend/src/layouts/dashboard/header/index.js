@@ -59,7 +59,7 @@ DashboardHeader.propTypes = {
   verticalLayout: PropTypes.bool,
 };
 
-export default function DashboardHeader({ onOpenSidebar, isCollapse = false, verticalLayout = false }) {
+export default function DashboardHeader({ isInWorkspace, onOpenSidebar, isCollapse = false, verticalLayout = false }) {
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout;
 
   const isDesktop = useResponsive('up', 'lg');
@@ -83,7 +83,7 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
-        {isDesktop && (
+        {isDesktop && isInWorkspace && (
           <Button href={PATH_DASHBOARD.workspaces.memberInvite} variant="contained">
             Invite Project Members
           </Button>

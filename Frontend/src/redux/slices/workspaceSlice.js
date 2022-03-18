@@ -1,7 +1,9 @@
 //import VerifyCode from "src/pages/auth/VerifyCode";
 import workspaceService from '../service/workspaceService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import useAuth from 'src/hooks/useAuth';
+import { isHr } from './authSlice';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -20,29 +22,26 @@ export const workspaceSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      (state.workspaces = []), 
-      (state.isLoading = false);
-      state.workspace = null,
-      state.isSuccess = false;
+      (state.workspaces = []), (state.isLoading = false);
+      (state.workspace = null), (state.isSuccess = false);
       state.isError = false;
       state.message = '';
     },
   },
   extraReducers: (builder) => {
     builder
-    .addCase(getWorkspace.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.isError = false;
-      state.workspace = action.payload;
-      
-    })
-    .addCase(getWorkspace.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = false;
-      state.isError = true;
-      state.workspace = null;
-    })
+      .addCase(getWorkspace.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.workspace = action.payload;
+      })
+      .addCase(getWorkspace.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.workspace = null;
+      })
       .addCase(getWorkspaces.pending, (state) => {
         state.isLoading = true;
         state.isSuccess = false;
@@ -90,7 +89,12 @@ export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (
 
 export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
   try {
-    return await workspaceService.getWorkspace(id);
+    const workspace = await workspaceService.getWorkspace(id);
+
+    // thunkAPI.dispatch(isProjectManager(workspace));
+    // thunkAPI.dispatch(isHr(workspace));
+
+    return workspace;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
