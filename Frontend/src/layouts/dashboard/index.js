@@ -13,6 +13,7 @@ import { HEADER, NAVBAR } from '../../config';
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
+import { useLocation } from 'react-router';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,8 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
+  const { pathname } = useLocation();
+
   const { collapseClick, isCollapse } = useCollapseDrawer();
 
   const { themeLayout } = useSettings();
@@ -50,15 +53,21 @@ export default function DashboardLayout() {
 
   const verticalLayout = themeLayout === 'vertical';
 
+  const isInWorkspace = () => pathname.includes('/workspace/');
+
   if (verticalLayout) {
     return (
       <>
-        <DashboardHeader onOpenSidebar={() => setOpen(true)} verticalLayout={verticalLayout} />
+        <DashboardHeader
+          isInWorkspace={isInWorkspace()}
+          onOpenSidebar={() => setOpen(true)}
+          verticalLayout={verticalLayout}
+        />
 
         {isDesktop ? (
-          <NavbarHorizontal />
+          <NavbarHorizontal isInWorkspace={isInWorkspace()} />
         ) : (
-          <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+          <NavbarVertical isInWorkspace={isInWorkspace()} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
         )}
 
         <Box
@@ -88,9 +97,9 @@ export default function DashboardLayout() {
         minHeight: { lg: 1 },
       }}
     >
-      <DashboardHeader isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
+      <DashboardHeader isInWorkspace={isInWorkspace()} isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
 
-      <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <NavbarVertical isInWorkspace={isInWorkspace()} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
 
       <MainStyle collapseClick={collapseClick}>
         <Outlet />

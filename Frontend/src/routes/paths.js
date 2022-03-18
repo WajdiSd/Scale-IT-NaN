@@ -34,6 +34,7 @@ export const PATH_PAGE = {
 export const PATH_DASHBOARD = {
   root: ROOTS_DASHBOARD,
   general: {
+    landing: path(ROOTS_DASHBOARD, '/landing'),
     app: path(ROOTS_DASHBOARD, '/app'),
     ecommerce: path(ROOTS_DASHBOARD, '/ecommerce'),
     analytics: path(ROOTS_DASHBOARD, '/analytics'),
@@ -51,9 +52,10 @@ export const PATH_DASHBOARD = {
   },
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
   kanban: path(ROOTS_DASHBOARD, '/kanban'),
-  workspace: {
-    root: path(ROOTS_DASHBOARD, '/workspace'),
+  workspaces: {
+    details: path(ROOTS_DASHBOARD, '/workspace/'),
     memberInvite: path(ROOTS_DASHBOARD, '/workspace/invite'),
+    addworkspace: path(ROOTS_DASHBOARD, '/workspace/addworkspace'),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),

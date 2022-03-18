@@ -30,6 +30,15 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
+      {
+        title: 'workspaces',
+        path: PATH_DASHBOARD.workspaces.root,
+        icon: ICONS.workspace,
+        children: [
+          { title: 'invite members', path: PATH_DASHBOARD.workspaces.memberInvite },
+          { title: 'add workspace', path: PATH_DASHBOARD.workspaces.addworkspace },
+        ],
+      },
       { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
       { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
@@ -44,12 +53,6 @@ const navConfig = [
     subheader: 'management',
     items: [
       // MANAGEMENT : WORKSPACE
-      {
-        title: 'workspace',
-        path: PATH_DASHBOARD.workspace.root,
-        icon: ICONS.workspace,
-        children: [{ title: 'invite members', path: PATH_DASHBOARD.workspace.memberInvite }],
-      },
 
       // MANAGEMENT : USER
       {

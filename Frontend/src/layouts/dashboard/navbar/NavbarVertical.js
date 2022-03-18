@@ -39,7 +39,7 @@ NavbarVertical.propTypes = {
   onCloseSidebar: PropTypes.func,
 };
 
-export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
+export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSidebar }) {
   const theme = useTheme();
 
   const { pathname } = useLocation();
@@ -93,50 +93,60 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
   );
 
   return (
-    <RootStyle
-      sx={{
-        width: {
-          lg: isCollapse ? NAVBAR.DASHBOARD_COLLAPSE_WIDTH : NAVBAR.DASHBOARD_WIDTH,
-        },
-        ...(collapseClick && {
-          position: 'absolute',
-        }),
-      }}
-    >
-      {!isDesktop && (
-        <Drawer open={isOpenSidebar} onClose={onCloseSidebar} PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH } }}>
-          {renderContent}
-        </Drawer>
-      )}
-
-      {isDesktop && (
-        <Drawer
-          open
-          variant="persistent"
-          onMouseEnter={onHoverEnter}
-          onMouseLeave={onHoverLeave}
-          PaperProps={{
-            sx: {
-              width: NAVBAR.DASHBOARD_WIDTH,
-              borderRightStyle: 'dashed',
-              bgcolor: 'background.default',
-              transition: (theme) =>
-                theme.transitions.create('width', {
-                  duration: theme.transitions.duration.standard,
-                }),
-              ...(isCollapse && {
-                width: NAVBAR.DASHBOARD_COLLAPSE_WIDTH,
-              }),
-              ...(collapseHover && {
-                ...cssStyles(theme).bgBlur(),
-                boxShadow: (theme) => theme.customShadows.z24,
-              }),
+    <>
+      {isInWorkspace ? (
+        <RootStyle
+          sx={{
+            width: {
+              lg: isCollapse ? NAVBAR.DASHBOARD_COLLAPSE_WIDTH : NAVBAR.DASHBOARD_WIDTH,
             },
+            ...(collapseClick && {
+              position: 'absolute',
+            }),
           }}
         >
-          {renderContent}
-        </Drawer>
+          {!isDesktop && (
+            <Drawer
+              open={isOpenSidebar}
+              onClose={onCloseSidebar}
+              PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH } }}
+            >
+              {renderContent}
+            </Drawer>
+          )}
+
+          {isDesktop && (
+            <Drawer
+              open
+              variant="persistent"
+              onMouseEnter={onHoverEnter}
+              onMouseLeave={onHoverLeave}
+              PaperProps={{
+                sx: {
+                  width: NAVBAR.DASHBOARD_WIDTH,
+                  borderRightStyle: 'dashed',
+                  bgcolor: 'background.default',
+                  transition: (theme) =>
+                    theme.transitions.create('width', {
+                      duration: theme.transitions.duration.standard,
+                    }),
+                  ...(isCollapse && {
+                    width: NAVBAR.DASHBOARD_COLLAPSE_WIDTH,
+                  }),
+                  ...(collapseHover && {
+                    ...cssStyles(theme).bgBlur(),
+                    boxShadow: (theme) => theme.customShadows.z24,
+                  }),
+                },
+              }}
+            >
+              {renderContent}
+            </Drawer>
+          )}
+        </RootStyle>
+      ) : (
+        <></>
       )}
-    </RootStyle>
+    </>
   );
 }

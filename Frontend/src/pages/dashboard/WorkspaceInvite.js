@@ -16,25 +16,35 @@ import {
   AnalyticsCurrentSubject,
   AnalyticsConversionRates,
 } from '../../sections/@dashboard/general/analytics';
+import WorkspaceInviteFriends from '../../sections/@dashboard/workspace/WorkspaceInviteFriends';
+import { email } from '../../_mock/email';
 
 // ----------------------------------------------------------------------
 
 export default function WorkspaceInvite() {
   const { themeStretch } = useSettings();
 
+  console.log(email);
+
   return (
     <Page title="Workspace: Invite Members">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
+          Hi, Invite Members to your Workspace!
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={12} lg={12}>
+            <WorkspaceInviteFriends emails={email} />
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={12}></Grid>
+
+          <Grid item xs={12} sm={6} md={6}>
             <AnalyticsWidgetSummary title="Salary Total" total={714000} icon={'ant-design:android-filled'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <AnalyticsWidgetSummary
               title="Workspace Members"
               total={1352831}
@@ -43,7 +53,7 @@ export default function WorkspaceInvite() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          {/* <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
               title="Item Orders"
               total={1723315}
@@ -54,39 +64,7 @@ export default function WorkspaceInvite() {
 
           <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AnalyticsWebsiteVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsCurrentVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AnalyticsConversionRates />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsCurrentSubject />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AnalyticsNewsUpdate />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsOrderTimeline />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsTrafficBySite />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AnalyticsTasks />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Page>

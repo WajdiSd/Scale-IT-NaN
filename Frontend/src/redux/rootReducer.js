@@ -8,6 +8,7 @@ import productReducer from './slices/product';
 import calendarReducer from './slices/calendar';
 import kanbanReducer from './slices/kanban';
 import authReducer from './slices/authSlice';
+import workspacesReducer from './slices/workspaceSlice';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +30,14 @@ const userPersistConfig = {
   key: 'user',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['isAuthenticated', 'user'],
+  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager'],
+};
+
+const workspacesPersistConfig = {
+  key: 'workspaces',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: ['workspaces'],
 };
 
 const rootReducer = combineReducers({
@@ -39,6 +47,7 @@ const rootReducer = combineReducers({
   kanban: kanbanReducer,
   product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
+  workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
 });
 
 export { rootPersistConfig, rootReducer };
