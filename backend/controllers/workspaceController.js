@@ -428,9 +428,6 @@ module.exports = {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
-<<<<<<< HEAD
   getWorkspaceById,
-=======
   inviteManyMembers,
->>>>>>> 6af6283541f1244db77b09d5184b9a705a91b101
 };
