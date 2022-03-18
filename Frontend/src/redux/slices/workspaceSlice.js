@@ -8,6 +8,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 
 const initialState = {
   workspaces: [],
+  workspace: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -19,7 +20,9 @@ export const workspaceSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      (state.workspaces = []), (state.isLoading = false);
+      (state.workspaces = []), 
+      (state.isLoading = false);
+      state.workspace = null,
       state.isSuccess = false;
       state.isError = false;
       state.message = '';
@@ -27,6 +30,19 @@ export const workspaceSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    .addCase(getWorkspace.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.workspace = action.payload;
+      
+    })
+    .addCase(getWorkspace.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = true;
+      state.workspace = null;
+    })
       .addCase(getWorkspaces.pending, (state) => {
         state.isLoading = true;
         state.isSuccess = false;
@@ -65,6 +81,16 @@ export const workspaceSlice = createSlice({
 export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (id, thunkAPI) => {
   try {
     return await workspaceService.getWorkspaces(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
+  try {
+    return await workspaceService.getWorkspace(id);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

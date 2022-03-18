@@ -7,6 +7,7 @@ import ProfilePostCard from '../user/profile//ProfilePostCard';
 import ProfilePostInput from '../user/profile//ProfilePostInput';
 import ProfileFollowInfo from '../user/profile//ProfileFollowInfo';
 import ProfileSocialInfo from '../user/profile//ProfileSocialInfo';
+import WorkspaceAbout from './WorkspaceAbout';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +17,7 @@ General.propTypes = {
 };
 
 export default function General({ myProfile, posts }) {
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={4}>
@@ -27,7 +29,7 @@ export default function General({ myProfile, posts }) {
 
       <Grid item xs={12} md={8}>
         <Stack spacing={3}>
-        <ProfileAbout profile={myProfile} />
+        <WorkspaceAbout profile={myProfile} />
         {/* 
           <ProfilePostInput />
           {posts.map((post) => (

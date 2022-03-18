@@ -8,6 +8,12 @@ const getWorkspaces = async (id) => {
   const response = await axiosInstance.get(API_URL + id);
   return response.data;
 };
+
+const getWorkspace = async (id) => {
+  const response = await axiosInstance.get(API_URL +"details/"+ id);
+  return response.data;
+};
+
 //add workspace
 const addworkspace = async (workspaceData, idmember) => {
   // const authState = useSelector((state) => state.auth);
@@ -21,6 +27,7 @@ const addworkspace = async (workspaceData, idmember) => {
 const workspaceService = {
   getWorkspaces,
   addworkspace,
+  getWorkspace,
 };
 
 export default workspaceService;

@@ -48,6 +48,7 @@ import { useForm } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 import { addWorkspace } from 'src/redux/slices/workspaceSlice';
 import { useNavigate } from 'react-router';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -59,13 +60,14 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 export default function AddWorkspace() {
   const { user } = useAuth();
-  const { workspaces } = useWorkspace();
+  const { workspaces, isLoading } = useWorkspace();
   const theme = useTheme();
   const { themeStretch } = useSettings();
   const isMountedRef = useIsMountedRef();
   const [userWorkspaces, setUserWorkspaces] = useState([]);
   const [userJoinedspaces, setUserJoinedspaces] = useState([]);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const NewWorkspaceSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -106,12 +108,15 @@ export default function AddWorkspace() {
   const onSubmit = async (data) => {
     try {
       console.log('data', data);
-      dispatch(addWorkspace(data));
+      dispatch(addWorkspace(data))
+      .then(res=>{
+        enqueueSnackbar("Added workspace successfully");
+        navigate(PATH_DASHBOARD.workspaces.list);
+      });
       // await new Promise((resolve) => setTimeout(resolve, 500));
       // reset();
       // handleClosePreview();
       // enqueueSnackbar('Post success!');
-      navigate(PATH_DASHBOARD.workspaces.list);
     } catch (error) {
       console.error(error);
     }
@@ -155,7 +160,7 @@ export default function AddWorkspace() {
                   <RHFTextField name="name" label="Workspace Name" />
 
                   <RHFTextField name="description" label="Description" multiline rows={3} />
-                  <LoadingButton fullWidth type="submit" variant="contained" size="large" loading={isSubmitting}>
+                  <LoadingButton fullWidth type="submit" variant="contained" size="large" loading={isLoading}>
                     Create
                   </LoadingButton>
                 </Stack>

@@ -1,5 +1,5 @@
 import { capitalCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Tab, Box, Card, Tabs, Container } from '@mui/material';
@@ -23,6 +23,11 @@ import {
   ProfileFollowers,
 } from '../../sections/@dashboard/user/profile';
 import General from 'src/sections/@dashboard/workspace/General';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { getWorkspace } from 'src/redux/slices/workspaceSlice';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
+import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +52,23 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   const { user } = useAuth();
+  let { id } = useParams();
+  const [idWorkspace, setIdWorkspace] = useState(id);
+  const dispatch = useDispatch();
+
+  const { workspace  } = useWorkspace();
+  const getUserWorkspace = () => {
+    try {
+      dispatch(getWorkspace(idWorkspace))
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserWorkspace();    
+  }, [idWorkspace]);
 
   const [currentTab, setCurrentTab] = useState('General');
   const [findFriends, setFindFriends] = useState('');
@@ -90,7 +112,7 @@ export default function WorkspaceDetails() {
           heading="Workspace"
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.workspaces.list },
-            { name: 'Details', href: '' },
+            { name: workspace?.name, href: '' },
           ]}
         />
         <Card
@@ -100,7 +122,7 @@ export default function WorkspaceDetails() {
             position: 'relative',
           }}
         >
-          <ProfileCover myProfile={_userAbout} />
+          <WorkspaceCover />
 
           <TabsWrapperStyle>
             <Tabs

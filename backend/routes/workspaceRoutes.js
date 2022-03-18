@@ -8,6 +8,7 @@ const {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  getWorkspaceById,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -15,6 +16,7 @@ const { protect } = require("../middleware/authMiddleware");
 router.post("/add/:idmember", addWorkspace);
 router.put("/update/:idworkspace/:idhr", updateWorkspace);
 router.get("/:idmember", getWorkspaces);
+router.get("/details/:id", getWorkspaceById);
 router.put(
   "/removemember/:idmember/:idworkspace/:idhr",
   removeMemberFromWorkspace

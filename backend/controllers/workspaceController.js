@@ -13,6 +13,37 @@ const getWorkspaces = asyncHandler(async (req, res) => {
   res.status(200).json(workspaces);
 });
 
+// @desc Get workspace by id
+// @route get /api/workspace
+// @access private
+const getWorkspaceById = asyncHandler(async (req, res) => {
+  Workspace.exists(
+    {
+      _id: req.params.id,
+    },
+    (err, workspace) => {
+      if (workspace) {
+        Workspace.findById(
+          {
+            _id: req.params.id,
+          },
+          (err, workspace) => {
+            if (err) {
+              res.status(400);
+              res.send("invalid workspace id");
+            }
+            res.status(200);
+            res.json(workspace);
+          }
+        );
+      } else if (err) {
+        res.status(400);
+        res.send("invalid workspace id");
+      }
+    }
+  );
+});
+
 // @desc add new workspace
 // @route post /api/workspace
 // @access public
@@ -256,4 +287,5 @@ module.exports = {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  getWorkspaceById,
 };

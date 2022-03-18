@@ -37,11 +37,8 @@ WorkspaceCard.propTypes = {
 };
 
 export default function WorkspaceCard({ workspace, index }) {
-  const isDesktop = useResponsive('up', 'md');
 
-  const { name, author, createdAt } = workspace;
-  
-  const latestPost = index === 0 || index === 1 || index === 2;
+  const { name, createdAt } = workspace;
 
   return (
     <Card
