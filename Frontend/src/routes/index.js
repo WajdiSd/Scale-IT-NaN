@@ -86,12 +86,10 @@ export default function Router() {
           ],
         },
         {
-          path: 'workspaces',
+          path: 'workspace',
           children: [
-            { element: <Navigate to="/dashboard/workspaces/list" replace />, index: true },
-            { path: 'list', element: <GeneralWorkspace /> },
-            { path: 'details/:id', element: <WorkspaceDetails /> },
-
+            { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
+            { path: ':id', element: <WorkspaceDetails /> },
             { path: 'invite', element: <WorkspaceInvite /> },
             { path: 'addworkspace', element: <AddWorkspace /> },
           ],

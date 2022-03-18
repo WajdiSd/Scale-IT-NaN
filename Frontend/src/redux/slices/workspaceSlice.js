@@ -1,9 +1,7 @@
 //import VerifyCode from "src/pages/auth/VerifyCode";
 import workspaceService from '../service/workspaceService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { useSelector, useDispatch } from 'react-redux';
-import useAuth from 'src/hooks/useAuth';
-import { isHr } from './authSlice';
+import { isHr, isProjectManager } from './authSlice';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -90,11 +88,11 @@ export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (
 export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
   try {
     const workspace = await workspaceService.getWorkspace(id);
-
-    // thunkAPI.dispatch(isProjectManager(workspace));
-    // thunkAPI.dispatch(isHr(workspace));
-
-    return workspace;
+    if (workspace) {
+      thunkAPI.dispatch(isHr(workspace));
+      thunkAPI.dispatch(isProjectManager(workspace));
+      return workspace;
+    }
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
