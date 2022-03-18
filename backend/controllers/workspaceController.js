@@ -330,11 +330,10 @@ const fetchUsersByWorkspace = asyncHandler(async (req, res) => {
   let members = [];
   for (let i = 0; i < workspace.assigned_members.length; i++) {
     let member = workspace.assigned_members[i];
-    console.log(member.isHR);
     fullMember = await Member.findOne({ _id: member.member });
-    fullMember.isProjectManager = member.isProjectManager;
-    fullMember.isHR = member.isHR;
-    members.push({test:fullMember.isHR});
+    const newMember = {...fullMember._doc, isProjectManager: member.isProjectManager,isHR: member.isHR, rateHour: member.rateHour, rateOverTime: member.rateOverTime};
+    newMember.isProjectManager = member.isProjectManager;
+    members.push(newMember);
   }
   if (!members) {
     throw new Error("members not found");
