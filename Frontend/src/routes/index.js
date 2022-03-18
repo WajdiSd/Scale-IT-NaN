@@ -13,6 +13,7 @@ import { PATH_AFTER_LOGIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 import WorkspaceInvite from 'src/pages/dashboard/WorkspaceInvite';
+import AddWorkspace from 'src/pages/dashboard/AddWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -89,8 +90,9 @@ export default function Router() {
             { element: <Navigate to="/dashboard/workspaces/list" replace />, index: true },
             { path: 'list', element: <GeneralWorkspace /> },
             { path: 'details/:id', element: <WorkspaceDetails /> },
-            
+
             { path: 'invite', element: <WorkspaceInvite /> },
+            { path: 'addworkspace', element: <AddWorkspace /> },
           ],
         },
         {
