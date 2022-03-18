@@ -217,7 +217,7 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 
 // Assign Project Manager
 // @desc assign project manager
-// @route post /api/workspace/assignPM/:idworkspace/:idMember
+// @route post /api/workspace/assignPM/:idworkspace/:idMember/:idHR
 // @access public
 const assignProjectManager = asyncHandler(async (req, res) => {
   /*verify workspaceid is valid*/
@@ -264,9 +264,9 @@ const assignProjectManager = asyncHandler(async (req, res) => {
   }
 });
 
-// Assign Project Manager
+// Delete Project Manager
 // @desc delete project manager
-// @route post /api/workspace/deletePM/:idworkspace/:idMember
+// @route post /api/workspace/deletePM/:idworkspace/:idMember/idHR
 // @access public
 const deleteProjectManager = asyncHandler(async (req, res) => {
   /*verify workspaceid is valid*/
@@ -412,6 +412,35 @@ const fetchUsersByWorkspace = asyncHandler(async (req, res) => {
   return res.status(200).json(fullMember);
 });
 
+
+// Count workspace members
+// @desc count members of a specific workspace
+// @route post /api/workspace/countmembers/:idworkspace
+// @access public
+const countWkspMembers = asyncHandler(async (req, res) => {
+  
+  /*verify workspaceid is valid*/
+  var total=0;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+      /*if not, error*/
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+      /*if yes, count total members */
+      for (let i = 0; i < workspace.assigned_members.length; i++) {
+          total = total+1;
+      }
+      res.status(200).json({
+        idworkspace: req.params.idworkspace,
+        total: total,
+      });
+  }
+
+});
+
+
+
 module.exports = {
   addWorkspace,
   updateWorkspace,
@@ -424,4 +453,6 @@ module.exports = {
   deleteWorkspace,
   getWorkspaceById,
   inviteManyMembers,
+  countWkspMembers,
+
 };
