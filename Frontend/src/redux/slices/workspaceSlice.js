@@ -50,6 +50,7 @@ export const workspaceSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.workspaces = action.payload;
+        state.workspace = null;
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;
