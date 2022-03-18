@@ -1,5 +1,5 @@
 import { capitalCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Tab, Box, Card, Tabs, Container } from '@mui/material';
@@ -22,6 +22,12 @@ import {
   ProfileGallery,
   ProfileFollowers,
 } from '../../sections/@dashboard/user/profile';
+import General from 'src/sections/@dashboard/workspace/General';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { getWorkspace } from 'src/redux/slices/workspaceSlice';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
+import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 
 // ----------------------------------------------------------------------
 
@@ -46,8 +52,25 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   const { user } = useAuth();
+  let { id } = useParams();
+  const [idWorkspace, setIdWorkspace] = useState(id);
+  const dispatch = useDispatch();
 
-  const [currentTab, setCurrentTab] = useState('profile');
+  const { workspace  } = useWorkspace();
+  const getUserWorkspace = () => {
+    try {
+      dispatch(getWorkspace(idWorkspace))
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserWorkspace();    
+  }, [idWorkspace]);
+
+  const [currentTab, setCurrentTab] = useState('General');
   const [findFriends, setFindFriends] = useState('');
 
   const handleChangeTab = (newValue) => {
@@ -60,22 +83,23 @@ export default function WorkspaceDetails() {
 
   const PROFILE_TABS = [
     {
-      value: 'profile',
+      value: 'General',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <Profile myProfile={_userAbout} posts={_userFeeds} />,
+      component: <General myProfile={_userAbout} posts={_userFeeds} />,
     },
     {
-      value: 'followers',
-      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
-    },
-    {
-      value: 'friends',
+      value: 'Members',
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
       component: <ProfileFriends friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />,
     },
     {
-      value: 'gallery',
+      value: 'Projects',
+      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
+      component: <ProfileFollowers followers={_userFollowers} />,
+    },
+    
+    {
+      value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
       component: <ProfileGallery gallery={_userGallery} />,
     },
@@ -88,7 +112,7 @@ export default function WorkspaceDetails() {
           heading="Workspace"
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.workspaces.list },
-            { name: 'Details', href: '' },
+            { name: workspace?.name, href: '' },
           ]}
         />
         <Card
@@ -98,7 +122,7 @@ export default function WorkspaceDetails() {
             position: 'relative',
           }}
         >
-          <ProfileCover myProfile={_userAbout} />
+          <WorkspaceCover />
 
           <TabsWrapperStyle>
             <Tabs
