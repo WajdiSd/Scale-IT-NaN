@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Workspace = require("../models/workspaceModel");
 const Member = require("../models/memberModel");
-
+const { MemberInWorkspace } = require("../helpers/functions");
 // @desc Get workspaces by member
 // @route get /api/workspace
 // @access private
@@ -248,30 +248,24 @@ const deleteProjectManager = asyncHandler(async (req, res) => {
   );
 });
 
-// Update workspace
-// @desc update workspace 
-// @route post /api/workspace/update/:id
-// @access public
+// inviteOneMember
+// @desc invites a member: adds his id to the list of assigned_members in the workspace
+// @route PUT /api/workspace/invite-members/:id
 const inviteOneMember = asyncHandler(async (req, res) => {
-  const idworkspace = req.params.id;
-  const memberEmail = req.body.email;
-  const memberIsHR = req.body.memberIsHR;
-  const memberRateHour = req.body.memberRateHour;
-  const memberRateOverTime = req.body.memberRateOverTime;
-  let member = await Member.findOne({email: memberEmail});
-  member.isHR = memberIsHR;
-  member.rateHour = memberRateHour;
-  member.rateOverTime = memberRateOverTime;
-  
+  let member = await Member.findOne({ email: req.body.email });
+  member.isHR = req.body.memberIsHR;
+  member.rateHour = req.body.memberRateHour;
+  member.rateOverTime = req.body.memberRateOverTime;
+
   if (!member) {
     res.status(404);
     throw new Error("member not found");
-  } else if (member.isDeleted||!member.isValidated) {
+  } else if (member.isDeleted || !member.isValidated) {
     res.status(400);
     throw new Error("member not validated");
-  } 
+  }
   const workspace = await Workspace.findOneAndUpdate(
-    { _id: idworkspace },
+    { _id: req.params.id },
     {
       $push: { assigned_members: { member: member } },
     },
@@ -283,51 +277,74 @@ const inviteOneMember = asyncHandler(async (req, res) => {
   if (!workspace) {
     res.status(404);
     throw new Error("workspace not found");
-  } 
+  }
   res.send({
     status: 200,
     message: "member invited to workspace successfully",
-    data : {
+    data: {
       workspace: workspace,
-      member: member
+      member: member,
+    },
+  });
+});
+
+/**
+ * @desc invite a list of members to a workspace
+ * @var(members,list of member emails )
+ * @var(role, so that we can know if the members should be affected as managers or not)
+ * @route PUT /api/workspace/invite-members/:id
+ */
+const inviteManyMembers = asyncHandler(async (req, res, next) => {
+  const role = req.body.role;
+  const emails = req.body.emails;
+
+  for (let i = 0; i < emails.length; i++) {
+    let member = await Member.findOne({ email: emails[i] });
+    let exists = await MemberInWorkspace(member._id, req.params.id);
+    console.log(exists);
+    if (exists) {
+      console.log("member exists");
+    } else {
+      const invitedMember = {
+        member: member._id,
+        isProjectManager: role === "manager" ? true : false,
+      };
+      await Workspace.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $push: { assigned_members: invitedMember },
+        },
+        {
+          new: true,
+        }
+      );
     }
-
-  })
-})
-
-const fetchUsersByWorkspace = asyncHandler(async(req, res) => {
-  const workspaceId = req.params.idworkspace;
-  console.log(workspaceId)
-  const workspace = await Workspace.findOne({_id: workspaceId});
-  console.log(workspace);
-  let members = [];
-  for(let i = 0; i < workspace.assigned_members.length; i++){
-    let  member = await workspace.assigned_members[i];
-    const fullMember = await Member.findOne({_id: member.member});
-    console.log("--------------")
-    console.log(member);
-
-    console.log(fullMember);
-    member.firstName = fullMember.firstName;
-    member.lastName = fullMember.lastName? fullMember.lastName : "";
-    member.email = fullMember.email? fullMember.email : "";
-    member.gender = fullMember.gender? fullMember.gender : "";
-    member.phone = fullMember.phone? fullMember.phone: "";
-    member.address = fullMember.address? fullMember.address : "";
-    member.state = fullMember.state? fullMember.state : "";
-    member.country = fullMember.country? fullMember.country : "";
-    member.city = fullMember.city? fullMember.city : "";
-    member.zipCode = fullMember.zipCode? fullMember.zipCode : "";
-    member.about = fullMember.about? fullMember.about : "";
-    console.log("new member");
-    console.log(member);
-    members.push(member);
   }
-  const filter = {}
+  return res.status(200).json(emails);
+});
+
+const fetchUsersByWorkspace = asyncHandler(async (req, res) => {
+  const workspaceId = req.params.idworkspace;
+  const workspace = await Workspace.findOne({ _id: workspaceId });
+  let fullMember;
+  let members = [];
+  for (let i = 0; i < workspace.assigned_members.length; i++) {
+    let member = await workspace.assigned_members[i];
+    fullMember = await Member.findOne({ _id: member.member });
+    console.log(fullMember);
+    fullMember["isProjectManager"] = member.isProjectManager;
+    fullMember["isHR"] = member.isHR;
+    fullMember.rateHour = member.rateHour;
+    fullMember.rateOverTime = member.rateOverTime;
+    console.log("member");
+    console.log(member);
+    console.log("fullMember");
+    console.log(fullMember);
+  }
   if (!members) {
     throw new Error("members not found");
   }
-  return res.status(200).json(members);
+  return res.status(200).json(fullMember);
 });
 
 module.exports = {
@@ -340,4 +357,5 @@ module.exports = {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  inviteManyMembers,
 };

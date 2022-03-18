@@ -10,12 +10,14 @@ const {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  inviteManyMembers,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/add", addWorkspace);
 router.put("/invite-member/:id", inviteOneMember);
+router.put("/invite-members/:id", inviteManyMembers);
 
 router.post("/add/:idmember", addWorkspace);
 router.put("/update/:idworkspace/:idhr", updateWorkspace);
