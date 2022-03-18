@@ -64,6 +64,7 @@ export default function Router() {
       ),
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
+        { path: 'landing', element: <GeneralWorkspace /> },
         { path: 'app', element: <GeneralApp /> },
         { path: 'ecommerce', element: <GeneralEcommerce /> },
         { path: 'analytics', element: <GeneralAnalytics /> },
@@ -89,7 +90,7 @@ export default function Router() {
             { element: <Navigate to="/dashboard/workspaces/list" replace />, index: true },
             { path: 'list', element: <GeneralWorkspace /> },
             { path: 'details/:id', element: <WorkspaceDetails /> },
-            
+
             { path: 'invite', element: <WorkspaceInvite /> },
           ],
         },
