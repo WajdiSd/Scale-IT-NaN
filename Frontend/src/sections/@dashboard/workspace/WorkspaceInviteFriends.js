@@ -41,6 +41,9 @@ export default function WorkspaceInviteFriends({ emails }) {
   }
 
   function addManager() {
+    // TODO : add email validation
+    // TODO : add db checking for value
+
     const user = {
       email: manager,
       isManager: true,
