@@ -28,6 +28,8 @@ export default function WorkspaceInviteFriends({ emails }) {
   const [manager, setManager] = useState('');
 
   function addMember() {
+    // TODO : add email validation
+    // TODO : add db checking for value
     const user = {
       email: member,
       isManager: false,
