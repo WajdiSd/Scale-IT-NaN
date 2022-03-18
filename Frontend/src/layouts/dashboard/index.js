@@ -55,18 +55,19 @@ export default function DashboardLayout() {
 
   const isInWorkspace = () => pathname.includes('/workspace/');
 
-  const isHr = false;
-  const isProjectManager = false;
-
   if (verticalLayout) {
     return (
       <>
-        <DashboardHeader onOpenSidebar={() => setOpen(true)} verticalLayout={verticalLayout} />
+        <DashboardHeader
+          isInWorkspace={isInWorkspace()}
+          onOpenSidebar={() => setOpen(true)}
+          verticalLayout={verticalLayout}
+        />
 
         {isDesktop ? (
-          <NavbarHorizontal />
+          <NavbarHorizontal isInWorkspace={isInWorkspace()} />
         ) : (
-          <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+          <NavbarVertical isInWorkspace={isInWorkspace()} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
         )}
 
         <Box
@@ -96,21 +97,9 @@ export default function DashboardLayout() {
         minHeight: { lg: 1 },
       }}
     >
-      <DashboardHeader
-        isCollapse={isCollapse}
-        isInWorkspace={isInWorkspace()}
-        isHr={isHr}
-        isProjectManager={isProjectManager}
-        onOpenSidebar={() => setOpen(true)}
-      />
+      <DashboardHeader isInWorkspace={isInWorkspace()} isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
 
-      <NavbarVertical
-        isOpenSidebar={open}
-        isInWorkspace={isInWorkspace()}
-        isHr={isHr}
-        isProjectManager={isProjectManager}
-        onCloseSidebar={() => setOpen(false)}
-      />
+      <NavbarVertical isInWorkspace={isInWorkspace()} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
 
       <MainStyle collapseClick={collapseClick}>
         <Outlet />

@@ -1,7 +1,6 @@
 //import VerifyCode from "src/pages/auth/VerifyCode";
 import authService from '../service/authService';
 import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
-import useAuth from 'src/hooks/useAuth';
 
 // const isHr = createAction('isHr');
 // const isNotHr = createAction('isNotHr');
@@ -148,15 +147,14 @@ export const verifyCode = createAsyncThunk('auth/verifyCode', async (code, thunk
 });
 
 export const isHr = createAsyncThunk('auth/isHr', async (workspace, thunkAPI) => {
-  const { user } = useAuth();
-  console.log('ishr asyncthunk');
-  console.log(workspace);
+  const user = JSON.parse(localStorage.getItem('user'));
+  let isHR = false;
 
   try {
-    workspace.assigned_members.forEach((assignedMember) => {
-      if (user._id.equals(assignedMember.member)) return assignedMember.isHR;
-    });
-    return false;
+    workspace.assigned_members.forEach((assignedMember) =>
+      user['_id'] === String(assignedMember.member) ? (isHR = assignedMember.isHR) : ''
+    );
+    return isHR;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -165,15 +163,14 @@ export const isHr = createAsyncThunk('auth/isHr', async (workspace, thunkAPI) =>
 });
 
 export const isProjectManager = createAsyncThunk('auth/isProjectManager', async (workspace, thunkAPI) => {
-  const { user } = useAuth();
-  console.log('isprojectmanager asyncthunk');
-  console.log(workspace);
+  const user = JSON.parse(localStorage.getItem('user'));
+  let isPM = false;
 
   try {
-    workspace.assigned_members.forEach((assignedMember) => {
-      if (user._id.equals(assignedMember.member)) return assignedMember.isProjectManager;
-    });
-    return false;
+    workspace.assigned_members.forEach((assignedMember) =>
+      user['_id'] === String(assignedMember.member) ? (isPM = assignedMember.isProjectManager) : ''
+    );
+    return isPM;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
