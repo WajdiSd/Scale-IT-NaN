@@ -402,11 +402,12 @@ const countWkspMembers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("invalid workspace id");
   } else {
-      /*if yes, verify if changes are made by an HR */
+      /*if yes, count total members */
       for (let i = 0; i < workspace.assigned_members.length; i++) {
           total = total+1;
       }
       res.status(200).json({
+        idworkspace: req.params.idworkspace,
         total: total,
       });
   }
