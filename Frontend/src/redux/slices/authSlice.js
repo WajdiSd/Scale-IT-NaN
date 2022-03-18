@@ -1,9 +1,12 @@
 //import VerifyCode from "src/pages/auth/VerifyCode";
 import authService from '../service/authService';
 import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import useAuth from 'src/hooks/useAuth';
 
-const enterWorkspace = createAction('enterWorkspace');
-const leaveWorkspace = createAction('leaveWorkspace');
+// const isHr = createAction('isHr');
+// const isNotHr = createAction('isNotHr');
+// const isProjectManager = createAction('isProjectManager');
+// const isNotProjectManager = createAction('isNotProjectManager');
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -133,9 +136,44 @@ export const sendCode = createAsyncThunk('auth/sendCode', async (data, thunkAPI)
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const verifyCode = createAsyncThunk('auth/verifyCode', async (code, thunkAPI) => {
   try {
     return await authService.verifyCode(code);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const isHr = createAsyncThunk('auth/isHr', async (workspace, thunkAPI) => {
+  const { user } = useAuth();
+  console.log('ishr asyncthunk');
+  console.log(workspace);
+
+  try {
+    workspace.assigned_members.forEach((assignedMember) => {
+      if (user._id.equals(assignedMember.member)) return assignedMember.isHR;
+    });
+    return false;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const isProjectManager = createAsyncThunk('auth/isProjectManager', async (workspace, thunkAPI) => {
+  const { user } = useAuth();
+  console.log('isprojectmanager asyncthunk');
+  console.log(workspace);
+
+  try {
+    workspace.assigned_members.forEach((assignedMember) => {
+      if (user._id.equals(assignedMember.member)) return assignedMember.isProjectManager;
+    });
+    return false;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -148,7 +186,8 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      state.isInWorkspace = false;
+      state.isHr = false;
+      state.isProjectManager = false;
       state.isLoading = false;
       state.isAuthenticated = false;
       state.isError = false;
@@ -273,6 +312,24 @@ export const authSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
       })
+      .addCase(isHr.fulfilled, (state, action) => {
+        console.log('hr');
+        console.log(action);
+        state.isHr = action.payload;
+      })
+      .addCase(isHr.rejected, (state, action) => {
+        console.log('hr rejected');
+        console.log(action);
+      })
+      .addCase(isProjectManager.fulfilled, (state, action) => {
+        console.log('pm');
+        console.log(action);
+        state.isProjectManager = action.payload;
+      })
+      .addCase(isProjectManager.rejected, (state, action) => {
+        console.log('pm rejected');
+        console.log(action);
+      });
   },
 });
 

@@ -56,18 +56,20 @@ export default function WorkspaceDetails() {
   const [idWorkspace, setIdWorkspace] = useState(id);
   const dispatch = useDispatch();
 
-  const { workspace  } = useWorkspace();
+  const { workspace } = useWorkspace();
   const getUserWorkspace = () => {
     try {
-      dispatch(getWorkspace(idWorkspace))
+      console.log('idWorkSpace in getuserwkspc');
+      console.log(idWorkspace);
 
+      dispatch(getWorkspace(idWorkspace));
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    getUserWorkspace();    
+    getUserWorkspace();
   }, [idWorkspace]);
 
   const [currentTab, setCurrentTab] = useState('General');
@@ -97,7 +99,7 @@ export default function WorkspaceDetails() {
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
       component: <ProfileFollowers followers={_userFollowers} />,
     },
-    
+
     {
       value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
