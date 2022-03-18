@@ -30,7 +30,7 @@ router.put(
   "/removemember/:idmember/:idworkspace/:idhr",
   removeMemberFromWorkspace
 );
-router.put("/assignPM/:idworkspace/:idmember", assignProjectManager);
-router.put("/deletePM/:idworkspace/:idmember", deleteProjectManager);
+router.put("/assignPM/:idworkspace/:idmember/:idhr", assignProjectManager);
+router.put("/deletePM/:idworkspace/:idmember/:idhr", deleteProjectManager);
 router.put("/deleteworkspace/:idworkspace/:idhr", deleteWorkspace);
 module.exports = router;
