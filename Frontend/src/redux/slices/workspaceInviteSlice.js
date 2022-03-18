@@ -8,9 +8,6 @@ const user = JSON.parse(localStorage.getItem('user'));
 const addMember = createAction('addMember');
 const addManager = createAction('addManager');
 const removeUser = createAction('removeUser');
-const pending = createAction('pending');
-const fulfilled = createAction('fulfilled');
-const rejected = createAction('rejected');
 
 const initialState = {
   users: [],
@@ -20,6 +17,17 @@ const initialState = {
   message: '',
 };
 
+// Check if user exists
+export const checkIfUserExists = createAsyncThunk('workspace/checkIfUserExists', async (email, thunkAPI) => {
+  try {
+    return await authService.verifyUser(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const workspaceInviteSlice = createSlice({
   name: 'workspaceInvite',
   initialState,
@@ -27,13 +35,20 @@ export const workspaceInviteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addMember, (state, action) => {
+        if (!action.payload.email) {
+          return;
+        }
         const member = {
           email: action.payload.email,
           isManager: false,
         };
+
         state.users = [...users, member];
       })
       .addCase(addManager, (state, action) => {
+        if (!action.payload.email) {
+          return;
+        }
         const manager = {
           email: action.payload.email,
           isManager: true,

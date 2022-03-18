@@ -34,4 +34,7 @@ router.put("/updatepwd/:email", updatepwd);
 router.put("/deleteaccount/:iduser", protect, deleteUser);
 router.put("/updateaccount/:iduser", protect, updateUser);
 
+//Check if Exists
+router.get("/user/:email", protect);
+
 module.exports = router;
