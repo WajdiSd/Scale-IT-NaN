@@ -40,6 +40,7 @@ export const PATH_DASHBOARD = {
     analytics: path(ROOTS_DASHBOARD, '/analytics'),
     banking: path(ROOTS_DASHBOARD, '/banking'),
     booking: path(ROOTS_DASHBOARD, '/booking'),
+    addworkspace: path(ROOTS_DASHBOARD, '/addworkspace'),
   },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
@@ -55,7 +56,6 @@ export const PATH_DASHBOARD = {
   workspaces: {
     details: path(ROOTS_DASHBOARD, '/workspace/'),
     memberInvite: path(ROOTS_DASHBOARD, '/workspace/invite'),
-    addworkspace: path(ROOTS_DASHBOARD, '/workspace/addworkspace'),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),

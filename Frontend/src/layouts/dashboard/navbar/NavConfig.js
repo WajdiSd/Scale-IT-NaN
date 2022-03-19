@@ -34,10 +34,7 @@ const navConfig = [
         title: 'workspaces',
         path: PATH_DASHBOARD.workspaces.root,
         icon: ICONS.workspace,
-        children: [
-          { title: 'invite members', path: PATH_DASHBOARD.workspaces.memberInvite },
-          { title: 'add workspace', path: PATH_DASHBOARD.workspaces.addworkspace },
-        ],
+        children: [{ title: 'invite members', path: PATH_DASHBOARD.workspaces.memberInvite }],
       },
       { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
