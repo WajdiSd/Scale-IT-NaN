@@ -59,9 +59,6 @@ export default function WorkspaceDetails() {
   const { workspace } = useWorkspace();
   const getUserWorkspace = () => {
     try {
-      console.log('idWorkSpace in getuserwkspc');
-      console.log(idWorkspace);
-
       dispatch(getWorkspace(idWorkspace));
     } catch (error) {
       console.error(error);
@@ -113,7 +110,7 @@ export default function WorkspaceDetails() {
         <HeaderBreadcrumbs
           heading="Workspace"
           links={[
-            { name: 'Workspace', href: PATH_DASHBOARD.workspaces.list },
+            { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
             { name: workspace?.name, href: '' },
           ]}
         />

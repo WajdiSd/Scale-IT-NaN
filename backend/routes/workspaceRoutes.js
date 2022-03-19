@@ -12,7 +12,7 @@ const {
   deleteWorkspace,
   getWorkspaceById,
   inviteManyMembers,
-  countWkspMembers
+  countWkspMembers,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");

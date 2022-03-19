@@ -111,7 +111,7 @@ export default function AddWorkspace() {
       dispatch(addWorkspace(data))
       .then(res=>{
         enqueueSnackbar("Added workspace successfully");
-        navigate(PATH_DASHBOARD.workspaces.list);
+        navigate(PATH_DASHBOARD.general.landing);
       });
       // await new Promise((resolve) => setTimeout(resolve, 500));
       // reset();

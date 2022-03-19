@@ -53,18 +53,21 @@ export default function GeneralWorkspace() {
 
   useEffect(() => {
     getUserWorkspaces();
+
     workspaces.map(workspace=>{
       let validated = false;
-      workspace.assigned_members.forEach(member => {
-        validated = member.member == user._id && member.isHR
 
+      workspace.assigned_members.forEach(member => {
+        if(member.member == user._id){
+          if(member.isHR){
+            setUserWorkspaces(oldArray => [...oldArray,workspace] );
+          }
+          else{
+            setUserJoinedspaces(oldArray => [...oldArray,workspace] );
+          }
+        }
       });
-      if(validated) {
-          setUserWorkspaces(oldArray => [...oldArray,workspace] );
-      }
-      else {
-        setUserJoinedspaces(oldArray => [...oldArray,workspace] );
-      }
+     
     })
     
   }, []);
