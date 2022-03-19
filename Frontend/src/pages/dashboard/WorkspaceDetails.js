@@ -67,7 +67,7 @@ export default function WorkspaceDetails() {
 
   useEffect(() => {
     getUserWorkspace();
-  }, [idWorkspace]);
+  }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
   const [findFriends, setFindFriends] = useState('');
