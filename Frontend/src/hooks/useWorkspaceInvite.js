@@ -1,48 +1,41 @@
 import { useState } from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
-import { addMember, addManager, removeUser } from 'src/redux/slices/workspaceInviteSlice';
+import { addMember, addManager, removeUser, setUserError, resetUserError } from 'src/redux/slices/workspaceInviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
 // ----------------------------------------------------------------------
 
 const useWorkspaceInvite = () => {
   const users = useSelector((state) => state.workspaceInvite.users);
+  const userError = useSelector((state) => state.workspaceInvite.userErrorMessage);
   const [member, setMember] = useState('');
   const [manager, setManager] = useState('');
-  const [memberAlreadyExists, setMemberAlreadyExists] = useState('');
-  const [managerAlreadyExists, setManagerAlreadyExists] = useState('');
-  const workspaceInvvv = useSelector((state) => state.workspaceInvite);
 
   const dispatch = useDispatch();
 
-  // TODO : add email validation
-  // TODO : add db checking for value
-  const addMemberUser = () => {
-    console.log('in addmemberuser, users:');
-    console.log(users);
-    console.log('state.workspaceInvite');
-    console.log(workspaceInvvv);
-    console.log('member');
-    console.log(member);
-    return dispatch(addMember(member)) ? setMember('') : setMemberAlreadyExists(`${member.email} already exists`);
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
   };
-  //   const addMemberUser = dispatch(addMember(member));
 
-  // TODO : add email validation
-  // TODO : add db checking for value
+  const addMemberUser = () => {
+    validateEmail(member) ? dispatch(addMember(member)) : dispatch(setUserError('Please add a valid email'));
+    setMember('');
+  };
+
   const addManagerUser = () => {
-    console.log('in addmanageruser, users:');
-    console.log(users);
-    console.log('state.workspaceInvite');
-    console.log(workspaceInvvv);
-    console.log('manager');
-    console.log(manager);
-    return dispatch(addManager(manager)) ? setManager('') : setManagerAlreadyExists(`${manager.email} already exists`);
+    validateEmail(manager) ? dispatch(addManager(manager)) : dispatch(setUserError('Please add a valid email'));
+    setManager('');
   };
 
   const removeUserHook = (event) => {
     return dispatch(removeUser(event.target.innerHTML));
   };
+
+  const resetUserErrorHook = () => dispatch(resetUserError());
 
   return {
     users,
@@ -53,10 +46,8 @@ const useWorkspaceInvite = () => {
     addMemberUser,
     addManagerUser,
     removeUserHook,
-    memberAlreadyExists,
-    managerAlreadyExists,
-    setMemberAlreadyExists,
-    setManagerAlreadyExists,
+    userError,
+    resetUserErrorHook,
   };
 };
 

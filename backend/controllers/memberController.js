@@ -404,7 +404,7 @@ const checkIfUserExistsByEmail = asyncHandler(async (req, res) => {
     res.status(200).json(true);
   } else {
     res.status(400);
-    throw new Error("User does not exist");
+    throw new Error(`User ${req.params.email} does not exist`);
   }
 });
 

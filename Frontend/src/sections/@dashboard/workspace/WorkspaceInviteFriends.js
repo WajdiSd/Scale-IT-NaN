@@ -1,6 +1,6 @@
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Card, Stack, Typography, Button, OutlinedInput, Divider, Chip } from '@mui/material';
+import { Card, Stack, Snackbar, Alert, Typography, Button, OutlinedInput, Divider, Chip } from '@mui/material';
 // components
 import Image from '../../../components/Image';
 import { useState } from 'react';
@@ -34,26 +34,32 @@ export default function WorkspaceInviteFriends() {
     addMemberUser,
     addManagerUser,
     removeUserHook,
-    memberAlreadyExists,
-    managerAlreadyExists,
-    setMemberAlreadyExists,
-    setManagerAlreadyExists,
+    userError,
+    resetUserErrorHook,
   } = useWorkspaceInvite();
 
   function handleMemberInput(event) {
+    resetUserErrorHook();
     setMember(event.target.value);
   }
 
   function handleManagerInput(event) {
+    resetUserErrorHook();
     setManager(event.target.value);
   }
 
-  // function removeUser(event) {
-  //   setUsers((users) => users.filter((user) => user.email !== event.target.innerHTML));
-  // }
+  function handleClose() {
+    console.log(userError);
+    resetUserErrorHook();
+  }
 
   return (
     <div>
+      <Snackbar open={userError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {userError}
+        </Alert>
+      </Snackbar>
       <Image
         visibleByDefault
         disabledEffect
@@ -117,7 +123,6 @@ export default function WorkspaceInviteFriends() {
                     <Chip
                       key={index}
                       label={user.email ? user.email : console.log(user)}
-                      // label={'nqsd'}
                       clickable
                       onClick={removeUserHook}
                       variant="filled"
