@@ -1,8 +1,21 @@
+import React from 'react';
 import { capitalCase } from 'change-case';
 import { useEffect, useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Tab, Box, Card, Tabs, Container } from '@mui/material';
+import {
+  Tab,
+  Box,
+  Card,
+  Tabs,
+  Container,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -25,9 +38,11 @@ import {
 import General from 'src/sections/@dashboard/workspace/General';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { getWorkspace } from 'src/redux/slices/workspaceSlice';
-import { useParams } from 'react-router';
+import { deleteWorkspace } from 'src/redux/slices/workspaceSlice';
+import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -53,16 +68,39 @@ export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   const { user } = useAuth();
   let { id } = useParams();
+  const { isHr } = useAuth();
   const [idWorkspace, setIdWorkspace] = useState(id);
   const dispatch = useDispatch();
-
+  const { enqueueSnackbar } = useSnackbar();
   const { workspace } = useWorkspace();
+  const navigate = useNavigate();
+  const DeleteWorkspace = () => {
+    try {
+      dispatch(deleteWorkspace(idWorkspace, user._id)).then((res) => {
+        enqueueSnackbar('Deleted workspace successfully');
+        navigate(PATH_DASHBOARD.general.landing);
+      });
+    } catch (error) {
+      enqueueSnackbar('Unauthorized to delete workspace');
+      console.error(error);
+    }
+
+    // navigate(PATH_AUTH.login, { replace: true });
+  };
   const getUserWorkspace = () => {
     try {
       dispatch(getWorkspace(idWorkspace));
     } catch (error) {
       console.error(error);
     }
+  };
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -143,6 +181,28 @@ export default function WorkspaceDetails() {
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;
         })}
       </Container>
+      {isHr && (
+        <Button sx={{ mt: 5 }} onClick={handleClickOpen} color="error">
+          Delete Workspace
+        </Button>
+      )}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete your workspace ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">Your workspace will be permanetly deleted</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={DeleteWorkspace} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Page>
   );
 }

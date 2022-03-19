@@ -72,6 +72,22 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(deleteWorkspace.pending, (state) => {
+        console.log('delete workspace pending');
+        state.isLoading = true;
+      })
+      .addCase(deleteWorkspace.fulfilled, (state, action) => {
+        console.log('delete workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload.id);
+      })
+      .addCase(deleteWorkspace.rejected, (state, action) => {
+        console.log('delete workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -105,6 +121,17 @@ export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id
 export const addWorkspace = createAsyncThunk('workspace/addWorkspace', async (workspaceData, thunkAPI) => {
   try {
     return await workspaceService.addworkspace(workspaceData, user._id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// Delete workspace
+export const deleteWorkspace = createAsyncThunk('workspace/deleteWorkspace', async (idworkspace, thunkAPI) => {
+  try {
+    return await workspaceService.deleteworkspace(idworkspace, user._id);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

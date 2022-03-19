@@ -10,17 +10,19 @@ const getWorkspaces = async (id) => {
 };
 
 const getWorkspace = async (id) => {
-  const response = await axiosInstance.get(API_URL +"details/"+ id);
+  const response = await axiosInstance.get(API_URL + 'details/' + id);
   return response.data;
 };
 
 //add workspace
 const addworkspace = async (workspaceData, idmember) => {
-  // const authState = useSelector((state) => state.auth);
-  // const idmember = authState.user._id;
-  console.log(workspaceData);
-  console.log(idmember);
   const response = await axiosInstance.post(API_URL + '/add/' + idmember, workspaceData);
+  return response.data;
+};
+
+//delete workspace
+const deleteworkspace = async (idworkspace, idmember) => {
+  const response = await axiosInstance.put(API_URL + '/deleteworkspace/' + idworkspace + '/' + idmember);
   return response.data;
 };
 
@@ -28,6 +30,7 @@ const workspaceService = {
   getWorkspaces,
   addworkspace,
   getWorkspace,
+  deleteworkspace,
 };
 
 export default workspaceService;
