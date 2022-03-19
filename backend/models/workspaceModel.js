@@ -22,8 +22,8 @@ const workspaceSchema = mongoose.Schema(
         },
         isHR: { type: Boolean, default: false },
         isProjectManager: { type: Boolean, default: false },
-        rateHour: { type: Number },
-        rateOvertime: { type: Number },
+        rateHour: { type: Number, default: 0 },
+        rateOvertime: { type: Number, default: 0 },
       },
     ],
   },
@@ -31,7 +31,5 @@ const workspaceSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-
 
 module.exports = mongoose.model("Workspace", workspaceSchema);
