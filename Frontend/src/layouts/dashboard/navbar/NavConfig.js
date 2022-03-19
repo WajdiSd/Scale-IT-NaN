@@ -6,6 +6,12 @@ import SvgIconStyle from '../../../components/SvgIconStyle';
 
 // ----------------------------------------------------------------------
 
+// const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+// const _id = JSON.parse(workspace)['_id'];
+// console.log('_id');
+// console.log(_id);
+// const linkToWorkspaceInvite = `${PATH_DASHBOARD.workspaces.details}${_id}/invite`;
+
 const getIcon = (name) => <SvgIconStyle src={`/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
 const ICONS = {

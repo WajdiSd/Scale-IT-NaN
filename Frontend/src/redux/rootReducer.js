@@ -38,7 +38,7 @@ const workspacesPersistConfig = {
   key: 'workspaces',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['workspaces'],
+  whitelist: ['workspaces', 'workspace'],
 };
 
 const rootReducer = combineReducers({
