@@ -79,32 +79,32 @@ const registerMember = asyncHandler(async (req, res) => {
 // @route post /api/members
 // @access public
 const resendEmail = asyncHandler(async (req, res) => {
-console.log("resending");
-const member = await Member.findOne({
-  _id : req.params.id,
-});
-    var mailOptions = {
-      from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
-      to: member.email, // list of receivers
-      subject: "Welcome!",
-      template: "email", // the name of the template file i.e email.handlebars
-      context: {
-        link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + req.params.id, // replace {{link}}
-      },
-    };
+  console.log("resending");
+  const member = await Member.findOne({
+    _id: req.params.id,
+  });
+  var mailOptions = {
+    from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
+    to: member.email, // list of receivers
+    subject: "Welcome!",
+    template: "email", // the name of the template file i.e email.handlebars
+    context: {
+      link: process.env.FRONTEND_BASE_URL + "auth/confirm/" + req.params.id, // replace {{link}}
+    },
+  };
 
-    // trigger the sending of the E-mail
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.status(400);
-        throw new Error(error);
-      } else {
-        console.log("Message sent: " + info.response);
-        res.status(201).json({
-         message : "Message sent"
-        });
-      }
-    });
+  // trigger the sending of the E-mail
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      res.status(400);
+      throw new Error(error);
+    } else {
+      console.log("Message sent: " + info.response);
+      res.status(201).json({
+        message: "Message sent",
+      });
+    }
+  });
 });
 
 // @desc Verify member
@@ -391,6 +391,23 @@ const updateUserPassword = asyncHandler(async (req, res) => {
   }
 });
 
+// Check if user exists
+// @desc Check if user exists
+// @route post /api/members/user/:email
+// @access public
+const checkIfUserExistsByEmail = asyncHandler(async (req, res) => {
+  const filter = { email: req.params.email };
+
+  const user = await Member.findOne(filter);
+
+  if (user) {
+    res.status(200).json(true);
+  } else {
+    res.status(400);
+    throw new Error(`User ${req.params.email} does not exist`);
+  }
+});
+
 // Delete account
 // @desc delete account == set isDeleted to false
 // @route put /api/members/deleteaccount/:iduser
@@ -473,4 +490,5 @@ module.exports = {
   updateUser,
   updateUserPassword,
   resendEmail,
+  checkIfUserExistsByEmail,
 };

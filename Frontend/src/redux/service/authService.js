@@ -1,6 +1,6 @@
-import axios from "axios";
-import axiosInstance from "src/utils/axios";
-import { dispatch } from "../store";
+import axios from 'axios';
+import axiosInstance from 'src/utils/axios';
+import { dispatch } from '../store';
 
 const API_URL = 'members/';
 
@@ -14,12 +14,12 @@ const register = async (userData) => {
   return response.data;
 };
 
-const updateUser = async(userData) => {
+const updateUser = async (userData) => {
   const id = userData.id;
   delete userData.id;
-  const response = await axiosInstance.put(API_URL+"updateaccount/"+id,userData);
+  const response = await axiosInstance.put(API_URL + 'updateaccount/' + id, userData);
   return response.data;
-}
+};
 // Login user
 const login = async (userData) => {
   const response = await axiosInstance.post(API_URL + 'login', userData);
@@ -54,37 +54,40 @@ const logout = () => {
   localStorage.removeItem('user');
 };
 
+const sendCode = async (userData) => {
+  const data = {
+    email: userData.email,
+  };
 
-const sendCode = async(userData) => {
-const data = {
-  email: userData.email
-}
+  //control to check if the code will be sent via mail or sms
+  let path = '';
+  if (userData.isEmail) path = 'recoverPwdViaMail/';
+  else path = 'recoverPwdViaSms/';
 
-//control to check if the code will be sent via mail or sms
-let path = "";
-if(userData.isEmail)
-  path = "recoverPwdViaMail/";
-else
-path = "recoverPwdViaSms/";
-
-  const response = await axiosInstance.post(API_URL+path,data);
+  const response = await axiosInstance.post(API_URL + path, data);
   return response.data;
-}
+};
 //change password
-const resetUserPassword = async(obj) => {
-  const response = await axiosInstance.put(API_URL+"updatepwd/"+obj.email,obj);
+const resetUserPassword = async (obj) => {
+  const response = await axiosInstance.put(API_URL + 'updatepwd/' + obj.email, obj);
   return response.data;
-}
+};
 
-const verifyCode = async(code) => {
-  const response = await axiosInstance.put(API_URL+"verifyCode/"+code);
+const verifyCode = async (code) => {
+  const response = await axiosInstance.put(API_URL + 'verifyCode/' + code);
   return response.data;
-}
+};
 
-const resendEmail = async(id) => {
-  const response = await axiosInstance.post(API_URL+"resendEmail/"+id);
+const resendEmail = async (id) => {
+  const response = await axiosInstance.post(API_URL + 'resendEmail/' + id);
   return response.data;
-}
+};
+
+// check if user exists
+const checkIfUserExistsByEmail = async (email) => {
+  const response = await axiosInstance.get(API_URL + 'user/' + email);
+  return response.data;
+};
 
 const authService = {
   register,
@@ -98,6 +101,7 @@ const authService = {
   updateUser,
   deleteUser,
   resendEmail,
+  checkIfUserExistsByEmail,
 };
 
 export default authService;

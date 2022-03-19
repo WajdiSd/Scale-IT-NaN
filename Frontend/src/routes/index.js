@@ -71,6 +71,7 @@ export default function Router() {
         { path: 'analytics', element: <GeneralAnalytics /> },
         { path: 'banking', element: <GeneralBanking /> },
         { path: 'booking', element: <GeneralBooking /> },
+        { path: 'addworkspace', element: <AddWorkspace /> },
 
         {
           path: 'e-commerce',
@@ -89,9 +90,11 @@ export default function Router() {
           path: 'workspace',
           children: [
             { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
-            { path: ':id', element: <WorkspaceDetails /> },
-            { path: 'invite', element: <WorkspaceInvite /> },
-            { path: 'addworkspace', element: <AddWorkspace /> },
+            {
+              path: ':id',
+              element: <WorkspaceDetails />,
+            },
+            { path: ':id/invite', element: <WorkspaceInvite /> },
           ],
         },
         {

@@ -1,11 +1,13 @@
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Card, Stack, Typography, Button, OutlinedInput, Divider, Chip } from '@mui/material';
+import { Card, Stack, Snackbar, Alert, Typography, Button, OutlinedInput, Divider, Chip } from '@mui/material';
 // components
 import Image from '../../../components/Image';
 import { useState } from 'react';
 // palette
 import palette from '../../../theme/palette';
+// custom hook
+import useWorkspaceInvite from 'src/hooks/useWorkspaceInvite';
 
 // ----------------------------------------------------------------------
 
@@ -22,48 +24,42 @@ const ContentStyle = styled(Card)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function WorkspaceInviteFriends({ emails }) {
-  const [users, setUsers] = useState([]);
-  const [member, setMember] = useState('');
-  const [manager, setManager] = useState('');
-
-  function addMember() {
-    // TODO : add email validation
-    // TODO : add db checking for value
-    const user = {
-      email: member,
-      isManager: false,
-    };
-    setUsers([...users, user]);
-    setMember('');
-  }
+export default function WorkspaceInviteFriends() {
+  const {
+    users,
+    member,
+    manager,
+    setMember,
+    setManager,
+    addMemberUser,
+    addManagerUser,
+    removeUserHook,
+    userError,
+    resetUserErrorHook,
+  } = useWorkspaceInvite();
 
   function handleMemberInput(event) {
+    resetUserErrorHook();
     setMember(event.target.value);
   }
 
-  function addManager() {
-    // TODO : add email validation
-    // TODO : add db checking for value
-
-    const user = {
-      email: manager,
-      isManager: true,
-    };
-    setUsers([...users, user]);
-    setManager('');
-  }
-
   function handleManagerInput(event) {
-    setManager((manager) => event.target.value);
+    resetUserErrorHook();
+    setManager(event.target.value);
   }
 
-  function removeUser(event) {
-    setUsers((users) => users.filter((user) => user.email !== event.target.innerHTML));
+  function handleClose() {
+    console.log(userError);
+    resetUserErrorHook();
   }
 
   return (
     <div>
+      <Snackbar open={userError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {userError}
+        </Alert>
+      </Snackbar>
       <Image
         visibleByDefault
         disabledEffect
@@ -106,7 +102,7 @@ export default function WorkspaceInviteFriends({ emails }) {
                   '& fieldset': { display: 'none' },
                 }}
               />
-              <Button onClick={addMember} color="warning" variant="contained">
+              <Button onClick={addMemberUser} color="warning" variant="contained">
                 Add Member
               </Button>
             </Stack>
@@ -126,9 +122,9 @@ export default function WorkspaceInviteFriends({ emails }) {
                   !user.isManager ? (
                     <Chip
                       key={index}
-                      label={user.email}
+                      label={user.email ? user.email : console.log(user)}
                       clickable
-                      onClick={removeUser}
+                      onClick={removeUserHook}
                       variant="filled"
                       sx={{
                         p: 1,
@@ -171,7 +167,7 @@ export default function WorkspaceInviteFriends({ emails }) {
                   '& fieldset': { display: 'none' },
                 }}
               />
-              <Button onClick={addManager} color="warning" variant="contained">
+              <Button onClick={addManagerUser} color="warning" variant="contained">
                 Add Manager
               </Button>
             </Stack>
@@ -193,7 +189,7 @@ export default function WorkspaceInviteFriends({ emails }) {
                       key={index}
                       label={user.email}
                       clickable
-                      onClick={removeUser}
+                      onClick={removeUserHook}
                       variant="filled"
                       sx={{
                         p: 1,
@@ -215,7 +211,7 @@ export default function WorkspaceInviteFriends({ emails }) {
 
           {/* Submit Users Button */}
           <Stack direction="row" justifyContent="center" alignItems="center">
-            <Button onClick={addManager} color="warning" variant="contained">
+            <Button onClick={addManagerUser} color="warning" variant="contained">
               Submit Invitations
             </Button>
           </Stack>

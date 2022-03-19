@@ -7,6 +7,15 @@ function path(root, sublink) {
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 
+let rootWorkspace = '';
+const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+if (JSON.parse(workspace) != null) {
+  const _id = JSON.parse(workspace)['_id'];
+  console.log('_id');
+  console.log(_id);
+  rootWorkspace = `/workspace/${_id}`;
+}
+
 // ----------------------------------------------------------------------
 
 export const PATH_AUTH = {
@@ -40,6 +49,7 @@ export const PATH_DASHBOARD = {
     analytics: path(ROOTS_DASHBOARD, '/analytics'),
     banking: path(ROOTS_DASHBOARD, '/banking'),
     booking: path(ROOTS_DASHBOARD, '/booking'),
+    addworkspace: path(ROOTS_DASHBOARD, '/addworkspace'),
   },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
@@ -54,8 +64,7 @@ export const PATH_DASHBOARD = {
   kanban: path(ROOTS_DASHBOARD, '/kanban'),
   workspaces: {
     details: path(ROOTS_DASHBOARD, '/workspace/'),
-    memberInvite: path(ROOTS_DASHBOARD, '/workspace/invite'),
-    addworkspace: path(ROOTS_DASHBOARD, '/workspace/addworkspace'),
+    memberInvite: path(ROOTS_DASHBOARD, `${rootWorkspace}/invite`),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),
