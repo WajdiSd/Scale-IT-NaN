@@ -8,13 +8,17 @@ const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 
 let rootWorkspace = '';
-const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
-if (JSON.parse(workspace) != null) {
-  const _id = JSON.parse(workspace)['_id'];
-  console.log('_id');
-  console.log(_id);
-  rootWorkspace = `/workspace/${_id}`;
+if(localStorage.getItem('redux-workspaces') != null){
+  const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+
+  if (JSON.parse(workspace) != null) {
+    const _id = JSON.parse(workspace)['_id'];
+    console.log('_id');
+    console.log(_id);
+    rootWorkspace = `/workspace/${_id}`;
+  }
 }
+
 
 // ----------------------------------------------------------------------
 

@@ -49,6 +49,7 @@ import { styled } from '@mui/material/styles';
 import { addWorkspace } from 'src/redux/slices/workspaceSlice';
 import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
+import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 
 // ----------------------------------------------------------------------
 
@@ -140,6 +141,13 @@ export default function AddWorkspace() {
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
+      <HeaderBreadcrumbs
+          heading="Workspace"
+          links={[
+            { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { name: 'new' },
+          ]}
+        />
         <Grid container spacing={3} mb={3}>
           <Grid item xs={12} md={8}>
             <AppWelcome displayName={user?.firstName} />
