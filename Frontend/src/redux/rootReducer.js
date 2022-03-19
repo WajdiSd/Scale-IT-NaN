@@ -9,6 +9,7 @@ import calendarReducer from './slices/calendar';
 import kanbanReducer from './slices/kanban';
 import authReducer from './slices/authSlice';
 import workspacesReducer from './slices/workspaceSlice';
+import workspaceInviteReducer from './slices/workspaceInviteSlice';
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   chat: chatReducer,
   calendar: calendarReducer,
   kanban: kanbanReducer,
+  workspaceInvite: workspaceInviteReducer,
   product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),

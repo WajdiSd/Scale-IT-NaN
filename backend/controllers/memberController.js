@@ -393,7 +393,7 @@ const updateUserPassword = asyncHandler(async (req, res) => {
 
 // Check if user exists
 // @desc Check if user exists
-// @route post /api/members/:email
+// @route post /api/members/user/:email
 // @access public
 const checkIfUserExistsByEmail = asyncHandler(async (req, res) => {
   const filter = { email: req.params.email };

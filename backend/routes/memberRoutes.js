@@ -13,6 +13,7 @@ const {
   updateUser,
   updateUserPassword,
   resendEmail,
+  checkIfUserExistsByEmail,
 } = require("../controllers/memberController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -35,6 +36,6 @@ router.put("/deleteaccount/:iduser", protect, deleteUser);
 router.put("/updateaccount/:iduser", protect, updateUser);
 
 //Check if Exists
-router.get("/user/:email", protect);
+router.get("/user/:email", protect, checkIfUserExistsByEmail);
 
 module.exports = router;
