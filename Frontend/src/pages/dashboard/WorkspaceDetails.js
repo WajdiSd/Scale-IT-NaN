@@ -95,9 +95,6 @@ export default function WorkspaceDetails() {
     }
   };
   const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -120,7 +117,13 @@ export default function WorkspaceDetails() {
 
   const PROFILE_TABS = [
     {
-      value: 'General',
+      value: 'Projects',
+      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
+      component: <ProfileFollowers followers={_userFollowers} />,
+    },
+
+    {
+      value: 'About',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
       component: <General myProfile={_userAbout} posts={_userFeeds} />,
     },
@@ -129,12 +132,6 @@ export default function WorkspaceDetails() {
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
       component: <ProfileFriends friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />,
     },
-    {
-      value: 'Projects',
-      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
-    },
-
     {
       value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
@@ -181,11 +178,6 @@ export default function WorkspaceDetails() {
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;
         })}
       </Container>
-      {isHr && (
-        <Button sx={{ mt: 5 }} onClick={handleClickOpen} color="error">
-          Delete Workspace
-        </Button>
-      )}
       <Dialog
         open={open}
         onClose={handleClose}
