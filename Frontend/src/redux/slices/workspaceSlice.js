@@ -51,6 +51,9 @@ export const workspaceSlice = createSlice({
         state.isError = false;
         state.workspaces = action.payload;
         state.workspace = null;
+        const workspac = JSON.parse(localStorage.getItem('redux-workspaces'));
+        workspac.workspace=null;
+        localStorage.setItem("redux-workspaces", workspac)
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;

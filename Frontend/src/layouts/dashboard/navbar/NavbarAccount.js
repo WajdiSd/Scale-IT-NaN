@@ -10,6 +10,8 @@ import useResponsive from '../../../hooks/useResponsive';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import MyAvatar from '../../../components/MyAvatar';
+import { useEffect, useState } from 'react';
+import useWorkspace from 'src/hooks/useWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +34,40 @@ NavbarAccount.propTypes = {
 
 export default function NavbarAccount({ isCollapse }) {
   const { user } = useAuth();
+  const { workspace } = useWorkspace();
 
+  const [memberInviteLink, setMemberInviteLink] = useState("");
+  const rootWorkspace = () => {
+    console.log("rootWorkspace func");
+    console.log("store");
+
+    console.log(workspace);
+    if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
+      const workspac = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+      console.log("parse");
+      console.log(workspac);
+    
+      if (JSON.parse(workspac) != null) {
+        const _id = JSON.parse(workspac)['_id'];
+        console.log('_id');
+        console.log(_id);
+        return `/dashboard/workspace/${_id}/invite`;
+      }
+      else{
+        console.log("workspace null");
+        return "";
+      }
+    }else{
+      console.log("redux-workspaces null");
+      return "";
+    }
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("setMemberInviteLink");
+      setMemberInviteLink(rootWorkspace())
+    }, 1000);
+  }, []);
   const isDesktop = useResponsive('up', 'lg');
 
   return (
@@ -71,8 +106,8 @@ export default function NavbarAccount({ isCollapse }) {
       </Link>
 
       {!isDesktop && (
-        <Button href={PATH_DASHBOARD.workspaces.memberInvite} variant="contained">
-          Invite Project Members
+        <Button href={memberInviteLink} variant="contained">
+          Invite Members
         </Button>
       )}
     </>
