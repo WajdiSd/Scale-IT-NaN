@@ -112,6 +112,7 @@ export default function WorkspaceDetails() {
     <Page title="Workspace: Details">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
+          key={workspace?.name}
           heading="Workspace"
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.general.landing },

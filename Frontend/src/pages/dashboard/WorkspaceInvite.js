@@ -17,6 +17,8 @@ import {
   AnalyticsConversionRates,
 } from '../../sections/@dashboard/general/analytics';
 import WorkspaceInviteFriends from '../../sections/@dashboard/workspace/WorkspaceInviteFriends';
+import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +28,13 @@ export default function WorkspaceInvite() {
   return (
     <Page title="Workspace: Invite Members">
       <Container maxWidth={themeStretch ? false : 'xl'}>
+      <HeaderBreadcrumbs
+          
+          links={[
+            { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { name: 'Invite' },
+          ]}
+        />
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Invite Members to your Workspace!
         </Typography>

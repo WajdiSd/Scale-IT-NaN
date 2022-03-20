@@ -83,7 +83,7 @@ export default function WorkspaceCard({ workspace, index }) {
 // ----------------------------------------------------------------------
 
 PostContent.propTypes = {
-  _id: PropTypes.object.isRequired,
+  _id: PropTypes.string.isRequired,
   comment: PropTypes.number,
   createdAt: PropTypes.string,
   index: PropTypes.number,
