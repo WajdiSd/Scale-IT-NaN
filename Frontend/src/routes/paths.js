@@ -1,38 +1,5 @@
 // ----------------------------------------------------------------------
 
-function path(root, sublink) {
-  return `${root}${sublink}`;
-}
-
-const ROOTS_AUTH = '/auth';
-const ROOTS_DASHBOARD = '/dashboard';
-
-
-function rootWorkspace() {
-  console.log("rootWorkspace func");
-  if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
-    const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
-  
-    if (JSON.parse(workspace) != null) {
-      const _id = JSON.parse(workspace)['_id'];
-      console.log('_id');
-      console.log(_id);
-      return `/workspace/${_id}/invite`;
-    }
-    else{
-      console.log("workspace null");
-      return "";
-    }
-  }else{
-    console.log("redux-workspaces null");
-    return "";
-  }
-}
-
-
-
-
-// ----------------------------------------------------------------------
 
 export const PATH_AUTH = {
   root: ROOTS_AUTH,
@@ -112,3 +79,38 @@ export const PATH_DASHBOARD = {
 };
 
 export const PATH_DOCS = 'https://docs-minimals.vercel.app/introduction';
+
+
+function path(root, sublink) {
+  return `${root}${sublink}`;
+}
+
+const ROOTS_AUTH = '/auth';
+const ROOTS_DASHBOARD = '/dashboard';
+
+let rootWorkspace = '';
+if (JSON.parse(localStorage.getItem('redux-workspaces')) != null) {
+  const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+
+function rootWorkspace() {
+  console.log("rootWorkspace func");
+  if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
+    const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+  
+    if (JSON.parse(workspace) != null) {
+      const _id = JSON.parse(workspace)['_id'];
+      console.log('_id');
+      console.log(_id);
+      return `/workspace/${_id}/invite`;
+    }
+    else{
+      console.log("workspace null");
+      return "";
+    }
+  }else{
+    console.log("redux-workspaces null");
+    return "";
+  }
+}
+
+}
