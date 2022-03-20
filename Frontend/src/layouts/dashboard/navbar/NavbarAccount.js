@@ -11,7 +11,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import MyAvatar from '../../../components/MyAvatar';
 import { useEffect, useState } from 'react';
-import useWorkspace from 'src/hooks/useWorkspace';
+import useWorkspaceId from 'src/hooks/useWorkspaceId';
 
 // ----------------------------------------------------------------------
 
@@ -33,41 +33,14 @@ NavbarAccount.propTypes = {
 };
 
 export default function NavbarAccount({ isCollapse }) {
-  const { user } = useAuth();
-  const { workspace } = useWorkspace();
+  const { user, isHr } = useAuth();
 
-  const [memberInviteLink, setMemberInviteLink] = useState("");
-  const rootWorkspace = () => {
-    console.log("rootWorkspace func");
-    console.log("store");
+  const { rootWorkspace } = useWorkspaceId();
 
-    console.log(workspace);
-    if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
-      const workspac = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
-      console.log("parse");
-      console.log(workspac);
-    
-      if (JSON.parse(workspac) != null) {
-        const _id = JSON.parse(workspac)['_id'];
-        console.log('_id');
-        console.log(_id);
-        return `/dashboard/workspace/${_id}/invite`;
-      }
-      else{
-        console.log("workspace null");
-        return "";
-      }
-    }else{
-      console.log("redux-workspaces null");
-      return "";
-    }
-  }
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("setMemberInviteLink");
-      setMemberInviteLink(rootWorkspace())
-    }, 1000);
-  }, []);
+  const _id = rootWorkspace;
+
+  const linkTo = `${PATH_DASHBOARD.workspaces.memberInvite}${_id}/invite`;
+
   const isDesktop = useResponsive('up', 'lg');
 
   return (
@@ -105,8 +78,8 @@ export default function NavbarAccount({ isCollapse }) {
         </RootStyle>
       </Link>
 
-      {!isDesktop && (
-        <Button href={memberInviteLink} variant="contained">
+      {!isDesktop && isHr && (
+        <Button href={linkTo} variant="contained">
           Invite Members
         </Button>
       )}
