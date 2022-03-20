@@ -23,12 +23,14 @@ import {
   ProfileGallery,
   ProfileFollowers,
 } from '../../sections/@dashboard/user/profile';
+
 import General from 'src/sections/@dashboard/workspace/General';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { getWorkspace } from 'src/redux/slices/workspaceSlice';
 import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
+import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -95,7 +97,9 @@ export default function WorkspaceDetails() {
     {
       value: 'Members',
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
-      component: <ProfileFriends friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />,
+      component: (
+        <MembersWorkspace friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />
+      ),
     },
     {
       value: 'Leaderboard',

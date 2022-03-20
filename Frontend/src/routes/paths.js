@@ -8,7 +8,7 @@ const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 
 let rootWorkspace = '';
-if(localStorage.getItem('redux-workspaces') != null){
+if (JSON.parse(localStorage.getItem('redux-workspaces')) != null) {
   const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
 
   if (JSON.parse(workspace) != null) {
@@ -18,7 +18,6 @@ if(localStorage.getItem('redux-workspaces') != null){
     rootWorkspace = `/workspace/${_id}`;
   }
 }
-
 
 // ----------------------------------------------------------------------
 
