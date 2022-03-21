@@ -48,6 +48,12 @@ export default function WorkspaceCover() {
   const { workspace } = useWorkspace();
 
 
+  const getHRName = () =>{
+    workspace.assigned_members.map((member)=>{
+      //member.isHR? 
+    })
+  }
+
   return (
     <RootStyle>
       <InfoStyle>
