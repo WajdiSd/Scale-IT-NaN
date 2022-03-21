@@ -31,14 +31,14 @@ const userPersistConfig = {
   key: 'user',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager'],
+  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager', 'idHR', 'idProjectManager'],
 };
 
 const workspacesPersistConfig = {
   key: 'workspaces',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['workspaces', 'workspace'],
+  whitelist: ['workspaces', 'workspace', 'usersInWorkspace'],
 };
 
 const rootReducer = combineReducers({

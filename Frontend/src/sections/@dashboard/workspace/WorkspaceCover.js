@@ -10,6 +10,8 @@ import MyAvatar from 'src/components/MyAvatar';
 import Image from 'src/components/Image';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 
 // ----------------------------------------------------------------------
 
@@ -45,14 +47,22 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 export default function WorkspaceCover() {
   const { user } = useAuth();
-  const { workspace } = useWorkspace();
+  const { workspace, usersInWorkspace } = useWorkspace();
+  const [hRName, setHRName] = useState('');
+  const {id} = useParams();
 
 
   const getHRName = () =>{
-    workspace.assigned_members.map((member)=>{
-      //member.isHR? 
+    usersInWorkspace.map((member)=>{
+      if(member.isHR) {
+        setHRName(member.firstName+' '+member.lastName)
+      }
     })
   }
+
+  useEffect(() => {
+      getHRName();
+  }, [usersInWorkspace]);
 
   return (
     <RootStyle>
@@ -76,7 +86,7 @@ export default function WorkspaceCover() {
           }}
         >
           <Typography variant="h4">{workspace?.name}</Typography>
-          <Typography sx={{ opacity: 0.72 }}>By {user?.firstName} {user?.lastName}</Typography>
+          <Typography sx={{ opacity: 0.72 }}>By {hRName}</Typography>
         </Box>
       </InfoStyle>
       <Image alt="profile cover" src="https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg" sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
