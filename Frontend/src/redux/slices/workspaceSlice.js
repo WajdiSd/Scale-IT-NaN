@@ -52,8 +52,8 @@ export const workspaceSlice = createSlice({
         state.workspaces = action.payload;
         state.workspace = null;
         const workspac = JSON.parse(localStorage.getItem('redux-workspaces'));
-        workspac.workspace=null;
-        localStorage.setItem("redux-workspaces", workspac)
+        workspac.workspace = null;
+        localStorage.setItem('redux-workspaces', workspac);
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;
@@ -91,8 +91,30 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(getWorkspaceId.fulfilled, (state, action) => {
+        console.log('\n\n--------------------------------------------');
+        console.log('getWorkspace id FULFILLED ');
+        console.log(action.payload);
+        console.log('\n\n--------------------------------------------');
+      })
+      .addCase(getWorkspaceId.rejected, (state, action) => {
+        console.log('\n\n--------------------------------------------');
+        console.log('getWorkspace id REJECTED ');
+        console.log(action.payload);
+        console.log('\n\n--------------------------------------------');
       });
   },
+});
+
+export const getWorkspaceId = createAsyncThunk('workspace/getWorkspaceId', async (_, thunkAPI) => {
+  try {
+    return await thunkAPI.getState().workspace._id;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
 });
 
 export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (id, thunkAPI) => {

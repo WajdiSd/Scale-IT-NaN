@@ -36,6 +36,7 @@ export default function WorkspaceInviteFriends() {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    submitInvite,
   } = useWorkspaceInvite();
 
   function handleMemberInput(event) {
@@ -211,7 +212,7 @@ export default function WorkspaceInviteFriends() {
 
           {/* Submit Users Button */}
           <Stack direction="row" justifyContent="center" alignItems="center">
-            <Button onClick={addManagerUser} color="warning" variant="contained">
+            <Button onClick={submitInvite} color="warning" variant="contained">
               Submit Invitations
             </Button>
           </Stack>

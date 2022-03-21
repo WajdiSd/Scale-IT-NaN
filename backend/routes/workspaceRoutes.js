@@ -14,6 +14,7 @@ const {
   inviteManyMembers,
   countWkspMembers,
   assignRatestoMember,
+  checkIfUserExistsInWorkspace,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -28,6 +29,9 @@ router.get("/:idmember", getWorkspaces);
 router.get("/details/:id", getWorkspaceById);
 router.put("/removemember/:idmember/:idworkspace", removeMemberFromWorkspace);
 router.get("/fetch-users/:idworkspace", fetchUsersByWorkspace);
+
+// Check if user exists in workspace /api/workspace/:workspaceid/:email
+router.get("/:workspaceid/:email", checkIfUserExistsInWorkspace);
 
 router.put(
   "/removemember/:idmember/:idworkspace/:idhr",

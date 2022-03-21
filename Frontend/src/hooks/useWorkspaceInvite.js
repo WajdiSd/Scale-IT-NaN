@@ -1,6 +1,13 @@
 import { useState } from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
-import { addMember, addManager, removeUser, setUserError, resetUserError } from 'src/redux/slices/workspaceInviteSlice';
+import {
+  addMember,
+  addManager,
+  removeUser,
+  setUserError,
+  resetUserError,
+  submitInvitations,
+} from 'src/redux/slices/workspaceInviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
 // ----------------------------------------------------------------------
@@ -19,6 +26,10 @@ const useWorkspaceInvite = () => {
       .match(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
+  };
+
+  const submitInvite = () => {
+    dispatch(submitInvitations());
   };
 
   const addMemberUser = () => {
@@ -48,6 +59,7 @@ const useWorkspaceInvite = () => {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    submitInvite,
   };
 };
 
