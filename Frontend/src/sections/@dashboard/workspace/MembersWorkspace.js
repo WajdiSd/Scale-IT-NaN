@@ -31,6 +31,8 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { useDispatch } from 'react-redux';
 import { removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
+import { CalendarForm } from '../calendar';
+import { DialogAnimate } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -142,6 +144,7 @@ function MoreMenuButton(id) {
   const dispatch = useDispatch();
   const [openDia, setOpenDia] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const deletemember = () => {
     try {
@@ -156,6 +159,13 @@ function MoreMenuButton(id) {
     } catch (error) {
       console.error(error);
     }
+  };
+  const handleAddEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
   };
 
   const handleOpen = (event) => {
@@ -209,11 +219,12 @@ function MoreMenuButton(id) {
           Print
         </MenuItem>
 
-        <MenuItem>
-          <Iconify icon={'eva:share-fill'} sx={{ ...ICON }} />
-          Share
-        </MenuItem>
-
+        {isHr && (
+          <MenuItem onClick={handleAddEvent}>
+            <Iconify icon={'ph:currency-circle-dollar-fill'} sx={{ ...ICON }} />
+            Set Rates
+          </MenuItem>
+        )}
         <Divider sx={{ borderStyle: 'dashed' }} />
         {isHr && (
           <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
@@ -239,6 +250,11 @@ function MoreMenuButton(id) {
           </Button>
         </DialogActions>
       </Dialog>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Set Rates'}</DialogTitle>
+
+        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+      </DialogAnimate>
     </>
   );
 }
