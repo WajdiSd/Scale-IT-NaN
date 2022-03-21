@@ -108,6 +108,22 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(removememberfromworkspace.pending, (state) => {
+        console.log('remove member from workspace pending');
+        state.isLoading = true;
+      })
+      .addCase(removememberfromworkspace.fulfilled, (state, action) => {
+        console.log('remove member from workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.usersInWorkspace = state.usersInWorkspace.filter((memb) => memb._id !== action.payload.idmember);
+      })
+      .addCase(removememberfromworkspace.rejected, (state, action) => {
+        console.log('remove member from workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -170,6 +186,20 @@ export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', a
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+//remove member from workspace
+export const removememberfromworkspace = createAsyncThunk(
+  'workspace/removememberfromworkspace',
+  async (object, thunkAPI) => {
+    try {
+      return await workspaceService.removeMemberFromWorkspace(object.idmember, object.idhr, object.idworkspace);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const { reset } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

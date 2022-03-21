@@ -31,12 +31,19 @@ const getUsersWorkspace = async (id) => {
   return response.data;
 };
 
+//remove member from workspace
+const removeMemberFromWorkspace = async (idmember, idhr, idworkspace) => {
+  const response = await axiosInstance.put(API_URL + '/removemember/' + idmember + '/' + idworkspace + '/' + idhr);
+  return response.data;
+};
+
 const workspaceService = {
   getWorkspaces,
   addworkspace,
   getWorkspace,
   deleteworkspace,
   getUsersWorkspace,
+  removeMemberFromWorkspace,
 };
 
 export default workspaceService;

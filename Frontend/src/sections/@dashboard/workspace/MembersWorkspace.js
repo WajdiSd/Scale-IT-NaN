@@ -1,6 +1,23 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Grid, Card, Link, Avatar, IconButton, Typography, InputAdornment, MenuItem, Divider } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Card,
+  Link,
+  Avatar,
+  IconButton,
+  Typography,
+  InputAdornment,
+  MenuItem,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@mui/material';
 // components
 
 import InputStyle from 'src/components/InputStyle';
@@ -9,6 +26,11 @@ import SearchNotFound from 'src/components/SearchNotFound';
 import Iconify from 'src/components/Iconify';
 import { useState } from 'react';
 import MenuPopover from 'src/components/MenuPopover';
+import useAuth from 'src/hooks/useAuth';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { useDispatch } from 'react-redux';
+import { removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +91,7 @@ MemberCard.propTypes = {
 };
 
 function MemberCard({ member }) {
-  const { gender, lastName, phone, email, avatarUrl, firstName } = member;
+  const { gender, lastName, phone, email, avatarUrl, firstName, _id } = member;
 
   return (
     <Card
@@ -96,7 +118,7 @@ function MemberCard({ member }) {
 
       <SocialsButton initialColor />
 
-      <MoreMenuButton/>
+      <MoreMenuButton id={_id} />
     </Card>
   );
 }
@@ -112,8 +134,29 @@ function applyFilter(array, query) {
 
 // ----------------------------------------------------------------------
 
-function MoreMenuButton() {
+function MoreMenuButton(id) {
+  const { isHr } = useAuth();
+  const { idHR } = useAuth();
+  const { workspace } = useWorkspace();
   const [open, setOpen] = useState(null);
+  const dispatch = useDispatch();
+  const [openDia, setOpenDia] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const deletemember = () => {
+    try {
+      const obj = {
+        idmember: id.id,
+        idhr: idHR,
+        idworkspace: workspace._id,
+      };
+      dispatch(removememberfromworkspace(obj)).then((res) => {
+        enqueueSnackbar('Deleted member successfully');
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -121,6 +164,14 @@ function MoreMenuButton() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleCloseDialogue = () => {
+    setOpenDia(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpenDia(true);
   };
 
   const ICON = {
@@ -131,7 +182,7 @@ function MoreMenuButton() {
 
   return (
     <>
-    <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
+      <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
         <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
       </IconButton>
 
@@ -164,12 +215,30 @@ function MoreMenuButton() {
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
-          Delete
-        </MenuItem>
+        {isHr && (
+          <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
+            <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
+            Delete
+          </MenuItem>
+        )}
       </MenuPopover>
+      <Dialog
+        open={openDia}
+        onClose={handleCloseDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete this member ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">this member will be permanetly deleted</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialogue}>Disagree</Button>
+          <Button onClick={deletemember} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
