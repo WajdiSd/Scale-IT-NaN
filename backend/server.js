@@ -24,6 +24,7 @@ app.use(express.static('public'));
 
 app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/workspace", require("./routes/workspaceRoutes"));
+app.use("/api/project", require("./routes/projectRoutes"));
 
 app.use(errorHandler);
 
