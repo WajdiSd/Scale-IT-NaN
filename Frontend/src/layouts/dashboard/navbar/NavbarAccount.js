@@ -32,41 +32,30 @@ NavbarAccount.propTypes = {
   isCollapse: PropTypes.bool,
 };
 
-export default function NavbarAccount({ isCollapse }) {
-  const { user } = useAuth();
+export default function NavbarAccount({ isInWorkspace, isCollapse }) {
+  const { user, isHr } = useAuth();
   const { workspace } = useWorkspace();
 
   const [memberInviteLink, setMemberInviteLink] = useState("");
   const rootWorkspace = () => {
-    console.log("rootWorkspace func");
-    console.log("store");
-
-    console.log(workspace);
     if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
       const workspac = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
-      console.log("parse");
-      console.log(workspac);
     
       if (JSON.parse(workspac) != null) {
         const _id = JSON.parse(workspac)['_id'];
-        console.log('_id');
-        console.log(_id);
         return `/dashboard/workspace/${_id}/invite`;
       }
       else{
-        console.log("workspace null");
         return "";
       }
     }else{
-      console.log("redux-workspaces null");
       return "";
     }
   }
   useEffect(() => {
     setTimeout(() => {
-      console.log("setMemberInviteLink");
       setMemberInviteLink(rootWorkspace())
-    }, 1000);
+    }, 500);
   }, []);
   const isDesktop = useResponsive('up', 'lg');
 
@@ -105,7 +94,7 @@ export default function NavbarAccount({ isCollapse }) {
         </RootStyle>
       </Link>
 
-      {!isDesktop && (
+      {!isDesktop && isInWorkspace && isHr && (
         <Button href={memberInviteLink} variant="contained">
           Invite Members
         </Button>

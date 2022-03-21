@@ -45,7 +45,7 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 export default function WorkspaceCover() {
   const { user } = useAuth();
-  const { workspace  } = useWorkspace();
+  const { workspace } = useWorkspace();
 
 
   return (

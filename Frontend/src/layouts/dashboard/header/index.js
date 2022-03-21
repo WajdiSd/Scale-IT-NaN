@@ -73,31 +73,25 @@ export default function DashboardHeader({ isInWorkspace, onOpenSidebar, isCollap
   const isDesktop = useResponsive('up', 'lg');
   const [memberInviteLink, setMemberInviteLink] = useState("");
   const rootWorkspace = () => {
-    console.log("rootWorkspace func");
     if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
       const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
     
       if (JSON.parse(workspace) != null) {
         const _id = JSON.parse(workspace)['_id'];
-        console.log('_id');
-        console.log(_id);
         return `/dashboard/workspace/${_id}/invite`;
       }
       else{
-        console.log("workspace null");
         return "";
       }
     }else{
-      console.log("redux-workspaces null");
       return "";
     }
   }
   useEffect(() => {
 
     setTimeout(() => {
-      console.log("setMemberInviteLink");
       setMemberInviteLink(rootWorkspace())
-    }, 1000);
+    }, 300);
 
    
   }, [workspace]);

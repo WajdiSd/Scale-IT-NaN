@@ -18,28 +18,27 @@ const {
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/add", addWorkspace);
-router.put("/invite-member/:id", inviteOneMember);
-router.put("/invite-members/:id", inviteManyMembers);
+router.post("/add", protect, addWorkspace);
+router.put("/invite-members/:id", protect, inviteManyMembers);
 
-router.post("/add/:idmember", addWorkspace);
-router.put("/update/:idworkspace/:idhr", updateWorkspace);
-router.get("/:idmember", getWorkspaces);
-router.get("/details/:id", getWorkspaceById);
-router.put("/removemember/:idmember/:idworkspace", removeMemberFromWorkspace);
-router.get("/fetch-users/:idworkspace", fetchUsersByWorkspace);
+router.post("/add/:idmember", protect, addWorkspace);
+router.put("/update/:idworkspace/:idhr",protect, updateWorkspace);
+router.get("/:idmember", protect, getWorkspaces);
+router.get("/details/:id", protect, getWorkspaceById);
+router.put("/removemember/:idmember/:idworkspace", protect, removeMemberFromWorkspace);
+router.get("/fetch-users/:idworkspace", protect, fetchUsersByWorkspace);
 
 router.put(
   "/removemember/:idmember/:idworkspace/:idhr",
-  removeMemberFromWorkspace
+  protect, removeMemberFromWorkspace
 );
-router.put("/assignPM/:idworkspace/:idmember/:idhr", assignProjectManager);
-router.put("/deletePM/:idworkspace/:idmember/:idhr", deleteProjectManager);
-router.put("/deleteworkspace/:idworkspace/:idhr", deleteWorkspace);
+router.put("/assignPM/:idworkspace/:idmember/:idhr", protect, assignProjectManager);
+router.put("/deletePM/:idworkspace/:idmember/:idhr", protect, deleteProjectManager);
+router.put("/deleteworkspace/:idworkspace/:idhr", protect, deleteWorkspace);
 router.put(
   "/asignratestomember/:idworkspace/:idhr/:idmember",
-  assignRatestoMember
+  protect, assignRatestoMember
 );
-router.get("/countmembers/:idworkspace", countWkspMembers);
+router.get("/countmembers/:idworkspace", protect, countWkspMembers);
 
 module.exports = router;

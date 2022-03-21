@@ -35,6 +35,7 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 NavbarVertical.propTypes = {
+  isInWorkspace: PropTypes.bool,
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func,
 };
@@ -43,6 +44,7 @@ export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSi
   const theme = useTheme();
 
   const { pathname } = useLocation();
+
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -81,7 +83,7 @@ export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSi
           )}
         </Stack>
 
-        <NavbarAccount isCollapse={isCollapse} />
+        <NavbarAccount isInWorkspace={isInWorkspace} isCollapse={isCollapse} />
       </Stack>
 
       <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} />
