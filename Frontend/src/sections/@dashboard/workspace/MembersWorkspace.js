@@ -81,7 +81,7 @@ MemberCard.propTypes = {
 };
 
 function MemberCard({ member }) {
-  const { gender, lastName, phone, email, avatarUrl, firstName } = member;
+  const { gender, lastName, phone, email, avatarUrl, firstName, _id } = member;
 
   return (
     <Card
