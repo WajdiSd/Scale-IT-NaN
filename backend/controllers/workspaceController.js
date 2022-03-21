@@ -120,7 +120,7 @@ const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
       console.log(workspace);
 
       if (workspace) {
-        res.status(200).json(workspace);
+        res.status(200).json({ workspace, idmember: req.params.idmember });
       } else {
         res.status(400).json({
           message: "couldn't remove member from workspace !",

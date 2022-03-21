@@ -1,6 +1,17 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Grid, Card, Link, Avatar, IconButton, Typography, InputAdornment, MenuItem, Divider } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Card,
+  Link,
+  Avatar,
+  IconButton,
+  Typography,
+  InputAdornment,
+  MenuItem,
+  Divider,
+} from '@mui/material';
 // components
 
 import InputStyle from 'src/components/InputStyle';
@@ -9,6 +20,7 @@ import SearchNotFound from 'src/components/SearchNotFound';
 import Iconify from 'src/components/Iconify';
 import { useState } from 'react';
 import MenuPopover from 'src/components/MenuPopover';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -96,7 +108,7 @@ function MemberCard({ member }) {
 
       <SocialsButton initialColor />
 
-      <MoreMenuButton/>
+      <MoreMenuButton />
     </Card>
   );
 }
@@ -113,6 +125,7 @@ function applyFilter(array, query) {
 // ----------------------------------------------------------------------
 
 function MoreMenuButton() {
+  const { isHr } = useAuth();
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -131,7 +144,7 @@ function MoreMenuButton() {
 
   return (
     <>
-    <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
+      <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
         <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
       </IconButton>
 
@@ -164,11 +177,12 @@ function MoreMenuButton() {
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
-          Delete
-        </MenuItem>
+        {isHr && (
+          <MenuItem sx={{ color: 'error.main' }}>
+            <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
+            Delete
+          </MenuItem>
+        )}
       </MenuPopover>
     </>
   );
