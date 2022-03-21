@@ -36,6 +36,8 @@ export default function WorkspaceInviteFriends() {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    userSuccess,
+    resetUserSuccessHook,
     submitInvite,
   } = useWorkspaceInvite();
 
@@ -51,7 +53,9 @@ export default function WorkspaceInviteFriends() {
 
   function handleClose() {
     console.log(userError);
+    console.log(userSuccess);
     resetUserErrorHook();
+    resetUserSuccessHook();
   }
 
   return (
@@ -59,6 +63,11 @@ export default function WorkspaceInviteFriends() {
       <Snackbar open={userError.length > 0} autoHideDuration={5000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
           {userError}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={userSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {userSuccess}
         </Alert>
       </Snackbar>
       <Image

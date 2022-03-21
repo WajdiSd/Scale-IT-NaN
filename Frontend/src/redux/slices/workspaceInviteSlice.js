@@ -5,6 +5,7 @@ import workspaceService from '../service/workspaceService';
 const initialState = {
   users: [],
   userErrorMessage: '',
+  userSuccessMessage: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -60,27 +61,33 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     const state = thunkAPI.getState();
     const id = state.workspaces.workspace._id;
     const users = state.workspaceInvite.users;
+
     console.log('\n\n----------------------------------------------------');
     console.log('users state in submit invitations');
     console.log(users);
     console.log('id state in submit invitations');
     console.log(id);
-
     console.log('\n\n----------------------------------------------------');
+
     if (!users) {
       setUserError('No Valid Users Passed!');
-      return 'not working';
+      return 'No Valid Users Passed';
     }
-    const managerEmails = users.map((user) => {
+    const managersFiltered = users.filter((user) => {
       if (user.isManager) return user.email;
     });
+    const managerEmails = managersFiltered.map((user) => user.email);
+
     console.log('\n\n----------------------------------------------------');
     console.log('manager Emails');
     console.log(managerEmails);
     console.log('\n\n----------------------------------------------------');
-    const memberEmails = users.map((user) => {
+
+    const membersFiltered = users.filter((user) => {
       if (!user.isManager) return user.email;
     });
+    const memberEmails = membersFiltered.map((user) => user.email);
+
     console.log('\n\n----------------------------------------------------');
     console.log('member Emails');
     console.log(memberEmails);
@@ -109,14 +116,18 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     console.log(members);
     console.log('\n\n----------------------------------------------------');
 
-    const managerSubmit = managers.info.emails[0] ? await workspaceService.inviteManagers(managers) : null;
-    const memberSubmit = members.info.emails[0] ? await workspaceService.inviteMembers(members) : null;
+    const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
+    const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
+
     console.log('\n\n----------------------------------------------------');
     console.log('Manager Submit before return');
     console.log(managerSubmit);
     console.log('Member Submit before return');
     console.log(memberSubmit);
     console.log('\n\n----------------------------------------------------');
+
+    thunkAPI.dispatch(resetWorkspaceInvite());
+
     return [managerSubmit, memberSubmit];
   } catch (error) {
     const message =
@@ -129,6 +140,9 @@ const workspaceInviteSlice = createSlice({
   name: 'workspaceInvite',
   initialState,
   reducers: {
+    resetWorkspaceInvite: (state, action) => {
+      state.users = [];
+    },
     removeUser: (state, action) => {
       console.log(action.payload);
       state.users = state.users.filter((user) => user.email !== action.payload);
@@ -138,6 +152,12 @@ const workspaceInviteSlice = createSlice({
     },
     setUserError: (state, action) => {
       state.userErrorMessage = action.payload;
+    },
+    resetUserSuccess: (state, action) => {
+      state.userSuccessMessage = '';
+    },
+    setUserSuccess: (state, action) => {
+      state.userSuccessMessage = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -154,6 +174,8 @@ const workspaceInviteSlice = createSlice({
           console.log("I'm in add Member, users:");
           console.log(state);
           console.log(state.users);
+
+          state.userSuccessMessage = `Member ${member.email} Added`;
 
           state.users = [...state.users, member];
         }
@@ -176,6 +198,8 @@ const workspaceInviteSlice = createSlice({
           console.log(state);
           console.log(state.users);
 
+          state.userSuccessMessage = `Member ${manager.email} Added`;
+
           state.users = [...state.users, manager];
         }
       })
@@ -189,6 +213,8 @@ const workspaceInviteSlice = createSlice({
         console.log('action payload in submit Invitations fulfilled');
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
+
+        state.userSuccessMessage = `Users have been Invited succesfully`;
       })
       .addCase(submitInvitations.rejected, (state, action) => {
         console.log('\n\n----------------------------------------------------');
@@ -199,5 +225,6 @@ const workspaceInviteSlice = createSlice({
   },
 });
 
-export const { removeUser, setUserError, resetUserError } = workspaceInviteSlice.actions;
+export const { removeUser, setUserError, resetUserError, resetUserSuccess, setUserSuccess, resetWorkspaceInvite } =
+  workspaceInviteSlice.actions;
 export default workspaceInviteSlice.reducer;

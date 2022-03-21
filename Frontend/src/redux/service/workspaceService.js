@@ -29,12 +29,22 @@ const deleteworkspace = async (idworkspace, idmember) => {
 // send invites to members
 const inviteMembers = async (members) => {
   const response = await axiosInstance.put(API_URL + 'invite-members/' + members.id, members.info);
+
+  console.log('inviteMembers()');
+  console.log(response);
+  console.log(response.data);
+
   return response.data;
 };
 
 // send invites to managers
 const inviteManagers = async (managers) => {
   const response = await axiosInstance.put(API_URL + 'invite-members/' + managers.id, managers.info);
+
+  console.log('inviteManagers()');
+  console.log(response);
+  console.log(response.data);
+
   return response.data;
 };
 

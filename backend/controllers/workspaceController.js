@@ -470,11 +470,11 @@ const checkIfUserExistsInWorkspace = asyncHandler(async (req, res) => {
 
   if (workspace) {
     let matchy = false;
-    console.log("user");
-    console.log(user);
+    // console.log("user");
+    // console.log(user);
     workspace.assigned_members.forEach((assignee) => {
-      console.log("assigned member");
-      console.log(assignee);
+      // console.log("assigned member");
+      // console.log(assignee);
       assignee.member.equals(user._id) ? (matchy = true) : "";
     });
 

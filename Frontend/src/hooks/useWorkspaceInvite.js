@@ -6,6 +6,8 @@ import {
   removeUser,
   setUserError,
   resetUserError,
+  setUserSuccess,
+  resetUserSuccess,
   submitInvitations,
 } from 'src/redux/slices/workspaceInviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
@@ -15,6 +17,7 @@ import { useSelector, useDispatch } from 'src/redux/store';
 const useWorkspaceInvite = () => {
   const users = useSelector((state) => state.workspaceInvite.users);
   const userError = useSelector((state) => state.workspaceInvite.userErrorMessage);
+  const userSuccess = useSelector((state) => state.workspaceInvite.userSuccessMessage);
   const [member, setMember] = useState('');
   const [manager, setManager] = useState('');
 
@@ -48,6 +51,8 @@ const useWorkspaceInvite = () => {
 
   const resetUserErrorHook = () => dispatch(resetUserError());
 
+  const resetUserSuccessHook = () => dispatch(resetUserSuccess());
+
   return {
     users,
     member,
@@ -59,6 +64,8 @@ const useWorkspaceInvite = () => {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    userSuccess,
+    resetUserSuccessHook,
     submitInvite,
   };
 };
