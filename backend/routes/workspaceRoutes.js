@@ -29,6 +29,7 @@ router.get("/fetch-users/:idworkspace", protect, fetchUsersByWorkspace);
 
 router.put(
   "/removemember/:idmember/:idworkspace/:idhr",
+  protect,
   removeMemberFromWorkspace
 );
 router.put(

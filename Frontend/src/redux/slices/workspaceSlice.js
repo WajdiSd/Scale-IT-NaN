@@ -190,9 +190,9 @@ export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', a
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',
-  async (idmember, idhr, idworkspace, thunkAPI) => {
+  async (object, thunkAPI) => {
     try {
-      return await workspaceService.removeMemberFromWorkspace(idmember, idhr, idworkspace);
+      return await workspaceService.removeMemberFromWorkspace(object.idmember, object.idhr, object.idworkspace);
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
