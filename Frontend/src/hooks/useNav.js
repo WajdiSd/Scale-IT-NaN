@@ -5,6 +5,8 @@ import SvgIconStyle from 'src/components/SvgIconStyle';
 import useWorkspaceId from 'src/hooks/useWorkspaceId';
 import { useEffect, useState } from 'react';
 import Label from 'src/components/Label';
+import { useParams } from 'react-router';
+import useWorkspace from './useWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +36,10 @@ const ICONS = {
 
 const useNav = () => {
   const { rootWorkspace } = useWorkspaceId();
+  const {workspace} = useWorkspace();
+
+  const {id} = useParams();
+
 
   const [navConfig, setNavConfig] = useState([]);
 
@@ -51,7 +57,7 @@ const useNav = () => {
             children: [
               {
                 title: 'invite members',
-                path: `${PATH_DASHBOARD.workspaces.memberInvite}${rootWorkspace}/invite`,
+                path: `${PATH_DASHBOARD.workspaces.memberInvite}${id}/invite`,
                 icon: ICONS.workspace,
               },
             ],
@@ -141,7 +147,7 @@ const useNav = () => {
         ],
       },
     ]);
-  }, [rootWorkspace]);
+  }, [workspace]);
 
   return { navConfig };
 };
