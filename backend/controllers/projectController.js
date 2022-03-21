@@ -1,16 +1,31 @@
 const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
+const Workspace = require("../models/workspaceModel");
 const { ProjectHasTeamLeader } = require("../helpers/functions");
 // @route post /api/project/add/
 // you need to provide the required fields in the body
 // you need to provide memberId(the member creating the project) in the body
 const addProject = asyncHandler(async (req, res) => {
-  const { name, description, startDate, expectedEndDate, memberId } = req.body;
+  const { name, description, startDate, expectedEndDate, memberId, workspaceId } = req.body;
   if (!name || !description || !startDate || !expectedEndDate) {
     res.status(400);
     throw new Error("please add all fields");
   }
+
+  const workspace = await Workspace.findById(workspaceId);
+  if (!workspace) {
+    res.status(404);
+    throw new Error("workspace not found");
+  }
+  workspace.assigned_members.forEach(element => {
+    if(element.member.equals(memberId)){
+      if(!element.isProjectManager){
+        res.status(403);
+        throw new Error("you are not allowed to create a project");
+      }
+    }
+  });
 
   const projectManager = {
     memberId: memberId,
@@ -28,6 +43,7 @@ const addProject = asyncHandler(async (req, res) => {
     startDate,
     expectedEndDate,
     assigned_members: [projectManager],
+    workspace: {workspaceId: workspaceId},
   }).catch((err) => {
     res.status(400);
     throw new Error("could not create project", err);
@@ -38,26 +54,70 @@ const addProject = asyncHandler(async (req, res) => {
 // @route put /api/project/delete/:id
 const deleteProject = asyncHandler(async (req, res) => {
   const projectId = req.params.id;
-  const project = await Project.findByIdAndUpdate(projectId, {
-    isDeleted: true,
-  });
+  const memberId = req.body.memberId;
+  const workspaceId = req.body.workspaceId;
+  
+  const workspace = await Workspace.findById(workspaceId);
+  if(!workspace) {
+    res.status(404);
+    throw new Error("workspace not found");
+  }
+  const member = await Member.findById(memberId);
+  if(!member) {
+    res.status(404);
+    throw new Error("something is wrong with the member");
+  } else {
+    workspace.assigned_members.forEach(element => {
+      if(element.member.equals(memberId)){
+        if(!element.isProjectManager){
+          res.status(403);
+          throw new Error("you are not allowed to delete this project");
+        }
+      }
+    });
+  }
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
+  const project = await Project.findByIdAndUpdate(projectId, {
+    isDeleted: true,
+  });
   res.status(200).json("project deleted");
 });
 
 // @route put /api/project/delete/:id
 const unDeleteProject = asyncHandler(async (req, res) => {
   const projectId = req.params.id;
-  const project = await Project.findByIdAndUpdate(projectId, {
-    isDeleted: false,
-  });
+  const memberId = req.body.memberId;
+  const workspaceId = req.body.workspaceId;
+  
+  const workspace = await Workspace.findById(workspaceId);
+  if(!workspace) {
+    res.status(404);
+    throw new Error("workspace not found");
+  }
+  const member = await Member.findById(memberId);
+  if(!member) {
+    res.status(404);
+    throw new Error("something is wrong with the member");
+  } else {
+    workspace.assigned_members.forEach(element => {
+      if(element.member.equals(memberId)){
+        if(!element.isProjectManager){
+          res.status(403);
+          throw new Error("you are not allowed to undelete this project");
+        }
+      }
+    });
+  }
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
+  const project = await Project.findByIdAndUpdate(projectId, {
+    isDeleted: false,
+  });
   res.status(200).json("project deleted");
 });
 
