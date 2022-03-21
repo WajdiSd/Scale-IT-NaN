@@ -7,6 +7,7 @@ import { Box, Stack, Drawer } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 import useCollapseDrawer from '../../../hooks/useCollapseDrawer';
+import useNav from '../../../hooks/useNav';
 // utils
 import cssStyles from '../../../utils/cssStyles';
 // config
@@ -16,7 +17,7 @@ import Logo from '../../../components/Logo';
 import Scrollbar from '../../../components/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 //
-import navConfig from './NavConfig';
+// import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
@@ -42,6 +43,8 @@ NavbarVertical.propTypes = {
 
 export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSidebar }) {
   const theme = useTheme();
+
+  const { navConfig } = useNav();
 
   const { pathname } = useLocation();
 

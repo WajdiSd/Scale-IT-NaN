@@ -6,8 +6,9 @@ import { Container } from '@mui/material';
 import { HEADER } from '../../../config';
 // components
 import { NavSectionHorizontal } from '../../../components/nav-section';
-//
-import navConfig from './NavConfig';
+// hooks
+import useNav from 'src/hooks/useNav';
+// import navConfig from './NavConfig';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,8 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 function NavbarHorizontal({ isInWorkspace }) {
+  const { navConfig } = useNav();
+
   return (
     <>
       {isInWorkspace ? (

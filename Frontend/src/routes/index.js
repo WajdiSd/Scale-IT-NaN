@@ -92,9 +92,12 @@ export default function Router() {
             { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
             {
               path: ':id',
-              element: <WorkspaceDetails />,
+              children: [
+                { path: 'invite', element: <WorkspaceInvite /> },
+                { path: '', element: <WorkspaceDetails /> },
+              ],
             },
-            { path: ':id/invite', element: <WorkspaceInvite /> },
+            ,
           ],
         },
         {
