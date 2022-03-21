@@ -106,6 +106,7 @@
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
     "slick-carousel": "^1.8.1",
+    "start": "^5.1.0",
     "stylis": "^4.0.13",
     "stylis-plugin-rtl": "^2.1.1",
     "web-vitals": "^2.1.0",
