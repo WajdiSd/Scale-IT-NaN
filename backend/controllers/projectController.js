@@ -88,9 +88,199 @@ const assignTeamLeader = asyncHandler(async (req, res) => {
   res.status(200).json("team leader assigned");
 });
 
+// @route put /api/project/discharge/:idproject/:idmember/:idpm
+// idmember : member to discharge
+// idpm : id of the current user : is it a pm?
+const dischargeTeamLeader = asyncHandler(async (req, res) => {
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].isProjectManager == true
+    )
+      verif = true;
+    }
+  if (!verif)
+    {es.status(404);
+      throw new Error("changes are not made by a PM!");}
+  else {
+      if (!project) {
+        res.status(404);
+        throw new Error("project not found");
+      }
+     else {
+       const member = await Member.findById(req.params.idmember);
+        if (!member) {
+            res.status(404);
+            throw new Error("member not found");
+        }
+        else {
+
+          Project.updateOne(
+            {
+              _id: req.params.idproject,
+              "assigned_members.memberId": req.params.idmember,
+            },
+            {
+              $set: {
+                "assigned_members.$.isTeamLeader": false,
+              },
+            },
+            function (err, success) {
+              if (err) throw err;
+              else {
+                res.send({ msg: "Discharged TEAMLEADER" });
+              }
+            }
+          );
+
+        }
+      }
+    }
+});
+
+// @route post /api/project/update/:idproject/:idpm
+// you need to provide the required fields in the body
+// you need to provide memberId(the member creating the project) in the body
+const updateProject = asyncHandler(async (req, res) => {
+
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idpm &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        verif = true;
+      }
+      if (verif) {
+          const entries = Object.keys(req.body);
+          const updates = {};
+
+          // constructing dynamic query : get the informations entered in BODY
+          for (let i = 0; i < entries.length; i++) {
+            updates[entries[i]] = Object.values(req.body)[i];
+          }
+          // update workspace fields according to the BODY
+          Project.updateOne(
+            { _id: req.params.idproject },
+            { $set: updates },
+            function (err, success) {
+              if (err) throw err;
+              else {
+                res.status(201).json({ project });
+              }
+            }
+          );
+        }
+        else {
+          res.status(401);
+          throw new Error("invalid ProjectManager id");
+        }
+
+  
+  
+  }
+});
+
+/**
+ * @desc invite a list of members to a workspace
+ * @var(members,list of member emails )
+ * @var(role, so that we can know if the members should be affected as managers or not)
+ * @route PUT /api/project/invite-members/:idproject/:idpm
+ * idpm : id of current user inviting
+ */
+ const inviteMembers= asyncHandler(async (req, res, next) => {
+  const emails = req.body.emails;
+  const project = await Project.findById(req.params.idproject);
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].isTeamLeader == true
+    )
+      verif = true;
+    }
+    
+  if (!verif)
+    {es.status(404);
+      throw new Error("changes are not made by a PM!");}
+  else {
+            for (let i = 0; i < emails.length; i++) {
+              let member = await Member.findOne({ email: emails[i] });
+                const invitedMember = {
+                  memberId: member._id
+                  };
+                await Project.findOneAndUpdate(
+                  { _id: req.params.idproject },
+                  {
+                    $push: { assigned_members: invitedMember },
+                  },
+                  {
+                    new: true,
+                  }
+                );
+              
+            }
+            return res.status(200).json(emails);}
+});
+
+
+/**
+ * @desc invite a list of members to a workspace
+ * @var(members,list of member emails )
+ * @var(role, so that we can know if the members should be affected as managers or not)
+ * @route PUT /api/project/invite-members/:idproject/:idpm
+ * idpm : id of current user inviting
+ */
+ const deleteMembers= asyncHandler(async (req, res, next) => {
+  const emails = req.body.emails;
+  const project = await Project.findById(req.params.idproject);
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].isTeamLeader == true
+    )
+      verif = true;
+    }
+    
+  if (!verif)
+    {es.status(404);
+      throw new Error("changes are not made by a PM!");}
+  else {
+            for (let i = 0; i < emails.length; i++) {
+              let member = await Member.findOne({ email: emails[i] });
+                const invitedMember = {
+                  memberId: member._id
+                  };
+                await Project.findOneAndUpdate(
+                  { _id: req.params.idproject },
+                  {
+                    $pull: { assigned_members: invitedMember },
+                  },
+                  {
+                    new: true,
+                  }
+                );
+              
+            }
+            return res.status(200).json(emails);}
+});
+
+
 module.exports = {
   addProject,
   deleteProject,
   unDeleteProject,
   assignTeamLeader,
+  updateProject,
+  dischargeTeamLeader,
+  inviteMembers,
+  deleteMembers
 };
