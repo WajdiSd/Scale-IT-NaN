@@ -10,13 +10,14 @@ import Iconify from 'src/components/Iconify';
 
 // ----------------------------------------------------------------------
 
-MembersWorkspace.propTypes = {
+//ff
+ProfileFriends.propTypes = {
   friends: PropTypes.array,
   findFriends: PropTypes.string,
   onFindFriends: PropTypes.func,
 };
 
-export default function MembersWorkspace({ friends, findMembers, onFindFriends }) {
+export default function ProfileFriends({ friends, findFriends, onFindFriends }) {
   const friendFiltered = applyFilter(friends, findFriends);
 
   const isNotFound = friendFiltered.length === 0;
@@ -24,12 +25,12 @@ export default function MembersWorkspace({ friends, findMembers, onFindFriends }
   return (
     <Box sx={{ mt: 5 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
-        Members
+        Friends
       </Typography>
 
       <InputStyle
         stretchStart={240}
-        value={findMembers}
+        value={findFriends}
         onChange={(event) => onFindFriends(event.target.value)}
         placeholder="Find friends..."
         InputProps={{
