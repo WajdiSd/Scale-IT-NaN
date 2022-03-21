@@ -11,28 +11,28 @@ import Iconify from 'src/components/Iconify';
 // ----------------------------------------------------------------------
 
 //ff
-ProfileFriends.propTypes = {
-  friends: PropTypes.array,
-  findFriends: PropTypes.string,
-  onFindFriends: PropTypes.func,
+MembersWorkspace.propTypes = {
+  members: PropTypes.array,
+  findMembers: PropTypes.string,
+  onFindMembers: PropTypes.func,
 };
 
-export default function ProfileFriends({ friends, findFriends, onFindFriends }) {
-  const friendFiltered = applyFilter(friends, findFriends);
+export default function MembersWorkspace({ members, findMembers, onFindMembers }) {
+  const memberFiltered = applyFilter(members, findMembers);
 
-  const isNotFound = friendFiltered.length === 0;
+  const isNotFound = memberFiltered.length === 0;
 
   return (
     <Box sx={{ mt: 5 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
-        Friends
+        Memebers
       </Typography>
 
       <InputStyle
         stretchStart={240}
-        value={findFriends}
-        onChange={(event) => onFindFriends(event.target.value)}
-        placeholder="Find friends..."
+        value={findMembers}
+        onChange={(event) => onFindMembers(event.target.value)}
+        placeholder="Find members..."
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -44,16 +44,16 @@ export default function ProfileFriends({ friends, findFriends, onFindFriends }) 
       />
 
       <Grid container spacing={3}>
-        {friendFiltered.map((friend) => (
-          <Grid key={friend.id} item xs={12} md={4}>
-            <FriendCard friend={friend} />
+        {memberFiltered.map((member) => (
+          <Grid key={member._id} item xs={12} md={4}>
+            <MemberCard member={member} />
           </Grid>
         ))}
       </Grid>
 
       {isNotFound && (
         <Box sx={{ mt: 5 }}>
-          <SearchNotFound searchQuery={findFriends} />
+          <SearchNotFound searchQuery={findMembers} />
         </Box>
       )}
     </Box>
@@ -62,12 +62,12 @@ export default function ProfileFriends({ friends, findFriends, onFindFriends }) 
 
 // ----------------------------------------------------------------------
 
-FriendCard.propTypes = {
-  friend: PropTypes.object,
+MemberCard.propTypes = {
+  member: PropTypes.object,
 };
 
-function FriendCard({ friend }) {
-  const { name, role, avatarUrl } = friend;
+function MemberCard({ member }) {
+  const { gender, lastName, phone, email, avatarUrl, firstName } = member;
 
   return (
     <Card
@@ -79,13 +79,17 @@ function FriendCard({ friend }) {
         flexDirection: 'column',
       }}
     >
-      <Avatar alt={name} src={avatarUrl} sx={{ width: 64, height: 64, mb: 3 }} />
+      <Avatar
+        alt={firstName}
+        src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
+        sx={{ width: 64, height: 64, mb: 3 }}
+      />
       <Link variant="subtitle1" color="text.primary">
-        {name}
+        {firstName} {lastName}
       </Link>
 
       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-        {role}
+        {email}
       </Typography>
 
       <SocialsButton initialColor />
@@ -100,7 +104,7 @@ function FriendCard({ friend }) {
 
 function applyFilter(array, query) {
   if (query) {
-    return array.filter((friend) => friend.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return array.filter((member) => member.firstName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return array;
