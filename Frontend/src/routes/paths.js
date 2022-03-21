@@ -7,30 +7,25 @@ function path(root, sublink) {
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 
-
 function rootWorkspace() {
-  console.log("rootWorkspace func");
-  if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
+  console.log('rootWorkspace func');
+  if (JSON.parse(localStorage.getItem('redux-workspaces')) != null) {
     const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
-  
+
     if (JSON.parse(workspace) != null) {
       const _id = JSON.parse(workspace)['_id'];
       console.log('_id');
       console.log(_id);
       return `/workspace/${_id}/invite`;
+    } else {
+      console.log('workspace null');
+      return '';
     }
-    else{
-      console.log("workspace null");
-      return "";
-    }
-  }else{
-    console.log("redux-workspaces null");
-    return "";
+  } else {
+    console.log('redux-workspaces null');
+    return '';
   }
 }
-
-
-
 
 // ----------------------------------------------------------------------
 
