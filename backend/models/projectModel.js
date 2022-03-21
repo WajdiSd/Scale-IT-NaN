@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const workspaceSchema = mongoose.Schema(
+const projectSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -10,20 +10,29 @@ const workspaceSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a description"],
     },
+    startDate: {
+      type: Date,
+      required: [true, "Please add a start date"],
+    },
+    expectedEndDate: {
+      type: Date,
+      required: [true, "Please add an expected end date"],
+    },
+    endDate: {
+      type: Date,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
     assigned_members: [
       {
-        member: {
+        memberId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Member",
         },
-        isHR: { type: Boolean, default: false },
         isProjectManager: { type: Boolean, default: false },
-        rateHour: { type: Number, default: 0 },
-        rateOvertime: { type: Number, default: 0 },
+        isTeamLeader: { type: Boolean, default: false },
       },
     ],
   },
@@ -32,4 +41,4 @@ const workspaceSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Workspace", workspaceSchema);
+module.exports = mongoose.model("Project", projectSchema);

@@ -10,8 +10,10 @@ const {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  getWorkspaceById,
   inviteManyMembers,
-  countWkspMembers
+  countWkspMembers,
+  assignRatestoMember,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -23,10 +25,10 @@ router.put("/invite-members/:id", inviteManyMembers);
 router.post("/add/:idmember", addWorkspace);
 router.put("/update/:idworkspace/:idhr", updateWorkspace);
 router.get("/:idmember", getWorkspaces);
+router.get("/details/:id", getWorkspaceById);
 router.put("/removemember/:idmember/:idworkspace", removeMemberFromWorkspace);
 router.get("/fetch-users/:idworkspace", fetchUsersByWorkspace);
 
-router.put("/deleteworkspace/:idworkspace", deleteWorkspace);
 router.put(
   "/removemember/:idmember/:idworkspace/:idhr",
   removeMemberFromWorkspace
@@ -34,7 +36,10 @@ router.put(
 router.put("/assignPM/:idworkspace/:idmember/:idhr", assignProjectManager);
 router.put("/deletePM/:idworkspace/:idmember/:idhr", deleteProjectManager);
 router.put("/deleteworkspace/:idworkspace/:idhr", deleteWorkspace);
+router.put(
+  "/asignratestomember/:idworkspace/:idhr/:idmember",
+  assignRatestoMember
+);
 router.get("/countmembers/:idworkspace", countWkspMembers);
-
 
 module.exports = router;

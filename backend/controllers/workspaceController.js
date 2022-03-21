@@ -13,6 +13,37 @@ const getWorkspaces = asyncHandler(async (req, res) => {
   res.status(200).json(workspaces);
 });
 
+// @desc Get workspace by id
+// @route get /api/workspace
+// @access private
+const getWorkspaceById = asyncHandler(async (req, res) => {
+  Workspace.exists(
+    {
+      _id: req.params.id,
+    },
+    (err, workspace) => {
+      if (workspace) {
+        Workspace.findById(
+          {
+            _id: req.params.id,
+          },
+          (err, workspace) => {
+            if (err) {
+              res.status(400);
+              res.send("invalid workspace id");
+            }
+            res.status(200);
+            res.json(workspace);
+          }
+        );
+      } else if (err) {
+        res.status(400);
+        res.send("invalid workspace id");
+      }
+    }
+  );
+});
+
 // @desc add new workspace
 // @route post /api/workspace
 // @access public
@@ -189,50 +220,47 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 // @route post /api/workspace/assignPM/:idworkspace/:idMember/:idHR
 // @access public
 const assignProjectManager = asyncHandler(async (req, res) => {
-  
   /*verify workspaceid is valid*/
   var verif = false;
   const workspace = await Workspace.findById(req.params.idworkspace);
   if (!workspace) {
-      /*if not, error*/
+    /*if not, error*/
     res.status(400);
     throw new Error("invalid workspace id");
   } else {
-      /*if yes, verify if changes are made by an HR */
-      for (let i = 0; i < workspace.assigned_members.length; i++) {
-        if (
-          workspace.assigned_members[i].member == req.params.idhr &&
-          workspace.assigned_members[i].isHR == true
-        )
-          verif = true;
-      }
-      if (verif) {
-
-        /*if yes, assign PM*/  
-       // find workspace and member in this workspace
-          Workspace.updateOne(
-            {
-              _id: req.params.idworkspace,
-              "assigned_members.member": req.params.idmember,
-            },
-            {
-              $set: {
-                "assigned_members.$.isProjectManager": true,
-              },
-            },
-            function (err, success) {
-              if (err) throw err;
-              else {
-                res.send({ msg: "Added project manager" });
-              }
-            }
-          );
+    /*if yes, verify if changes are made by an HR */
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      /*if yes, assign PM*/
+      // find workspace and member in this workspace
+      Workspace.updateOne(
+        {
+          _id: req.params.idworkspace,
+          "assigned_members.member": req.params.idmember,
+        },
+        {
+          $set: {
+            "assigned_members.$.isProjectManager": true,
+          },
+        },
+        function (err, success) {
+          if (err) throw err;
+          else {
+            res.send({ msg: "Added project manager" });
+          }
         }
+      );
+    } else {
       /*if not, deny changes*/
-      else {
-        res.status(401);
-        throw new Error("invalid HR id");
-      }
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
   }
 });
 
@@ -241,50 +269,47 @@ const assignProjectManager = asyncHandler(async (req, res) => {
 // @route post /api/workspace/deletePM/:idworkspace/:idMember/idHR
 // @access public
 const deleteProjectManager = asyncHandler(async (req, res) => {
-  
   /*verify workspaceid is valid*/
   var verif = false;
   const workspace = await Workspace.findById(req.params.idworkspace);
   if (!workspace) {
-      /*if not, error*/
+    /*if not, error*/
     res.status(400);
     throw new Error("invalid workspace id");
   } else {
-      /*if yes, verify if changes are made by an HR */
-      for (let i = 0; i < workspace.assigned_members.length; i++) {
-        if (
-          workspace.assigned_members[i].member == req.params.idhr &&
-          workspace.assigned_members[i].isHR == true
-        )
-          verif = true;
-      }
-      if (verif) {
-
-        /*if yes, assign PM*/  
-       // find workspace and member in this workspace
-          Workspace.updateOne(
-            {
-              _id: req.params.idworkspace,
-              "assigned_members.member": req.params.idmember,
-            },
-            {
-              $set: {
-                "assigned_members.$.isProjectManager": false,
-              },
-            },
-            function (err, success) {
-              if (err) throw err;
-              else {
-                res.send({ msg: "Deleted project manager" });
-              }
-            }
-          );
+    /*if yes, verify if changes are made by an HR */
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      /*if yes, assign PM*/
+      // find workspace and member in this workspace
+      Workspace.updateOne(
+        {
+          _id: req.params.idworkspace,
+          "assigned_members.member": req.params.idmember,
+        },
+        {
+          $set: {
+            "assigned_members.$.isProjectManager": false,
+          },
+        },
+        function (err, success) {
+          if (err) throw err;
+          else {
+            res.send({ msg: "Deleted project manager" });
+          }
         }
+      );
+    } else {
       /*if not, deny changes*/
-      else {
-        res.status(401);
-        throw new Error("invalid HR id");
-      }
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
   }
 });
 
@@ -369,52 +394,102 @@ const fetchUsersByWorkspace = asyncHandler(async (req, res) => {
   let fullMember;
   let members = [];
   for (let i = 0; i < workspace.assigned_members.length; i++) {
-    let member = await workspace.assigned_members[i];
+    let member = workspace.assigned_members[i];
     fullMember = await Member.findOne({ _id: member.member });
-    console.log(fullMember);
-    fullMember["isProjectManager"] = member.isProjectManager;
-    fullMember["isHR"] = member.isHR;
-    fullMember.rateHour = member.rateHour;
-    fullMember.rateOverTime = member.rateOverTime;
-    console.log("member");
-    console.log(member);
-    console.log("fullMember");
-    console.log(fullMember);
+    const newMember = {
+      ...fullMember._doc,
+      isProjectManager: member.isProjectManager,
+      isHR: member.isHR,
+      rateHour: member.rateHour,
+      rateOverTime: member.rateOverTime,
+    };
+    newMember.isProjectManager = member.isProjectManager;
+    members.push(newMember);
   }
   if (!members) {
     throw new Error("members not found");
   }
-  return res.status(200).json(fullMember);
+  return res.status(200).json(members);
 });
-
 
 // Count workspace members
 // @desc count members of a specific workspace
 // @route post /api/workspace/countmembers/:idworkspace
 // @access public
 const countWkspMembers = asyncHandler(async (req, res) => {
-  
   /*verify workspaceid is valid*/
-  var total=0;
+  var total = 0;
   const workspace = await Workspace.findById(req.params.idworkspace);
   if (!workspace) {
-      /*if not, error*/
+    /*if not, error*/
     res.status(400);
     throw new Error("invalid workspace id");
   } else {
-      /*if yes, count total members */
-      for (let i = 0; i < workspace.assigned_members.length; i++) {
-          total = total+1;
-      }
-      res.status(200).json({
-        idworkspace: req.params.idworkspace,
-        total: total,
-      });
+    /*if yes, count total members */
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      total = total + 1;
+    }
+    res.status(200).json({
+      idworkspace: req.params.idworkspace,
+      total: total,
+    });
   }
-
 });
 
-
+//
+// @desc set rates to member
+// @route put /api/workspace/asignratestomember/:idworkspace/:idhr/idmember
+// @access private
+const assignRatestoMember = asyncHandler(async (req, res) => {
+  /*verify workspaceid is valid*/
+  var verif = false;
+  const { rateHour, rateOverTime } = req.body;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    /*if yes, verify if changes are made by an HR */
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      /*if yes, set rates*/
+      // find workspace and member in this workspace
+      Workspace.updateOne(
+        {
+          _id: req.params.idworkspace,
+          "assigned_members.member": req.params.idmember,
+        },
+        {
+          $set: {
+            "assigned_members.$.rateHour": rateHour,
+            "assigned_members.$.rateOvertime": rateOverTime,
+          },
+        },
+        function (err, success) {
+          if (err) throw err;
+          else {
+            res.status(200).json({
+              member: req.params.idmember,
+              rateHour: rateHour,
+              rateOverTime: rateOverTime,
+            });
+          }
+        }
+      );
+    } else {
+      /*if not, deny changes*/
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
+  }
+});
 
 module.exports = {
   addWorkspace,
@@ -426,7 +501,8 @@ module.exports = {
   assignProjectManager,
   deleteProjectManager,
   deleteWorkspace,
+  getWorkspaceById,
   inviteManyMembers,
   countWkspMembers,
-
+  assignRatestoMember,
 };

@@ -6,6 +6,12 @@ import SvgIconStyle from '../../../components/SvgIconStyle';
 
 // ----------------------------------------------------------------------
 
+// const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+// const _id = JSON.parse(workspace)['_id'];
+// console.log('_id');
+// console.log(_id);
+// const linkToWorkspaceInvite = `${PATH_DASHBOARD.workspaces.details}${_id}/invite`;
+
 const getIcon = (name) => <SvgIconStyle src={`/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
 const ICONS = {
@@ -30,6 +36,12 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
+      {
+        title: 'workspaces',
+        path: PATH_DASHBOARD.workspaces.root,
+        icon: ICONS.workspace,
+        children: [{ title: 'invite members', path: PATH_DASHBOARD.workspaces.memberInvite }],
+      },
       { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
       { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
@@ -44,12 +56,6 @@ const navConfig = [
     subheader: 'management',
     items: [
       // MANAGEMENT : WORKSPACE
-      {
-        title: 'workspace',
-        path: PATH_DASHBOARD.workspace.root,
-        icon: ICONS.workspace,
-        children: [{ title: 'invite members', path: PATH_DASHBOARD.workspace.memberInvite }],
-      },
 
       // MANAGEMENT : USER
       {

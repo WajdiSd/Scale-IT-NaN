@@ -27,13 +27,19 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-function NavbarHorizontal() {
+function NavbarHorizontal({ isInWorkspace }) {
   return (
-    <RootStyle>
-      <Container maxWidth={false}>
-        <NavSectionHorizontal navConfig={navConfig} />
-      </Container>
-    </RootStyle>
+    <>
+      {isInWorkspace ? (
+        <RootStyle>
+          <Container maxWidth={false}>
+            <NavSectionHorizontal navConfig={navConfig} />
+          </Container>
+        </RootStyle>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 

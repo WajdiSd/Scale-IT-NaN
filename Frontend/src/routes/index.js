@@ -13,6 +13,7 @@ import { PATH_AFTER_LOGIN } from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 import WorkspaceInvite from 'src/pages/dashboard/WorkspaceInvite';
+import AddWorkspace from 'src/pages/dashboard/AddWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -64,11 +65,13 @@ export default function Router() {
       ),
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
+        { path: 'landing', element: <GeneralWorkspace /> },
         { path: 'app', element: <GeneralApp /> },
         { path: 'ecommerce', element: <GeneralEcommerce /> },
         { path: 'analytics', element: <GeneralAnalytics /> },
         { path: 'banking', element: <GeneralBanking /> },
         { path: 'booking', element: <GeneralBooking /> },
+        { path: 'addworkspace', element: <AddWorkspace /> },
 
         {
           path: 'e-commerce',
@@ -86,8 +89,12 @@ export default function Router() {
         {
           path: 'workspace',
           children: [
-            { element: <Navigate to="/dashboard/workspace" replace />, index: true },
-            { path: 'invite', element: <WorkspaceInvite /> },
+            { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
+            {
+              path: ':id',
+              element: <WorkspaceDetails />,
+            },
+            { path: ':id/invite', element: <WorkspaceInvite /> },
           ],
         },
         {
@@ -172,6 +179,7 @@ const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const ConfirmAccount = Loadable(lazy(() => import('../pages/auth/ConfirmAccount')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
+const GeneralWorkspace = Loadable(lazy(() => import('../pages/dashboard/GeneralWorkspace')));
 const GeneralEcommerce = Loadable(lazy(() => import('../pages/dashboard/GeneralEcommerce')));
 const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
 const GeneralBanking = Loadable(lazy(() => import('../pages/dashboard/GeneralBanking')));
@@ -186,6 +194,7 @@ const BlogPosts = Loadable(lazy(() => import('../pages/dashboard/BlogPosts')));
 const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')));
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
+const WorkspaceDetails = Loadable(lazy(() => import('../pages/dashboard/WorkspaceDetails')));
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));

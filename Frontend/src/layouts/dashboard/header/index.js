@@ -21,6 +21,7 @@ import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import ContactsPopover from './ContactsPopover';
 import NotificationsPopover from './NotificationsPopover';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -59,8 +60,10 @@ DashboardHeader.propTypes = {
   verticalLayout: PropTypes.bool,
 };
 
-export default function DashboardHeader({ onOpenSidebar, isCollapse = false, verticalLayout = false }) {
+export default function DashboardHeader({ isInWorkspace, onOpenSidebar, isCollapse = false, verticalLayout = false }) {
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout;
+
+  const { isHr } = useAuth();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -83,8 +86,8 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
-        {isDesktop && (
-          <Button href={PATH_DASHBOARD.workspace.memberInvite} variant="contained">
+        {isDesktop && isInWorkspace && isHr && (
+          <Button href={PATH_DASHBOARD.workspaces.memberInvite} variant="contained">
             Invite Project Members
           </Button>
         )}
