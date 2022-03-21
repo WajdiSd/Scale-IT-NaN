@@ -7,17 +7,29 @@ function path(root, sublink) {
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 
-let rootWorkspace = '';
-if(localStorage.getItem('redux-workspaces') != null){
-  const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
 
-  if (JSON.parse(workspace) != null) {
-    const _id = JSON.parse(workspace)['_id'];
-    console.log('_id');
-    console.log(_id);
-    rootWorkspace = `/workspace/${_id}`;
+function rootWorkspace() {
+  console.log("rootWorkspace func");
+  if(JSON.parse(localStorage.getItem('redux-workspaces')) != null){
+    const workspace = JSON.parse(localStorage.getItem('redux-workspaces'))['workspace'];
+  
+    if (JSON.parse(workspace) != null) {
+      const _id = JSON.parse(workspace)['_id'];
+      console.log('_id');
+      console.log(_id);
+      return `/workspace/${_id}/invite`;
+    }
+    else{
+      console.log("workspace null");
+      return "";
+    }
+  }else{
+    console.log("redux-workspaces null");
+    return "";
   }
 }
+
+
 
 
 // ----------------------------------------------------------------------
@@ -68,7 +80,7 @@ export const PATH_DASHBOARD = {
   kanban: path(ROOTS_DASHBOARD, '/kanban'),
   workspaces: {
     details: path(ROOTS_DASHBOARD, '/workspace/'),
-    memberInvite: path(ROOTS_DASHBOARD, `${rootWorkspace}/invite`),
+    memberInvite: path(ROOTS_DASHBOARD, rootWorkspace()),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),

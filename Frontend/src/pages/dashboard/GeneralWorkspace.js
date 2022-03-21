@@ -56,7 +56,7 @@ export default function GeneralWorkspace() {
         }
       });
     });
-  }, []);
+  }, [user]);
 
   return (
     <Page title="General: App">
@@ -91,7 +91,7 @@ export default function GeneralWorkspace() {
           {userJoinedspaces
             ? userJoinedspaces.map((workspace, index) =>
                 workspace ? (
-                  <Grid key={workspace._id} item xs={12} sm={6} md={(index === 0 && 6) || 3}>
+                  <Grid key={index} item xs={12} sm={6} md={(index === 0 && 6) || 3}>
                     <WorkspaceCard workspace={workspace} index={index} />
                   </Grid>
                 ) : (
