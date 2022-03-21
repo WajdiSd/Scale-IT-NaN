@@ -31,7 +31,7 @@ const userPersistConfig = {
   key: 'user',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager'],
+  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager', 'idHR', 'idProjectManager'],
 };
 
 const workspacesPersistConfig = {

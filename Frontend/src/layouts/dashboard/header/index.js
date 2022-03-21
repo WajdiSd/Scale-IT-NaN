@@ -46,11 +46,11 @@ export default function DashboardHeader({ isInWorkspace, onOpenSidebar, isCollap
   const { rootWorkspace } = useWorkspaceId();
 
   const _id = rootWorkspace;
-  console.log('\n\n-----------------------------------------------');
+  /*console.log('\n\n-----------------------------------------------');
   console.log('ID WORKSPACE ROOT WORKSPACE');
   console.log(_id);
   console.log('\n\n-----------------------------------------------');
-
+*/
   const linkTo = `${PATH_DASHBOARD.workspaces.memberInvite}${_id}/invite`;
 
   const isDesktop = useResponsive('up', 'lg');
