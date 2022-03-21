@@ -26,6 +26,7 @@ const workspaceSchema = mongoose.Schema(
         rateOvertime: { type: Number, default: 0 },
       },
     ],
+    
   },
   {
     timestamps: true,

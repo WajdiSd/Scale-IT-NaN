@@ -20,6 +20,8 @@ import { useDispatch } from 'react-redux';
 import useAuth from 'src/hooks/useAuth';
 import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
+import { PATH_DASHBOARD } from '../../../routes/paths';
+
 
 // ----------------------------------------------------------------------
 

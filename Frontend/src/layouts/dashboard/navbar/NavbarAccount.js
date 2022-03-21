@@ -32,9 +32,8 @@ NavbarAccount.propTypes = {
   isCollapse: PropTypes.bool,
 };
 
-export default function NavbarAccount({ isCollapse }) {
+export default function NavbarAccount({ isInWorkspace, isCollapse }) {
   const { user, isHr } = useAuth();
-
   const { rootWorkspace } = useWorkspaceId();
 
   const _id = rootWorkspace;
@@ -77,10 +76,9 @@ export default function NavbarAccount({ isCollapse }) {
           </Box>
         </RootStyle>
       </Link>
-
-      {!isDesktop && isHr && (
+      {!isDesktop && isInWorkspace && isHr && (
         <Button href={linkTo} variant="contained">
-          Invite Members
+        Invite Members
         </Button>
       )}
     </>
