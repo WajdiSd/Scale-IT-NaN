@@ -57,6 +57,7 @@ export default function WorkspaceDetails() {
   let { id } = useParams();
   const [idWorkspace, setIdWorkspace] = useState(id);
   const { workspace } = useWorkspace();
+  const { usersInWorkspace } = useWorkspace();
   const dispatch = useDispatch();
 
   const getUserWorkspace = () => {
@@ -72,14 +73,14 @@ export default function WorkspaceDetails() {
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
-  const [findFriends, setFindFriends] = useState('');
+  const [findMembers, setfindMembers] = useState('');
 
   const handleChangeTab = (newValue) => {
     setCurrentTab(newValue);
   };
 
-  const handleFindFriends = (value) => {
-    setFindFriends(value);
+  const handleFindMembers = (value) => {
+    setfindMembers(value);
   };
 
   const PROFILE_TABS = [
@@ -98,7 +99,7 @@ export default function WorkspaceDetails() {
       value: 'Members',
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
       component: (
-        <MembersWorkspace friends={_userFriends} findFriends={findFriends} onFindFriends={handleFindFriends} />
+        <MembersWorkspace members={usersInWorkspace} findMembers={findMembers} onFindMembers={handleFindMembers} />
       ),
     },
     {
