@@ -3,6 +3,84 @@ const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Workspace = require("../models/workspaceModel");
 const { ProjectHasTeamLeader } = require("../helpers/functions");
+
+
+const getProjects = asyncHandler(async (req, res) => {
+  const projects = await Project.find({});
+  if(projects.length === 0){
+    return res.status(404).json({
+      success: false,
+      error: "No projects found in db"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: projects.length,
+    data: projects
+  });
+});
+
+const getProjectsByWorkspace = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ "workspace.workspaceId": req.params.idworkspace });
+  if(projects.length === 0){
+    return res.status(404).json({
+      success: false,
+      error: "No projects found in this workspace"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: projects.length,
+    data: projects
+  });
+});
+
+const getProjectsByMember = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ "workspace.workspaceId": req.params.idworkspace,"assigned_members.memberId": req.params.idmember });
+  if(projects.length === 0){
+    return res.status(404).json({
+      success: false,
+      error: "No projects found for this member"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: projects.length,
+    data: projects
+  });
+});
+
+const getProjectsByManager = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ "workspace.workspaceId": req.params.idworkspace,"assigned_members.memberId": req.params.idmember , "assigned_members.isProjectManager": true });
+  if(projects.length === 0){
+    return res.status(404).json({
+      success: false,
+      error: "No projects found with this member as project manager"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: projects.length,
+    data: projects
+  });
+});
+
+const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ "workspace.workspaceId": req.params.idworkspace,"assigned_members.memberId": req.params.idmember , "assigned_members.isTeamLeader": true });
+  if(projects.length === 0){
+    return res.status(404).json({
+      success: false,
+      error: "No projects found with this member as team leader"
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: projects.length,
+    data: projects
+  });
+});
+
+
 // @route post /api/project/add/
 // you need to provide the required fields in the body
 // you need to provide memberId(the member creating the project) in the body
@@ -342,5 +420,10 @@ module.exports = {
   updateProject,
   dischargeTeamLeader,
   inviteMembers,
-  deleteMembers
+  deleteMembers,
+  getProjects,
+  getProjectsByWorkspace,
+  getProjectsByManager,
+  getProjectsByTeamLeader,
+  getProjectsByMember,
 };

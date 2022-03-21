@@ -1,10 +1,17 @@
 const express = require("express");
 const { addProject, deleteProject, unDeleteProject, 
     assignTeamLeader,updateProject,dischargeTeamLeader,
-    inviteMembers,deleteMembers } = require("../controllers/projectController");
+    inviteMembers,deleteMembers, getProjects, getProjectsByWorkspace, getProjectsByManager, getProjectsByMember, getProjectsByTeamLeader } = require("../controllers/projectController");
 const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
+
+router.get("/list", getProjects);
+router.get("/list/:idworkspace", getProjectsByWorkspace);
+router.get("/listbymanager/:idworkspace/:idmember",getProjectsByManager);
+router.get("listbyteamleader/:idworkspace/:idmember",getProjectsByTeamLeader);
+router.get("/listbymember/:idworkspace/:idmember",getProjectsByMember);
+
 router.post("/add", addProject);
 router.put("/delete/:id", deleteProject);
 router.put("/undelete/:id", unDeleteProject);

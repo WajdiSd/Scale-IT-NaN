@@ -35,14 +35,12 @@ const projectSchema = mongoose.Schema(
         isTeamLeader: { type: Boolean, default: false },
       },
     ],
-    workspace: [{
+    workspace: {
       workspaceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Workspace",
       }
     }
-      
-    ]
   },
   {
     timestamps: true,
