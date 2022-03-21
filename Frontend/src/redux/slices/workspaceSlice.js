@@ -171,5 +171,16 @@ export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', a
   }
 });
 
+
+export const updateWorkspace = createAsyncThunk('workspace/updateWorkspace', async (workspaceData, thunkAPI) => {
+  try {
+    return await workspaceService.updateWorkspace(workspaceData);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const { reset } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

@@ -31,12 +31,18 @@ const getUsersWorkspace = async (id) => {
   return response.data;
 };
 
+
+const updateWorkspace = async (workspaceData, idmember) => {
+  const response = await axiosInstance.put(API_URL + '/update/' + idmember, workspaceData);
+  return response.data;
+};
 const workspaceService = {
   getWorkspaces,
   addworkspace,
   getWorkspace,
   deleteworkspace,
   getUsersWorkspace,
+  updateWorkspace,
 };
 
 export default workspaceService;
