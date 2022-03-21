@@ -19,12 +19,14 @@ import {
 import WorkspaceInviteFriends from '../../sections/@dashboard/workspace/WorkspaceInviteFriends';
 import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from 'src/routes/paths';
+import { useParams } from 'react-router';
+import useWorkspace from 'src/hooks/useWorkspace';
 
 // ----------------------------------------------------------------------
 
 export default function WorkspaceInvite() {
   const { themeStretch } = useSettings();
-
+  const {workspace} = useWorkspace();
   return (
     <Page title="Workspace: Invite Members">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -32,7 +34,8 @@ export default function WorkspaceInvite() {
           
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { name: 'Invite' },
+            { name: workspace?.name, href: PATH_DASHBOARD.workspaces.details+workspace._id },
+            { name: 'invite' },
           ]}
         />
         <Typography variant="h4" sx={{ mb: 5 }}>

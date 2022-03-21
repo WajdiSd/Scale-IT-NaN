@@ -13,7 +13,9 @@ const user = JSON.parse(localStorage.getItem('user'));
 const initialState = {
   user: user ? user : null,
   isHr: false,
+  idHR: null,
   isProjectManager: false,
+  idProjectManager: null,
   isError: false,
   isAuthenticated: false,
   isLoading: false,
@@ -149,12 +151,16 @@ export const verifyCode = createAsyncThunk('auth/verifyCode', async (code, thunk
 export const isHr = createAsyncThunk('auth/isHr', async (workspace, thunkAPI) => {
   const user = JSON.parse(localStorage.getItem('user'));
   let isHR = false;
+  let idHR = null;
 
   try {
     workspace.assigned_members.forEach((assignedMember) =>
-      user['_id'] === String(assignedMember.member) ? (isHR = assignedMember.isHR) : ''
+      user['_id'] === String(assignedMember.member) ? (isHR = assignedMember.isHR,
+        assignedMember.isHR? idHR=assignedMember.member:null
+        ) : ''
+      
     );
-    return isHR;
+    return {isHr: isHR, idHR: idHR};
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -165,12 +171,16 @@ export const isHr = createAsyncThunk('auth/isHr', async (workspace, thunkAPI) =>
 export const isProjectManager = createAsyncThunk('auth/isProjectManager', async (workspace, thunkAPI) => {
   const user = JSON.parse(localStorage.getItem('user'));
   let isPM = false;
+  let idProjectManager = null;
+
 
   try {
     workspace.assigned_members.forEach((assignedMember) =>
-      user['_id'] === String(assignedMember.member) ? (isPM = assignedMember.isProjectManager) : ''
+      user['_id'] === String(assignedMember.member) ? 
+      (isPM = assignedMember.isProjectManager, 
+        assignedMember.isProjectManager? idProjectManager=assignedMember.member:null) : ''
     );
-    return isPM;
+    return {isPM: isPM, idProjectManager: idProjectManager};
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -312,7 +322,8 @@ export const authSlice = createSlice({
       .addCase(isHr.fulfilled, (state, action) => {
         console.log('hr');
         console.log(action);
-        state.isHr = action.payload;
+        state.isHr = action.payload.isHr;
+        state.idHR = action.payload.idHR;
       })
       .addCase(isHr.rejected, (state, action) => {
         console.log('hr rejected');
@@ -321,7 +332,9 @@ export const authSlice = createSlice({
       .addCase(isProjectManager.fulfilled, (state, action) => {
         console.log('pm');
         console.log(action);
-        state.isProjectManager = action.payload;
+        state.isProjectManager = action.payload.isPM;
+        state.idProjectManager = action.payload.idProjectManager;
+        
       })
       .addCase(isProjectManager.rejected, (state, action) => {
         console.log('pm rejected');
