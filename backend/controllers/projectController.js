@@ -118,7 +118,7 @@ const unDeleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findByIdAndUpdate(projectId, {
     isDeleted: false,
   });
-  res.status(200).json("project deleted");
+  res.status(200).json("project Undeleted");
 });
 
 // @route put /api/project/assignteamleader/:id
