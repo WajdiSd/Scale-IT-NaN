@@ -25,12 +25,18 @@ const deleteworkspace = async (idworkspace, idmember) => {
   const response = await axiosInstance.put(API_URL + '/deleteworkspace/' + idworkspace + '/' + idmember);
   return response.data;
 };
+//get users by workspace
+const getUsersWorkspace = async (id) => {
+  const response = await axiosInstance.get(API_URL + '/fetch-users/' + id);
+  return response.data;
+};
 
 const workspaceService = {
   getWorkspaces,
   addworkspace,
   getWorkspace,
   deleteworkspace,
+  getUsersWorkspace,
 };
 
 export default workspaceService;
