@@ -1,7 +1,6 @@
 //import VerifyCode from "src/pages/auth/VerifyCode";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import projectService from '../service/projectService';
-import { isHr, isProjectManager } from './authSlice';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -61,6 +60,7 @@ export const projectSlice = createSlice({
         console.log('getWorkspaceProjects fulfilled');
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
+        state.projects = action.payload;
       })
       .addCase(getWorkspaceProjects.rejected, (state, action) => {
         console.log('\n\n----------------------------------------------------');
@@ -74,6 +74,7 @@ export const projectSlice = createSlice({
         console.log('getWorkspaceProjectsForMembers fulfilled');
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
+        state.projects = action.payload;
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
         console.log('\n\n----------------------------------------------------');
@@ -85,7 +86,7 @@ export const projectSlice = createSlice({
   },
 });
 
-// Create new workspace
+// Create new project
 export const addProject = createAsyncThunk('project/addProject', async (data, thunkAPI) => {
   try {
     return await projectService.addProject(data);

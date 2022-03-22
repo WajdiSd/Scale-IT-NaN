@@ -1,6 +1,5 @@
 import axiosInstance from 'src/utils/axios';
 
-// API URL MUST CONTAIN WORKSPACE ID !?
 const API_URL = 'project/';
 
 //add project
@@ -17,7 +16,7 @@ const getWorkspaceProjects = async (idWorkspace) => {
 
 //get projects from Workspace for TeamLeaders and normal Employees
 const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
-  '/listbymember/:idworkspace/:idmember';
+  console.log(idWorkspace, idMember);
   const response = await axiosInstance.get(API_URL + 'listbymember/' + idWorkspace + '/' + idMember);
   return response.data;
 };

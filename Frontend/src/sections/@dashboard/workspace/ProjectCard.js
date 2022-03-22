@@ -38,7 +38,7 @@ ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ gallery, idWorkspace }) {
+export default function ProjectCard({ projects, gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -67,9 +67,11 @@ export default function ProjectCard({ gallery, idWorkspace }) {
 
         <AddProjectForm onCancel={handleCloseModal} />
       </DialogAnimate>
+
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
+
       <HeaderBreadcrumbs
         heading=""
         links={[{ name: '', href: '' }]}
