@@ -20,7 +20,6 @@ import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
 import useAuth from '../../../hooks/useAuth';
 
-
 // ----------------------------------------------------------------------
 
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -62,19 +61,16 @@ export default function ProjectCard({ projects, gallery }) {
     setOpenLightbox(true);
     setSelectedImage(selectedImage);
   };
-
   return (
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
-        <DialogTitle>{'Add Project'}</DialogTitle>
+        <DialogTitle>{'Add Event'}</DialogTitle>
 
-        <AddProjectForm onCancel={handleCloseModal} />
+        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
       </DialogAnimate>
-
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
-
       <HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}
