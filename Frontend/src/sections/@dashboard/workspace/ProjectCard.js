@@ -17,7 +17,6 @@ import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
-import AddProjectForm from '../project/AddProjectForm';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +37,7 @@ ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ projects, gallery }) {
+export default function ProjectCard({ gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -59,19 +58,16 @@ export default function ProjectCard({ projects, gallery }) {
     setOpenLightbox(true);
     setSelectedImage(selectedImage);
   };
-
   return (
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
-        <DialogTitle>{'Add Project'}</DialogTitle>
+        <DialogTitle>{'Add Event'}</DialogTitle>
 
-        <AddProjectForm onCancel={handleCloseModal} />
+        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
       </DialogAnimate>
-
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
-
       <HeaderBreadcrumbs
         heading=""
         links={[{ name: '', href: '' }]}

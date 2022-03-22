@@ -10,11 +10,10 @@ const useProject = () => {
 
   const dispatch = useDispatch();
 
-  const getWorkspaceProjectsHook = (idWorkspace, idMember, isExecutive) => {
+  const getWorkspaceProjectsHook = (idWorkspace, idMember, isExecutive) =>
     isExecutive
-      ? dispatch(getWorkspaceProjectsForMembers({ idWorkspace, idMember }))
-      : dispatch(getWorkspaceProjects(idWorkspace));
-  };
+      ? dispatch(getWorkspaceProjects(idWorkspace))
+      : dispatch(getWorkspaceProjectsForMembers({ idWorkspace, idMember }));
 
   const resetErrorMessageHook = () => dispatch(resetErrorMessage());
 
