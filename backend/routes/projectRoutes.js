@@ -20,7 +20,7 @@ router.put("/assignteamleader/:id", protect, assignTeamLeader);
 router.put("/dischargeteamleader/:idproject/:idmember/:idpm", protect, dischargeTeamLeader);
 
 router.put("/update/:idproject/:idpm", protect, updateProject);
-router.put("/invite-members/:idproject/:idpm", protect, inviteMembers);
-router.put("/delete-members/:idproject/:idpm", protect, deleteMembers);
+router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
+router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
 
 module.exports = router;
