@@ -13,7 +13,7 @@ router.put("/assignteamleader/:id",assignTeamLeader);
 router.put("/dischargeteamleader/:idproject/:idmember/:idpm",dischargeTeamLeader);
 
 router.put("/update/:idproject/:idpm",updateProject);
-router.put("/invite-members/:idproject/:idpm",inviteMembers);
+router.put("/invite-members/:idproject/:idtl",inviteMembers);
 router.put("/delete-members/:idproject/:idpm",deleteMembers);
 
 module.exports = router;
