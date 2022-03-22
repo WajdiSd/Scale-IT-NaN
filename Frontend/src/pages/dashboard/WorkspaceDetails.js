@@ -9,6 +9,8 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
+import useProject from 'src/hooks/useProject';
+import useWorkspace from 'src/hooks/useWorkspace';
 // _mock_
 import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } from '../../_mock';
 // components
@@ -25,7 +27,6 @@ import {
 } from '../../sections/@dashboard/user/profile';
 
 import General from 'src/sections/@dashboard/workspace/General';
-import useWorkspace from 'src/hooks/useWorkspace';
 import { getWorkspace } from 'src/redux/slices/workspaceSlice';
 import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
@@ -56,9 +57,11 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   let { id } = useParams();
+  const { isHr, isProjectManager, user } = useAuth();
   const [idWorkspace, setIdWorkspace] = useState(id);
-  const { workspace } = useWorkspace();
-  const { usersInWorkspace } = useWorkspace();
+  const { projects, projectError, resetErrorMessageHook, getWorkspaceProjectsHook } = useProject();
+  const { workspace, usersInWorkspace } = useWorkspace();
+
   const dispatch = useDispatch();
 
   const getUserWorkspace = () => {
@@ -71,6 +74,8 @@ export default function WorkspaceDetails() {
 
   useEffect(() => {
     getUserWorkspace();
+
+    dispatch(getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager));
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
@@ -88,7 +93,7 @@ export default function WorkspaceDetails() {
     {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProjectCard gallery={_userGallery} />,
+      component: <ProjectCard projects={projects} gallery={_userGallery} />,
     },
 
     {
@@ -117,8 +122,8 @@ export default function WorkspaceDetails() {
           key={workspace?.name}
           heading="Workspace"
           links={[
-            { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { name: workspace?.name, href: '' },
+            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { key: 1, name: workspace?.name, href: '' },
           ]}
         />
         <Card

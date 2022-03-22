@@ -40,9 +40,8 @@ ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ gallery }) {
+export default function ProjectCard({ projects, gallery }) {
 
-  const {isProjectManager} = useAuth();
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -56,7 +55,6 @@ export default function ProjectCard({ gallery }) {
 
   const handleCloseModal = () => {
     setIsOpenModal(false);
-
   };
 
   const handleOpenLightbox = (url) => {
@@ -64,16 +62,19 @@ export default function ProjectCard({ gallery }) {
     setOpenLightbox(true);
     setSelectedImage(selectedImage);
   };
+
   return (
     <Box sx={{ mt: 5 }}>
-      <DialogAnimate sx={{ minWidth: "50%" }} open={isOpenModal} onClose={handleCloseModal}>
-          <DialogTitle>{'Add Project'}</DialogTitle>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Add Project'}</DialogTitle>
 
-          <AddProjectForm onCancel={handleCloseModal} />
-        </DialogAnimate>
+        <AddProjectForm onCancel={handleCloseModal} />
+      </DialogAnimate>
+
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
+
       <HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}
@@ -91,7 +92,6 @@ export default function ProjectCard({ gallery }) {
             
           }
         />
-        
       <Card sx={{ p: 3 }}>
         <Box
           sx={{
@@ -144,18 +144,14 @@ function ProjectItem({ image, onOpenLightbox }) {
                           'error'
                         }
       */}
-      <Label                
-      sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                        variant={isLight ? 'ghost' : 'filled'}
-                        color={
-                          ('completed' && 'success') ||
-                          ('in_progress' && 'warning') ||
-                          'error'
-                        }
-                      >
-                        {sentenceCase('done')}
+      <Label
+        sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+        variant={isLight ? 'ghost' : 'filled'}
+        color={('completed' && 'success') || ('in_progress' && 'warning') || 'error'}
+      >
+        {sentenceCase('done')}
       </Label>
-      
+
       <CaptionStyle>
         <div>
           <Typography variant="subtitle1">{title}</Typography>
