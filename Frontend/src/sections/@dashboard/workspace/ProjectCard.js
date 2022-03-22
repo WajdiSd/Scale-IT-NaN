@@ -37,7 +37,7 @@ ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ gallery }) {
+export default function ProjectCard({ gallery, idWorkspace }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -51,7 +51,6 @@ export default function ProjectCard({ gallery }) {
 
   const handleCloseModal = () => {
     setIsOpenModal(false);
-
   };
 
   const handleOpenLightbox = (url) => {
@@ -59,30 +58,31 @@ export default function ProjectCard({ gallery }) {
     setOpenLightbox(true);
     setSelectedImage(selectedImage);
   };
+
   return (
     <Box sx={{ mt: 5 }}>
-      <DialogAnimate sx={{ minWidth: "50%" }} open={isOpenModal} onClose={handleCloseModal}>
-          <DialogTitle>{'Add Event'}</DialogTitle>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Add Event'}</DialogTitle>
 
-          <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
-        </DialogAnimate>
+        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+      </DialogAnimate>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
       <HeaderBreadcrumbs
-          heading=""
-          links={[{ name: '', href: '' }]}
-          action={
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              New Project
-            </Button>
-          }
-        />
-        
+        heading=""
+        links={[{ name: '', href: '' }]}
+        action={
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+            onClick={handleAddEvent}
+          >
+            New Project
+          </Button>
+        }
+      />
+
       <Card sx={{ p: 3 }}>
         <Box
           sx={{
@@ -135,18 +135,14 @@ function ProjectItem({ image, onOpenLightbox }) {
                           'error'
                         }
       */}
-      <Label                
-      sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                        variant={isLight ? 'ghost' : 'filled'}
-                        color={
-                          ('completed' && 'success') ||
-                          ('in_progress' && 'warning') ||
-                          'error'
-                        }
-                      >
-                        {sentenceCase('done')}
+      <Label
+        sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+        variant={isLight ? 'ghost' : 'filled'}
+        color={('completed' && 'success') || ('in_progress' && 'warning') || 'error'}
+      >
+        {sentenceCase('done')}
       </Label>
-      
+
       <CaptionStyle>
         <div>
           <Typography variant="subtitle1">{title}</Typography>
