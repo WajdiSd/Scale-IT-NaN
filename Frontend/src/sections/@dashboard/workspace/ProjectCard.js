@@ -18,6 +18,8 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
+import useAuth from '../../../hooks/useAuth';
+
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +41,8 @@ ProjectCard.propTypes = {
 };
 
 export default function ProjectCard({ gallery }) {
+
+  const {isProjectManager} = useAuth();
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -74,13 +78,17 @@ export default function ProjectCard({ gallery }) {
           heading=""
           links={[{ name: '', href: '' }]}
           action={
-            <Button
+            isProjectManager?
+            (<Button
               variant="contained"
               startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
               onClick={handleAddEvent}
             >
               New Project
-            </Button>
+            </Button>)
+            :
+            (null)
+            
           }
         />
         
