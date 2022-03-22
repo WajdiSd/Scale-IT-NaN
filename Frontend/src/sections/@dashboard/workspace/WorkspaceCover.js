@@ -124,8 +124,8 @@ export default function WorkspaceCover() {
         <WorkspaceForm
           event={{}}
           range={[]}
-          name={workspace.name}
-          description={workspace.description}
+          name={workspace?.name}
+          description={workspace?.description}
           onCancel={handleCloseModal}
         />
       </DialogAnimate>
