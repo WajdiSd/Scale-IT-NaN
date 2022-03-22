@@ -2,6 +2,7 @@
 import workspaceService from '../service/workspaceService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isHr, isProjectManager } from './authSlice';
+import useAuth from 'src/hooks/useAuth';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -121,6 +122,19 @@ export const workspaceSlice = createSlice({
       })
       .addCase(removememberfromworkspace.rejected, (state, action) => {
         console.log('remove member from workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(updateWorkspace.fulfilled, (state, action) => {
+        console.log('update workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.workspace = action.payload;
+      })
+      .addCase(updateWorkspace.rejected, (state, action) => {
+        console.log(state,action);
+        console.log('update workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

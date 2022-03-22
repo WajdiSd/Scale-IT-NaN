@@ -32,8 +32,12 @@ const getUsersWorkspace = async (id) => {
 };
 
 
-const updateWorkspace = async (workspaceData, idmember) => {
-  const response = await axiosInstance.put(API_URL + '/update/' + idmember, workspaceData);
+const updateWorkspace = async (workspaceData) => {
+  const idworkspace = workspaceData.idworkspace;
+  const idHR = workspaceData.idHR;
+  workspaceData.idHR = undefined;
+  workspaceData.idworkspace = undefined;
+  const response = await axiosInstance.put(API_URL + '/update/' +idworkspace+ '/' + idHR, workspaceData);
   return response.data;
 };
 //remove member from workspace
