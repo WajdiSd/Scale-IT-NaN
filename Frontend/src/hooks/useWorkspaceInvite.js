@@ -1,6 +1,15 @@
 import { useState } from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
-import { addMember, addManager, removeUser, setUserError, resetUserError } from 'src/redux/slices/workspaceInviteSlice';
+import {
+  addMember,
+  addManager,
+  removeUser,
+  setUserError,
+  resetUserError,
+  setUserSuccess,
+  resetUserSuccess,
+  submitInvitations,
+} from 'src/redux/slices/workspaceInviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
 // ----------------------------------------------------------------------
@@ -8,6 +17,7 @@ import { useSelector, useDispatch } from 'src/redux/store';
 const useWorkspaceInvite = () => {
   const users = useSelector((state) => state.workspaceInvite.users);
   const userError = useSelector((state) => state.workspaceInvite.userErrorMessage);
+  const userSuccess = useSelector((state) => state.workspaceInvite.userSuccessMessage);
   const [member, setMember] = useState('');
   const [manager, setManager] = useState('');
 
@@ -19,6 +29,10 @@ const useWorkspaceInvite = () => {
       .match(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
+  };
+
+  const submitInvite = () => {
+    dispatch(submitInvitations());
   };
 
   const addMemberUser = () => {
@@ -37,6 +51,8 @@ const useWorkspaceInvite = () => {
 
   const resetUserErrorHook = () => dispatch(resetUserError());
 
+  const resetUserSuccessHook = () => dispatch(resetUserSuccess());
+
   return {
     users,
     member,
@@ -48,6 +64,9 @@ const useWorkspaceInvite = () => {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    userSuccess,
+    resetUserSuccessHook,
+    submitInvite,
   };
 };
 
