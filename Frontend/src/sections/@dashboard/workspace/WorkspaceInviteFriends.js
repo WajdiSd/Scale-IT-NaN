@@ -36,6 +36,9 @@ export default function WorkspaceInviteFriends() {
     removeUserHook,
     userError,
     resetUserErrorHook,
+    userSuccess,
+    resetUserSuccessHook,
+    submitInvite,
   } = useWorkspaceInvite();
 
   function handleMemberInput(event) {
@@ -50,7 +53,9 @@ export default function WorkspaceInviteFriends() {
 
   function handleClose() {
     console.log(userError);
+    console.log(userSuccess);
     resetUserErrorHook();
+    resetUserSuccessHook();
   }
 
   return (
@@ -58,6 +63,11 @@ export default function WorkspaceInviteFriends() {
       <Snackbar open={userError.length > 0} autoHideDuration={5000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
           {userError}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={userSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {userSuccess}
         </Alert>
       </Snackbar>
       <Image
@@ -211,7 +221,7 @@ export default function WorkspaceInviteFriends() {
 
           {/* Submit Users Button */}
           <Stack direction="row" justifyContent="center" alignItems="center">
-            <Button onClick={addManagerUser} color="warning" variant="contained">
+            <Button onClick={submitInvite} color="warning" variant="contained">
               Submit Invitations
             </Button>
           </Stack>
