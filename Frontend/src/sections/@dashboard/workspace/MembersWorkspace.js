@@ -52,7 +52,7 @@ export default function MembersWorkspace({ members, findMembers, onFindMembers }
   return (
     <Box sx={{ mt: 5 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
-        Memebers
+        Members
       </Typography>
 
       <InputStyle

@@ -62,12 +62,12 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     const id = state.workspaces.workspace._id;
     const users = state.workspaceInvite.users;
 
-    console.log('\n\n----------------------------------------------------');
-    console.log('users state in submit invitations');
-    console.log(users);
-    console.log('id state in submit invitations');
-    console.log(id);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('users state in submit invitations');
+    // console.log(users);
+    // console.log('id state in submit invitations');
+    // console.log(id);
+    // console.log('\n\n----------------------------------------------------');
 
     if (!users) {
       setUserError('No Valid Users Passed!');
@@ -78,20 +78,20 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     });
     const managerEmails = managersFiltered.map((user) => user.email);
 
-    console.log('\n\n----------------------------------------------------');
-    console.log('manager Emails');
-    console.log(managerEmails);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('manager Emails');
+    // console.log(managerEmails);
+    // console.log('\n\n----------------------------------------------------');
 
     const membersFiltered = users.filter((user) => {
       if (!user.isManager) return user.email;
     });
     const memberEmails = membersFiltered.map((user) => user.email);
 
-    console.log('\n\n----------------------------------------------------');
-    console.log('member Emails');
-    console.log(memberEmails);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('member Emails');
+    // console.log(memberEmails);
+    // console.log('\n\n----------------------------------------------------');
 
     const managers = {
       info: {
@@ -109,22 +109,22 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       id,
     };
 
-    console.log('\n\n----------------------------------------------------');
-    console.log('Managers before await');
-    console.log(managers);
-    console.log('Members before await');
-    console.log(members);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('Managers before await');
+    // console.log(managers);
+    // console.log('Members before await');
+    // console.log(members);
+    // console.log('\n\n----------------------------------------------------');
 
     const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
     const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
 
-    console.log('\n\n----------------------------------------------------');
-    console.log('Manager Submit before return');
-    console.log(managerSubmit);
-    console.log('Member Submit before return');
-    console.log(memberSubmit);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('Manager Submit before return');
+    // console.log(managerSubmit);
+    // console.log('Member Submit before return');
+    // console.log(memberSubmit);
+    // console.log('\n\n----------------------------------------------------');
 
     thunkAPI.dispatch(resetWorkspaceInvite());
 
@@ -163,17 +163,17 @@ const workspaceInviteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addMember.fulfilled, (state, action) => {
-        console.log('action payload in add member fulfilled');
-        console.log(action.payload);
+        // console.log('action payload in add member fulfilled');
+        // console.log(action.payload);
         if (action.payload.exists) {
           const member = {
             email: action.payload.email,
             isManager: false,
           };
 
-          console.log("I'm in add Member, users:");
-          console.log(state);
-          console.log(state.users);
+          // console.log("I'm in add Member, users:");
+          // console.log(state);
+          // console.log(state.users);
 
           state.userSuccessMessage = `Member ${member.email} Added`;
 
@@ -181,22 +181,22 @@ const workspaceInviteSlice = createSlice({
         }
       })
       .addCase(addMember.rejected, (state, action) => {
-        console.log('action payload in add member rejected');
-        console.log(action.payload);
+        // console.log('action payload in add member rejected');
+        // console.log(action.payload);
         state.userErrorMessage = action.payload;
       })
       .addCase(addManager.fulfilled, (state, action) => {
-        console.log('action payload in add manager fulfilled');
-        console.log(action.payload);
+        // console.log('action payload in add manager fulfilled');
+        // console.log(action.payload);
         if (action.payload.exists) {
           const manager = {
             email: action.payload.email,
             isManager: true,
           };
 
-          console.log("I'm in add Manager, users:");
-          console.log(state);
-          console.log(state.users);
+          // console.log("I'm in add Manager, users:");
+          // console.log(state);
+          // console.log(state.users);
 
           state.userSuccessMessage = `Member ${manager.email} Added`;
 
@@ -204,23 +204,25 @@ const workspaceInviteSlice = createSlice({
         }
       })
       .addCase(addManager.rejected, (state, action) => {
-        console.log('action payload in add manager rejected');
-        console.log(action.payload);
+        // console.log('action payload in add manager rejected');
+        // console.log(action.payload);
         state.userErrorMessage = action.payload;
       })
       .addCase(submitInvitations.fulfilled, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('action payload in submit Invitations fulfilled');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('action payload in submit Invitations fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
 
         state.userSuccessMessage = `Users have been Invited succesfully`;
       })
       .addCase(submitInvitations.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('action payload in submit Invitations rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('action payload in submit Invitations rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+
+        state.userSuccessMessage = `Oops, an error has occured while submitting invitations`;
       });
   },
 });
