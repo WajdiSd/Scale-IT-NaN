@@ -7,6 +7,7 @@ import { Box, Stack, Drawer } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 import useCollapseDrawer from '../../../hooks/useCollapseDrawer';
+import useNav from '../../../hooks/useNav';
 // utils
 import cssStyles from '../../../utils/cssStyles';
 // config
@@ -16,7 +17,7 @@ import Logo from '../../../components/Logo';
 import Scrollbar from '../../../components/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 //
-import navConfig from './NavConfig';
+// import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
@@ -35,6 +36,7 @@ const RootStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 NavbarVertical.propTypes = {
+  isInWorkspace: PropTypes.bool,
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func,
 };
@@ -42,7 +44,10 @@ NavbarVertical.propTypes = {
 export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSidebar }) {
   const theme = useTheme();
 
+  const { navConfig } = useNav();
+
   const { pathname } = useLocation();
+
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -81,7 +86,7 @@ export default function NavbarVertical({ isInWorkspace, isOpenSidebar, onCloseSi
           )}
         </Stack>
 
-        <NavbarAccount isCollapse={isCollapse} />
+        <NavbarAccount isInWorkspace={isInWorkspace} isCollapse={isCollapse} />
       </Stack>
 
       <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} />

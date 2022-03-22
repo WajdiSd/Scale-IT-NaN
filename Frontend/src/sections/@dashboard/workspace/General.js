@@ -20,6 +20,9 @@ import { useDispatch } from 'react-redux';
 import useAuth from 'src/hooks/useAuth';
 import { useNavigate } from 'react-router';
 import { useSnackbar } from 'notistack';
+import { PATH_DASHBOARD } from '../../../routes/paths';
+import WorkspaceCount from './WorkspaceCount';
+
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +45,9 @@ export default function General({ idWorkspace, myProfile, posts }) {
         navigate(PATH_DASHBOARD.general.landing);
       });
     } catch (error) {
-      enqueueSnackbar('Unauthorized to delete workspace');
+      enqueueSnackbar('Unauthorized to delete workspace',{
+        variant: 'error',
+      });
       console.error(error);
     }
   };
@@ -59,7 +64,7 @@ export default function General({ idWorkspace, myProfile, posts }) {
     <Grid container spacing={3}>
       <Grid item xs={12} md={4}>
         <Stack spacing={3}>
-          <ProfileFollowInfo profile={myProfile} />
+          <WorkspaceCount />
           <ProfileSocialInfo profile={myProfile} />
           {isHr && (
             <Button sx={{ mt: 5 }} onClick={handleClickOpen} color="error">

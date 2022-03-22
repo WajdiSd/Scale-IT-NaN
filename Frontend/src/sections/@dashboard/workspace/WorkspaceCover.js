@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Box, DialogTitle, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+
 // utils
 // hooks
 // components
@@ -10,6 +12,10 @@ import MyAvatar from 'src/components/MyAvatar';
 import Image from 'src/components/Image';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { DialogAnimate } from 'src/components/animate';
+import WorkspaceForm from './WorkspaceForm';
 
 // ----------------------------------------------------------------------
 
@@ -42,11 +48,33 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-
 export default function WorkspaceCover() {
   const { user } = useAuth();
-  const { workspace  } = useWorkspace();
+  const { workspace, usersInWorkspace } = useWorkspace();
+  const [hRName, setHRName] = useState('');
+  const { id } = useParams();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [editIsShown, setEditIsShown] = useState(false);
 
+  const handleAddEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
+
+  const getHRName = () => {
+    usersInWorkspace.map((member) => {
+      if (member.isHR) {
+        setHRName(member.firstName + ' ' + member.lastName);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getHRName();
+  }, [usersInWorkspace]);
 
   return (
     <RootStyle>
@@ -69,11 +97,38 @@ export default function WorkspaceCover() {
             textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="h4">{workspace?.name}</Typography>
-          <Typography sx={{ opacity: 0.72 }}>By {user?.firstName} {user?.lastName}</Typography>
+          <Typography variant="h4"
+          onMouseEnter={() => setEditIsShown(true)}
+          onMouseLeave={() => setEditIsShown(false)}
+          >
+            {workspace?.name}
+            {editIsShown && (
+              <EditIcon
+                sx={{ width: { xs: 15, md: 20 }, marginLeft: 1 }}
+                onClick={handleAddEvent}
+                
+              />
+            )}
+          </Typography>
+          <Typography sx={{ opacity: 0.72 }}>By {hRName}</Typography>
         </Box>
       </InfoStyle>
-      <Image alt="profile cover" src="https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg" sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+      <Image
+        alt="profile cover"
+        src="https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg"
+        sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+      />
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Update your Workspace'}</DialogTitle>
+
+        <WorkspaceForm
+          event={{}}
+          range={[]}
+          name={workspace?.name}
+          description={workspace?.description}
+          onCancel={handleCloseModal}
+        />
+      </DialogAnimate>
     </RootStyle>
   );
 }

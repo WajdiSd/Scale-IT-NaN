@@ -52,6 +52,9 @@ const deleteUser = async (id) => {
 // Logout user
 const logout = () => {
   localStorage.removeItem('user');
+  localStorage.removeItem('redux-user');
+  localStorage.removeItem('redux-workspaces');
+  localStorage.removeItem('redux-projects');
 };
 
 const sendCode = async (userData) => {

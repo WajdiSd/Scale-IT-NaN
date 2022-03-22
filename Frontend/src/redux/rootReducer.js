@@ -10,6 +10,7 @@ import kanbanReducer from './slices/kanban';
 import authReducer from './slices/authSlice';
 import workspacesReducer from './slices/workspaceSlice';
 import workspaceInviteReducer from './slices/workspaceInviteSlice';
+import projectReducer from './slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
@@ -31,14 +32,21 @@ const userPersistConfig = {
   key: 'user',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager'],
+  whitelist: ['isAuthenticated', 'user', 'isHr', 'isProjectManager', 'idHR', 'idProjectManager'],
 };
 
 const workspacesPersistConfig = {
   key: 'workspaces',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['workspaces', 'workspace'],
+  whitelist: ['workspaces', 'workspace', 'usersInWorkspace'],
+};
+
+const projectsPersistConfig = {
+  key: 'projects',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: ['projects', 'project', 'usersInProject'],
 };
 
 const rootReducer = combineReducers({
@@ -50,6 +58,7 @@ const rootReducer = combineReducers({
   product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
+  projects: persistReducer(projectsPersistConfig, projectReducer),
 });
 
 export { rootPersistConfig, rootReducer };

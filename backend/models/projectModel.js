@@ -35,6 +35,10 @@ const projectSchema = mongoose.Schema(
         isTeamLeader: { type: Boolean, default: false },
       },
     ],
+    workspace: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Workspace",
+    }
   },
   {
     timestamps: true,
