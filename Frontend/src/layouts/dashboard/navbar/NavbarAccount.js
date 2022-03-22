@@ -80,7 +80,8 @@ export default function NavbarAccount({ isInWorkspace, isCollapse }) {
         <Button href={linkTo} variant="contained">
         Invite Members
         </Button>
-      )}
+      )
+      }
     </>
   );
 }

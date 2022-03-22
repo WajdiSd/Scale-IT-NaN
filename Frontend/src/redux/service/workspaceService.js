@@ -25,6 +25,17 @@ const deleteworkspace = async (idworkspace, idmember) => {
   const response = await axiosInstance.put(API_URL + '/deleteworkspace/' + idworkspace + '/' + idmember);
   return response.data;
 };
+//get users by workspace
+const getUsersWorkspace = async (id) => {
+  const response = await axiosInstance.get(API_URL + '/fetch-users/' + id);
+  return response.data;
+};
+
+//remove member from workspace
+const removeMemberFromWorkspace = async (idmember, idhr, idworkspace) => {
+  const response = await axiosInstance.put(API_URL + '/removemember/' + idmember + '/' + idworkspace + '/' + idhr);
+  return response.data;
+};
 
 // send invites to members
 const inviteMembers = async (members) => {
@@ -71,6 +82,8 @@ const workspaceService = {
   inviteMembers,
   inviteManagers,
   checkIfUserExistsInWorkspace,
+  getUsersWorkspace,
+  removeMemberFromWorkspace,
 };
 
 export default workspaceService;

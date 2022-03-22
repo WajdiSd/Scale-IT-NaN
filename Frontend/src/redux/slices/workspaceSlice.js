@@ -9,6 +9,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 const initialState = {
   workspaces: [],
   workspace: null,
+  usersInWorkspace: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -103,6 +104,37 @@ export const workspaceSlice = createSlice({
         console.log('getWorkspace id REJECTED ');
         console.log(action.payload);
         console.log('\n\n--------------------------------------------');
+      .addCase(usersbyworkspace.pending, (state) => {
+        console.log('users by workspace pending');
+        state.isLoading = true;
+      })
+      .addCase(usersbyworkspace.fulfilled, (state, action) => {
+        console.log('users by workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.usersInWorkspace = action.payload;
+      })
+      .addCase(usersbyworkspace.rejected, (state, action) => {
+        console.log('users by workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(removememberfromworkspace.pending, (state) => {
+        console.log('remove member from workspace pending');
+        state.isLoading = true;
+      })
+      .addCase(removememberfromworkspace.fulfilled, (state, action) => {
+        console.log('remove member from workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.usersInWorkspace = state.usersInWorkspace.filter((memb) => memb._id !== action.payload.idmember);
+      })
+      .addCase(removememberfromworkspace.rejected, (state, action) => {
+        console.log('remove member from workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -133,6 +165,7 @@ export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id
     if (workspace) {
       thunkAPI.dispatch(isHr(workspace));
       thunkAPI.dispatch(isProjectManager(workspace));
+      thunkAPI.dispatch(usersbyworkspace(workspace._id));
       return workspace;
     }
   } catch (error) {
@@ -163,6 +196,31 @@ export const deleteWorkspace = createAsyncThunk('workspace/deleteWorkspace', asy
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+//users by workspace
+export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', async (id, thunkAPI) => {
+  try {
+    return await workspaceService.getUsersWorkspace(id);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+//remove member from workspace
+export const removememberfromworkspace = createAsyncThunk(
+  'workspace/removememberfromworkspace',
+  async (object, thunkAPI) => {
+    try {
+      return await workspaceService.removeMemberFromWorkspace(object.idmember, object.idhr, object.idworkspace);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const { reset } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

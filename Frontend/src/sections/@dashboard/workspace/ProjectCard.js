@@ -2,17 +2,21 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Card, IconButton, Typography, CardContent } from '@mui/material';
+import { Box, Card, IconButton, Typography, CardContent, Button, DialogTitle } from '@mui/material';
 // utils
-import { fDate } from '../../../../utils/formatTime';
-import cssStyles from '../../../../utils/cssStyles';
+import { fDate } from '../../../utils/formatTime';
+import cssStyles from '../../../utils/cssStyles';
 // components
-import Image from '../../../../components/Image';
-import Iconify from '../../../../components/Iconify';
-import LightboxModal from '../../../../components/LightboxModal';
+import Image from '../../../components/Image';
+import Iconify from '../../../components/Iconify';
+import LightboxModal from '../../../components/LightboxModal';
 import Label from 'src/components/Label';
 import { useTheme } from '@emotion/react';
 import { sentenceCase } from 'change-case';
+import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from 'src/routes/paths';
+import { DialogAnimate } from 'src/components/animate';
+import { CalendarForm } from '../calendar';
 
 // ----------------------------------------------------------------------
 
@@ -29,16 +33,26 @@ const CaptionStyle = styled(CardContent)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-ProfileGallery.propTypes = {
+ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProfileGallery({ gallery }) {
+export default function ProjectCard({ gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const imagesLightbox = gallery.map((img) => img.imageUrl);
+
+  const handleAddEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+
+  };
 
   const handleOpenLightbox = (url) => {
     const selectedImage = imagesLightbox.findIndex((index) => index === url);
@@ -47,10 +61,28 @@ export default function ProfileGallery({ gallery }) {
   };
   return (
     <Box sx={{ mt: 5 }}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Gallery
-      </Typography>
+      <DialogAnimate sx={{ minWidth: "50%" }} open={isOpenModal} onClose={handleCloseModal}>
+          <DialogTitle>{'Add Event'}</DialogTitle>
 
+          <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+        </DialogAnimate>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Projects
+      </Typography>
+      <HeaderBreadcrumbs
+          heading=""
+          links={[{ name: '', href: '' }]}
+          action={
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+              onClick={handleAddEvent}
+            >
+              New Project
+            </Button>
+          }
+        />
+        
       <Card sx={{ p: 3 }}>
         <Box
           sx={{
@@ -64,7 +96,7 @@ export default function ProfileGallery({ gallery }) {
           }}
         >
           {gallery.map((image) => (
-            <GalleryItem key={image.id} image={image} onOpenLightbox={handleOpenLightbox} />
+            <ProjectItem key={image.id} image={image} onOpenLightbox={handleOpenLightbox} />
           ))}
         </Box>
 
@@ -83,12 +115,12 @@ export default function ProfileGallery({ gallery }) {
 
 // ----------------------------------------------------------------------
 
-GalleryItem.propTypes = {
+ProjectItem.propTypes = {
   image: PropTypes.object,
   onOpenLightbox: PropTypes.func,
 };
 
-function GalleryItem({ image, onOpenLightbox }) {
+function ProjectItem({ image, onOpenLightbox }) {
   const { imageUrl, title, postAt } = image;
   const theme = useTheme();
 
@@ -96,7 +128,13 @@ function GalleryItem({ image, onOpenLightbox }) {
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
-
+      {/*
+      color={
+                          (row.status === 'completed' && 'success') ||
+                          (row.status === 'in_progress' && 'warning') ||
+                          'error'
+                        }
+      */}
       <Label                
       sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
                         variant={isLight ? 'ghost' : 'filled'}

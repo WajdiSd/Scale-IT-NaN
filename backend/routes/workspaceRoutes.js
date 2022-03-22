@@ -26,11 +26,6 @@ router.post("/add/:idmember", protect, addWorkspace);
 router.put("/update/:idworkspace/:idhr", protect, updateWorkspace);
 router.get("/:idmember", protect, getWorkspaces);
 router.get("/details/:id", protect, getWorkspaceById);
-router.put(
-  "/removemember/:idmember/:idworkspace",
-  protect,
-  removeMemberFromWorkspace
-);
 router.get("/fetch-users/:idworkspace", protect, fetchUsersByWorkspace);
 
 // Check if user exists in workspace /api/workspace/:workspaceid/:email
