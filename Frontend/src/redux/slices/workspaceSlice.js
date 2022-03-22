@@ -104,6 +104,7 @@ export const workspaceSlice = createSlice({
         console.log('getWorkspace id REJECTED ');
         console.log(action.payload);
         console.log('\n\n--------------------------------------------');
+      })
       .addCase(usersbyworkspace.pending, (state) => {
         console.log('users by workspace pending');
         state.isLoading = true;
