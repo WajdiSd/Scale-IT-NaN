@@ -33,6 +33,7 @@ import { removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
 import { CalendarForm } from '../calendar';
 import { DialogAnimate } from 'src/components/animate';
+import SetRatesForm from './SetRatesForm';
 
 // ----------------------------------------------------------------------
 
@@ -253,7 +254,7 @@ function MoreMenuButton(id) {
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Set Rates'}</DialogTitle>
 
-        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+        <SetRatesForm id={id} event={{}} range={{}} onCancel={handleCloseModal} />
       </DialogAnimate>
     </>
   );
