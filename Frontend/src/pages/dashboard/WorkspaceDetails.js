@@ -75,6 +75,10 @@ export default function WorkspaceDetails() {
   useEffect(() => {
     getUserWorkspace();
     getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
+    console.log('\n\n--------------------------------------------------------------------------------');
+    console.log('projects in useEffect');
+    console.log(projects);
+    console.log('--------------------------------------------------------------------------------\n\n');
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');

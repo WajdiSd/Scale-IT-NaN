@@ -9,14 +9,11 @@ import { AuthContext } from '../contexts/JWTContext';
 // ----------------------------------------------------------------------
 
 const useWorkspace = () => {
-
   //const context = useContext(AuthContext);
 
- // if (!context) throw new Error('Auth context must be use inside AuthProvider');
+  // if (!context) throw new Error('Auth context must be use inside AuthProvider');
 
-  const workspaces = useSelector(
-    (state) => state.workspaces
-  )
+  const workspaces = useSelector((state) => state.workspaces);
   return workspaces;
 };
 

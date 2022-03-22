@@ -21,7 +21,7 @@ const getProjects = asyncHandler(async (req, res) => {
 
 const getProjectsByWorkspace = asyncHandler(async (req, res) => {
   const projects = await Project.find({
-    "workspace.workspaceId": req.params.idworkspace,
+    workspace: req.params.idworkspace,
   });
   if (projects.length === 0) {
     return res.status(404).json({
@@ -38,7 +38,7 @@ const getProjectsByWorkspace = asyncHandler(async (req, res) => {
 
 const getProjectsByMember = asyncHandler(async (req, res) => {
   const projects = await Project.find({
-    "workspace.workspaceId": req.params.idworkspace,
+    workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
   });
   if (projects.length === 0) {
@@ -56,7 +56,7 @@ const getProjectsByMember = asyncHandler(async (req, res) => {
 
 const getProjectsByManager = asyncHandler(async (req, res) => {
   const projects = await Project.find({
-    "workspace.workspaceId": req.params.idworkspace,
+    workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isProjectManager": true,
   });
@@ -75,7 +75,7 @@ const getProjectsByManager = asyncHandler(async (req, res) => {
 
 const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
   const projects = await Project.find({
-    "workspace.workspaceId": req.params.idworkspace,
+    workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isTeamLeader": true,
   });
@@ -139,7 +139,7 @@ const addProject = asyncHandler(async (req, res) => {
     startDate,
     expectedEndDate,
     assigned_members: [projectManager],
-    workspace: { workspaceId: workspaceId },
+    workspace: workspaceId,
   }).catch((err) => {
     res.status(400);
     throw new Error("could not create project", err);

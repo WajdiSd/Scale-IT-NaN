@@ -17,9 +17,8 @@ import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
-
+import AddProjectForm from '../project/AddProjectForm';
 // ----------------------------------------------------------------------
-
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
   ...cssStyles().bgBlur({ blur: 2, color: theme.palette.grey[900] }),
   bottom: 0,
@@ -30,29 +29,24 @@ const CaptionStyle = styled(CardContent)(({ theme }) => ({
   justifyContent: 'space-between',
   color: theme.palette.common.white,
 }));
-
 // ----------------------------------------------------------------------
 
 ProjectCard.propTypes = {
   gallery: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ gallery }) {
+export default function ProjectCard({ projects, gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
-
   const imagesLightbox = gallery.map((img) => img.imageUrl);
-
   const handleAddEvent = () => {
     setIsOpenModal(true);
   };
-
   const handleCloseModal = () => {
     setIsOpenModal(false);
   };
-
   const handleOpenLightbox = (url) => {
     const selectedImage = imagesLightbox.findIndex((index) => index === url);
     setOpenLightbox(true);
@@ -61,13 +55,15 @@ export default function ProjectCard({ gallery }) {
   return (
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
-        <DialogTitle>{'Add Event'}</DialogTitle>
+        <DialogTitle>{'Add Project'}</DialogTitle>
 
-        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+        <AddProjectForm onCancel={handleCloseModal} />
       </DialogAnimate>
+
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
+
       <HeaderBreadcrumbs
         heading=""
         links={[{ name: '', href: '' }]}
@@ -81,7 +77,6 @@ export default function ProjectCard({ gallery }) {
           </Button>
         }
       />
-
       <Card sx={{ p: 3 }}>
         <Box
           sx={{
@@ -94,11 +89,14 @@ export default function ProjectCard({ gallery }) {
             },
           }}
         >
-          {gallery.map((image) => (
-            <ProjectItem key={image.id} image={image} onOpenLightbox={handleOpenLightbox} />
-          ))}
+          {typeof projects === 'object' || !projects ? (
+            <Box></Box>
+          ) : (
+            projects.map((project) => (
+              <ProjectItem key={project._id} project={project} onOpenLightbox={handleOpenLightbox} />
+            ))
+          )}
         </Box>
-
         <LightboxModal
           images={imagesLightbox}
           mainSrc={imagesLightbox[selectedImage]}
@@ -111,7 +109,6 @@ export default function ProjectCard({ gallery }) {
     </Box>
   );
 }
-
 // ----------------------------------------------------------------------
 
 ProjectItem.propTypes = {
@@ -119,10 +116,9 @@ ProjectItem.propTypes = {
   onOpenLightbox: PropTypes.func,
 };
 
-function ProjectItem({ image, onOpenLightbox }) {
-  const { imageUrl, title, postAt } = image;
+function ProjectItem({ project, image, onOpenLightbox }) {
+  const { description, name, startDate, expectedEndDate } = project;
   const theme = useTheme();
-
   const isLight = theme.palette.mode === 'light';
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
@@ -141,12 +137,11 @@ function ProjectItem({ image, onOpenLightbox }) {
       >
         {sentenceCase('done')}
       </Label>
-
       <CaptionStyle>
         <div>
-          <Typography variant="subtitle1">{title}</Typography>
+          <Typography variant="subtitle1">{name}</Typography>
           <Typography variant="body2" sx={{ opacity: 0.72 }}>
-            {fDate(postAt)}
+            {fDate(startDate)}
           </Typography>
         </div>
         <IconButton color="inherit">
