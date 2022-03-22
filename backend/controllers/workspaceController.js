@@ -323,6 +323,7 @@ const inviteManyMembers = asyncHandler(async (req, res, next) => {
   const role = req.body.role;
   const emails = req.body.emails;
 
+  // Proposition : emails.forEach((email) => { /logic lehné tekel a9al })
   for (let i = 0; i < emails.length; i++) {
     let member = await Member.findOne({ email: emails[i] });
     let exists = await MemberInWorkspace(member._id, req.params.id);
@@ -451,6 +452,43 @@ const assignRatestoMember = asyncHandler(async (req, res) => {
   }
 });
 
+// Check if user exists in Workspace
+// @desc Check if user exists in Workspace
+// @route post /api/workspace/:workspaceid/:email
+// @access public
+const checkIfUserExistsInWorkspace = asyncHandler(async (req, res) => {
+  const email = req.params.email;
+  const id = req.params.workspaceid;
+
+  console.log("params");
+  console.log(req.params);
+
+  console.log(id);
+
+  const workspace = await Workspace.findOne({ _id: id });
+  const user = await Member.findOne({ email });
+
+  if (workspace) {
+    let matchy = false;
+    // console.log("user");
+    // console.log(user);
+    workspace.assigned_members.forEach((assignee) => {
+      // console.log("assigned member");
+      // console.log(assignee);
+      assignee.member.equals(user._id) ? (matchy = true) : "";
+    });
+
+    if (!matchy) res.status(200).json(user);
+    else {
+      res.status(400);
+      throw new Error(`User ${user.email} already exists in workspace`);
+    }
+  } else {
+    res.status(400);
+    throw new Error(`Workspace ${id} not found`);
+  }
+});
+
 module.exports = {
   addWorkspace,
   updateWorkspace,
@@ -464,4 +502,5 @@ module.exports = {
   inviteManyMembers,
   countWkspMembers,
   assignRatestoMember,
+  checkIfUserExistsInWorkspace,
 };

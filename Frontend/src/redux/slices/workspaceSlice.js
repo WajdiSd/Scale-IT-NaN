@@ -93,6 +93,17 @@ export const workspaceSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+      .addCase(getWorkspaceId.fulfilled, (state, action) => {
+        console.log('\n\n--------------------------------------------');
+        console.log('getWorkspace id FULFILLED ');
+        console.log(action.payload);
+        console.log('\n\n--------------------------------------------');
+      })
+      .addCase(getWorkspaceId.rejected, (state, action) => {
+        console.log('\n\n--------------------------------------------');
+        console.log('getWorkspace id REJECTED ');
+        console.log(action.payload);
+        console.log('\n\n--------------------------------------------');
       .addCase(usersbyworkspace.pending, (state) => {
         console.log('users by workspace pending');
         state.isLoading = true;
@@ -126,6 +137,16 @@ export const workspaceSlice = createSlice({
         state.message = action.payload;
       });
   },
+});
+
+export const getWorkspaceId = createAsyncThunk('workspace/getWorkspaceId', async (_, thunkAPI) => {
+  try {
+    return await thunkAPI.getState().workspace._id;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
 });
 
 export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (id, thunkAPI) => {
