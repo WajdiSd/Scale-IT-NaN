@@ -31,6 +31,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace';
+import ProjectCard from 'src/sections/@dashboard/workspace/ProjectCard';
 
 // ----------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ export default function WorkspaceDetails() {
     {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
+      component: <ProjectCard gallery={_userGallery} />,
     },
 
     {
@@ -105,7 +106,7 @@ export default function WorkspaceDetails() {
     {
       value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
-      component: <ProfileGallery gallery={_userGallery} />,
+      component: <ProfileFollowers followers={_userFollowers} />,
     },
   ];
 

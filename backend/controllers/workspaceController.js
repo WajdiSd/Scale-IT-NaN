@@ -120,7 +120,7 @@ const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
       console.log(workspace);
 
       if (workspace) {
-        res.status(200).json(workspace);
+        res.status(200).json({ workspace, idmember: req.params.idmember });
       } else {
         res.status(400).json({
           message: "couldn't remove member from workspace !",
@@ -313,46 +313,6 @@ const deleteProjectManager = asyncHandler(async (req, res) => {
   }
 });
 
-// inviteOneMember
-// @desc invites a member: adds his id to the list of assigned_members in the workspace
-// @route PUT /api/workspace/invite-members/:id
-const inviteOneMember = asyncHandler(async (req, res) => {
-  let member = await Member.findOne({ email: req.body.email });
-  member.isHR = req.body.memberIsHR;
-  member.rateHour = req.body.memberRateHour;
-  member.rateOverTime = req.body.memberRateOverTime;
-
-  if (!member) {
-    res.status(404);
-    throw new Error("member not found");
-  } else if (member.isDeleted || !member.isValidated) {
-    res.status(400);
-    throw new Error("member not validated");
-  }
-  const workspace = await Workspace.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      $push: { assigned_members: { member: member } },
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
-  if (!workspace) {
-    res.status(404);
-    throw new Error("workspace not found");
-  }
-  res.send({
-    status: 200,
-    message: "member invited to workspace successfully",
-    data: {
-      workspace: workspace,
-      member: member,
-    },
-  });
-});
-
 /**
  * @desc invite a list of members to a workspace
  * @var(members,list of member emails )
@@ -494,7 +454,6 @@ const assignRatestoMember = asyncHandler(async (req, res) => {
 module.exports = {
   addWorkspace,
   updateWorkspace,
-  inviteOneMember,
   getWorkspaces,
   removeMemberFromWorkspace,
   fetchUsersByWorkspace,
