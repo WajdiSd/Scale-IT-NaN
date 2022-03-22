@@ -2,6 +2,7 @@
 import workspaceService from '../service/workspaceService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isHr, isProjectManager } from './authSlice';
+import useAuth from 'src/hooks/useAuth';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -136,6 +137,19 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(updateWorkspace.fulfilled, (state, action) => {
+        console.log('update workspace fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.workspace = action.payload;
+      })
+      .addCase(updateWorkspace.rejected, (state, action) => {
+        console.log(state,action);
+        console.log('update workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -209,6 +223,16 @@ export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', a
   }
 });
 
+
+export const updateWorkspace = createAsyncThunk('workspace/updateWorkspace', async (workspaceData, thunkAPI) => {
+  try {
+    return await workspaceService.updateWorkspace(workspaceData);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',

@@ -204,7 +204,9 @@ const updateWorkspace = asyncHandler(async (req, res) => {
         function (err, success) {
           if (err) throw err;
           else {
-            res.send({ msg: "update success" });
+            res.send(
+              workspace
+              );
           }
         }
       );

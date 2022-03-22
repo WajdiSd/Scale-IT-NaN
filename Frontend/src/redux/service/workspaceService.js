@@ -31,6 +31,15 @@ const getUsersWorkspace = async (id) => {
   return response.data;
 };
 
+
+const updateWorkspace = async (workspaceData) => {
+  const idworkspace = workspaceData.idworkspace;
+  const idHR = workspaceData.idHR;
+  workspaceData.idHR = undefined;
+  workspaceData.idworkspace = undefined;
+  const response = await axiosInstance.put(API_URL + '/update/' +idworkspace+ '/' + idHR, workspaceData);
+  return response.data;
+};
 //remove member from workspace
 const removeMemberFromWorkspace = async (idmember, idhr, idworkspace) => {
   const response = await axiosInstance.put(API_URL + '/removemember/' + idmember + '/' + idworkspace + '/' + idhr);
@@ -83,6 +92,7 @@ const workspaceService = {
   inviteManagers,
   checkIfUserExistsInWorkspace,
   getUsersWorkspace,
+  updateWorkspace,
   removeMemberFromWorkspace,
 };
 
