@@ -36,10 +36,8 @@ const projectSchema = mongoose.Schema(
       },
     ],
     workspace: {
-      workspaceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Workspace",
-      }
     }
   },
   {
