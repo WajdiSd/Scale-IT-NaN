@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Workspace = require("../models/workspaceModel");
-const { ProjectHasTeamLeader } = require("../helpers/functions");
+const { ProjectHasTeamLeader, MemberInWorkspace } = require("../helpers/functions");
 
 
 const getProjects = asyncHandler(async (req, res) => {
@@ -83,9 +83,9 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
 
 // @route post /api/project/add/
 // you need to provide the required fields in the body
-// you need to provide memberId(the member creating the project) in the body
+// you need to provide projectManagerId(the member creating the project) in the body
 const addProject = asyncHandler(async (req, res) => {
-  const { name, description, startDate, expectedEndDate, memberId, workspaceId } = req.body;
+  const { name, description, startDate, expectedEndDate, projectManagerId, teamLeadId, workspaceId } = req.body;
   if (!name || !description || !startDate || !expectedEndDate) {
     res.status(400);
     throw new Error("please add all fields");
@@ -97,7 +97,7 @@ const addProject = asyncHandler(async (req, res) => {
     throw new Error("workspace not found");
   }
   workspace.assigned_members.forEach(element => {
-    if(element.member.equals(memberId)){
+    if(element.member.equals(projectManagerId)){
       if(!element.isProjectManager){
         res.status(403);
         throw new Error("you are not allowed to create a project");
@@ -105,23 +105,41 @@ const addProject = asyncHandler(async (req, res) => {
     }
   });
 
-  const projectManager = {
-    memberId: memberId,
-    isProjectManager: true,
-  };
-
-  const member = await Member.findById(memberId);
+  const member = await Member.findById(projectManagerId);
   if (!member) {
     res.status(404);
     throw new Error("something is wrong with the member");
   }
+
+  //check if the team lead is in the workspace
+  if(!MemberInWorkspace(teamLeadId, workspaceId)){
+    res.status(404);
+    throw new Error("User not assigned to the workspace!");
+  }
+
+  let assigned_members = [];
+  
+  const projectManager = {
+    memberId: projectManagerId,
+    isProjectManager: true,
+  };
+
+  const teamLead = {
+    memberId: teamLeadId,
+    isTeamLeader: true,
+  };
+  assigned_members.push(projectManager);
+  assigned_members.push(teamLead);
+
+
+  
   const project = await Project.create({
     name,
     description,
     startDate,
     expectedEndDate,
-    assigned_members: [projectManager],
-    workspace: {workspaceId: workspaceId},
+    assigned_members: assigned_members,
+    workspace:  workspaceId,
   }).catch((err) => {
     res.status(400);
     throw new Error("could not create project", err);
@@ -280,24 +298,25 @@ const dischargeTeamLeader = asyncHandler(async (req, res) => {
 
 // @route post /api/project/update/:idproject/:idpm
 // you need to provide the required fields in the body
-// you need to provide memberId(the member creating the project) in the body
+// idpm : the id of the user doing the current changes
 const updateProject = asyncHandler(async (req, res) => {
-
+ 
   var verif = false;
+  //Step 1 : Verify if the project is valid
   const project = await Project.findById(req.params.idproject);
   if (!project) {
     /*if not, error*/
     res.status(400);
     throw new Error("invalid project id");
   } else {
-    /*if yes, verify if changes are made by a pm */
+    /*if yes, moving to step 2 : verify if changes are made by a pm */
     for (let i = 0; i < project.assigned_members.length; i++) {
       if (
         project.assigned_members[i].memberId == req.params.idpm &&
         project.assigned_members[i].isProjectManager == true
       )
         verif = true;
-      }
+      } //if its a pm,
       if (verif) {
           const entries = Object.keys(req.body);
           const updates = {};
@@ -318,6 +337,7 @@ const updateProject = asyncHandler(async (req, res) => {
             }
           );
         }
+        //if its not a pm
         else {
           res.status(401);
           throw new Error("invalid ProjectManager id");
@@ -329,18 +349,22 @@ const updateProject = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc invite a list of members to a workspace
- * @var(members,list of member emails )
- * @var(role, so that we can know if the members should be affected as managers or not)
- * @route PUT /api/project/invite-members/:idproject/:idpm
- * idpm : id of current user inviting
+ * @desc invite a list of members to a project
+ * @route PUT /api/project/invite-members/:idproject/:idtl
+ * idtl : id of current user inviting, has to be a teamleader
+ * idproject : the project you want to add members to
+ * you have to provide a list of emails in the BODY
+ * PS: you can provide only one email, but it has to be in a list.
  */
  const inviteMembers= asyncHandler(async (req, res, next) => {
+   //Step 1: get the emails
   const emails = req.body.emails;
+  //Step 2 : get the project 
   const project = await Project.findById(req.params.idproject);
+  //Step 3 : check 
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
-      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].memberId == req.params.idtl &&
       project.assigned_members[i].isTeamLeader == true
     )
       verif = true;
@@ -371,26 +395,29 @@ const updateProject = asyncHandler(async (req, res) => {
 
 
 /**
- * @desc invite a list of members to a workspace
+ * @desc delete a list of members from project
  * @var(members,list of member emails )
- * @var(role, so that we can know if the members should be affected as managers or not)
- * @route PUT /api/project/invite-members/:idproject/:idpm
- * idpm : id of current user inviting
+ * @route PUT /api/project/invite-members/:idproject/:idtl
+ * idtl : id of current user inviting
  */
  const deleteMembers= asyncHandler(async (req, res, next) => {
+   //Step 1 : get the emails from BODY
   const emails = req.body.emails;
+  //Step2 : find the project 
   const project = await Project.findById(req.params.idproject);
+  //Step 3 : check if current user doing the changes is a TeamLeader
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
-      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].memberId == req.params.idtl &&
       project.assigned_members[i].isTeamLeader == true
     )
       verif = true;
     }
-    
+  //If its not a TL *teamleader*
   if (!verif)
     {es.status(404);
       throw new Error("changes are not made by a PM!");}
+  //If it is a TL
   else {
             for (let i = 0; i < emails.length; i++) {
               let member = await Member.findOne({ email: emails[i] });

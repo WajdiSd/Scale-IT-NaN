@@ -6,21 +6,21 @@ const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.get("/list", getProjects);
-router.get("/list/:idworkspace", getProjectsByWorkspace);
-router.get("/listbymanager/:idworkspace/:idmember",getProjectsByManager);
-router.get("listbyteamleader/:idworkspace/:idmember",getProjectsByTeamLeader);
-router.get("/listbymember/:idworkspace/:idmember",getProjectsByMember);
+router.get("/list", protect, getProjects);
+router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
+router.get("/listbymanager/:idworkspace/:idmember", protect, getProjectsByManager);
+router.get("listbyteamleader/:idworkspace/:idmember", protect, getProjectsByTeamLeader);
+router.get("/listbymember/:idworkspace/:idmember", protect, getProjectsByMember);
 
-router.post("/add", addProject);
-router.put("/delete/:id", deleteProject);
-router.put("/undelete/:id", unDeleteProject);
+router.post("/add", protect, addProject);
+router.put("/delete/:id", protect, deleteProject);
+router.put("/undelete/:id", protect, unDeleteProject);
 
-router.put("/assignteamleader/:id",assignTeamLeader);
-router.put("/dischargeteamleader/:idproject/:idmember/:idpm",dischargeTeamLeader);
+router.put("/assignteamleader/:id", protect, assignTeamLeader);
+router.put("/dischargeteamleader/:idproject/:idmember/:idpm", protect, dischargeTeamLeader);
 
-router.put("/update/:idproject/:idpm",updateProject);
-router.put("/invite-members/:idproject/:idpm",inviteMembers);
-router.put("/delete-members/:idproject/:idpm",deleteMembers);
+router.put("/update/:idproject/:idpm", protect, updateProject);
+router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
+router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
 
 module.exports = router;

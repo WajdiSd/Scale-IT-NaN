@@ -10,6 +10,7 @@ import kanbanReducer from './slices/kanban';
 import authReducer from './slices/authSlice';
 import workspacesReducer from './slices/workspaceSlice';
 import workspaceInviteReducer from './slices/workspaceInviteSlice';
+import projectReducer from './slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +42,13 @@ const workspacesPersistConfig = {
   whitelist: ['workspaces', 'workspace', 'usersInWorkspace'],
 };
 
+const projectsPersistConfig = {
+  key: 'projects',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: ['projects', 'project', 'usersInProject'],
+};
+
 const rootReducer = combineReducers({
   mail: mailReducer,
   chat: chatReducer,
@@ -50,6 +58,7 @@ const rootReducer = combineReducers({
   product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
+  projects: persistReducer(projectsPersistConfig, projectReducer),
 });
 
 export { rootPersistConfig, rootReducer };

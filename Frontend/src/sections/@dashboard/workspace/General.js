@@ -45,7 +45,9 @@ export default function General({ idWorkspace, myProfile, posts }) {
         navigate(PATH_DASHBOARD.general.landing);
       });
     } catch (error) {
-      enqueueSnackbar('Unauthorized to delete workspace');
+      enqueueSnackbar('Unauthorized to delete workspace',{
+        variant: 'error',
+      });
       console.error(error);
     }
   };
