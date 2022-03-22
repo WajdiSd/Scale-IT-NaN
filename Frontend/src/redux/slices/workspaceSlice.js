@@ -54,7 +54,7 @@ export const workspaceSlice = createSlice({
         state.workspaces = action.payload;
         state.workspace = null;
         const workspac = JSON.parse(localStorage.getItem('redux-workspaces'));
-        if(workspac != null){
+        if (workspac != null) {
           workspac.workspace = null;
           localStorage.setItem('redux-workspaces', workspac);
         }
@@ -147,8 +147,20 @@ export const workspaceSlice = createSlice({
         state.workspace = action.payload;
       })
       .addCase(updateWorkspace.rejected, (state, action) => {
-        console.log(state,action);
+        console.log(state, action);
         console.log('update workspace rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(setRatesToMember.fulfilled, (state, action) => {
+        console.log('set rates fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(setRatesToMember.rejected, (state, action) => {
+        console.log(state, action);
+        console.log('set rates rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -225,10 +237,19 @@ export const usersbyworkspace = createAsyncThunk('workspace/usersbyworkspace', a
   }
 });
 
-
 export const updateWorkspace = createAsyncThunk('workspace/updateWorkspace', async (workspaceData, thunkAPI) => {
   try {
     return await workspaceService.updateWorkspace(workspaceData);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const setRatesToMember = createAsyncThunk('workspace/setRatesToMember', async (Data, thunkAPI) => {
+  try {
+    return await workspaceService.setRatestomember(Data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
