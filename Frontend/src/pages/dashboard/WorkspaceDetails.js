@@ -117,8 +117,8 @@ export default function WorkspaceDetails() {
           key={workspace?.name}
           heading="Workspace"
           links={[
-            { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { name: workspace?.name, href: '' },
+            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { key: 1, name: workspace?.name, href: '' },
           ]}
         />
         <Card
