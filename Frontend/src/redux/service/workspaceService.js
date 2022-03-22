@@ -31,13 +31,26 @@ const getUsersWorkspace = async (id) => {
   return response.data;
 };
 
-
 const updateWorkspace = async (workspaceData) => {
   const idworkspace = workspaceData.idworkspace;
   const idHR = workspaceData.idHR;
   workspaceData.idHR = undefined;
   workspaceData.idworkspace = undefined;
-  const response = await axiosInstance.put(API_URL + '/update/' +idworkspace+ '/' + idHR, workspaceData);
+  const response = await axiosInstance.put(API_URL + '/update/' + idworkspace + '/' + idHR, workspaceData);
+  return response.data;
+};
+
+const setRatestomember = async (Data) => {
+  const idworkspace = Data.idworkspace;
+  const idHR = Data.idHR;
+  const idmember = Data.idmember;
+  Data.idHR = undefined;
+  Data.idworkspace = undefined;
+  Data.idmember = undefined;
+  const response = await axiosInstance.put(
+    API_URL + '/asignratestomember/' + idworkspace + '/' + idHR + '/' + idmember,
+    Data
+  );
   return response.data;
 };
 //remove member from workspace
@@ -94,6 +107,7 @@ const workspaceService = {
   getUsersWorkspace,
   updateWorkspace,
   removeMemberFromWorkspace,
+  setRatestomember,
 };
 
 export default workspaceService;
