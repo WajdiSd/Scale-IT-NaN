@@ -60,7 +60,7 @@ export const projectSlice = createSlice({
         console.log('getWorkspaceProjects fulfilled');
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
-        state.projects = action.payload;
+        state.projects = action.payload.data;
       })
       .addCase(getWorkspaceProjects.rejected, (state, action) => {
         console.log('\n\n----------------------------------------------------');
@@ -74,7 +74,7 @@ export const projectSlice = createSlice({
         console.log('getWorkspaceProjectsForMembers fulfilled');
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
-        state.projects = action.payload;
+        state.projects = action.payload.data;
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
         console.log('\n\n----------------------------------------------------');
@@ -113,7 +113,7 @@ export const getWorkspaceProjectsForMembers = createAsyncThunk(
   'project/getWorkspaceProjectsForMembers',
   async (data, thunkAPI) => {
     try {
-      return await projectService.getWorkspaceProjectsForEmployees(data.idWorkspace, data.idMember);
+      return await projectService.getWorkspaceProjectsForMembers(data.idWorkspace, data.idMember);
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

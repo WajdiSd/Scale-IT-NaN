@@ -104,7 +104,7 @@ export default function WorkspaceCover() {
             {workspace?.name}
             {editIsShown && (
               <EditIcon
-                sx={{ width: { xs: 15, md: 20 }, marginLeft: 1 }}
+                sx={{ width: { xs: 15, md: 20 }, marginLeft: 1, cursor: 'pointer' }}
                 onClick={handleAddEvent}
                 
               />

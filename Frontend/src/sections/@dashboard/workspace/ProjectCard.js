@@ -18,6 +18,8 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
+import useAuth from 'src/hooks/useAuth';
+
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
   ...cssStyles().bgBlur({ blur: 2, color: theme.palette.grey[900] }),
@@ -37,6 +39,8 @@ ProjectCard.propTypes = {
 
 export default function ProjectCard({ projects, gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
+
+  const { isProjectManager } = useAuth();
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -68,13 +72,15 @@ export default function ProjectCard({ projects, gallery }) {
         heading=""
         links={[{ name: '', href: '' }]}
         action={
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
-            onClick={handleAddEvent}
-          >
-            New Project
-          </Button>
+          isProjectManager ? (
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+              onClick={handleAddEvent}
+            >
+              New Project
+            </Button>
+          ) : null
         }
       />
       <Card sx={{ p: 3 }}>
@@ -89,8 +95,12 @@ export default function ProjectCard({ projects, gallery }) {
             },
           }}
         >
-          {typeof projects === 'object' || !projects ? (
-            <Box></Box>
+          {!projects ? (
+            <Box>
+              {console.log(projects)}
+              {console.log(typeof projects)}
+              WOQOIDSQPDSOIUQS
+            </Box>
           ) : (
             projects.map((project) => (
               <ProjectItem key={project._id} project={project} onOpenLightbox={handleOpenLightbox} />

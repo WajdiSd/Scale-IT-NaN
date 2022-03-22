@@ -2,10 +2,15 @@ const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Workspace = require("../models/workspaceModel");
-const { ProjectHasTeamLeader } = require("../helpers/functions");
+const {
+  ProjectHasTeamLeader,
+  MemberInWorkspace,
+} = require("../helpers/functions");
 
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({});
+  console.log("projects");
+  console.log(projects);
   if (projects.length === 0) {
     return res.status(404).json({
       success: false,
@@ -101,7 +106,8 @@ const addProject = asyncHandler(async (req, res) => {
     description,
     startDate,
     expectedEndDate,
-    memberId,
+    projectManagerId,
+    teamLeadId,
     workspaceId,
   } = req.body;
   if (!name || !description || !startDate || !expectedEndDate) {
@@ -115,7 +121,7 @@ const addProject = asyncHandler(async (req, res) => {
     throw new Error("workspace not found");
   }
   workspace.assigned_members.forEach((element) => {
-    if (element.member.equals(memberId)) {
+    if (element.member.equals(projectManagerId)) {
       if (!element.isProjectManager) {
         res.status(403);
         throw new Error("you are not allowed to create a project");
@@ -123,22 +129,38 @@ const addProject = asyncHandler(async (req, res) => {
     }
   });
 
-  const projectManager = {
-    memberId: memberId,
-    isProjectManager: true,
-  };
-
-  const member = await Member.findById(memberId);
+  const member = await Member.findById(projectManagerId);
   if (!member) {
     res.status(404);
     throw new Error("something is wrong with the member");
   }
+
+  //check if the team lead is in the workspace
+  if (!MemberInWorkspace(teamLeadId, workspaceId)) {
+    res.status(404);
+    throw new Error("User not assigned to the workspace!");
+  }
+
+  let assigned_members = [];
+
+  const projectManager = {
+    memberId: projectManagerId,
+    isProjectManager: true,
+  };
+
+  const teamLead = {
+    memberId: teamLeadId,
+    isTeamLeader: true,
+  };
+  assigned_members.push(projectManager);
+  assigned_members.push(teamLead);
+
   const project = await Project.create({
     name,
     description,
     startDate,
     expectedEndDate,
-    assigned_members: [projectManager],
+    assigned_members: assigned_members,
     workspace: workspaceId,
   }).catch((err) => {
     res.status(400);

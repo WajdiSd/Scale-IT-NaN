@@ -89,7 +89,6 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
       renderInput={(params) => (
         <InputStyle
           {...params}
-          name="teamLeadId"
           placeholder="Search members..."
           onKeyUp={handleKeyUp}
           InputProps={{
