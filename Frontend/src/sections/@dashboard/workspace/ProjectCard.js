@@ -43,6 +43,8 @@ export default function ProjectCard({ projects, gallery }) {
 
   const [openLightbox, setOpenLightbox] = useState(false);
 
+  const {isProjectManager} = useAuth();
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -66,7 +68,7 @@ export default function ProjectCard({ projects, gallery }) {
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Add Event'}</DialogTitle>
 
-        <CalendarForm event={{}} range={[]} onCancel={handleCloseModal} />
+        <AddProjectForm onCancel={handleCloseModal} />
       </DialogAnimate>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects

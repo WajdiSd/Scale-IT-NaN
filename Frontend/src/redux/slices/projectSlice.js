@@ -97,9 +97,10 @@ export const addProject = createAsyncThunk('project/addProject', async (data, th
   }
 });
 
+
 // Fetch projects in workspace for HR and ProjectManagers
 export const getWorkspaceProjects = createAsyncThunk(
-  'project/getProjectsByWorkspace',
+  'project/getWorkspaceProjects',
   async (idWorkspace, thunkAPI) => {
     try {
       return await projectService.getWorkspaceProjects(idWorkspace);
@@ -113,10 +114,10 @@ export const getWorkspaceProjects = createAsyncThunk(
 
 // Fetch projects in workspace for Members and TeamLeaders
 export const getWorkspaceProjectsForMembers = createAsyncThunk(
-  'project/getProjectsByWorkspaceForMembers',
+  'project/getWorkspaceProjectsForMembers',
   async (data, thunkAPI) => {
     try {
-      return await projectService.getWorkspaceProjectsForEmployees(data.idWorkspace, data.idMember);
+      return await projectService.getWorkspaceProjectsForMembers(data.idWorkspace, data.idMember);
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
