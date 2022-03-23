@@ -19,6 +19,7 @@ const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
   const response = await axiosInstance.get(API_URL + 'listbymember/' + idWorkspace + '/' + idMember);
   return response.data;
 };
+
 //deletes project
 const deleteProject = async (idWorkspace) => {
   const response = await axiosInstance.put(API_URL + 'delete/' + idWorkspace);

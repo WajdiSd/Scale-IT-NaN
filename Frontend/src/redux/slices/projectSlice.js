@@ -97,6 +97,17 @@ export const addProject = createAsyncThunk('project/addProject', async (data, th
   }
 });
 
+// Delete project
+export const deleteProject = createAsyncThunk('project/deleteProject', async (idWorkspace, thunkAPI) => {
+  try {
+    return await projectService.deleteProject(idWorkspace);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // Fetch projects in workspace for HR and ProjectManagers
 export const getWorkspaceProjects = createAsyncThunk('project/getWorkspaceProjects', async (idWorkspace, thunkAPI) => {
   try {
