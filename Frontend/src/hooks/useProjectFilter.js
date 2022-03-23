@@ -7,7 +7,7 @@ const useProjectFilter = (projects) => {
   const [query, setQuery] = useState('');
   const initialProjects = projects;
 
-  useEffect(() => (query ? searchProjectsFilter(query) : setProjectsFilter(initialProjects)), [initialProjects, query]);
+  useEffect(() => (query ? searchProjects(query) : setProjectsFilter(initialProjects)), [initialProjects, query]);
 
   const searchProjects = (value) => {
     setQuery(value);
