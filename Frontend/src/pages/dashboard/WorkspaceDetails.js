@@ -60,6 +60,8 @@ export default function WorkspaceDetails() {
   const { isHr, isProjectManager, user } = useAuth();
   const {
     projects,
+    archivedProjects,
+    unarchivedProjects,
     projectError,
     resetErrorMessageHook,
     projectSuccess,
@@ -101,7 +103,9 @@ export default function WorkspaceDetails() {
     {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProjectCard projects={projects} gallery={_userGallery} />,
+      component: (
+        <ProjectCard projects={isHr || isProjectManager ? projects : unarchivedProjects} gallery={_userGallery} />
+      ),
     },
 
     {

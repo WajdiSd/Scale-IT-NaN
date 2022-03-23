@@ -11,6 +11,8 @@ import { useSelector, useDispatch } from 'src/redux/store';
 
 const useProject = () => {
   const projects = useSelector((state) => state.projects.projects);
+  const archivedProjects = useSelector((state) => state.projects.archivedProjects);
+  const unarchivedProjects = useSelector((state) => state.projects.unarchivedProjects);
   const projectError = useSelector((state) => state.projects.projectsErrorMessage);
   const projectSuccess = useSelector((state) => state.projects.projectsSuccessMessage);
 
@@ -29,6 +31,8 @@ const useProject = () => {
 
   return {
     projects,
+    unarchivedProjects,
+    archivedProjects,
     projectError,
     projectSuccess,
     resetSuccessMessageHook,

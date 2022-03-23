@@ -122,25 +122,25 @@ export default function ProjectCard({ projects, gallery }) {
       />
 
       <Card sx={{ p: 3 }}>
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 3,
-            gridTemplateColumns: {
-              xs: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-            },
-          }}
-        >
-          {!projects ? (
-            <Typography variant="h1">No Projects Found!</Typography>
-          ) : (
-            projectsFilter.map((project) => (
+        {!projects ? (
+          <Typography variant="h1">No projects found.</Typography>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 3,
+              gridTemplateColumns: {
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              },
+            }}
+          >
+            {projectsFilter.map((project) => (
               <ProjectItem key={project._id} project={project} onOpenLightbox={handleOpenLightbox} />
-            ))
-          )}
-        </Box>
+            ))}
+          </Box>
+        )}
         <LightboxModal
           images={imagesLightbox}
           mainSrc={imagesLightbox[selectedImage]}
@@ -161,7 +161,7 @@ ProjectItem.propTypes = {
 };
 
 function ProjectItem({ project, image, onOpenLightbox }) {
-  const { description, name, startDate, expectedEndDate, _id, workspace } = project;
+  const { description, name, startDate, expectedEndDate, _id, workspace, isDeleted } = project;
 
   const [projectId, setProjectId] = useState(_id);
   const theme = useTheme();
@@ -177,13 +177,24 @@ function ProjectItem({ project, image, onOpenLightbox }) {
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
-      <Label
-        sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-        variant={isLight ? 'ghost' : 'filled'}
-        color={color}
-      >
-        {projectCompleted ? sentenceCase('overdue') : sentenceCase('in progress')}
-      </Label>
+      {isDeleted ? (
+        <Label
+          sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+          variant={isLight ? 'ghost' : 'filled'}
+          color="error"
+        >
+          {sentenceCase('deleted')}
+        </Label>
+      ) : (
+        <Label
+          sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+          variant={isLight ? 'ghost' : 'filled'}
+          color={color}
+        >
+          {projectCompleted ? sentenceCase('overdue') : sentenceCase('in progress')}
+        </Label>
+      )}
+
       <CaptionStyle>
         <div>
           <Typography variant="subtitle1">{name}</Typography>
@@ -194,7 +205,7 @@ function ProjectItem({ project, image, onOpenLightbox }) {
             {fDate(expectedEndDateJs)}
           </Typography>
         </div>
-        <MoreMenuButton projectId={projectId} workspaceId={workspace} />
+        {isDeleted ? <></> : <MoreMenuButton projectId={projectId} workspaceId={workspace} />}
       </CaptionStyle>
     </Card>
   );
