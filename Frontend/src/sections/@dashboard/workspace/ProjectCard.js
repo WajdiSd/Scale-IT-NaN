@@ -8,6 +8,7 @@ import {
   IconButton,
   Typography,
   CardContent,
+  CircularProgress,
   Button,
   InputAdornment,
   MenuItem,
@@ -62,7 +63,7 @@ ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ projects, gallery }) {
+export default function ProjectCard({ loaded, projects, gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const { isProjectManager } = useAuth();
@@ -84,7 +85,7 @@ export default function ProjectCard({ projects, gallery }) {
     setSelectedImage(selectedImage);
   };
 
-  return (
+  return loaded ? (
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Add Project'}</DialogTitle>
@@ -128,7 +129,6 @@ export default function ProjectCard({ projects, gallery }) {
       />
 
       <Card sx={{ p: 3 }}>
-        {console.log(projects)}
         {!projects || projects.length === 0 ? (
           <Typography variant="h1">No projects found.</Typography>
         ) : (
@@ -157,6 +157,18 @@ export default function ProjectCard({ projects, gallery }) {
           onCloseRequest={() => setOpenLightbox(false)}
         />
       </Card>
+    </Box>
+  ) : (
+    <Box
+      sx={{
+        mt: 10,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <CircularProgress size={150} color="success" />
     </Box>
   );
 }
@@ -223,8 +235,9 @@ function ProjectItem({ project, image, onOpenLightbox }) {
         </div>
         {isDeleted ? (
           <Button
-            variant="contained"
-            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+            variant="outlined"
+            color="warning"
+            startIcon={<Iconify icon={'eva:heart-fill'} width={20} height={20} />}
             onClick={handleRestore}
           >
             Restore

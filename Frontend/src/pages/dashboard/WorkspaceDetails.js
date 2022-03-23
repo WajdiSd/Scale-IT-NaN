@@ -63,8 +63,10 @@ export default function WorkspaceDetails() {
     archivedProjects,
     unarchivedProjects,
     projectError,
-    resetErrorMessageHook,
     projectSuccess,
+    isLoading,
+    isSuccess,
+    resetErrorMessageHook,
     resetSuccessMessageHook,
     getWorkspaceProjectsHook,
   } = useProject();
@@ -104,7 +106,11 @@ export default function WorkspaceDetails() {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
       component: (
-        <ProjectCard projects={isHr || isProjectManager ? projects : unarchivedProjects} gallery={_userGallery} />
+        <ProjectCard
+          loaded={!isLoading && isSuccess}
+          projects={isHr || isProjectManager ? projects : unarchivedProjects}
+          gallery={_userGallery}
+        />
       ),
     },
 

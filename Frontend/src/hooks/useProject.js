@@ -14,6 +14,8 @@ const useProject = () => {
   const projects = useSelector((state) => state.projects.projects);
   const archivedProjects = useSelector((state) => state.projects.archivedProjects);
   const unarchivedProjects = useSelector((state) => state.projects.unarchivedProjects);
+  const isLoading = useSelector((state) => state.projects.isLoading);
+  const isSuccess = useSelector((state) => state.projects.isSuccess);
   const project = useSelector((state) => state.projects.project);
   const usersInProject = useSelector((state) => state.projects.usersInProject);
   const projectError = useSelector((state) => state.projects.projectsErrorMessage);
@@ -42,6 +44,8 @@ const useProject = () => {
     archivedProjects,
     projectError,
     projectSuccess,
+    isLoading,
+    isSuccess,
     resetSuccessMessageHook,
     resetErrorMessageHook,
     deleteProjectHook,
