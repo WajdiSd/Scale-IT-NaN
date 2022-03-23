@@ -1,24 +1,11 @@
-import PropTypes from 'prop-types';
-
 // hooks
 import { useState } from 'react';
-import { useTheme } from '@emotion/react';
-import useProjectFilter from 'src/hooks/useProjectFilter';
-import useProject from 'src/hooks/useProject';
-import { useParams } from 'react-router';
 import useAuth from 'src/hooks/useAuth';
 
 // @mui
-import { styled } from '@mui/material/styles';
 import {
-  Box,
-  Card,
   IconButton,
-  Typography,
-  CardContent,
-  CircularProgress,
   Button,
-  InputAdornment,
   MenuItem,
   Divider,
   Dialog,
@@ -32,52 +19,36 @@ import {
 //react router link
 import { Link as RouterLink } from 'react-router-dom';
 
-// utils
-import { fDate, fTimestamp } from '../../../utils/formatTime';
-import cssStyles from '../../../utils/cssStyles';
 // components
-import Image from '../../../components/Image';
 import Iconify from '../../../components/Iconify';
-import LightboxModal from '../../../components/LightboxModal';
-import Label from 'src/components/Label';
-import { sentenceCase } from 'change-case';
-import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
-import { PATH_DASHBOARD } from 'src/routes/paths';
-import { DialogAnimate } from 'src/components/animate';
-import { CalendarForm } from '../calendar';
-import AddProjectForm from './AddProjectForm';
-import InputStyle from 'src/components/InputStyle';
 import MenuPopover from 'src/components/MenuPopover';
 
 // ----------------------------------------------------------------------
 
-function MoreProjectOptions({ projectId, workspaceId, deleteProjectHook, user, linkTo }) {
-  const { isProjectManager } = useAuth();
-  const [open, setOpen] = useState(null);
+export default function MoreProjectOptions({
+  projectId,
+  workspaceId,
+  deleteProjectHook,
+  userId,
+  linkTo,
+  isProjectManager,
+}) {
+  const [openPopover, setOpenPopover] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: user._id });
-
-  const handleAddEvent = () => {
-    setIsOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsOpenModal(false);
-  };
+  const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: userId });
 
   const handleDeleteProject = () => {
     deleteProject();
     setOpenDialog(false);
   };
 
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
+  const handleOpenPopover = (event) => {
+    setOpenPopover(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setOpen(null);
+  const handleClosePopover = () => {
+    setOpenPopover(null);
   };
 
   const handleCloseDialog = () => {
@@ -96,14 +67,14 @@ function MoreProjectOptions({ projectId, workspaceId, deleteProjectHook, user, l
 
   return (
     <>
-      <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
+      <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpenPopover}>
         <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
       </IconButton>
 
       <MenuPopover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleClose}
+        open={Boolean(openPopover)}
+        anchorEl={openPopover}
+        onClose={handleClosePopover}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         arrow="right-top"
@@ -118,12 +89,21 @@ function MoreProjectOptions({ projectId, workspaceId, deleteProjectHook, user, l
           Download
         </MenuItem>
 
-        <MenuItem>
-          <Iconify icon={'eva:plus-fill'} sx={{ ...ICON }} />
-          <Link to={linkTo} color="inherit" component={RouterLink}>
+        <Link
+          to={linkTo}
+          color="inherit"
+          component={RouterLink}
+          sx={{
+            '&:hover': {
+              textDecoration: 'none',
+            },
+          }}
+        >
+          <MenuItem to={linkTo}>
+            <Iconify icon={'eva:plus-fill'} sx={{ ...ICON }} />
             Show Details
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
         {isProjectManager && (

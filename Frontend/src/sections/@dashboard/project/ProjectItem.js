@@ -3,52 +3,24 @@ import PropTypes from 'prop-types';
 // hooks
 import { useState } from 'react';
 import { useTheme } from '@emotion/react';
-import useProjectFilter from 'src/hooks/useProjectFilter';
-import useProject from 'src/hooks/useProject';
-import { useParams } from 'react-router';
-import useAuth from 'src/hooks/useAuth';
 
 // @mui
 import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Card,
-  IconButton,
-  Typography,
-  CardContent,
-  CircularProgress,
-  Button,
-  InputAdornment,
-  MenuItem,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Link,
-} from '@mui/material';
+import { Card, Typography, CardContent, Button, Link } from '@mui/material';
 
 //react router link
 import { Link as RouterLink } from 'react-router-dom';
 
 // utils
-import { fDate, fTimestamp } from '../../../utils/formatTime';
 import cssStyles from '../../../utils/cssStyles';
 // components
 import Image from '../../../components/Image';
 import Iconify from '../../../components/Iconify';
-import LightboxModal from '../../../components/LightboxModal';
 import Label from 'src/components/Label';
 import { sentenceCase } from 'change-case';
-import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from 'src/routes/paths';
-import { DialogAnimate } from 'src/components/animate';
-import { CalendarForm } from '../calendar';
-import AddProjectForm from './AddProjectForm';
-import InputStyle from 'src/components/InputStyle';
-import MenuPopover from 'src/components/MenuPopover';
 import MoreProjectOptions from './MoreProjectOptions';
+import { fDate } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -64,30 +36,29 @@ const CaptionStyle = styled(CardContent)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 ProjectItem.propTypes = {
-  image: PropTypes.object,
-  onOpenLightbox: PropTypes.func,
+  project: PropTypes.object,
 };
 
-export default function ProjectItem({ project, image, onOpenLightbox }) {
+export default function ProjectItem({
+  project,
+  userId,
+  workspaceId,
+  deleteProjectHook,
+  restoreProjectHook,
+  isProjectManager,
+}) {
   const { description, name, startDate, expectedEndDate, _id, workspace, isDeleted } = project;
-  const { deleteProjectHook, restoreProjectHook } = useProject();
-  const { user } = useAuth();
-
-  const [projectId, setProjectId] = useState(_id);
   const theme = useTheme();
-  const isLight = theme.palette.mode === 'light';
+  const [projectId, setProjectId] = useState(_id);
 
+  const isLight = theme.palette.mode === 'light';
   const now = new Date();
   const expectedEndDateJs = new Date(expectedEndDate);
-
   const projectCompleted = expectedEndDateJs.getTime() < now.getTime();
-
   const color = projectCompleted ? 'error' : 'in_progress' && 'warning';
+  const linkTo = `${PATH_DASHBOARD.workspaces.details}${workspaceId}/project/${projectId}`;
 
-  const handleRestore = () => restoreProjectHook({ projectId: _id, workspaceId: workspace, memberId: user._id });
-
-  const { id } = useParams();
-  const linkTo = `${PATH_DASHBOARD.workspaces.details}${id}/project/${project._id}`;
+  const handleRestore = () => restoreProjectHook({ projectId: projectId, workspaceId: workspaceId, memberId: userId });
 
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
@@ -112,9 +83,13 @@ export default function ProjectItem({ project, image, onOpenLightbox }) {
 
       <CaptionStyle>
         <div>
-          <Link to={linkTo} color="inherit" component={RouterLink}>
+          {isDeleted ? (
             <Typography variant="subtitle1">{name}</Typography>
-          </Link>
+          ) : (
+            <Link to={linkTo} color="inherit" component={RouterLink}>
+              <Typography variant="subtitle1">{name}</Typography>
+            </Link>
+          )}
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
             Due Date
           </Typography>
@@ -134,10 +109,11 @@ export default function ProjectItem({ project, image, onOpenLightbox }) {
         ) : (
           <MoreProjectOptions
             deleteProjectHook={deleteProjectHook}
-            user={user}
+            userId={userId}
             projectId={projectId}
-            workspaceId={workspace}
+            workspaceId={workspaceId}
             linkTo={linkTo}
+            isProjectManager={isProjectManager}
           />
         )}
       </CaptionStyle>
