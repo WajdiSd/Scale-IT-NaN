@@ -14,6 +14,7 @@ const {
   getProjectsByMember,
   getProjectsByTeamLeader,
   getProject,
+  getFullMembersByProject,
 } = require("../controllers/projectController");
 const router = express.Router();
 
@@ -37,6 +38,7 @@ router.get(
   protect,
   getProjectsByMember
 );
+router.get("/list/fullmembers/:idproject", protect, getFullMembersByProject);
 
 router.post("/add", protect, addProject);
 router.put("/delete/:id", protect, deleteProject);

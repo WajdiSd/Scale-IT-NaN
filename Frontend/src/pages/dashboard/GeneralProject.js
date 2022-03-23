@@ -14,7 +14,10 @@ import {
   BankingExpensesCategories,
 } from '../../sections/@dashboard/general/banking';
 import ProjectMembersList from 'src/sections/@dashboard/project/ProjectMembersList';
-import { getProject } from 'src/redux/slices/projectSlice';
+import { getFullMemberByProject, getProject } from 'src/redux/slices/projectSlice';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
@@ -22,17 +25,24 @@ import useProject from 'src/hooks/useProject';
 export default function GeneralProject() {
   
   const { themeStretch } = useSettings();
-  let ourProject=null;
-  const projects = useProject();
-  console.log('\n\n--------------------------------------------------------------------------------');
-  console.log(projects);
-  projects.projects.forEach(element => {
-    console.log(element);
-    console.log(element.name);
-    element._id == '623a4258d0ff766a6a45673a' ? ourProject=element : ourProject=null;
-  });
-  
-  console.log(ourProject);
+
+  const { projectid } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getProject(projectid));
+  }, [projectid]);
+
+  const { project, usersInProject } = useProject();
+
+  console.log("-----------------project-----------");
+  console.log(project);
+  console.log(project.assigned_members);
+
+
+  console.log("-----------------usersInProject-----------");
+  console.log(usersInProject);
+
   return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>

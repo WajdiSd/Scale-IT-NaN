@@ -27,6 +27,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 import { _bankingQuickTransfer } from 'src/_mock';
 // components
 import { CarouselArrows } from 'src/components/carousel';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -39,40 +40,6 @@ const RootStyle = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background.neutral,
 }));
 
-
-const project = {
-  assigned_members: [
-    {
-      id: 1,
-      name: 'John Doe',
-    },
-    {
-      id: 2,
-      name: 'Bilel Taktak',
-    },
-    {
-      id: 3,
-      name: 'Ali Bahlawen',
-    },
-    {
-      id: 4,
-      name: 'Nada Khaldi',
-    },
-    {
-      id: 5,
-      name: 'Maryem Chaabene',
-    },
-    {
-      id: 6,
-      name: 'Hend Sabri',
-    },
-    {
-      id: 7,
-      name: 'Omar Karboul',
-    },
-  ],
-};
-
 // ----------------------------------------------------------------------
 
 export default function ProjectMembersList() {
@@ -83,6 +50,14 @@ export default function ProjectMembersList() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [selectContact, setSelectContact] = useState(0);
   const [amount, setAmount] = useState(0);
+
+
+  console.log("im in project members list");
+  //console.log(usersInProject);
+
+  const {usersInProject} = useProject();
+  console.log("-----------------------");
+  console.log(usersInProject);
 
   
   const getContactInfo = _bankingQuickTransfer.find((_, index) => index === selectContact);
@@ -180,10 +155,10 @@ export default function ProjectMembersList() {
               }}
             >
               <Slider ref={carouselRef} {...sliderSettings}>
-                {project.assigned_members.map((contact, index) => (
-                  <Box key={contact.id} sx={{ py: 5 }}>
+                {usersInProject?.map((contact, index) => (
+                  <Box key={contact._id} sx={{ py: 5 }}>
                     <Box sx={{ width: 40, height: 40 }}>
-                      <Tooltip key={contact.id} title={contact.name} arrow placement="top">
+                      <Tooltip key={contact._id} title={contact.firstName} arrow placement="top">
                         <Avatar
                           src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
                           sx={{

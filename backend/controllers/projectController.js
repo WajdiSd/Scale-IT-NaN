@@ -112,6 +112,29 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
   });
 });
 
+
+const getFullMembersByProject = asyncHandler(async (req, res) => {
+  const id = req.params.idproject;
+  let project = await Project.findById(id);
+  let members = [];
+
+  for( const member of project.assigned_members) {
+    const member1 = await Member.findById(member.memberId);
+    members.push(member1);
+  }
+  if(!members) {
+    return res.status(404).json({
+      success: false,
+      error: "No members found for this project",
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: members.length,
+    data: members,
+  });
+});
+
 // @route post /api/project/add/
 // you need to provide the required fields in the body
 // you need to provide memberId(the member creating the project) in the body
@@ -472,4 +495,5 @@ module.exports = {
   getProjectsByTeamLeader,
   getProjectsByMember,
   getProject,
+  getFullMembersByProject,
 };
