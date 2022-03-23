@@ -122,5 +122,16 @@ export const getWorkspaceProjectsForMembers = createAsyncThunk(
   }
 );
 
+export const getProject = createAsyncThunk('project/getProject', async (idProject, thunkAPI) => {
+  try {
+    return await projectService.getProject(idProject);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
 export const { reset, setErrorMessage, resetErrorMessage } = projectSlice.actions;
 export default projectSlice.reducer;

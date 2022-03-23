@@ -7,6 +7,21 @@ const {
   MemberInWorkspace,
 } = require("../helpers/functions");
 
+const getProject = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+  if (!project) {
+    return res.status(404).json({
+      success: false,
+      error: "Project not found",
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: project,
+  });
+});
+
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({});
   console.log("projects");
@@ -456,4 +471,5 @@ module.exports = {
   getProjectsByManager,
   getProjectsByTeamLeader,
   getProjectsByMember,
+  getProject,
 };

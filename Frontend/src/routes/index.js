@@ -14,7 +14,6 @@ import { PATH_AFTER_LOGIN } from '../config';
 import LoadingScreen from '../components/LoadingScreen';
 import WorkspaceInvite from 'src/pages/dashboard/WorkspaceInvite';
 import AddWorkspace from 'src/pages/dashboard/AddWorkspace';
-
 // ----------------------------------------------------------------------
 
 const Loadable = (Component) => (props) => {
@@ -95,6 +94,7 @@ export default function Router() {
               children: [
                 { path: 'invite', element: <WorkspaceInvite /> },
                 { path: '', element: <WorkspaceDetails /> },
+                { path: 'project/:projectid' ,element: <GeneralProject/>}
               ],
             },
             ,
@@ -217,3 +217,8 @@ const Pricing = Loadable(lazy(() => import('../pages/Pricing')));
 const Payment = Loadable(lazy(() => import('../pages/Payment')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
+
+
+//Project
+const GeneralProject = Loadable(lazy(() => import('../pages/dashboard/GeneralProject')));
+

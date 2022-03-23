@@ -57,6 +57,7 @@ export const PATH_DASHBOARD = {
   workspaces: {
     details: path(ROOTS_DASHBOARD, '/workspace/'),
     memberInvite: path(ROOTS_DASHBOARD, '/workspace/'),
+    //projectDetails: path(ROOTS_DASHBOARD, '/workspace/'),
   },
   user: {
     root: path(ROOTS_DASHBOARD, '/user'),
