@@ -2,7 +2,7 @@
 import workspaceService from '../service/workspaceService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isHr, isProjectManager } from './authSlice';
-import useAuth from 'src/hooks/useAuth';
+import { resetProjectList } from './projectSlice';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -183,6 +183,7 @@ export const getWorkspaceId = createAsyncThunk('workspace/getWorkspaceId', async
 
 export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (id, thunkAPI) => {
   try {
+    thunkAPI.dispatch(resetProjectList());
     return await workspaceService.getWorkspaces(id);
   } catch (error) {
     const message =

@@ -26,7 +26,6 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
-  
   const { themeStretch } = useSettings();
 
   const { project, usersInProject } = useProject();
@@ -40,11 +39,7 @@ export default function GeneralProject() {
     dispatch(getProject(projectid));
   }, []);
 
-  
-
-
-
-  return (
+return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
       <HeaderBreadcrumbs
@@ -95,8 +90,8 @@ export default function GeneralProject() {
 
           <Grid item xs={12} md={4}>
             <Stack spacing={3}>
-              <ProjectMembersList/>
-                <BankingContacts />
+              <ProjectMembersList />
+              <BankingContacts />
               <ProjectMembersList />
             </Stack>
           </Grid>

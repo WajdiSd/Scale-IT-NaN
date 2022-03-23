@@ -58,9 +58,22 @@ export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   let { id } = useParams();
   const { isHr, isProjectManager, user } = useAuth();
-  const [idWorkspace, setIdWorkspace] = useState(id);
-  const { projects, projectError, resetErrorMessageHook, getWorkspaceProjectsHook } = useProject();
+  const {
+    projects,
+    archivedProjects,
+    unarchivedProjects,
+    projectError,
+    projectSuccess,
+    isLoading,
+    isSuccess,
+    resetErrorMessageHook,
+    resetSuccessMessageHook,
+    getWorkspaceProjectsHook,
+  } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
+
+  const [idWorkspace, setIdWorkspace] = useState(id);
+  const [searchValue, setSearchValue] = useState('');
 
   const dispatch = useDispatch();
 
@@ -75,10 +88,6 @@ export default function WorkspaceDetails() {
   useEffect(() => {
     getUserWorkspace();
     getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
-    console.log('\n\n--------------------------------------------------------------------------------');
-    console.log('projects in useEffect');
-    console.log(projects);
-    console.log('--------------------------------------------------------------------------------\n\n');
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
@@ -96,7 +105,13 @@ export default function WorkspaceDetails() {
     {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProjectCard projects={projects} gallery={_userGallery} />,
+      component: (
+        <ProjectCard
+          loaded={!isLoading && isSuccess}
+          projects={isHr || isProjectManager ? projects : unarchivedProjects}
+          gallery={_userGallery}
+        />
+      ),
     },
 
     {
