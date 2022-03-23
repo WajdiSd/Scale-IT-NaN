@@ -73,6 +73,8 @@ export const projectSlice = createSlice({
         state.isSuccess = false;
       })
       .addCase(getWorkspaceProjects.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
@@ -91,6 +93,8 @@ export const projectSlice = createSlice({
         state.isSuccess = false;
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(deleteProject.fulfilled, (state, action) => {

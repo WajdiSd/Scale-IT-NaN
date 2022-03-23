@@ -32,7 +32,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace';
-import ProjectCard from 'src/sections/@dashboard/workspace/ProjectCard';
+import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
 
 // ----------------------------------------------------------------------
 
