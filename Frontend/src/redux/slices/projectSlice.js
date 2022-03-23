@@ -64,7 +64,7 @@ export const projectSlice = createSlice({
       .addCase(getWorkspaceProjects.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.projects = action.payload.data;
+        state.projects = action.payload.data.sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })
@@ -78,6 +78,11 @@ export const projectSlice = createSlice({
       .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.projects = action.payload.data.sort((a, b) => {
+          const endDateJsA = new Date(a.expectedEndDate);
+          const endDateJsB = new Date(b.expectedEndDate);
+          return endDateJsB - endDateJsA;
+        });
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })

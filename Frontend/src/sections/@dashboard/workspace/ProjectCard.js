@@ -248,6 +248,7 @@ function ProjectItem({ project, image, onOpenLightbox }) {
             user={user}
             projectId={projectId}
             workspaceId={workspace}
+            linkTo={linkTo}
           />
         )}
       </CaptionStyle>
@@ -257,7 +258,7 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
 // ----------------------------------------------------------------------
 
-function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user }) {
+function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user, linkTo }) {
   const { isProjectManager } = useAuth();
   const [open, setOpen] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -320,8 +321,10 @@ function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user }) {
         </MenuItem>
 
         <MenuItem>
-          <Iconify icon={'eva:printer-fill'} sx={{ ...ICON }} />
-          Print
+          <Iconify icon={'eva:plus-fill'} sx={{ ...ICON }} />
+          <Link to={linkTo} color="inherit" component={RouterLink}>
+            Show Details
+          </Link>
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
