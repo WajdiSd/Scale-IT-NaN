@@ -68,8 +68,9 @@ export const projectSlice = createSlice({
         
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
       })
-      .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
-        state.projects = action.payload.data;
+      .addCase(getWorkspaceProjects.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
@@ -79,12 +80,9 @@ export const projectSlice = createSlice({
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })
-      .addCase(getWorkspaceProjects.pending, (state, action) => {
+      .addCase(getWorkspaceProjectsForMembers.pending, (state, action) => {
         state.isLoading = true;
         state.isSuccess = false;
-      })
-      .addCase(getWorkspaceProjects.rejected, (state, action) => {
-        state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -96,13 +94,6 @@ export const projectSlice = createSlice({
         });
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
-      })
-      .addCase(getWorkspaceProjectsForMembers.pending, (state, action) => {
-        state.isLoading = true;
-        state.isSuccess = false;
-      })
-      .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
-        state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.projectsSuccessMessage = action.payload;
