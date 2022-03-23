@@ -23,7 +23,6 @@ import useProject from 'src/hooks/useProject';
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
-  
   const { themeStretch } = useSettings();
 
   const { projectid } = useParams();
@@ -34,14 +33,6 @@ export default function GeneralProject() {
   }, [projectid]);
 
   const { project, usersInProject } = useProject();
-
-  console.log("-----------------project-----------");
-  console.log(project);
-  console.log(project.assigned_members);
-
-
-  console.log("-----------------usersInProject-----------");
-  console.log(usersInProject);
 
   return (
     <Page title="General: Projects">
@@ -81,8 +72,8 @@ export default function GeneralProject() {
 
           <Grid item xs={12} md={4}>
             <Stack spacing={3}>
-              <ProjectMembersList/>
-                <BankingContacts />
+              <ProjectMembersList />
+              <BankingContacts />
               <ProjectMembersList />
             </Stack>
           </Grid>
