@@ -71,53 +71,82 @@ export const projectSlice = createSlice({
         // console.log(action.payload);
         // console.log('\n\n----------------------------------------------------');
         state.projects = action.payload.data;
-        state.unarchivedProjects = projects.filter((project) => !project.isDeleted);
-        state.archivedProjects = projects.filter((project) => project.isDeleted);
+        state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
+        state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })
       .addCase(getWorkspaceProjects.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjects rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjects rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjectsForMembers fulfilled');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
-        state.projects = action.payload.data;
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        // state.projects = action.payload.data;
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjectsForMembers fulfilled unarchived projects');
-        console.log(state.unarchivedProjects);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers fulfilled unarchived projects');
+        // console.log(state.unarchivedProjects);
+        // console.log('\n\n----------------------------------------------------');
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjectsForMembers rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('deleteProject fulfilled');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('deleteProject fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projectsSuccessMessage = action.payload;
-        state.unarchivedProjects = projects.filter((project) => !project.isDeleted);
-        state.archivedProjects = projects.filter((project) => project.isDeleted);
+        state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
+        state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })
       .addCase(deleteProject.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('deletProject rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('deletProject rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projectsErrorMessage = action.payload;
+      })
+      .addCase(resetProjectList.fulfilled, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('resetProjectList fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projects = [];
+        state.archivedProjects = [];
+        state.unarchivedProjects = [];
+      })
+      .addCase(resetProjectList.rejected, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('resetProjectList rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projects = [];
+        state.archivedProjects = [];
+        state.unarchivedProjects = [];
         state.projectsErrorMessage = action.payload;
       });
   },
+});
+
+// Resets project list
+export const resetProjectList = createAsyncThunk('project/resetProjectList', async (_, thunkAPI) => {
+  try {
+    return true;
+  } catch (error) {
+    const message = 'Problem resetting projects';
+    return thunkAPI.rejectWithValue(message);
+  }
 });
 
 // Create new project
@@ -134,10 +163,10 @@ export const addProject = createAsyncThunk('project/addProject', async (data, th
 // Delete project
 export const deleteProject = createAsyncThunk('project/deleteProject', async (data, thunkAPI) => {
   try {
-    console.log('\n\n----------------------------------------------------');
-    console.log('in deleteProject in projectSlice');
-    console.log(data);
-    console.log('\n\n----------------------------------------------------');
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('in deleteProject in projectSlice');
+    // console.log(data);
+    // console.log('\n\n----------------------------------------------------');
     return await projectService.deleteProject(data.projectId, data.workspaceId, data.memberId);
   } catch (error) {
     const message =
