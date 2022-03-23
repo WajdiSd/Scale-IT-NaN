@@ -46,6 +46,7 @@ export const workspaceSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.workspaces = []
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -58,6 +59,7 @@ export const workspaceSlice = createSlice({
           workspac.workspace = null;
           localStorage.setItem('redux-workspaces', workspac);
         }
+        
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;
@@ -88,7 +90,8 @@ export const workspaceSlice = createSlice({
         console.log('delete workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
-        state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload.id);
+        state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload._id);
+      
       })
       .addCase(deleteWorkspace.rejected, (state, action) => {
         console.log('delete workspace rejected');

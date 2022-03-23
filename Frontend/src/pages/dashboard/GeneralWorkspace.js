@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { CardHeader, Container, Grid, Stack } from '@mui/material';
+import { CardHeader, CircularProgress, Container, Grid, Stack } from '@mui/material';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
@@ -18,11 +18,12 @@ import { getWorkspaces } from 'src/redux/slices/workspaceSlice';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { MotionInView, varFade } from 'src/components/animate';
 import WorkspaceLandingAdd from 'src/sections/@dashboard/workspace/WorkspaceLandingAdd';
+import EmptyComponent from '../../components/EmptyComponent'
 
 // ----------------------------------------------------------------------
 
 export default function GeneralWorkspace() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const { workspaces } = useWorkspace();
   const theme = useTheme();
   const { themeStretch } = useSettings();
@@ -34,30 +35,31 @@ export default function GeneralWorkspace() {
 
   const getUserWorkspaces = () => {
     try {
-      dispatch(getWorkspaces(user._id));
+      dispatch(getWorkspaces(user._id)).then(()=>{
+        workspaces.map((workspace) => {
+          let validated = false;
+    
+          workspace.assigned_members.forEach((member) => {
+            if (member.member == user._id) {
+              if (member.isHR) {
+                setUserWorkspaces((oldArray) => [...oldArray, workspace]);
+              } else {
+                setUserJoinedspaces((oldArray) => [...oldArray, workspace]);
+              }
+            }
+          });
+        });
+      })
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
+    setTimeout(() => {
     getUserWorkspaces();
-
-    workspaces.map((workspace) => {
-      let validated = false;
-
-      workspace.assigned_members.forEach((member) => {
-        if (member.member == user._id) {
-          if (member.isHR) {
-            setUserWorkspaces((oldArray) => [...oldArray, workspace]);
-          } else {
-            setUserJoinedspaces((oldArray) => [...oldArray, workspace]);
-          }
-        }
-      });
-    });
-  }, [user]);
-
+    }, 500);
+  }, []);
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -70,7 +72,8 @@ export default function GeneralWorkspace() {
           </Grid>
         </Grid>
         <CardHeader title="Workspaces that you manage" subheader="" />
-        <Grid container spacing={3} mt={3}>
+        {userWorkspaces?.length>0 ?
+        (<Grid container spacing={3} mt={3}>
           {userWorkspaces
             ? userWorkspaces.map((workspace, index) =>
                 workspace ? (
@@ -83,11 +86,21 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : null}
-        </Grid>
+            : <h1>empty</h1>}
+        </Grid>)
+        :
+        ( 
+        <EmptyComponent/>
+        )
+        }
+
+        
 
         <CardHeader title="Workspaces that you joined" subheader="" />
-        <Grid container spacing={3}>
+        {
+          userJoinedspaces?.length>0 ?
+          (
+            <Grid container spacing={3}>
           {userJoinedspaces
             ? userJoinedspaces.map((workspace, index) =>
                 workspace ? (
@@ -98,8 +111,16 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : null}
-        </Grid>
+            : <h1>empty</h1>}
+                
+            </Grid>
+          )
+          :
+          (
+            <EmptyComponent/>
+          )
+        }
+        
       </Container>
     </Page>
   );
