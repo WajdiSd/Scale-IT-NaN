@@ -122,7 +122,8 @@ export default function ProjectCard({ projects, gallery }) {
       />
 
       <Card sx={{ p: 3 }}>
-        {!projects ? (
+        {console.log(projects)}
+        {!projects || projects.length === 0 ? (
           <Typography variant="h1">No projects found.</Typography>
         ) : (
           <Box
