@@ -21,8 +21,8 @@ const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
 };
 
 //deletes project
-const deleteProject = async (idWorkspace) => {
-  const response = await axiosInstance.put(API_URL + 'delete/' + idWorkspace);
+const deleteProject = async (projectId, workspaceId, memberId) => {
+  const response = await axiosInstance.put(API_URL + 'delete/' + projectId, { workspaceId, memberId });
   return response.data;
 };
 
@@ -30,6 +30,7 @@ const projectService = {
   addProject,
   getWorkspaceProjects,
   getWorkspaceProjectsForEmployees,
+  deleteProject,
 };
 
 export default projectService;

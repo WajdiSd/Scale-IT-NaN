@@ -82,6 +82,20 @@ export const projectSlice = createSlice({
         // console.log(action.payload);
         // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
+      })
+      .addCase(deleteProject.fulfilled, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projects = action.payload.data;
+      })
+      .addCase(deleteProject.rejected, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projectsErrorMessage = 'Project could not be deleted';
       });
   },
 });
@@ -98,9 +112,9 @@ export const addProject = createAsyncThunk('project/addProject', async (data, th
 });
 
 // Delete project
-export const deleteProject = createAsyncThunk('project/deleteProject', async (idWorkspace, thunkAPI) => {
+export const deleteProject = createAsyncThunk('project/deleteProject', async (data, thunkAPI) => {
   try {
-    return await projectService.deleteProject(idWorkspace);
+    return await projectService.deleteProject(data.projectId, data.workspaceId, data.memberId);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
