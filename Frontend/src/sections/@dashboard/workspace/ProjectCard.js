@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Card, IconButton, Typography, CardContent, Button, DialogTitle } from '@mui/material';
 // utils
-import { fDate } from '../../../utils/formatTime';
+import { fDate, fTimestamp } from '../../../utils/formatTime';
 import cssStyles from '../../../utils/cssStyles';
 // components
 import Image from '../../../components/Image';
@@ -19,6 +19,9 @@ import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
 import useAuth from 'src/hooks/useAuth';
+import { InputAdornment } from '@mui/material';
+import InputStyle from 'src/components/InputStyle';
+import useProjectFilter from 'src/hooks/useProjectFilter';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -34,17 +37,19 @@ const CaptionStyle = styled(CardContent)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 ProjectCard.propTypes = {
-  gallery: PropTypes.array.isRequired,
+  projects: PropTypes.array.isRequired,
 };
 
 export default function ProjectCard({ projects, gallery }) {
   const [openLightbox, setOpenLightbox] = useState(false);
 
   const { isProjectManager } = useAuth();
+  const { query, projectsFilter, searchProjects } = useProjectFilter(projects);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const imagesLightbox = gallery.map((img) => img.imageUrl);
+
   const handleAddEvent = () => {
     setIsOpenModal(true);
   };
@@ -56,6 +61,7 @@ export default function ProjectCard({ projects, gallery }) {
     setOpenLightbox(true);
     setSelectedImage(selectedImage);
   };
+
   return (
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
@@ -83,6 +89,22 @@ export default function ProjectCard({ projects, gallery }) {
           ) : null
         }
       />
+
+      <InputStyle
+        stretchStart={240}
+        value={query}
+        onChange={(event) => searchProjects(event.target.value)}
+        placeholder="Find projects..."
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+            </InputAdornment>
+          ),
+        }}
+        sx={{ mb: 5 }}
+      />
+
       <Card sx={{ p: 3 }}>
         <Box
           sx={{
@@ -96,13 +118,9 @@ export default function ProjectCard({ projects, gallery }) {
           }}
         >
           {!projects ? (
-            <Box>
-              {console.log(projects)}
-              {console.log(typeof projects)}
-              WOQOIDSQPDSOIUQS
-            </Box>
+            <Typography variant="h1">No Projects Found!</Typography>
           ) : (
-            projects.map((project) => (
+            projectsFilter.map((project) => (
               <ProjectItem key={project._id} project={project} onOpenLightbox={handleOpenLightbox} />
             ))
           )}
@@ -130,28 +148,32 @@ function ProjectItem({ project, image, onOpenLightbox }) {
   const { description, name, startDate, expectedEndDate } = project;
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
+
+  const now = new Date();
+  const expectedEndDateJs = new Date(expectedEndDate);
+
+  const projectCompleted = expectedEndDateJs.getTime() < now.getTime();
+
+  const color = projectCompleted ? 'error' : 'in_progress' && 'warning';
+
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
-      {/*
-      color={
-                          (row.status === 'completed' && 'success') ||
-                          (row.status === 'in_progress' && 'warning') ||
-                          'error'
-                        }
-      */}
       <Label
         sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
         variant={isLight ? 'ghost' : 'filled'}
-        color={('completed' && 'success') || ('in_progress' && 'warning') || 'error'}
+        color={color}
       >
-        {sentenceCase('done')}
+        {projectCompleted ? sentenceCase('overdue') : sentenceCase('in progress')}
       </Label>
       <CaptionStyle>
         <div>
           <Typography variant="subtitle1">{name}</Typography>
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+            Due Date
+          </Typography>
           <Typography variant="body2" sx={{ opacity: 0.72 }}>
-            {fDate(startDate)}
+            {fDate(expectedEndDateJs)}
           </Typography>
         </div>
         <IconButton color="inherit">

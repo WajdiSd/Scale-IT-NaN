@@ -16,12 +16,6 @@ const useProject = () => {
       : dispatch(getWorkspaceProjectsForMembers({ idWorkspace, idMember }));
 
   const resetErrorMessageHook = () => dispatch(resetErrorMessage());
-
-  console.log('\n\n--------------------------------------------------------------------------------');
-  console.log('projects in useProject');
-  console.log(projects);
-  console.log('--------------------------------------------------------------------------------\n\n');
-
   return {
     projects,
     projectError,

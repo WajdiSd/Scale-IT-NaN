@@ -39,48 +39,48 @@ export const projectSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addProject.pending, (state) => {
-        console.log('addProject pending');
+        // console.log('addProject pending');
         state.isLoading = true;
       })
       .addCase(addProject.fulfilled, (state, action) => {
-        console.log('addProject fulfilled');
-        console.log(action);
+        // console.log('addProject fulfilled');
+        // console.log(action);
         state.isLoading = false;
         state.isSuccess = true;
-        state.projects.push(action.payload);
+        state.projects.push(action.payload.project);
       })
       .addCase(addProject.rejected, (state, action) => {
-        console.log('addProject rejected');
+        // console.log('addProject rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(getWorkspaceProjects.fulfilled, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjects fulfilled');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjects fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projects = action.payload.data;
       })
       .addCase(getWorkspaceProjects.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjects rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjects rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
       })
       .addCase(getWorkspaceProjectsForMembers.fulfilled, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjectsForMembers fulfilled');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projects = action.payload.data;
       })
       .addCase(getWorkspaceProjectsForMembers.rejected, (state, action) => {
-        console.log('\n\n----------------------------------------------------');
-        console.log('getWorkspaceProjectsForMembers rejected');
-        console.log(action.payload);
-        console.log('\n\n----------------------------------------------------');
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('getWorkspaceProjectsForMembers rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
       });
   },
