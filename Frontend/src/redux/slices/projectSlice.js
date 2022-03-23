@@ -10,6 +10,7 @@ const initialState = {
   project: null,
   usersInProject: [],
   projectsErrorMessage: '',
+  projectsSuccessMessage: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -25,6 +26,12 @@ export const projectSlice = createSlice({
     },
     setErrorMessage: (state, action) => {
       state.projectsErrorMessage = action.payload;
+    },
+    resetSuccessMessage: (state) => {
+      state.projectsSuccessMessage = '';
+    },
+    setSuccessMessage: (state, action) => {
+      state.projectsSuccessMessage = action.payload;
     },
     reset: (state) => {
       (state.projects = []),
@@ -88,14 +95,14 @@ export const projectSlice = createSlice({
         // console.log('getWorkspaceProjectsForMembers fulfilled');
         // console.log(action.payload);
         // console.log('\n\n----------------------------------------------------');
-        state.projects = action.payload.data;
+        state.projectsSuccessMessage = action.payload;
       })
       .addCase(deleteProject.rejected, (state, action) => {
         // console.log('\n\n----------------------------------------------------');
         // console.log('getWorkspaceProjectsForMembers rejected');
         // console.log(action.payload);
         // console.log('\n\n----------------------------------------------------');
-        state.projectsErrorMessage = 'Project could not be deleted';
+        state.projectsErrorMessage = action.payload;
       });
   },
 });
