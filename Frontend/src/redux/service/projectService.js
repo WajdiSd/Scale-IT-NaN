@@ -21,10 +21,22 @@ const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
   return response.data;
 };
 
+const getProject = async (idProject) => {
+  const response = await axiosInstance.get(API_URL + 'get/' + idProject);
+  return response.data;
+};
+
+const getFullMemberByProject = async (idProject) => {
+  const response = await axiosInstance.get(API_URL + 'list/fullmembers/' + idProject);
+  return response.data;
+}
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
   getWorkspaceProjectsForEmployees,
+  getProject,
+  getFullMemberByProject,
 };
 
 export default projectService;

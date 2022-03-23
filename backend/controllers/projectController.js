@@ -7,6 +7,21 @@ const {
   MemberInWorkspace,
 } = require("../helpers/functions");
 
+const getProject = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+  if (!project) {
+    return res.status(404).json({
+      success: false,
+      error: "Project not found",
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: project,
+  });
+});
+
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({});
   console.log("projects");
@@ -94,6 +109,29 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
     success: true,
     count: projects.length,
     data: projects,
+  });
+});
+
+
+const getFullMembersByProject = asyncHandler(async (req, res) => {
+  const id = req.params.idproject;
+  let project = await Project.findById(id);
+  let members = [];
+
+  for( const member of project.assigned_members) {
+    const member1 = await Member.findById(member.memberId);
+    members.push(member1);
+  }
+  if(!members) {
+    return res.status(404).json({
+      success: false,
+      error: "No members found for this project",
+    });
+  }
+  res.status(200).json({
+    success: true,
+    count: members.length,
+    data: members,
   });
 });
 
@@ -456,4 +494,6 @@ module.exports = {
   getProjectsByManager,
   getProjectsByTeamLeader,
   getProjectsByMember,
+  getProject,
+  getFullMembersByProject,
 };
