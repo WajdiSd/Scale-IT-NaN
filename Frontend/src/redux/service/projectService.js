@@ -22,6 +22,12 @@ const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
 
 //deletes project
 const deleteProject = async (projectId, workspaceId, memberId) => {
+  console.log('\n\n----------------------------------------------------');
+  console.log('in deleteProject in projectService');
+  console.log(projectId);
+  console.log(workspaceId);
+  console.log(memberId);
+  console.log('\n\n----------------------------------------------------');
   const response = await axiosInstance.put(API_URL + 'delete/' + projectId, { workspaceId, memberId });
   return response.data;
 };

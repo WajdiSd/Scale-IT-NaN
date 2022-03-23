@@ -91,17 +91,17 @@ export const projectSlice = createSlice({
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        // console.log('\n\n----------------------------------------------------');
-        // console.log('getWorkspaceProjectsForMembers fulfilled');
-        // console.log(action.payload);
-        // console.log('\n\n----------------------------------------------------');
+        console.log('\n\n----------------------------------------------------');
+        console.log('deleteProject fulfilled');
+        console.log(action.payload);
+        console.log('\n\n----------------------------------------------------');
         state.projectsSuccessMessage = action.payload;
       })
       .addCase(deleteProject.rejected, (state, action) => {
-        // console.log('\n\n----------------------------------------------------');
-        // console.log('getWorkspaceProjectsForMembers rejected');
-        // console.log(action.payload);
-        // console.log('\n\n----------------------------------------------------');
+        console.log('\n\n----------------------------------------------------');
+        console.log('deletProject rejected');
+        console.log(action.payload);
+        console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = action.payload;
       });
   },
@@ -121,6 +121,10 @@ export const addProject = createAsyncThunk('project/addProject', async (data, th
 // Delete project
 export const deleteProject = createAsyncThunk('project/deleteProject', async (data, thunkAPI) => {
   try {
+    console.log('\n\n----------------------------------------------------');
+    console.log('in deleteProject in projectSlice');
+    console.log(data);
+    console.log('\n\n----------------------------------------------------');
     return await projectService.deleteProject(data.projectId, data.workspaceId, data.memberId);
   } catch (error) {
     const message =

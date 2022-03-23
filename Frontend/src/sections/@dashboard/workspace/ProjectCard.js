@@ -2,7 +2,22 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Card, IconButton, Typography, CardContent, Button, DialogTitle } from '@mui/material';
+import {
+  Box,
+  Card,
+  IconButton,
+  Typography,
+  CardContent,
+  Button,
+  InputAdornment,
+  MenuItem,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 // utils
 import { fDate, fTimestamp } from '../../../utils/formatTime';
 import cssStyles from '../../../utils/cssStyles';
@@ -19,9 +34,10 @@ import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
 import useAuth from 'src/hooks/useAuth';
-import { InputAdornment } from '@mui/material';
 import InputStyle from 'src/components/InputStyle';
 import useProjectFilter from 'src/hooks/useProjectFilter';
+import useProject from 'src/hooks/useProject';
+import MenuPopover from 'src/components/MenuPopover';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -145,7 +161,7 @@ ProjectItem.propTypes = {
 };
 
 function ProjectItem({ project, image, onOpenLightbox }) {
-  const { description, name, startDate, expectedEndDate, _id } = project;
+  const { description, name, startDate, expectedEndDate, _id, workspace } = project;
 
   const [projectId, setProjectId] = useState(_id);
   const theme = useTheme();
@@ -178,7 +194,7 @@ function ProjectItem({ project, image, onOpenLightbox }) {
             {fDate(expectedEndDateJs)}
           </Typography>
         </div>
-        <MoreMenuButton id={projectId} />
+        <MoreMenuButton projectId={projectId} workspaceId={workspace} />
       </CaptionStyle>
     </Card>
   );
@@ -186,29 +202,15 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
 // ----------------------------------------------------------------------
 
-function MoreMenuButton(id) {
-  const { isHr, isProjectManager } = useAuth();
-  const { workspace } = useWorkspace();
+function MoreMenuButton({ projectId, workspaceId }) {
+  const { isProjectManager, user } = useAuth();
+  const { deleteProjectHook } = useProject();
   const [open, setOpen] = useState(null);
-  const dispatch = useDispatch();
-  const [openDia, setOpenDia] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  const [openDialog, setOpenDialog] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const deletemember = () => {
-    try {
-      const obj = {
-        idmember: id.id,
-        idhr: idHR,
-        idworkspace: workspace._id,
-      };
-      dispatch(removememberfromworkspace(obj)).then((res) => {
-        enqueueSnackbar('Deleted member successfully');
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: user._id });
+
   const handleAddEvent = () => {
     setIsOpenModal(true);
   };
@@ -225,12 +227,12 @@ function MoreMenuButton(id) {
     setOpen(null);
   };
 
-  const handleCloseDialogue = () => {
-    setOpenDia(false);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const handleClickOpen = () => {
-    setOpenDia(true);
+    setOpenDialog(true);
   };
 
   const ICON = {
@@ -268,42 +270,32 @@ function MoreMenuButton(id) {
           Print
         </MenuItem>
 
-        {isHr && (
-          <MenuItem onClick={handleAddEvent}>
-            <Iconify icon={'ph:currency-circle-dollar-fill'} sx={{ ...ICON }} />
-            Set Rates
-          </MenuItem>
-        )}
         <Divider sx={{ borderStyle: 'dashed' }} />
-        {isHr && (
+        {isProjectManager && (
           <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
             <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
             Delete
           </MenuItem>
         )}
       </MenuPopover>
+
       <Dialog
-        open={openDia}
-        onClose={handleCloseDialogue}
+        open={openDialog}
+        onClose={handleCloseDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete this member ?'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete this project ?'}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">this member will be permanetly deleted</DialogContentText>
+          <DialogContentText id="alert-dialog-description">This project will be permanently deleted</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialogue}>Disagree</Button>
-          <Button onClick={deletemember} autoFocus>
+          <Button onClick={handleCloseDialog}>Disagree</Button>
+          <Button onClick={deleteProject} autoFocus>
             Agree
           </Button>
         </DialogActions>
       </Dialog>
-      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
-        <DialogTitle>{'Set Rates'}</DialogTitle>
-
-        <SetRatesForm id={id} event={{}} range={{}} onCancel={handleCloseModal} />
-      </DialogAnimate>
     </>
   );
 }

@@ -58,7 +58,14 @@ export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   let { id } = useParams();
   const { isHr, isProjectManager, user } = useAuth();
-  const { projects, projectError, resetErrorMessageHook, getWorkspaceProjectsHook } = useProject();
+  const {
+    projects,
+    projectError,
+    resetErrorMessageHook,
+    projectSuccess,
+    resetSuccessMessageHook,
+    getWorkspaceProjectsHook,
+  } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
 
   const [idWorkspace, setIdWorkspace] = useState(id);

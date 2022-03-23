@@ -194,13 +194,14 @@ const deleteProject = asyncHandler(async (req, res) => {
       }
     });
   }
-  if (!project) {
+  try {
+    const project = await Project.findByIdAndUpdate(projectId, {
+      isDeleted: true,
+    });
+  } catch {
     res.status(404);
     throw new Error("project not found");
   }
-  const project = await Project.findByIdAndUpdate(projectId, {
-    isDeleted: true,
-  });
   res.status(200).json("project deleted");
 });
 
