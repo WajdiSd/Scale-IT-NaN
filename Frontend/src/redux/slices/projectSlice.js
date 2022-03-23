@@ -82,7 +82,22 @@ export const projectSlice = createSlice({
         console.log(action.payload);
         console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Projects';
-      });
+      })
+      .addCase(getProject.fulfilled, (state, action) => {
+        console.log('\n\n----------------------------------------------------');
+        console.log('getWorkspaceProjects fulfilled');
+        console.log(action.payload);
+        console.log('\n\n----------------------------------------------------');
+        state.project = action.payload;
+        state.usersInProject = action.payload.assigned_users;
+      })
+      .addCase(getProject.rejected, (state, action) => {
+        console.log('\n\n----------------------------------------------------');
+        console.log('getWorkspaceProjectsForMembers rejected');
+        console.log(action.payload);
+        console.log('\n\n----------------------------------------------------');
+        state.projectsErrorMessage = 'Ooops, there have been a problem finding your Project';
+      })
   },
 });
 
