@@ -2,7 +2,11 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Card, IconButton, Typography, CardContent, Button, DialogTitle } from '@mui/material';
+import { Box, Card, IconButton, Typography, CardContent, Button, DialogTitle, Link } from '@mui/material';
+
+//react router link
+import { Link as RouterLink } from 'react-router-dom';
+
 // utils
 import { fDate } from '../../../utils/formatTime';
 import cssStyles from '../../../utils/cssStyles';
@@ -19,6 +23,7 @@ import { DialogAnimate } from 'src/components/animate';
 import { CalendarForm } from '../calendar';
 import AddProjectForm from '../project/AddProjectForm';
 import useAuth from 'src/hooks/useAuth';
+import { useParams } from 'react-router';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -130,6 +135,10 @@ function ProjectItem({ project, image, onOpenLightbox }) {
   const { description, name, startDate, expectedEndDate } = project;
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
+  const { id } = useParams();
+  const linkTo = `${PATH_DASHBOARD.workspaces.details}${id}/project/${project._id}`;
+  console.log("\n-------------------------------linkto-------------------------------\n", linkTo);
+  console.log(linkTo);
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
@@ -149,7 +158,9 @@ function ProjectItem({ project, image, onOpenLightbox }) {
       </Label>
       <CaptionStyle>
         <div>
-          <Typography variant="subtitle1">{name}</Typography>
+          <Link to={linkTo} color="inherit" component={RouterLink}>
+            <Typography variant="subtitle1">{name}</Typography>
+          </Link>
           <Typography variant="body2" sx={{ opacity: 0.72 }}>
             {fDate(startDate)}
           </Typography>

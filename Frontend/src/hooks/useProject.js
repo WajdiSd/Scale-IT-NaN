@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'src/redux/store';
 
 const useProject = () => {
   const projects = useSelector((state) => state.projects.projects);
+  const project = useSelector((state) => state.projects.project );
+  const usersInProject = useSelector((state) => state.projects.usersInProject );
   const projectError = useSelector((state) => state.projects.projectsErrorMessage);
 
   const dispatch = useDispatch();
@@ -23,6 +25,8 @@ const useProject = () => {
   console.log('--------------------------------------------------------------------------------\n\n');
 
   return {
+    project,
+    usersInProject,
     projects,
     projectError,
     resetErrorMessageHook,
