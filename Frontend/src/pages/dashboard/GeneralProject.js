@@ -19,6 +19,9 @@ import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import useProject from 'src/hooks/useProject';
+import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { PATH_DASHBOARD } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -26,27 +29,38 @@ export default function GeneralProject() {
   
   const { themeStretch } = useSettings();
 
-  const { projectid } = useParams();
+  const { project, usersInProject } = useProject();
+  const { workspace } = useWorkspace();
+  const { id, projectid } = useParams();
+  
+  console.log(projectid);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getProject(projectid));
-  }, [projectid]);
+  }, []);
 
-  const { project, usersInProject } = useProject();
-
-  console.log("-----------------project-----------");
-  console.log(project);
-  console.log(project.assigned_members);
+  
 
 
-  console.log("-----------------usersInProject-----------");
-  console.log(usersInProject);
 
   return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
+      <HeaderBreadcrumbs
+          key={project?.name}
+          heading="Project"
+          links={[
+            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}}` },
+            { key: 2, name: 'project', href: '' },
+            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
+
+
+          ]}
+        />
         <Grid container spacing={3}>
+        
           <Grid item xs={12} md={7}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
               <BankingWidgetSummary

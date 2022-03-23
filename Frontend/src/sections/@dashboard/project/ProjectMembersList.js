@@ -52,12 +52,9 @@ export default function ProjectMembersList() {
   const [amount, setAmount] = useState(0);
 
 
-  console.log("im in project members list");
   //console.log(usersInProject);
 
   const {usersInProject} = useProject();
-  console.log("-----------------------");
-  console.log(usersInProject);
 
   
   const getContactInfo = _bankingQuickTransfer.find((_, index) => index === selectContact);
