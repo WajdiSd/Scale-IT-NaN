@@ -112,17 +112,16 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
   });
 });
 
-
 const getFullMembersByProject = asyncHandler(async (req, res) => {
   const id = req.params.idproject;
   let project = await Project.findById(id);
   let members = [];
 
-  for( const member of project.assigned_members) {
+  for (const member of project.assigned_members) {
     const member1 = await Member.findById(member.memberId);
     members.push(member1);
   }
-  if(!members) {
+  if (!members) {
     return res.status(404).json({
       success: false,
       error: "No members found for this project",
@@ -232,15 +231,16 @@ const deleteProject = asyncHandler(async (req, res) => {
       }
     });
   }
+  let project = {};
   try {
-    await Project.findByIdAndUpdate(projectId, {
+    project = await Project.findByIdAndUpdate(projectId, {
       isDeleted: true,
     });
   } catch {
     res.status(404);
     throw new Error("project not found");
   }
-  res.status(200).json("project deleted");
+  res.status(200).json(project._id);
 });
 
 // @route put /api/project/delete/:id
@@ -269,15 +269,16 @@ const unDeleteProject = asyncHandler(async (req, res) => {
     });
   }
 
+  let project = {};
   try {
-    await Project.findByIdAndUpdate(projectId, {
+    project = await Project.findByIdAndUpdate(projectId, {
       isDeleted: false,
     });
   } catch {
     res.status(404);
     throw new Error("project not found");
   }
-  res.status(200).json("project Undeleted");
+  res.status(200).json(project._id);
 });
 
 // @route put /api/project/assignteamleader/:id

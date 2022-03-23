@@ -95,6 +95,15 @@ export const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.projectsSuccessMessage = action.payload;
+        state.projects = state.projects
+          .map((project) => {
+            if (project._id === action.payload) {
+              project.isDeleted = true;
+              return project;
+            }
+            return project;
+          })
+          .sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })
@@ -103,6 +112,15 @@ export const projectSlice = createSlice({
       })
       .addCase(restoreProject.fulfilled, (state, action) => {
         state.projectsSuccessMessage = action.payload;
+        state.projects = state.projects
+          .map((project) => {
+            if (project._id === action.payload) {
+              project.isDeleted = false;
+              return project;
+            }
+            return project;
+          })
+          .sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
       })

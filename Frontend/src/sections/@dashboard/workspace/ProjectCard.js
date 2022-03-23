@@ -202,7 +202,7 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
-      <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
+      <Image alt="gallery image" ratio="1/1" src={''} />
       {isDeleted ? (
         <Label
           sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
@@ -272,6 +272,11 @@ function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user, linkT
 
   const handleCloseModal = () => {
     setIsOpenModal(false);
+  };
+
+  const handleDeleteProject = () => {
+    deleteProject();
+    setOpenDialog(false);
   };
 
   const handleOpen = (event) => {
@@ -348,7 +353,7 @@ function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user, linkT
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Disagree</Button>
-          <Button onClick={deleteProject} autoFocus>
+          <Button onClick={handleDeleteProject} autoFocus>
             Agree
           </Button>
         </DialogActions>
