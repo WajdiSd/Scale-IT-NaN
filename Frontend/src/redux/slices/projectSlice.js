@@ -102,6 +102,19 @@ export const projectSlice = createSlice({
         state.archivedProjects = [];
         state.unarchivedProjects = [];
         state.projectsErrorMessage = action.payload;
+      })
+      .addCase(getProject.fulfilled, (state, action) => {
+        state.project = action.payload.data;
+        state.usersInProject = action.payload.assigned_users;
+      })
+      .addCase(getProject.rejected, (state, action) => {
+        state.projectsErrorMessage = 'Ooops, there has been a problem finding your Project';
+      })
+      .addCase(getFullMemberByProject.fulfilled, (state, action) => {
+        state.usersInProject = action.payload.data;
+      })
+      .addCase(getFullMemberByProject.rejected, (state, action) => {
+        state.projectsErrorMessage = 'Ooops, there have been a problem finding your Members By Project';
       });
   },
 });
@@ -173,6 +186,30 @@ export const getWorkspaceProjectsForMembers = createAsyncThunk(
     }
   }
 );
+
+export const getProject = createAsyncThunk('project/getProject', async (idProject, thunkAPI) => {
+  try {
+    const project = await projectService.getProject(idProject);
+    if (project) {
+      thunkAPI.dispatch(getFullMemberByProject(idProject));
+      return project;
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const getFullMemberByProject = createAsyncThunk('project/fullmembers', async (idProject, thunkAPI) => {
+  try {
+    return await projectService.getFullMemberByProject(idProject);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 
 export const { reset, setErrorMessage, resetErrorMessage } = projectSlice.actions;
 export default projectSlice.reducer;

@@ -17,7 +17,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Link,
 } from '@mui/material';
+
+//react router link
+import { Link as RouterLink } from 'react-router-dom';
+
 // utils
 import { fDate, fTimestamp } from '../../../utils/formatTime';
 import cssStyles from '../../../utils/cssStyles';
@@ -38,6 +43,7 @@ import InputStyle from 'src/components/InputStyle';
 import useProjectFilter from 'src/hooks/useProjectFilter';
 import useProject from 'src/hooks/useProject';
 import MenuPopover from 'src/components/MenuPopover';
+import { useParams } from 'react-router';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -179,6 +185,9 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
   const handleRestore = () => restoreProjectHook({ projectId: _id, workspaceId: workspace, memberId: user._id });
 
+  const { id } = useParams();
+  const linkTo = `${PATH_DASHBOARD.workspaces.details}${id}/project/${project._id}`;
+
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} onClick={() => onOpenLightbox(imageUrl)} />
@@ -202,7 +211,9 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
       <CaptionStyle>
         <div>
-          <Typography variant="subtitle1">{name}</Typography>
+          <Link to={linkTo} color="inherit" component={RouterLink}>
+            <Typography variant="subtitle1">{name}</Typography>
+          </Link>
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
             Due Date
           </Typography>

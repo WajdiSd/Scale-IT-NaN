@@ -14,6 +14,8 @@ const useProject = () => {
   const projects = useSelector((state) => state.projects.projects);
   const archivedProjects = useSelector((state) => state.projects.archivedProjects);
   const unarchivedProjects = useSelector((state) => state.projects.unarchivedProjects);
+  const project = useSelector((state) => state.projects.project);
+  const usersInProject = useSelector((state) => state.projects.usersInProject);
   const projectError = useSelector((state) => state.projects.projectsErrorMessage);
   const projectSuccess = useSelector((state) => state.projects.projectsSuccessMessage);
 
@@ -33,6 +35,8 @@ const useProject = () => {
   const restoreProjectHook = (data) => dispatch(restoreProject(data));
 
   return {
+    project,
+    usersInProject,
     projects,
     unarchivedProjects,
     archivedProjects,
