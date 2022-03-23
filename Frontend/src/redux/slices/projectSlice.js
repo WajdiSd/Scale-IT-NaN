@@ -117,6 +117,22 @@ export const projectSlice = createSlice({
         // console.log('\n\n----------------------------------------------------');
         state.projectsErrorMessage = action.payload;
       })
+      .addCase(restoreProject.fulfilled, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('restoreProject fulfilled');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projectsSuccessMessage = action.payload;
+        state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
+        state.archivedProjects = state.projects.filter((project) => project.isDeleted);
+      })
+      .addCase(restoreProject.rejected, (state, action) => {
+        // console.log('\n\n----------------------------------------------------');
+        // console.log('restoreProject rejected');
+        // console.log(action.payload);
+        // console.log('\n\n----------------------------------------------------');
+        state.projectsErrorMessage = action.payload;
+      })
       .addCase(resetProjectList.fulfilled, (state, action) => {
         // console.log('\n\n----------------------------------------------------');
         // console.log('resetProjectList fulfilled');
@@ -168,6 +184,21 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (da
     // console.log(data);
     // console.log('\n\n----------------------------------------------------');
     return await projectService.deleteProject(data.projectId, data.workspaceId, data.memberId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// restore project
+export const restoreProject = createAsyncThunk('project/restoreProject', async (data, thunkAPI) => {
+  try {
+    // console.log('\n\n----------------------------------------------------');
+    // console.log('in restoreProject in projectSlice');
+    // console.log(data);
+    // console.log('\n\n----------------------------------------------------');
+    return await projectService.restoreProject(data.projectId, data.workspaceId, data.memberId);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

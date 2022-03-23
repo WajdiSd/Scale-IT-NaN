@@ -4,6 +4,7 @@ import {
   getWorkspaceProjectsForMembers,
   getWorkspaceProjects,
   deleteProject,
+  restoreProject,
 } from 'src/redux/slices/projectSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
@@ -29,6 +30,8 @@ const useProject = () => {
 
   const deleteProjectHook = (data) => dispatch(deleteProject(data));
 
+  const restoreProjectHook = (data) => dispatch(restoreProject(data));
+
   return {
     projects,
     unarchivedProjects,
@@ -38,6 +41,7 @@ const useProject = () => {
     resetSuccessMessageHook,
     resetErrorMessageHook,
     deleteProjectHook,
+    restoreProjectHook,
     getWorkspaceProjectsHook,
   };
 };

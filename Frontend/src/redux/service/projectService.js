@@ -32,11 +32,24 @@ const deleteProject = async (projectId, workspaceId, memberId) => {
   return response.data;
 };
 
+//restores project
+const restoreProject = async (projectId, workspaceId, memberId) => {
+  console.log('\n\n----------------------------------------------------');
+  console.log('in restoreProject in projectService');
+  console.log(projectId);
+  console.log(workspaceId);
+  console.log(memberId);
+  console.log('\n\n----------------------------------------------------');
+  const response = await axiosInstance.put(API_URL + 'undelete/' + projectId, { workspaceId, memberId });
+  return response.data;
+};
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
   getWorkspaceProjectsForEmployees,
   deleteProject,
+  restoreProject,
 };
 
 export default projectService;

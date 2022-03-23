@@ -230,13 +230,15 @@ const unDeleteProject = asyncHandler(async (req, res) => {
       }
     });
   }
-  if (!project) {
+
+  try {
+    await Project.findByIdAndUpdate(projectId, {
+      isDeleted: false,
+    });
+  } catch {
     res.status(404);
     throw new Error("project not found");
   }
-  const project = await Project.findByIdAndUpdate(projectId, {
-    isDeleted: false,
-  });
   res.status(200).json("project Undeleted");
 });
 

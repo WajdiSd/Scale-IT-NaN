@@ -163,6 +163,8 @@ ProjectItem.propTypes = {
 
 function ProjectItem({ project, image, onOpenLightbox }) {
   const { description, name, startDate, expectedEndDate, _id, workspace, isDeleted } = project;
+  const { deleteProjectHook, restoreProjectHook } = useProject();
+  const { user } = useAuth();
 
   const [projectId, setProjectId] = useState(_id);
   const theme = useTheme();
@@ -174,6 +176,8 @@ function ProjectItem({ project, image, onOpenLightbox }) {
   const projectCompleted = expectedEndDateJs.getTime() < now.getTime();
 
   const color = projectCompleted ? 'error' : 'in_progress' && 'warning';
+
+  const handleRestore = () => restoreProjectHook({ projectId: _id, workspaceId: workspace, memberId: user._id });
 
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
@@ -206,7 +210,22 @@ function ProjectItem({ project, image, onOpenLightbox }) {
             {fDate(expectedEndDateJs)}
           </Typography>
         </div>
-        {isDeleted ? <></> : <MoreMenuButton projectId={projectId} workspaceId={workspace} />}
+        {isDeleted ? (
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+            onClick={handleRestore}
+          >
+            Restore
+          </Button>
+        ) : (
+          <MoreMenuButton
+            deleteProjectHook={deleteProjectHook}
+            user={user}
+            projectId={projectId}
+            workspaceId={workspace}
+          />
+        )}
       </CaptionStyle>
     </Card>
   );
@@ -214,9 +233,8 @@ function ProjectItem({ project, image, onOpenLightbox }) {
 
 // ----------------------------------------------------------------------
 
-function MoreMenuButton({ projectId, workspaceId }) {
-  const { isProjectManager, user } = useAuth();
-  const { deleteProjectHook } = useProject();
+function MoreMenuButton({ projectId, workspaceId, deleteProjectHook, user }) {
+  const { isProjectManager } = useAuth();
   const [open, setOpen] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
