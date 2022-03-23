@@ -145,7 +145,9 @@ ProjectItem.propTypes = {
 };
 
 function ProjectItem({ project, image, onOpenLightbox }) {
-  const { description, name, startDate, expectedEndDate } = project;
+  const { description, name, startDate, expectedEndDate, _id } = project;
+
+  const [projectId, setProjectId] = useState(_id);
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
@@ -176,10 +178,132 @@ function ProjectItem({ project, image, onOpenLightbox }) {
             {fDate(expectedEndDateJs)}
           </Typography>
         </div>
-        <IconButton color="inherit">
-          <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
-        </IconButton>
+        <MoreMenuButton id={projectId} />
       </CaptionStyle>
     </Card>
+  );
+}
+
+// ----------------------------------------------------------------------
+
+function MoreMenuButton(id) {
+  const { isHr, isProjectManager } = useAuth();
+  const { workspace } = useWorkspace();
+  const [open, setOpen] = useState(null);
+  const dispatch = useDispatch();
+  const [openDia, setOpenDia] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const deletemember = () => {
+    try {
+      const obj = {
+        idmember: id.id,
+        idhr: idHR,
+        idworkspace: workspace._id,
+      };
+      dispatch(removememberfromworkspace(obj)).then((res) => {
+        enqueueSnackbar('Deleted member successfully');
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleAddEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
+
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setOpen(null);
+  };
+
+  const handleCloseDialogue = () => {
+    setOpenDia(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpenDia(true);
+  };
+
+  const ICON = {
+    mr: 2,
+    width: 20,
+    height: 20,
+  };
+
+  return (
+    <>
+      <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpen}>
+        <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
+      </IconButton>
+
+      <MenuPopover
+        open={Boolean(open)}
+        anchorEl={open}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        arrow="right-top"
+        sx={{
+          mt: -0.5,
+          width: 160,
+          '& .MuiMenuItem-root': { px: 1, typography: 'body2', borderRadius: 0.75 },
+        }}
+      >
+        <MenuItem>
+          <Iconify icon={'eva:download-fill'} sx={{ ...ICON }} />
+          Download
+        </MenuItem>
+
+        <MenuItem>
+          <Iconify icon={'eva:printer-fill'} sx={{ ...ICON }} />
+          Print
+        </MenuItem>
+
+        {isHr && (
+          <MenuItem onClick={handleAddEvent}>
+            <Iconify icon={'ph:currency-circle-dollar-fill'} sx={{ ...ICON }} />
+            Set Rates
+          </MenuItem>
+        )}
+        <Divider sx={{ borderStyle: 'dashed' }} />
+        {isHr && (
+          <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
+            <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
+            Delete
+          </MenuItem>
+        )}
+      </MenuPopover>
+      <Dialog
+        open={openDia}
+        onClose={handleCloseDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete this member ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">this member will be permanetly deleted</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialogue}>Disagree</Button>
+          <Button onClick={deletemember} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Set Rates'}</DialogTitle>
+
+        <SetRatesForm id={id} event={{}} range={{}} onCancel={handleCloseModal} />
+      </DialogAnimate>
+    </>
   );
 }
