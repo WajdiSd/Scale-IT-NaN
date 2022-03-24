@@ -7,8 +7,9 @@ const {
   MemberInWorkspace,
 } = require("../helpers/functions");
 
+
 const getProject = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { id, iduser } = req.params;
   const project = await Project.findById(id);
   if (!project) {
     return res.status(404).json({
@@ -16,8 +17,25 @@ const getProject = asyncHandler(async (req, res, next) => {
       error: "Project not found",
     });
   }
+  let isTeamLeader= false;
+  let isProjectManager = false;
+
+
+
+
+  project.assigned_members.forEach(element => {
+    if (String(element.memberId)==iduser) {
+      if(element.isTeamLeader){
+        isTeamLeader = true;
+      } else if (element.isProjectManager){
+        isProjectManager = true;
+      }
+    } 
+  });
   return res.status(200).json({
     success: true,
+    isProjectManager: isProjectManager,
+    isTeamLeader: isTeamLeader,
     data: project,
   });
 });
@@ -27,8 +45,9 @@ const getProjects = asyncHandler(async (req, res) => {
   console.log("projects");
   console.log(projects);
   if (projects.length === 0) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No projects found in db",
     });
   }
@@ -44,8 +63,9 @@ const getProjectsByWorkspace = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
   });
   if (projects.length === 0) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No projects found in this workspace",
     });
   }
@@ -62,8 +82,9 @@ const getProjectsByMember = asyncHandler(async (req, res) => {
     "assigned_members.memberId": req.params.idmember,
   });
   if (projects.length === 0) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No projects found for this member",
     });
   }
@@ -81,8 +102,9 @@ const getProjectsByManager = asyncHandler(async (req, res) => {
     "assigned_members.isProjectManager": true,
   });
   if (projects.length === 0) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No projects found with this member as project manager",
     });
   }
@@ -100,8 +122,9 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
     "assigned_members.isTeamLeader": true,
   });
   if (projects.length === 0) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No projects found with this member as team leader",
     });
   }
@@ -118,15 +141,22 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
   let members = [];
 
   for (const member of project.assigned_members) {
-    const member1 = await Member.findById(member.memberId);
+    let member1  = null;
+    let member2 = await Member.findById(member.memberId);
+    member1.isProjectManager = member.isProjectManager;
+    member1.isTeamLeader = member.isTeamLeader;
+    member1 = {...member2};
     members.push(member1);
+    
   }
   if (!members) {
-    return res.status(404).json({
-      success: false,
+    return res.status(200).json({
+      data: [],
+      success: true,
       error: "No members found for this project",
     });
   }
+  console.log(members);
   res.status(200).json({
     success: true,
     count: members.length,

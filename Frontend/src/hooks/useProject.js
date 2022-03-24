@@ -6,6 +6,8 @@ import {
   getWorkspaceProjects,
   deleteProject,
   restoreProject,
+  updateProject,
+  resetProject,
 } from 'src/redux/slices/projectSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
@@ -31,11 +33,15 @@ const useProject = () => {
 
   const resetErrorMessageHook = () => dispatch(resetErrorMessage());
 
+  const resetProjectsStore = () => dispatch(resetProject());
+
   const resetSuccessMessageHook = () => dispatch(resetSuccessMessage());
 
   const deleteProjectHook = (data) => dispatch(deleteProject(data));
 
   const restoreProjectHook = (data) => dispatch(restoreProject(data));
+
+  const updateProjectHook = (data) => dispatch(updateProject(data));
 
   return {
     project,
@@ -47,11 +53,13 @@ const useProject = () => {
     projectSuccess,
     isLoading,
     isSuccess,
+    resetProjectsStore,
     resetSuccessMessageHook,
     resetErrorMessageHook,
     deleteProjectHook,
     restoreProjectHook,
     getWorkspaceProjectsHook,
+    updateProjectHook,
   };
 };
 

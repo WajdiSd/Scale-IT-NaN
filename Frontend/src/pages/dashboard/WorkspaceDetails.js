@@ -64,6 +64,7 @@ export default function WorkspaceDetails() {
     resetErrorMessageHook,
     resetSuccessMessageHook,
     getWorkspaceProjectsHook,
+    resetProjectsStore,
   } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
 
@@ -81,8 +82,10 @@ export default function WorkspaceDetails() {
   };
 
   useEffect(() => {
+    resetProjectsStore();
     getUserWorkspace();
     getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
+
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');

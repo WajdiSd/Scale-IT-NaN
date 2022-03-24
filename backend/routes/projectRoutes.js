@@ -20,8 +20,9 @@ const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
 
+router.get("/get/:id/:iduser", protect, getProject);
+router.get("/list", protect, getProjects);
 router.get("/get/:id", protect, getProject);
-router.get("/list",  protect, getProjects);
 router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
 router.get(
   "/listbymanager/:idworkspace/:idmember",
