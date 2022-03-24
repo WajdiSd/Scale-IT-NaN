@@ -22,6 +22,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.get("/get/:id/:iduser", protect, getProject);
 router.get("/list", protect, getProjects);
+router.get("/get/:id", protect, getProject);
 router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
 router.get(
   "/listbymanager/:idworkspace/:idmember",
@@ -51,7 +52,7 @@ router.put(
   dischargeTeamLeader
 );
 
-router.put("/update/:idproject/:idpm", protect, updateProject);
+router.put("/update/:idproject/:idpm",  protect, updateProject);
 router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
 router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
 
