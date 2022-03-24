@@ -6,6 +6,7 @@ import {
   getWorkspaceProjects,
   deleteProject,
   restoreProject,
+  updateProject,
 } from 'src/redux/slices/projectSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
@@ -37,6 +38,8 @@ const useProject = () => {
 
   const restoreProjectHook = (data) => dispatch(restoreProject(data));
 
+  const updateProjectHook = (data) => dispatch(updateProject(data));
+
   return {
     project,
     usersInProject,
@@ -52,6 +55,7 @@ const useProject = () => {
     deleteProjectHook,
     restoreProjectHook,
     getWorkspaceProjectsHook,
+    updateProjectHook,
   };
 };
 

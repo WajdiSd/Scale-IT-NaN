@@ -28,7 +28,7 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
-  const { project, usersInProject } = useProject();
+  const { project } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
   

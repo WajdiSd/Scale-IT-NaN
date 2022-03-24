@@ -22,6 +22,8 @@ import { Link as RouterLink } from 'react-router-dom';
 // components
 import Iconify from '../../../components/Iconify';
 import MenuPopover from 'src/components/MenuPopover';
+import { updateProject } from 'src/redux/slices/projectSlice';
+import UpdateProjectForm from './UpdateProjectForm';
 
 // ----------------------------------------------------------------------
 
@@ -29,18 +31,25 @@ export default function MoreProjectOptions({
   projectId,
   workspaceId,
   deleteProjectHook,
+  updateProjectHook,
   userId,
   linkTo,
   isProjectManager,
 }) {
   const [openPopover, setOpenPopover] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
   const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: userId });
 
   const handleDeleteProject = () => {
     deleteProject();
     setOpenDialog(false);
+  };
+
+  const handleUpdateProject = () => {
+    updateProject();
+    setOpenUpdateDialog(false);
   };
 
   const handleOpenPopover = (event) => {
@@ -55,9 +64,19 @@ export default function MoreProjectOptions({
     setOpenDialog(false);
   };
 
+  const handleCloseUpdateDialog = () => {
+    setOpenUpdateDialog(false);
+  }
+
+  const handleOpenUpdateDialog = () => {
+    setOpenUpdateDialog(true);
+  }
+
   const handleClickOpen = () => {
     setOpenDialog(true);
   };
+
+
 
   const ICON = {
     mr: 2,
@@ -107,12 +126,36 @@ export default function MoreProjectOptions({
 
         <Divider sx={{ borderStyle: 'dashed' }} />
         {isProjectManager && (
+          <MenuItem onClick={handleOpenUpdateDialog} sx={{ color: 'white' }}>
+            <Iconify icon={'eva:edit-2-outline'} sx={{ ...ICON }} />
+            Update
+          </MenuItem>
+        )}
+        {isProjectManager && (
           <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
             <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
             Delete
           </MenuItem>
         )}
       </MenuPopover>
+      <Dialog
+        open={openUpdateDialog}
+        onClose={handleCloseUpdateDialog}
+        aria-labelledby="alert-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">{'Update project'}</DialogTitle>
+        <DialogContent>
+          <UpdateProjectForm projectId={projectId}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseUpdateDialog}>Cancel</Button>
+          <Button onClick={handleUpdateProject} autoFocus>
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
 
       <Dialog
         open={openDialog}

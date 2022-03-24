@@ -44,6 +44,12 @@ const restoreProject = async (projectId, workspaceId, memberId) => {
   return response.data;
 };
 
+//update project 
+const updateProject = async (idProject, idPM, data) => {
+  const response = await axiosInstance.put(API_URL + 'update/' + idProject + '/' + idPM, data);
+  return response.data;
+};
+
 // get project by id
 const getProject = async (idProject) => {
   const response = await axiosInstance.get(API_URL + 'get/' + idProject);
@@ -64,6 +70,7 @@ const projectService = {
   restoreProject,
   getProject,
   getFullMemberByProject,
+  updateProject,
 };
 
 export default projectService;

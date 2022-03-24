@@ -156,6 +156,9 @@ export const projectSlice = createSlice({
       })
       .addCase(getFullMemberByProject.rejected, (state, action) => {
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Members By Project';
+      })
+      .addCase(updateProject.fulfilled, (state, action) => {
+        state.project = action.payload.project;
       });
   },
 });
@@ -196,6 +199,18 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (da
 export const restoreProject = createAsyncThunk('project/restoreProject', async (data, thunkAPI) => {
   try {
     return await projectService.restoreProject(data.projectId, data.workspaceId, data.memberId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
+// update project
+export const updateProject = createAsyncThunk('project/updateProject', async (data, thunkAPI) => {
+  try {
+    return await projectService.updateProject(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
