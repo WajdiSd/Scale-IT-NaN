@@ -31,6 +31,7 @@ export const workspaceSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkspace.fulfilled, (state, action) => {
+        console.log('get Workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
@@ -194,11 +195,13 @@ export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (
 
 export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
   try {
+
     const workspace = await workspaceService.getWorkspace(id);
     if (workspace) {
-      thunkAPI.dispatch(isHr(workspace));
-      thunkAPI.dispatch(isProjectManager(workspace));
-      thunkAPI.dispatch(usersbyworkspace(workspace._id));
+      //await thunkAPI.dispatch(resetProjectList());
+      await thunkAPI.dispatch(isHr(workspace));
+      await thunkAPI.dispatch(isProjectManager(workspace));
+      await thunkAPI.dispatch(usersbyworkspace(workspace._id));
       return workspace;
     }
   } catch (error) {

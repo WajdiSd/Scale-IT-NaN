@@ -36,13 +36,14 @@ export const projectSlice = createSlice({
       state.projectsSuccessMessage = action.payload;
     },
     reset: (state) => {
-      (state.projects = []),
-        (state.project = null),
-        (state.usersInProject = []),
-        (state.isLoading = false),
-        (state.isSuccess = false),
-        (state.isError = false),
-        (state.message = '');
+      console.log("resetting project slice");
+      state.projects = [],
+        state.project = null,
+        state.usersInProject = [],
+        state.isLoading = false,
+        state.isSuccess = false,
+        state.isError = false,
+        state.message = '';
     },
   },
   extraReducers: (builder) => {
@@ -134,11 +135,14 @@ export const projectSlice = createSlice({
         state.projectsErrorMessage = action.payload;
       })
       .addCase(resetProjectList.fulfilled, (state, action) => {
+        console.log('resetProjectList fulfilled ');
         state.projects = [];
         state.archivedProjects = [];
         state.unarchivedProjects = [];
       })
       .addCase(resetProjectList.rejected, (state, action) => {
+        console.log('resetProjectList rejected ');
+        console.log(action)
         state.projects = [];
         state.archivedProjects = [];
         state.unarchivedProjects = [];
@@ -147,9 +151,15 @@ export const projectSlice = createSlice({
       .addCase(getProject.fulfilled, (state, action) => {
         state.project = action.payload.data;
         state.usersInProject = action.payload.assigned_users;
+        state.isLoading = false;
+        state.isSuccess = true;
       })
       .addCase(getProject.rejected, (state, action) => {
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Project';
+      })
+      .addCase(getProject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
       })
       .addCase(getFullMemberByProject.fulfilled, (state, action) => {
         state.usersInProject = action.payload.data;
@@ -163,7 +173,10 @@ export const projectSlice = createSlice({
 // Resets project list
 export const resetProjectList = createAsyncThunk('project/resetProjectList', async (_, thunkAPI) => {
   try {
-    return true;
+    console.log("resetProjectList");
+    await thunkAPI.dispatch(reset()).then(()=>{
+      return true;
+    })
   } catch (error) {
     const message = 'Problem resetting projects';
     return thunkAPI.rejectWithValue(message);
