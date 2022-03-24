@@ -54,6 +54,11 @@ const getFullMemberByProject = async (idProject) => {
   return response.data;
 };
 
+const inviteMemberToProject = async (idproject,idtl,data) => {
+  const response = await axiosInstance.put(API_URL + 'invite/'+idproject+'/'+idtl, data);
+  return response.data;
+};
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
@@ -63,6 +68,7 @@ const projectService = {
   getProject,
   getFullMemberByProject,
   updateProject,
+  inviteMemberToProject,
 };
 
 export default projectService;

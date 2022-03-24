@@ -18,6 +18,7 @@ import {
   TableContainer,
   TablePagination,
   FormControlLabel,
+  DialogTitle,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -36,7 +37,9 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 // sections
 import { UserTableToolbar, UserTableRow } from './user';
 import useProject from 'src/hooks/useProject';
+import { DialogAnimate } from 'src/components/animate';
 
+import InviteMembersToProjectForm from './InviteMembersToProjectForm';
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = ['all', 'active', 'banned'];
@@ -96,6 +99,29 @@ export default function UserList() {
 
   const [filterRole, setFilterRole] = useState('all');
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+ // const [inviteMemberClicked, setInviteMemberClicked ] = useState( false);
+
+  const [inviteMemberClicked, setInviteMemberClicked] = useState(false);
+
+  const handleOpenInviteDialog = () => {
+    setInviteMemberClicked(true);
+  }
+
+  const handleCloseInviteDialog = () => {
+    setInviteMemberClicked(false);
+  }
+
+  const handleInviteEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
+
+
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
 
   const handleFilterName = (filterName) => {
@@ -141,6 +167,10 @@ export default function UserList() {
   return (
     <Page title="User: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={inviteMemberClicked} onClose={handleCloseInviteDialog}>
+        <DialogTitle>{'Invite Members to project'}</DialogTitle>
+        <InviteMembersToProjectForm onCancel={handleCloseModal}/>
+      </DialogAnimate>
         <HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}
@@ -150,8 +180,9 @@ export default function UserList() {
               component={RouterLink}
               to={PATH_DASHBOARD.user}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
+              onClick={handleOpenInviteDialog}
             >
-              New User
+              Invite members
             </Button>
           }
         />
