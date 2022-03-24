@@ -62,37 +62,26 @@ const removeMemberFromWorkspace = async (idmember, idhr, idworkspace) => {
 // send invites to members
 const inviteMembers = async (members) => {
   const response = await axiosInstance.put(API_URL + 'invite-members/' + members.id, members.info);
-
-  console.log('inviteMembers()');
-  console.log(response);
-  console.log(response.data);
-
   return response.data;
 };
 
 // send invites to managers
 const inviteManagers = async (managers) => {
   const response = await axiosInstance.put(API_URL + 'invite-members/' + managers.id, managers.info);
-
-  console.log('inviteManagers()');
-  console.log(response);
-  console.log(response.data);
-
   return response.data;
 };
 
 // check if user exists in workspace
 const checkIfUserExistsInWorkspace = async (workspaceId, email) => {
-  console.log('\n\n-----------------------------------------------------------------------');
-  console.log("I'm in checkIfUserExistsInWorkspace: workspaceId");
-  console.log(workspaceId);
-  console.log('\n\n-----------------------------------------------------------------------');
-
   const response = await axiosInstance.get(API_URL + workspaceId + '/' + email);
-  console.log('\n\n-----------------------------------------------------------------------');
-  console.log("I'm in checkIfUserExistsInWorkspace: response.data");
-  console.log(response.data);
-  console.log('\n\n-----------------------------------------------------------------------');
+  return response.data;
+};
+
+const AssignProjectManagerToMember = async (Data) => {
+  const idworkspace = Data.idworkspace;
+  const idHR = Data.idHR;
+  const idmember = Data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignPM/' + idworkspace + '/' + idmember + '/' + idHR);
   return response.data;
 };
 
@@ -108,6 +97,7 @@ const workspaceService = {
   updateWorkspace,
   removeMemberFromWorkspace,
   setRatestomember,
+  AssignProjectManagerToMember,
 };
 
 export default workspaceService;

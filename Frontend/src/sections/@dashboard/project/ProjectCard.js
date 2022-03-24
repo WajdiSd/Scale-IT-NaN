@@ -24,7 +24,7 @@ ProjectCard.propTypes = {
 
 export default function ProjectCard({ loaded, projects }) {
   const { isProjectManager, user } = useAuth();
-  const { deleteProjectHook, restoreProjectHook } = useProject();
+  const { deleteProjectHook, restoreProjectHook, updateProjectHook } = useProject();
   const { query, projectsFilter, searchProjects } = useProjectFilter(projects);
   const { id } = useParams();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -100,6 +100,7 @@ export default function ProjectCard({ loaded, projects }) {
                 userId={user._id}
                 restoreProjectHook={restoreProjectHook}
                 deleteProjectHook={deleteProjectHook}
+                updateProjectHook={updateProjectHook}
                 project={project}
                 isProjectManager={isProjectManager}
               />

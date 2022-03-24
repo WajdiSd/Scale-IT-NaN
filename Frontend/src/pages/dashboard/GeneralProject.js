@@ -23,12 +23,14 @@ import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import UserList from 'src/sections/@dashboard/project/UserList';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
+  const { user } = useAuth();
   const { project, usersInProject, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
@@ -36,8 +38,13 @@ export default function GeneralProject() {
   console.log(projectid);
   const dispatch = useDispatch();
 
+  
   useEffect(() => {
-    dispatch(getProject(projectid));
+    const obj = {
+      idProject : projectid,
+      idUser : user._id,
+    }
+    dispatch(getProject(obj));
   }, []);
 
 return (
