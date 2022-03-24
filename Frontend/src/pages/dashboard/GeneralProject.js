@@ -92,7 +92,6 @@ return (
             <Stack spacing={3}>
               <ProjectMembersList />
               <BankingContacts />
-              <ProjectMembersList />
             </Stack>
           </Grid>
         </Grid>

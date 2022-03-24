@@ -59,18 +59,14 @@ export default function ProjectMembersList() {
   
   const getContactInfo = _bankingQuickTransfer.find((_, index) => index === selectContact);
   const sliderSettings = {
-    dots: false,
-    arrows: false,
-    slidesToShow: 7,
     centerMode: true,
-    swipeToSlide: true,
-    focusOnSelect: true,
     centerPadding: '0px',
-    rtl: Boolean(theme.direction === 'rtl'),
+    
+    focusOnSelect: true,
     beforeChange: (current, next) => setSelectContact(next),
     responsive: [
       {
-        breakpoint: theme.breakpoints.values.xl,
+        breakpoint: theme.breakpoints.values.md,
         settings: {
           slidesToShow: 5,
         },
@@ -124,6 +120,8 @@ export default function ProjectMembersList() {
 
   return (
     <>
+      
+      
       <RootStyle>
         <CardHeader title="Team" />
         <Box sx={{ p: 3 }}>
@@ -151,9 +149,10 @@ export default function ProjectMembersList() {
                 },
               }}
             >
-              <Slider ref={carouselRef} {...sliderSettings}>
+              <Slider ref={carouselRef}>
+                
                 {usersInProject?.map((contact, index) => (
-                  <Box key={contact._id} sx={{ py: 5 }}>
+                  <Box key={contact._id} sx={{ py: 5, display:'flex!important', justifyContent:'center!important' }}>
                     <Box sx={{ width: 40, height: 40 }}>
                       <Tooltip key={contact._id} title={contact.firstName} arrow placement="top">
                         <Avatar
@@ -176,16 +175,6 @@ export default function ProjectMembersList() {
               </Slider>
             </CarouselArrows>
           </Box>
-
-          <Stack spacing={3}>
-            <Typography variant="overline" sx={{ color: 'text.secondary' }}>
-              insert amount
-            </Typography>
-
-            <Button variant="contained" size="large" disabled={amount === 0} onClick={handleOpenConfirm}>
-              Transfer Now
-            </Button>
-          </Stack>
         </Box>
       </RootStyle>
 
