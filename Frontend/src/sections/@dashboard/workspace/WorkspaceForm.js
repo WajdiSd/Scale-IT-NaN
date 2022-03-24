@@ -37,7 +37,6 @@ const COLOR_OPTIONS = [
 
 WorkspaceForm.propTypes = {
   event: PropTypes.object,
-  range: PropTypes.object,
   onCancel: PropTypes.func,
 };
 
@@ -91,7 +90,7 @@ export default function WorkspaceForm({ name, description, event, range, onCance
       };
       dispatch(updateWorkspace(updatedWorkspace)).then(() => {
         window.location.reload();
-      });;
+      });
       enqueueSnackbar('Update success!');
 
       onCancel();

@@ -1,16 +1,18 @@
 import React from 'react';
 import { capitalCase } from 'change-case';
-import { useEffect, useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Tab, Box, Card, Tabs, Container } from '@mui/material';
+import { Tab, Box, Card, Tabs, Container, Snackbar, Alert } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
+import { useEffect, useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 import useProject from 'src/hooks/useProject';
 import useWorkspace from 'src/hooks/useWorkspace';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
 // _mock_
 import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } from '../../_mock';
 // components
@@ -18,21 +20,14 @@ import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 // sections
-import {
-  Profile,
-  ProfileCover,
-  ProfileFriends,
-  ProfileGallery,
-  ProfileFollowers,
-} from '../../sections/@dashboard/user/profile';
-
+import { ProfileFollowers } from '../../sections/@dashboard/user/profile';
 import General from 'src/sections/@dashboard/workspace/General';
-import { getWorkspace } from 'src/redux/slices/workspaceSlice';
-import { useNavigate, useParams } from 'react-router';
-import { useDispatch } from 'react-redux';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace';
-import ProjectCard from 'src/sections/@dashboard/workspace/ProjectCard';
+import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
+
+// slices
+import { getWorkspace } from 'src/redux/slices/workspaceSlice';
 
 // ----------------------------------------------------------------------
 
@@ -58,9 +53,22 @@ export default function WorkspaceDetails() {
   const { themeStretch } = useSettings();
   let { id } = useParams();
   const { isHr, isProjectManager, user } = useAuth();
-  const [idWorkspace, setIdWorkspace] = useState(id);
-  const { projects, projectError, resetErrorMessageHook, getWorkspaceProjectsHook } = useProject();
+  const {
+    projects,
+    archivedProjects,
+    unarchivedProjects,
+    projectError,
+    projectSuccess,
+    isLoading,
+    isSuccess,
+    resetErrorMessageHook,
+    resetSuccessMessageHook,
+    getWorkspaceProjectsHook,
+  } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
+
+  const [idWorkspace, setIdWorkspace] = useState(id);
+  const [searchValue, setSearchValue] = useState('');
 
   const dispatch = useDispatch();
 
@@ -75,10 +83,6 @@ export default function WorkspaceDetails() {
   useEffect(() => {
     getUserWorkspace();
     getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
-    console.log('\n\n--------------------------------------------------------------------------------');
-    console.log('projects in useEffect');
-    console.log(projects);
-    console.log('--------------------------------------------------------------------------------\n\n');
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
@@ -92,11 +96,22 @@ export default function WorkspaceDetails() {
     setfindMembers(value);
   };
 
+  const handleClose = () => {
+    resetErrorMessageHook();
+    resetSuccessMessageHook();
+  };
+
   const PROFILE_TABS = [
     {
       value: 'Projects',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProjectCard projects={projects} gallery={_userGallery} />,
+      component: (
+        <ProjectCard
+          loaded={!isLoading && isSuccess}
+          projects={isHr || isProjectManager ? projects : unarchivedProjects}
+          gallery={_userGallery}
+        />
+      ),
     },
 
     {
@@ -120,6 +135,16 @@ export default function WorkspaceDetails() {
 
   return (
     <Page title="Workspace: Details">
+      <Snackbar open={projectError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {projectError}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={projectSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {projectSuccess}
+        </Alert>
+      </Snackbar>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           key={workspace?.name}
