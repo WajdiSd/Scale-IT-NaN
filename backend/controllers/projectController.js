@@ -410,6 +410,7 @@ const updateProject = asyncHandler(async (req, res) => {
  * idpm : id of current user inviting
  */
 const inviteMembers = asyncHandler(async (req, res, next) => {
+  var verif = true;
   const emails = req.body.emails;
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
@@ -426,6 +427,11 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
   } else {
     for (let i = 0; i < emails.length; i++) {
       let member = await Member.findOne({ email: emails[i] });
+
+      //Member must belong to workspace first?
+      //Should we add it next?
+      //Can outsiders work in projects not belonging to their workspace?
+      
       const invitedMember = {
         memberId: member._id,
       };
@@ -447,22 +453,23 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
  * @desc invite a list of members to a workspace
  * @var(members,list of member emails )
  * @var(role, so that we can know if the members should be affected as managers or not)
- * @route PUT /api/project/invite-members/:idproject/:idpm
+ * @route PUT /api/project/delete-members/:idproject/:idtl
  * idpm : id of current user inviting
  */
 const deleteMembers = asyncHandler(async (req, res, next) => {
+  var verif = false;
   const emails = req.body.emails;
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
-      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].memberId == req.params.idtl &&
       project.assigned_members[i].isTeamLeader == true
     )
       verif = true;
   }
 
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     for (let i = 0; i < emails.length; i++) {
