@@ -2,6 +2,8 @@
 import authService from '../service/authService';
 import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { resetWorkspace } from './workspaceSlice'; 
+import { resetProject } from './projectSlice';
 // const isHr = createAction('isHr');
 // const isNotHr = createAction('isNotHr');
 // const isProjectManager = createAction('isProjectManager');
@@ -120,7 +122,10 @@ export const updateUser = createAsyncThunk('auth/updateUser', async (data, thunk
   }
 });
 
-export const logout = createAsyncThunk('auth/logout', async () => {
+export const logout = createAsyncThunk('auth/logout', async (req,thunkAPI) => {
+  thunkAPI.dispatch(resetAuth());
+  thunkAPI.dispatch(resetWorkspace());
+  thunkAPI.dispatch(resetProject());
   await authService.logout();
 });
 /**
@@ -192,8 +197,9 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: (state) => {
+    resetAuth: (state) => {
       state.isHr = false;
+      state.idProjectManager = null;
       state.isProjectManager = false;
       state.isLoading = false;
       state.isAuthenticated = false;
@@ -343,5 +349,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset } = authSlice.actions;
+export const { resetAuth } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { CardHeader, Container, Grid, Stack } from '@mui/material';
+import { Box, CardHeader, CircularProgress, Container, Grid, Stack } from '@mui/material';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
@@ -18,12 +18,13 @@ import { getWorkspaces } from 'src/redux/slices/workspaceSlice';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { MotionInView, varFade } from 'src/components/animate';
 import WorkspaceLandingAdd from 'src/sections/@dashboard/workspace/WorkspaceLandingAdd';
+import EmptyComponent from '../../components/EmptyComponent'
 
 // ----------------------------------------------------------------------
 
 export default function GeneralWorkspace() {
   const { user } = useAuth();
-  const { workspaces } = useWorkspace();
+  const { workspaces, isLoading} = useWorkspace();
   const theme = useTheme();
   const { themeStretch } = useSettings();
   const isMountedRef = useIsMountedRef();
@@ -34,7 +35,21 @@ export default function GeneralWorkspace() {
 
   const getUserWorkspaces = () => {
     try {
-      dispatch(getWorkspaces(user._id));
+      dispatch(getWorkspaces(user._id)).then(()=>{
+        workspaces.map((workspace) => {
+          let validated = false;
+    
+          workspace.assigned_members.forEach((member) => {
+            if (member.member == user._id) {
+              if (member.isHR) {
+                setUserWorkspaces((oldArray) => [...oldArray, workspace]);
+              } else {
+                setUserJoinedspaces((oldArray) => [...oldArray, workspace]);
+              }
+            }
+          });
+        });
+      })
     } catch (error) {
       console.error(error);
     }
@@ -42,35 +57,42 @@ export default function GeneralWorkspace() {
 
   useEffect(() => {
     getUserWorkspaces();
-
-    workspaces.map((workspace) => {
-      let validated = false;
-
-      workspace.assigned_members.forEach((member) => {
-        if (member.member == user._id) {
-          if (member.isHR) {
-            setUserWorkspaces((oldArray) => [...oldArray, workspace]);
-          } else {
-            setUserJoinedspaces((oldArray) => [...oldArray, workspace]);
-          }
-        }
-      });
-    });
-  }, [user]);
+  }, []);
 
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
+      <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <WorkspaceLandingAdd displayName={user?.firstName} />
           </Grid>
           <Grid item xs={12} md={4}>
             <AppFeatured />
           </Grid>
-        </Grid>
-        <CardHeader title="Workspaces that you manage" subheader="" />
-        <Grid container spacing={3} mt={3}>
+      </Grid>
+      {
+        isLoading? 
+        ( 
+        <Box
+          sx={{
+            mt: 10,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={150} color="success" />
+        </Box>
+        )
+        :
+        (
+          <>
+          {workspaces ?
+        (
+          <>
+          <CardHeader title="Workspaces that you manage" subheader="" />
+          <Grid container spacing={3} mt={3}>
           {userWorkspaces
             ? userWorkspaces.map((workspace, index) =>
                 workspace ? (
@@ -83,9 +105,19 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : null}
+            : <h1>empty</h1>}
         </Grid>
-
+          </>
+        )
+        :
+        ( 
+        <EmptyComponent/>
+        )
+        }
+        {
+          workspaces?
+          (
+            <>
         <CardHeader title="Workspaces that you joined" subheader="" />
         <Grid container spacing={3}>
           {userJoinedspaces
@@ -98,8 +130,21 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : null}
+            : <h1>empty</h1>}
+                
         </Grid>
+            </>
+            
+          )
+          :
+          (
+            <EmptyComponent/>
+          )
+        }
+          </>
+        )
+      }
+        
       </Container>
     </Page>
   );

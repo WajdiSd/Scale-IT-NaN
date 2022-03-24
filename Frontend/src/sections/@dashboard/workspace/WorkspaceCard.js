@@ -72,7 +72,7 @@ export default function WorkspaceCard({ workspace, index }) {
             position: 'absolute',
           }}
         />
-        <Image alt="cover" src={"https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg"} ratio="4/3" />
+        <Image alt="cover" src={"http://localhost:5000/logo.png"} ratio="4/3" />
       </Box>
 
       <PostContent _id={workspace._id} title={name} view={20} comment={20} share={20} createdAt={createdAt} />
