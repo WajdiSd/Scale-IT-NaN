@@ -171,6 +171,18 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(AssignProjectManagerTomember.fulfilled, (state, action) => {
+        console.log('Assign Project Manager fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(AssignProjectManagerTomember.rejected, (state, action) => {
+        console.log(state, action);
+        console.log('Assign Project Manager rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -266,6 +278,18 @@ export const setRatesToMember = createAsyncThunk('workspace/setRatesToMember', a
     return thunkAPI.rejectWithValue(message);
   }
 });
+export const AssignProjectManagerTomember = createAsyncThunk(
+  'workspace/AssignProjectManagerTomember',
+  async (Data, thunkAPI) => {
+    try {
+      return await workspaceService.AssignProjectManagerToMember(Data);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',

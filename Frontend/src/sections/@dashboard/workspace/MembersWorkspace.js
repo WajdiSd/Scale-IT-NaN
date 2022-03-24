@@ -29,7 +29,7 @@ import MenuPopover from 'src/components/MenuPopover';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useDispatch } from 'react-redux';
-import { removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
+import { AssignProjectManagerTomember, removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
 import { CalendarForm } from '../calendar';
 import { DialogAnimate } from 'src/components/animate';
@@ -94,7 +94,9 @@ MemberCard.propTypes = {
 };
 
 function MemberCard({ member }) {
-  const { gender, lastName, phone, email, avatarUrl, firstName, _id } = member;
+  const { gender, lastName, phone, email, avatarUrl, firstName, _id, isHR, isProjectManager } = member;
+  console.log('member');
+  console.log(member);
 
   return (
     <Card
@@ -117,6 +119,10 @@ function MemberCard({ member }) {
 
       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
         {email}
+      </Typography>
+
+      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+        {isHR ? 'HR' : isProjectManager ? 'Project Manager' : 'Member'}
       </Typography>
 
       <SocialsButton initialColor />
@@ -144,6 +150,7 @@ function MoreMenuButton(id) {
   const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
   const [openDia, setOpenDia] = useState(false);
+  const [openAssDia, setOpenAssDia] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -156,6 +163,22 @@ function MoreMenuButton(id) {
       };
       dispatch(removememberfromworkspace(obj)).then((res) => {
         enqueueSnackbar('Deleted member successfully');
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const AssignProjectManager = () => {
+    try {
+      const obj = {
+        idmember: id.id,
+        idHR: idHR,
+        idworkspace: workspace._id,
+      };
+      dispatch(AssignProjectManagerTomember(obj)).then((res) => {
+        enqueueSnackbar('Assign Project Manager successfully');
+        window.location.reload();
       });
     } catch (error) {
       console.error(error);
@@ -183,6 +206,14 @@ function MoreMenuButton(id) {
 
   const handleClickOpen = () => {
     setOpenDia(true);
+  };
+
+  const handleCloseAssDialogue = () => {
+    setOpenAssDia(false);
+  };
+
+  const handleClickAssOpen = () => {
+    setOpenAssDia(true);
   };
 
   const ICON = {
@@ -215,10 +246,12 @@ function MoreMenuButton(id) {
           Download
         </MenuItem>
 
-        <MenuItem>
-          <Iconify icon={'eva:printer-fill'} sx={{ ...ICON }} />
-          Print
-        </MenuItem>
+        {isHr && (
+          <MenuItem onClick={handleClickAssOpen}>
+            <Iconify icon={'ic:baseline-assignment-ind'} sx={{ ...ICON }} />
+            Assign PM
+          </MenuItem>
+        )}
 
         {isHr && (
           <MenuItem onClick={handleAddEvent}>
@@ -251,10 +284,27 @@ function MoreMenuButton(id) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={openAssDia}
+        onClose={handleCloseAssDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to assign this member as PM ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">tAssign this member as a Project Member</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAssDialogue}>Cancel</Button>
+          <Button onClick={AssignProjectManager} autoFocus>
+            Assign
+          </Button>
+        </DialogActions>
+      </Dialog>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Set Rates'}</DialogTitle>
 
-        <SetRatesForm id={id} event={{}} range={{}} onCancel={handleCloseModal} />
+        <SetRatesForm id={String(id)} event={{}} range={{}} onCancel={handleCloseModal} />
       </DialogAnimate>
     </>
   );

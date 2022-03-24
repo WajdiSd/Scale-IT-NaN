@@ -77,6 +77,14 @@ const checkIfUserExistsInWorkspace = async (workspaceId, email) => {
   return response.data;
 };
 
+const AssignProjectManagerToMember = async (Data) => {
+  const idworkspace = Data.idworkspace;
+  const idHR = Data.idHR;
+  const idmember = Data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignPM/' + idworkspace + '/' + idmember + '/' + idHR);
+  return response.data;
+};
+
 const workspaceService = {
   getWorkspaces,
   addworkspace,
@@ -89,6 +97,7 @@ const workspaceService = {
   updateWorkspace,
   removeMemberFromWorkspace,
   setRatestomember,
+  AssignProjectManagerToMember,
 };
 
 export default workspaceService;
