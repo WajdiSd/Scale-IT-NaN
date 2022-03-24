@@ -21,11 +21,14 @@ export const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
-    reset: (state) => {
-      (state.workspaces = []), (state.isLoading = false);
-      (state.workspace = null), (state.isSuccess = false);
-      state.isError = false;
-      state.message = '';
+    resetWorkspace: (state) => {
+      state.workspaces= [],
+      state.workspace= null,
+      state.usersInWorkspace= [],
+      state.isError= false,
+      state.isSuccess= false,
+      state.isLoading= false,
+      state.message= '';
     },
   },
   extraReducers: (builder) => {
@@ -277,5 +280,5 @@ export const removememberfromworkspace = createAsyncThunk(
   }
 );
 
-export const { reset } = workspaceSlice.actions;
+export const { resetWorkspace } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

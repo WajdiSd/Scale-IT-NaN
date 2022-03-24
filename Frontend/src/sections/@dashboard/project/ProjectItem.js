@@ -113,6 +113,7 @@ export default function ProjectItem({
             updateProjectHook={updateProjectHook}
             userId={userId}
             projectId={projectId}
+            project={project}
             workspaceId={workspaceId}
             linkTo={linkTo}
             isProjectManager={isProjectManager}

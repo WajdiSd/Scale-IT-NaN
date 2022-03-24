@@ -17,10 +17,10 @@ import Iconify from '../../../components/Iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import { FormProvider, RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import MemberSearchAutocomplete from '../workspace/MemberSearchAutocomplete';
-import useAuth from 'src/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { getProject, updateProject } from 'src/redux/slices/projectSlice';
 import useProject from 'src/hooks/useProject';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -38,16 +38,12 @@ const COLOR_OPTIONS = [
 
 UpdateProjectForm.propTypes = {
   onCancel: PropTypes.func,
+  projectId: PropTypes.object,
 };
 
-export default function UpdateProjectForm({ projectId,onCancel }) {
-  const { project } = useProject();
+export default function UpdateProjectForm({ project,onCancel }) {
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getProject(projectId));
-  }, []);
 
   const getInitialValues = () => {
     const _event = {
@@ -61,6 +57,7 @@ export default function UpdateProjectForm({ projectId,onCancel }) {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const {idProjectManager} = useAuth();
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
@@ -81,9 +78,10 @@ export default function UpdateProjectForm({ projectId,onCancel }) {
   } = methods;
 
   const onSubmit = async (data) => {
-    console.log('data');
     try {
       const newProject = {
+        idProject: project._id,
+        idPM: idProjectManager,
         name: data.title,
         description: data.description,
         startDate: data.startDate,
@@ -113,7 +111,6 @@ export default function UpdateProjectForm({ projectId,onCancel }) {
         <RHFTextField name="title" label="Title" />
 
         <RHFTextField name="description" label="Description" multiline rows={4} />
-
 
         <Controller
           name="startDate"
@@ -147,6 +144,7 @@ export default function UpdateProjectForm({ projectId,onCancel }) {
             />
           )}
         />
+
       </Stack>
       <DialogActions>
         <Box sx={{ flexGrow: 1 }} />
@@ -156,7 +154,7 @@ export default function UpdateProjectForm({ projectId,onCancel }) {
         </Button>
 
         <LoadingButton type="submit" variant="contained" loading={isSubmitting} loadingIndicator="Loading...">
-          
+          Add
         </LoadingButton>
       </DialogActions>
     </FormProvider>

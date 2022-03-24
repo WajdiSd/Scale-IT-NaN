@@ -24,17 +24,19 @@ import Iconify from '../../../components/Iconify';
 import MenuPopover from 'src/components/MenuPopover';
 import { updateProject } from 'src/redux/slices/projectSlice';
 import UpdateProjectForm from './UpdateProjectForm';
+import { DialogAnimate } from 'src/components/animate';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
 export default function MoreProjectOptions({
   projectId,
+  project,
   workspaceId,
   deleteProjectHook,
   updateProjectHook,
   userId,
   linkTo,
-  isProjectManager,
 }) {
   const [openPopover, setOpenPopover] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -42,6 +44,7 @@ export default function MoreProjectOptions({
 
   const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: userId });
 
+  const { isProjectManager,isTeamLeader } = useProject();
   const handleDeleteProject = () => {
     deleteProject();
     setOpenDialog(false);
@@ -138,23 +141,11 @@ export default function MoreProjectOptions({
           </MenuItem>
         )}
       </MenuPopover>
-      <Dialog
-        open={openUpdateDialog}
-        onClose={handleCloseUpdateDialog}
-        aria-labelledby="alert-dialog-title"
-      >
-        <DialogTitle id="alert-dialog-title">{'Update project'}</DialogTitle>
-        <DialogContent>
-          <UpdateProjectForm projectId={projectId}/>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseUpdateDialog}>Cancel</Button>
-          <Button onClick={handleUpdateProject} autoFocus>
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={openUpdateDialog} onClose={handleCloseUpdateDialog}>
+        <DialogTitle>{'Update Project'}</DialogTitle>
+        <UpdateProjectForm project={project} onCancel={handleCloseUpdateDialog}/>
 
+      </DialogAnimate>
 
 
       <Dialog

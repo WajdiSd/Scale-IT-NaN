@@ -7,7 +7,7 @@ import {
   deleteProject,
   restoreProject,
   updateProject,
-  reset,
+  resetProject,
 } from 'src/redux/slices/projectSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
@@ -33,7 +33,7 @@ const useProject = () => {
 
   const resetErrorMessageHook = () => dispatch(resetErrorMessage());
 
-  const resetProjectsStore = () => dispatch(reset());
+  const resetProjectsStore = () => dispatch(resetProject());
 
   const resetSuccessMessageHook = () => dispatch(resetSuccessMessage());
 
