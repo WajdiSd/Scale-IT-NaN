@@ -2,78 +2,38 @@ import PropTypes from 'prop-types';
 
 // hooks
 import { useState } from 'react';
-import { useTheme } from '@emotion/react';
 import useProjectFilter from 'src/hooks/useProjectFilter';
+import useAuth from 'src/hooks/useAuth';
 import useProject from 'src/hooks/useProject';
 import { useParams } from 'react-router';
-import useAuth from 'src/hooks/useAuth';
 
 // @mui
-import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Card,
-  IconButton,
-  Typography,
-  CardContent,
-  CircularProgress,
-  Button,
-  InputAdornment,
-  MenuItem,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Link,
-} from '@mui/material';
+import { Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle } from '@mui/material';
 
-//react router link
-import { Link as RouterLink } from 'react-router-dom';
-
-// utils
-import { fDate, fTimestamp } from '../../../utils/formatTime';
-import cssStyles from '../../../utils/cssStyles';
 // components
-import Image from '../../../components/Image';
 import Iconify from '../../../components/Iconify';
-import LightboxModal from '../../../components/LightboxModal';
-import Label from 'src/components/Label';
-import { sentenceCase } from 'change-case';
 import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
-import { PATH_DASHBOARD } from 'src/routes/paths';
 import { DialogAnimate } from 'src/components/animate';
-import { CalendarForm } from '../calendar';
 import AddProjectForm from './AddProjectForm';
 import InputStyle from 'src/components/InputStyle';
-import MenuPopover from 'src/components/MenuPopover';
 import ProjectItem from './ProjectItem';
 
 ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,
 };
 
-export default function ProjectCard({ loaded, projects, gallery }) {
-  const [openLightbox, setOpenLightbox] = useState(false);
-
-  const { isProjectManager } = useAuth();
+export default function ProjectCard({ loaded, projects }) {
+  const { isProjectManager, user } = useAuth();
+  const { deleteProjectHook, restoreProjectHook } = useProject();
   const { query, projectsFilter, searchProjects } = useProjectFilter(projects);
-
-  const [selectedImage, setSelectedImage] = useState(0);
+  const { id } = useParams();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const imagesLightbox = gallery.map((img) => img.imageUrl);
 
   const handleAddEvent = () => {
     setIsOpenModal(true);
   };
   const handleCloseModal = () => {
     setIsOpenModal(false);
-  };
-  const handleOpenLightbox = (url) => {
-    const selectedImage = imagesLightbox.findIndex((index) => index === url);
-    setOpenLightbox(true);
-    setSelectedImage(selectedImage);
   };
 
   return loaded ? (
@@ -135,18 +95,18 @@ export default function ProjectCard({ loaded, projects, gallery }) {
             }}
           >
             {projectsFilter.map((project) => (
-              <ProjectItem key={project._id} project={project} onOpenLightbox={handleOpenLightbox} />
+              <ProjectItem
+                key={project._id}
+                workspaceId={id}
+                userId={user._id}
+                restoreProjectHook={restoreProjectHook}
+                deleteProjectHook={deleteProjectHook}
+                project={project}
+                isProjectManager={isProjectManager}
+              />
             ))}
           </Box>
         )}
-        <LightboxModal
-          images={imagesLightbox}
-          mainSrc={imagesLightbox[selectedImage]}
-          photoIndex={selectedImage}
-          setPhotoIndex={setSelectedImage}
-          isOpen={openLightbox}
-          onCloseRequest={() => setOpenLightbox(false)}
-        />
       </Card>
     </Box>
   ) : (

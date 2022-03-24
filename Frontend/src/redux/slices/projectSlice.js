@@ -100,7 +100,7 @@ export const projectSlice = createSlice({
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Projects';
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        state.projectsSuccessMessage = action.payload;
+        state.projectsSuccessMessage = 'The project has been deleted successfully';
         state.projects = state.projects
           .map((project) => {
             if (project._id === action.payload) {
@@ -117,7 +117,7 @@ export const projectSlice = createSlice({
         state.projectsErrorMessage = action.payload;
       })
       .addCase(restoreProject.fulfilled, (state, action) => {
-        state.projectsSuccessMessage = action.payload;
+        state.projectsSuccessMessage = 'The project has been restored successfully';
         state.projects = state.projects
           .map((project) => {
             if (project._id === action.payload) {
@@ -252,5 +252,5 @@ export const getFullMemberByProject = createAsyncThunk('project/fullmembers', as
   }
 });
 
-export const { reset, setErrorMessage, resetErrorMessage } = projectSlice.actions;
+export const { reset, setErrorMessage, resetErrorMessage, resetSuccessMessage } = projectSlice.actions;
 export default projectSlice.reducer;
