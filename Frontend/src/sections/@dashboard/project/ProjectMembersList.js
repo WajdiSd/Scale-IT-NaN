@@ -129,7 +129,7 @@ export default function ProjectMembersList() {
             <Typography variant="overline" sx={{ color: 'text.secondary' }}>
               Recent
             </Typography>
-            <Link component={RouterLink} to="#" sx={{ typography: 'button' }}>
+            <Link component={RouterLink} to="#test" sx={{ typography: 'button' }}>
               View All
             </Link>
           </Stack>

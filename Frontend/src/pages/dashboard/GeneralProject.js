@@ -1,5 +1,5 @@
 // @mui
-import { Grid, Container, Stack } from '@mui/material';
+import { Grid, Container, Stack, Box, CircularProgress } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
@@ -22,13 +22,14 @@ import useProject from 'src/hooks/useProject';
 import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { PATH_DASHBOARD } from 'src/routes/paths';
+import UserList from 'src/sections/@dashboard/project/UserList';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
-  const { project } = useProject();
+  const { project, usersInProject, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
   
@@ -54,7 +55,22 @@ return (
 
           ]}
         />
-        <Grid container spacing={3}>
+        {
+          isLoading && usersInProject?.length==0?
+          (<Box
+            sx={{
+              mt: 10,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress size={150} color="success" />
+          </Box>)
+          :
+          (
+            <Grid container spacing={3}>
         
           <Grid item xs={12} md={7}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
@@ -84,7 +100,6 @@ return (
             <Stack spacing={3}>
               <BankingBalanceStatistics />
               <BankingExpensesCategories />
-              <BankingRecentTransitions />
             </Stack>
           </Grid>
 
@@ -94,7 +109,14 @@ return (
               <BankingContacts />
             </Stack>
           </Grid>
+          <Grid item xs={12} md={12}>
+          <UserList />
+          </Grid>
+
         </Grid>
+          )
+        }
+        
       </Container>
     </Page>
   );

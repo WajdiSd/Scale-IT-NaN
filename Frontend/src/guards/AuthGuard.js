@@ -18,8 +18,6 @@ export default function AuthGuard({ children }) {
   const { user, isLoading, isError, isAuthenticated, message } = useAuth();
   const { pathname } = useLocation();
   const [requestedLocation, setRequestedLocation] = useState(null);
-  console.log("requestedLocation")
-  console.log(requestedLocation)
   if (isLoading) {
     return <LoadingScreen />;
   }
