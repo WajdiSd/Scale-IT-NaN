@@ -47,7 +47,7 @@ return (
           heading="Project"
           links={[
             { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}}` },
+            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
             { key: 2, name: 'project', href: '' },
             { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
 

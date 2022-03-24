@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { CardHeader, CircularProgress, Container, Grid, Stack } from '@mui/material';
+import { Box, CardHeader, CircularProgress, Container, Grid, Stack } from '@mui/material';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
@@ -23,8 +23,8 @@ import EmptyComponent from '../../components/EmptyComponent'
 // ----------------------------------------------------------------------
 
 export default function GeneralWorkspace() {
-  const { user, isLoading } = useAuth();
-  const { workspaces } = useWorkspace();
+  const { user } = useAuth();
+  const { workspaces, isLoading} = useWorkspace();
   const theme = useTheme();
   const { themeStretch } = useSettings();
   const isMountedRef = useIsMountedRef();
@@ -56,24 +56,43 @@ export default function GeneralWorkspace() {
   };
 
   useEffect(() => {
-    setTimeout(() => {
     getUserWorkspaces();
-    }, 500);
   }, []);
+
   return (
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
+      <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <WorkspaceLandingAdd displayName={user?.firstName} />
           </Grid>
           <Grid item xs={12} md={4}>
             <AppFeatured />
           </Grid>
-        </Grid>
-        <CardHeader title="Workspaces that you manage" subheader="" />
-        {userWorkspaces?.length>0 ?
-        (<Grid container spacing={3} mt={3}>
+      </Grid>
+      {
+        isLoading? 
+        ( 
+        <Box
+          sx={{
+            mt: 10,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={150} color="success" />
+        </Box>
+        )
+        :
+        (
+          <>
+          {workspaces ?
+        (
+          <>
+          <CardHeader title="Workspaces that you manage" subheader="" />
+          <Grid container spacing={3} mt={3}>
           {userWorkspaces
             ? userWorkspaces.map((workspace, index) =>
                 workspace ? (
@@ -87,20 +106,20 @@ export default function GeneralWorkspace() {
                 )
               )
             : <h1>empty</h1>}
-        </Grid>)
+        </Grid>
+          </>
+        )
         :
         ( 
         <EmptyComponent/>
         )
         }
-
-        
-
-        <CardHeader title="Workspaces that you joined" subheader="" />
         {
-          userJoinedspaces?.length>0 ?
+          workspaces?
           (
-            <Grid container spacing={3}>
+            <>
+        <CardHeader title="Workspaces that you joined" subheader="" />
+        <Grid container spacing={3}>
           {userJoinedspaces
             ? userJoinedspaces.map((workspace, index) =>
                 workspace ? (
@@ -113,13 +132,18 @@ export default function GeneralWorkspace() {
               )
             : <h1>empty</h1>}
                 
-            </Grid>
+        </Grid>
+            </>
+            
           )
           :
           (
             <EmptyComponent/>
           )
         }
+          </>
+        )
+      }
         
       </Container>
     </Page>

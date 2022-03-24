@@ -51,7 +51,7 @@ import MenuPopover from 'src/components/MenuPopover';
 
 // ----------------------------------------------------------------------
 
-function MoreProjectOptions({ projectId, workspaceId, deleteProjectHook, user, linkTo }) {
+export default function MoreProjectOptions({ projectId, workspaceId, deleteProjectHook, user, linkTo }) {
   const { isProjectManager } = useAuth();
   const [open, setOpen] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);

@@ -63,6 +63,12 @@ export const projectSlice = createSlice({
       })
       .addCase(getWorkspaceProjects.fulfilled, (state, action) => {
         state.projects = action.payload.data;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.projects = action.payload.data.sort((a, b) => a.isDeleted - b.isDeleted);
+        state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
+        state.archivedProjects = state.projects.filter((project) => project.isDeleted);
+
       })
       .addCase(getWorkspaceProjects.pending, (state, action) => {
         state.isLoading = true;
