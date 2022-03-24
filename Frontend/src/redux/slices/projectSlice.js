@@ -245,6 +245,7 @@ export const getProject = createAsyncThunk('project/getProject', async (idProjec
   try {
     const project = await projectService.getProject(idProject);
     if (project) {
+      console.log('getFullMemberByProject');
       thunkAPI.dispatch(getFullMemberByProject(idProject));
       return project;
     }

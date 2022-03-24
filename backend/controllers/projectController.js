@@ -118,13 +118,8 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
   let members = [];
 
   for (const member of project.assigned_members) {
-    let member1  = null;
-    let member2 = await Member.findById(member.memberId);
-    member1.isProjectManager = member.isProjectManager;
-    member1.isTeamLeader = member.isTeamLeader;
-    member1 = {...member2};
+    const member1 = await Member.findById(member.memberId);
     members.push(member1);
-    
   }
   if (!members) {
     return res.status(404).json({
@@ -132,7 +127,6 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
       error: "No members found for this project",
     });
   }
-  console.log(members);
   res.status(200).json({
     success: true,
     count: members.length,

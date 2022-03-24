@@ -40,7 +40,6 @@ export default function ProjectCard({ loaded, projects }) {
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Add Project'}</DialogTitle>
-
         <AddProjectForm onCancel={handleCloseModal} />
       </DialogAnimate>
 
