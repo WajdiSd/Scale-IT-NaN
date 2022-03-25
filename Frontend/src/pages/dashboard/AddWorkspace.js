@@ -98,18 +98,15 @@ export default function AddWorkspace() {
 
   const dispatch = useDispatch();
 
-  const getUserWorkspaces = () => {
-    try {
-      dispatch(getWorkspaces(user._id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const onSubmit = async (data) => {
     try {
       console.log('data', data);
-      dispatch(addWorkspace(data))
+      
+      let workspaceData = {
+        data: data,
+        userId: user._id,
+      }
+      dispatch(addWorkspace(workspaceData))
       .then(res=>{
         enqueueSnackbar("Added workspace successfully");
         navigate(PATH_DASHBOARD.general.landing);
@@ -122,21 +119,6 @@ export default function AddWorkspace() {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    getUserWorkspaces();
-    workspaces.map((workspace) => {
-      let validated = false;
-      workspace.assigned_members.forEach((member) => {
-        validated = member.member == user._id && member.isHR;
-      });
-      if (validated) {
-        setUserWorkspaces((oldArray) => [...oldArray, workspace]);
-      } else {
-        setUserJoinedspaces((oldArray) => [...oldArray, workspace]);
-      }
-    });
-  }, []);
 
   return (
     <Page title="General: App">

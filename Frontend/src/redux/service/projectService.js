@@ -26,6 +26,12 @@ const deleteProject = async (projectId, workspaceId, memberId) => {
   return response.data;
 };
 
+//deletes members
+const removeMembersFromProject = async (idproject, idtl, userIds) => {
+  const response = await axiosInstance.put(API_URL + 'delete-members/' + idproject+'/'+idtl, userIds);
+  return response.data;
+};
+
 //restores project
 const restoreProject = async (projectId, workspaceId, memberId) => {
   const response = await axiosInstance.put(API_URL + 'undelete/' + projectId, { workspaceId, memberId });
@@ -39,6 +45,15 @@ const updateProject = async (data) => {
   data.idProject = undefined;
   data.idPM = undefined; 
   const response = await axiosInstance.put(API_URL + 'update/' + idProject + '/' + idPM, data);
+  return response.data;
+};
+
+//updateTeamLeader 
+const updateTeamLeader = async (data) => {
+  const idproject = data.idproject;
+  const idpm = data.idpm;
+  const idmember = data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignteamleader/' + idproject + '/' + idmember+'/'+idpm);
   return response.data;
 };
 
@@ -63,6 +78,8 @@ const projectService = {
   getProject,
   getFullMemberByProject,
   updateProject,
+  removeMembersFromProject,
+  updateTeamLeader,
 };
 
 export default projectService;
