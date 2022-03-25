@@ -41,7 +41,11 @@ export default function General({ idWorkspace, myProfile, posts }) {
   const DeleteWorkspace = () => {
     
     try {
-      dispatch(deleteWorkspace(idWorkspace, user._id)).then((res) => {
+      let workspaceData = {
+        idWorkspace: idWorkspace,
+        userId: user._id,
+      }
+      dispatch(deleteWorkspace(workspaceData)).then((res) => {
         enqueueSnackbar('Deleted workspace successfully');
         navigate(PATH_DASHBOARD.general.landing,{replace: true});
       });

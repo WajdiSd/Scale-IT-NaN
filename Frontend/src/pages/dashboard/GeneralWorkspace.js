@@ -35,7 +35,6 @@ export default function GeneralWorkspace() {
 
   const getUserWorkspaces = () => {
     try {
-      dispatch(getWorkspaces(user._id)).then(()=>{
         workspaces.map((workspace) => {
           let validated = false;
     
@@ -49,7 +48,6 @@ export default function GeneralWorkspace() {
             }
           });
         });
-      })
     } catch (error) {
       console.error(error);
     }
@@ -57,6 +55,8 @@ export default function GeneralWorkspace() {
 
   useEffect(() => {
     getUserWorkspaces();
+    console.log("workspaces");
+    console.log(workspaces);
   }, []);
 
   return (

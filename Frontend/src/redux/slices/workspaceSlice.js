@@ -4,9 +4,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isHr, isProjectManager } from './authSlice';
 import { resetProjectList } from './projectSlice';
 
-// Get user from localStorage
-const user = JSON.parse(localStorage.getItem('user'));
-
 const initialState = {
   workspaces: [],
   workspace: null,
@@ -53,6 +50,7 @@ export const workspaceSlice = createSlice({
         state.workspaces = []
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
+        console.log('getWorkspaces fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
@@ -229,7 +227,7 @@ export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id
 // Create new workspace
 export const addWorkspace = createAsyncThunk('workspace/addWorkspace', async (workspaceData, thunkAPI) => {
   try {
-    return await workspaceService.addworkspace(workspaceData, user._id);
+    return await workspaceService.addworkspace(workspaceData.data, workspaceData.userId);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -238,9 +236,9 @@ export const addWorkspace = createAsyncThunk('workspace/addWorkspace', async (wo
 });
 
 // Delete workspace
-export const deleteWorkspace = createAsyncThunk('workspace/deleteWorkspace', async (idworkspace, thunkAPI) => {
+export const deleteWorkspace = createAsyncThunk('workspace/deleteWorkspace', async (workspaceData, thunkAPI) => {
   try {
-    return await workspaceService.deleteworkspace(idworkspace, user._id);
+    return await workspaceService.deleteworkspace(workspaceData.idWorkspace, workspaceData.userId);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

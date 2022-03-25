@@ -26,7 +26,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 // _mock_
 import { _bankingQuickTransfer } from 'src/_mock';
 // components
-import { CarouselArrows } from 'src/components/carousel';
+import { CarouselArrows, CarouselDots } from 'src/components/carousel';
 import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
@@ -61,7 +61,12 @@ export default function ProjectMembersList() {
   const sliderSettings = {
     centerMode: true,
     centerPadding: '0px',
-    
+    arrows: false,
+    dots: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    rtl: Boolean(theme.direction === 'rtl'),
+    ...CarouselDots(),
     focusOnSelect: true,
     beforeChange: (current, next) => setSelectContact(next),
     responsive: [
@@ -149,12 +154,12 @@ export default function ProjectMembersList() {
                 },
               }}
             >
-              <Slider ref={carouselRef}>
+              <Slider ref={carouselRef} {...sliderSettings}>
                 
                 {usersInProject?.map((contact, index) => (
-                  <Box key={contact._id} sx={{ py: 5, display:'flex!important', justifyContent:'center!important' }}>
+                  <Box key={contact?._id} sx={{ py: 5, display:'flex!important', justifyContent:'center!important' }}>
                     <Box sx={{ width: 40, height: 40 }}>
-                      <Tooltip key={contact._id} title={contact.firstName} arrow placement="top">
+                      <Tooltip key={contact?._id} title={contact?.firstName} arrow placement="top">
                         <Avatar
                           src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
                           sx={{

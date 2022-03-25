@@ -35,11 +35,12 @@ export default function GeneralProject() {
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
   
-  console.log(projectid);
   const dispatch = useDispatch();
 
   
   useEffect(() => {
+  console.log(projectid);
+
     const obj = {
       idProject : projectid,
       idUser : user._id,
