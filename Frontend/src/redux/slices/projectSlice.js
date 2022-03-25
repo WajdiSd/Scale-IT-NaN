@@ -207,6 +207,27 @@ export const projectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
+      })
+      .addCase(updateTeamLeader.fulfilled, (state, action) => {
+        console.log("updateTeamLeader fulfilled");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.pending, (state, action) => {
+        console.log("updateTeamLeader pending");
+        console.log(action);
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.rejected, (state, action) => {
+        console.log("updateTeamLeader rejected");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
       });
   },
 });
@@ -278,6 +299,24 @@ export const restoreProject = createAsyncThunk('project/restoreProject', async (
 export const updateProject = createAsyncThunk('project/updateProject', async (data, thunkAPI) => {
   try {
     return await projectService.updateProject(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// updateTeamLeader
+export const updateTeamLeader = createAsyncThunk('project/updateTeamLeader', async (data, thunkAPI) => {
+  try {
+
+    const project = await projectService.updateTeamLeader(data);
+    if (project) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

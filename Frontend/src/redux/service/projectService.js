@@ -48,6 +48,15 @@ const updateProject = async (data) => {
   return response.data;
 };
 
+//updateTeamLeader 
+const updateTeamLeader = async (data) => {
+  const idproject = data.idproject;
+  const idpm = data.idpm;
+  const idmember = data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignteamleader/' + idproject + '/' + idmember+'/'+idpm);
+  return response.data;
+};
+
 // get project by id
 const getProject = async (idProject,idUser) => {
   const response = await axiosInstance.get(API_URL + 'get/' + idProject+'/'+idUser);
@@ -70,6 +79,7 @@ const projectService = {
   getFullMemberByProject,
   updateProject,
   removeMembersFromProject,
+  updateTeamLeader,
 };
 
 export default projectService;

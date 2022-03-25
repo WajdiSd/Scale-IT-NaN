@@ -304,7 +304,7 @@ const unDeleteProject = asyncHandler(async (req, res) => {
   res.status(200).json(project._id);
 });
 
-// @route put /api/project/assignteamleader/:id
+// @route put /api/project/assignteamleader/:idproject/:idmember/:idpm
 const assignTeamLeader = asyncHandler(async (req, res) => {
   var verif = false;
   var idTeamLeader = null;

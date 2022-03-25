@@ -40,7 +40,7 @@ import { UserTableToolbar, UserTableRow } from './user';
 import useProject from 'src/hooks/useProject';
 
 import { useDispatch } from '../../../redux/store';
-import { getFullMemberByProject, removeMembersFromProject } from 'src/redux/slices/projectSlice';
+import { getFullMemberByProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
 
@@ -163,8 +163,17 @@ export default function UserList() {
   };
 
   const handleAssignTeamLeader = (id) => {
+    //:idproject/:idmember/:idpm
     console.log(id);
-    //setReloadData(true);
+    const data={
+      idproject: projectid,
+      idpm: user._id,
+      idmember: id,
+    }
+    dispatch(updateTeamLeader(data)).then((res)=>{
+      enqueueSnackbar(res.payload.msg)
+      setReloadData(true);
+    })
   };
 
   dataFiltered = applySortFilter({
