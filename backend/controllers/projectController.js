@@ -353,7 +353,7 @@ const dischargeTeamLeader = asyncHandler(async (req, res) => {
       verif = true;
   }
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     if (!project) {
@@ -452,7 +452,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
   }
 
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     for (let i = 0; i < emails.length; i++) {
