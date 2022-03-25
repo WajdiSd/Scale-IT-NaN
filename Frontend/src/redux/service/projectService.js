@@ -26,6 +26,12 @@ const deleteProject = async (projectId, workspaceId, memberId) => {
   return response.data;
 };
 
+//deletes members
+const removeMembersFromProject = async (idproject, idtl, userIds) => {
+  const response = await axiosInstance.put(API_URL + 'delete-members/' + idproject+'/'+idtl, userIds);
+  return response.data;
+};
+
 //restores project
 const restoreProject = async (projectId, workspaceId, memberId) => {
   const response = await axiosInstance.put(API_URL + 'undelete/' + projectId, { workspaceId, memberId });
@@ -63,6 +69,7 @@ const projectService = {
   getProject,
   getFullMemberByProject,
   updateProject,
+  removeMembersFromProject,
 };
 
 export default projectService;

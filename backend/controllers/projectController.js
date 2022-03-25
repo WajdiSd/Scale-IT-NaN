@@ -141,8 +141,11 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
   let members = [];
 
   for (const member of project.assigned_members) {
-    const member1 = await Member.findById(member.memberId);
-    members.push(member1);
+    let member1 = await Member.findById(member.memberId);
+    if(member1){
+      let obj2 = {...member1._doc, isProjectManager: member.isProjectManager , isTeamLeader: member.isTeamLeader, isDeleted: member.isDeleted};
+      members.push(obj2);
+    }
   }
   if (!members) {
     return res.status(200).json({
@@ -474,15 +477,20 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
 });
 
 /**
- * @desc invite a list of members to a workspace
- * @var(members,list of member emails )
- * @var(role, so that we can know if the members should be affected as managers or not)
+ * @desc remove a list of members from a project
+ * @var(members,list of member ids )
  * @route PUT /api/project/delete-members/:idproject/:idtl
  * idpm : id of current user inviting
  */
 const deleteMembers = asyncHandler(async (req, res, next) => {
   var verif = false;
-  const emails = req.body.emails;
+  const userIds = req.body;
+  console.log("userIds");
+  console.log(userIds);
+  console.log("req.params.idproject");
+  console.log(req.params.idproject);
+  console.log("req.params.idtl");
+  console.log(req.params.idtl);
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
@@ -494,24 +502,26 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
 
   if (!verif) {
     res.status(404);
-    throw new Error("changes are not made by a PM!");
+    throw new Error("changes are not made by a TL!");
   } else {
-    for (let i = 0; i < emails.length; i++) {
-      let member = await Member.findOne({ email: emails[i] });
-      const invitedMember = {
-        memberId: member._id,
-      };
+    for (let i = 0; i < userIds.length; i++) {
+
+
       await Project.findOneAndUpdate(
-        { _id: req.params.idproject },
+        { _id: req.params.idproject,
+          "assigned_members.memberId": userIds[i],
+        },
         {
-          $pull: { assigned_members: invitedMember },
+          $set: {
+            "assigned_members.$.isDeleted": true,
+        }
         },
         {
           new: true,
         }
       );
     }
-    return res.status(200).json(emails);
+    return res.status(200).json(userIds);
   }
 });
 
