@@ -130,7 +130,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
             :
             (isPM?
               (
-                !isProjectManager && !isTeamLeader?
+                !isProjectManager && !isTeamLeader && !isDeleted?
                 (<MenuItem
                   onClick={() => {
                     handleCloseMenu();

@@ -45,14 +45,13 @@ router.post("/add", protect, addProject);
 router.put("/delete/:id", protect, deleteProject);
 router.put("/undelete/:id", protect, unDeleteProject);
 
-router.put("/assignteamleader/:id", protect, assignTeamLeader);
 router.put(
-  "/dischargeteamleader/:idproject/:idmember/:idpm",
+  "/assignteamleader/:idproject/:idmember/:idpm",
   protect,
-  dischargeTeamLeader
+  assignTeamLeader
 );
 
-router.put("/update/:idproject/:idpm",  protect, updateProject);
+router.put("/update/:idproject/:idpm", protect, updateProject);
 router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
 router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
 
