@@ -21,7 +21,7 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/get/:id", protect, getProject);
-router.get("/list",  protect, getProjects);
+router.get("/list", getProjects);
 router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
 router.get(
   "/listbymanager/:idworkspace/:idmember",
@@ -52,7 +52,7 @@ router.put(
 );
 
 router.put("/update/:idproject/:idpm",  protect, updateProject);
-router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
-router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
+router.put("/invite-members/:idproject/:idtl", inviteMembers);
+router.put("/delete-members/:idproject/:idtl", deleteMembers);
 
 module.exports = router;
