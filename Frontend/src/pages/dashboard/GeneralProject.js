@@ -1,5 +1,5 @@
 // @mui
-import { Grid, Container, Stack } from '@mui/material';
+import { Grid, Container, Stack, Box, CircularProgress } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
@@ -19,25 +19,67 @@ import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import useProject from 'src/hooks/useProject';
+import HeaderBreadcrumbs from 'src/components/HeaderBreadcrumbs';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { PATH_DASHBOARD } from 'src/routes/paths';
+import UserList from 'src/sections/@dashboard/project/UserList';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
-  const { projectid } = useParams();
+  const { user } = useAuth();
+  const { project, usersInProject, isLoading } = useProject();
+  const { workspace } = useWorkspace();
+  const { id, projectid } = useParams();
+  
   const dispatch = useDispatch();
 
+  
   useEffect(() => {
-    dispatch(getProject(projectid));
-  }, [projectid]);
+  console.log(projectid);
 
-  const { project, usersInProject } = useProject();
+    const obj = {
+      idProject : projectid,
+      idUser : user._id,
+    }
+    dispatch(getProject(obj));
+  }, []);
 
-  return (
+return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
+      <HeaderBreadcrumbs
+          key={project?.name}
+          heading="Project"
+          links={[
+            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
+            { key: 2, name: 'project', href: '' },
+            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
+
+
+          ]}
+        />
+        {
+          isLoading && usersInProject?.length==0?
+          (<Box
+            sx={{
+              mt: 10,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress size={150} color="success" />
+          </Box>)
+          :
+          (
+            <Grid container spacing={3}>
+        
           <Grid item xs={12} md={7}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
               <BankingWidgetSummary
@@ -66,7 +108,6 @@ export default function GeneralProject() {
             <Stack spacing={3}>
               <BankingBalanceStatistics />
               <BankingExpensesCategories />
-              <BankingRecentTransitions />
             </Stack>
           </Grid>
 
@@ -74,10 +115,16 @@ export default function GeneralProject() {
             <Stack spacing={3}>
               <ProjectMembersList />
               <BankingContacts />
-              <ProjectMembersList />
             </Stack>
           </Grid>
+          <Grid item xs={12} md={12}>
+          <UserList />
+          </Grid>
+
         </Grid>
+          )
+        }
+        
       </Container>
     </Page>
   );

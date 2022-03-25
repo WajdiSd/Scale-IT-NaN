@@ -11,17 +11,16 @@ import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } fro
 import { LoadingButton, MobileDatePicker, MobileDateTimePicker } from '@mui/lab';
 // redux
 import { useDispatch } from '../../../redux/store';
-import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
-import { useParams } from 'react-router';
 
 // components
 import Iconify from '../../../components/Iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import { FormProvider, RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import MemberSearchAutocomplete from '../workspace/MemberSearchAutocomplete';
+import { useEffect, useState } from 'react';
+import { getProject, updateProject } from 'src/redux/slices/projectSlice';
+import useProject from 'src/hooks/useProject';
 import useAuth from 'src/hooks/useAuth';
-import { useState } from 'react';
-import { addProject } from 'src/redux/slices/projectSlice';
 
 // ----------------------------------------------------------------------
 
@@ -35,39 +34,30 @@ const COLOR_OPTIONS = [
   '#7A0C2E', // theme.palette.error.darker
 ];
 
-const getInitialValues = () => {
-  const _event = {
-    title: '',
-    description: '',
-    teamLeadId: null,
-    start: new Date(),
-    end: new Date(),
-  };
-
-  return _event;
-};
-
 // ----------------------------------------------------------------------
 
-AddProjectForm.propTypes = {
+UpdateProjectForm.propTypes = {
   onCancel: PropTypes.func,
+  projectId: PropTypes.object,
 };
 
-export default function AddProjectForm({ onCancel }) {
+export default function UpdateProjectForm({ project,onCancel }) {
+
+  const dispatch = useDispatch();
+
+  const getInitialValues = () => {
+    const _event = {
+      title: project?.name,
+      description: project?.description,
+      startDate: project?.startDate,
+      expectedEndDate: project?.expectedEndDate,
+    };
+    return _event;
+  };
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const {user} = useAuth();
-
-  const {id} = useParams();
-
-  const [teamLeadId, setTeamLeadId] = useState(null);
-
-  const handleSetTeamLeadId = (_id) => {
-    console.log("_id");
-    console.log(_id);
-    setTeamLeadId(_id);
-  };
-  const dispatch = useDispatch();
+  const {idProjectManager} = useAuth();
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
@@ -88,38 +78,32 @@ export default function AddProjectForm({ onCancel }) {
   } = methods;
 
   const onSubmit = async (data) => {
-    console.log("data");
     try {
       const newProject = {
+        idProject: project._id,
+        idPM: idProjectManager,
         name: data.title,
         description: data.description,
-        startDate: data.start,
-        expectedEndDate: data.end,
-        projectManagerId: user._id,
-        teamLeadId: teamLeadId,
-        workspaceId: id,
+        startDate: data.startDate,
+        expectedEndDate: data.expectedEndDate,
       };
       onCancel();
       reset();
-        dispatch(addProject(newProject))
-        .then(res=>{
-          if(!res.error)
-            enqueueSnackbar("Successfully added project")
-          else
-            enqueueSnackbar("unable to add project",{
-              variant: 'error',
-            })
+      dispatch(updateProject(newProject)).then((res) => {
+        if (!res.error) enqueueSnackbar('Successfully updated project');
+        else
+          enqueueSnackbar('unable to update project', {
+            variant: 'error',
+          });
       });
-      
     } catch (error) {
       console.error(error);
     }
   };
 
-
   const values = watch();
 
-  const isDateError = isBefore(new Date(values.end), new Date(values.start));
+  const isDateError = isBefore(new Date(values.expectedEndDate), new Date(values.startDate));
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -128,10 +112,8 @@ export default function AddProjectForm({ onCancel }) {
 
         <RHFTextField name="description" label="Description" multiline rows={4} />
 
-        <MemberSearchAutocomplete handleSetTeamLeadId={handleSetTeamLeadId}/>
-
         <Controller
-          name="start"
+          name="startDate"
           control={control}
           render={({ field }) => (
             <MobileDatePicker
@@ -144,7 +126,7 @@ export default function AddProjectForm({ onCancel }) {
         />
 
         <Controller
-          name="end"
+          name="expectedEndDate"
           control={control}
           render={({ field }) => (
             <MobileDatePicker

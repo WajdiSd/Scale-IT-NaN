@@ -7,6 +7,8 @@ const user = JSON.parse(localStorage.getItem('user'));
 
 const initialState = {
   projects: [],
+  isProjectManager: false,
+  isTeamLeader: false,
   archivedProjects: [],
   unarchivedProjects: [],
   project: null,
@@ -35,14 +37,21 @@ export const projectSlice = createSlice({
     setSuccessMessage: (state, action) => {
       state.projectsSuccessMessage = action.payload;
     },
-    reset: (state) => {
-      (state.projects = []),
-        (state.project = null),
-        (state.usersInProject = []),
-        (state.isLoading = false),
-        (state.isSuccess = false),
-        (state.isError = false),
-        (state.message = '');
+    resetProject: (state) => {
+      console.log("resetting project slice");
+      state.projects= [],
+      state.isProjectManager= false,
+      state.isTeamLeader= false,
+      state.archivedProjects= [],
+      state.unarchivedProjects= [],
+      state.project= null,
+      state.usersInProject= [],
+      state.projectsErrorMessage= '',
+      state.projectsSuccessMessage='',
+      state.isError=false,
+      state.isSuccess= false,
+      state.isLoading= false,
+      state.message='';
     },
   },
   extraReducers: (builder) => {
@@ -62,11 +71,13 @@ export const projectSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(getWorkspaceProjects.fulfilled, (state, action) => {
+        state.projects = action.payload.data;
         state.isLoading = false;
         state.isSuccess = true;
         state.projects = action.payload.data.sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
+
       })
       .addCase(getWorkspaceProjects.pending, (state, action) => {
         state.isLoading = true;
@@ -132,28 +143,91 @@ export const projectSlice = createSlice({
         state.projectsErrorMessage = action.payload;
       })
       .addCase(resetProjectList.fulfilled, (state, action) => {
+        console.log('resetProjectList fulfilled ');
         state.projects = [];
         state.archivedProjects = [];
         state.unarchivedProjects = [];
       })
       .addCase(resetProjectList.rejected, (state, action) => {
+        console.log('resetProjectList rejected ');
+        console.log(action)
         state.projects = [];
         state.archivedProjects = [];
         state.unarchivedProjects = [];
         state.projectsErrorMessage = action.payload;
       })
       .addCase(getProject.fulfilled, (state, action) => {
+        console.log("getProject fulfilled");
+        console.log(action.payload);
         state.project = action.payload.data;
-        state.usersInProject = action.payload.assigned_users;
+        //state.usersInProject = action.payload.data.assigned_users;
+        state.isProjectManager = action.payload.isProjectManager;
+        state.isTeamLeader = action.payload.isTeamLeader;
+        state.isLoading = false;
+        state.isSuccess = true;
       })
       .addCase(getProject.rejected, (state, action) => {
+        console.log("getProject rejected");
         state.projectsErrorMessage = 'Ooops, there has been a problem finding your Project';
       })
+      .addCase(getProject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
       .addCase(getFullMemberByProject.fulfilled, (state, action) => {
+        console.log('getFullMemberByProject fulfilled');
         state.usersInProject = action.payload.data;
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(getFullMemberByProject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
       })
       .addCase(getFullMemberByProject.rejected, (state, action) => {
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Members By Project';
+      })
+      .addCase(updateProject.fulfilled, (state, action) => {
+        state.project = action.payload.project;
+      })
+      .addCase(removeMembersFromProject.fulfilled, (state, action) => {
+        console.log("removeMembersFromProject fulfilled");
+        console.log(action.payload);
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(removeMembersFromProject.pending, (state, action) => {
+        console.log("removeMembersFromProject pending");
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(removeMembersFromProject.rejected, (state, action) => {
+        console.log("removeMembersFromProject rejected");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
+      .addCase(updateTeamLeader.fulfilled, (state, action) => {
+        console.log("updateTeamLeader fulfilled");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.pending, (state, action) => {
+        console.log("updateTeamLeader pending");
+        console.log(action);
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.rejected, (state, action) => {
+        console.log("updateTeamLeader rejected");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
       });
   },
 });
@@ -161,7 +235,10 @@ export const projectSlice = createSlice({
 // Resets project list
 export const resetProjectList = createAsyncThunk('project/resetProjectList', async (_, thunkAPI) => {
   try {
-    return true;
+    console.log("resetProjectList");
+    await thunkAPI.dispatch(resetProject()).then(()=>{
+      return true;
+    })
   } catch (error) {
     const message = 'Problem resetting projects';
     return thunkAPI.rejectWithValue(message);
@@ -190,10 +267,56 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (da
   }
 });
 
+// Delete Members From Project
+export const removeMembersFromProject = createAsyncThunk('project/removeMembersFromProject', async (data, thunkAPI) => {
+  try { 
+    const project = await projectService.removeMembersFromProject(data.idproject, data.idtl, data.userIds);
+    if (project) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // restore project
 export const restoreProject = createAsyncThunk('project/restoreProject', async (data, thunkAPI) => {
   try {
     return await projectService.restoreProject(data.projectId, data.workspaceId, data.memberId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
+// update project
+export const updateProject = createAsyncThunk('project/updateProject', async (data, thunkAPI) => {
+  try {
+    return await projectService.updateProject(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// updateTeamLeader
+export const updateTeamLeader = createAsyncThunk('project/updateTeamLeader', async (data, thunkAPI) => {
+  try {
+
+    const project = await projectService.updateTeamLeader(data);
+    if (project) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -226,11 +349,13 @@ export const getWorkspaceProjectsForMembers = createAsyncThunk(
   }
 );
 
-export const getProject = createAsyncThunk('project/getProject', async (idProject, thunkAPI) => {
+export const getProject = createAsyncThunk('project/getProject', async (objet, thunkAPI) => {
+
   try {
-    const project = await projectService.getProject(idProject);
+    const project = await projectService.getProject(objet.idProject, objet.idUser);
     if (project) {
-      thunkAPI.dispatch(getFullMemberByProject(idProject));
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(objet.idProject));
       return project;
     }
   } catch (error) {
@@ -250,5 +375,5 @@ export const getFullMemberByProject = createAsyncThunk('project/fullmembers', as
   }
 });
 
-export const { reset, setErrorMessage, resetErrorMessage, resetSuccessMessage } = projectSlice.actions;
+export const { resetProject, setErrorMessage, resetErrorMessage, resetSuccessMessage } = projectSlice.actions;
 export default projectSlice.reducer;

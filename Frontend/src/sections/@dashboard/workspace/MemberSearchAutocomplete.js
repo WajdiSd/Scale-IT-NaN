@@ -47,6 +47,24 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
   
   const [assignedUsers, setAssignedUsers] = useState(usersInWorkspace);
 
+  const handleKeyUp = (event) => {
+    
+
+    if (event.key === 'Enter') {
+      console.log("event");
+      console.log(event.target.value);
+      assignedUsers.filter(member=>{
+        if((member.firstName +' '+member.lastName) == String(event.target.value)){
+          console.log("match");
+          handleSetTeamLeadId(member._id)
+        }
+        else{
+          console.log("not match");
+        }
+      })
+    }
+  };
+
   const handleChangeSearch = async (value) => {
     try {
       setSearchQuery(value);
@@ -59,19 +77,12 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
             }
             
             });
-            console.log(res);
           setSearchResults(res)
           }
            
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const handleKeyUp = (event) => {
-    if (event.key === 'Enter') {
-      handleClick(searchQuery);
     }
   };
 
@@ -89,8 +100,8 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
       renderInput={(params) => (
         <InputStyle
           {...params}
-          placeholder="Search members..."
-          onKeyUp={handleKeyUp}
+          placeholder="Select Team Leader..."
+          onKeyUp={(event, value) => handleKeyUp(event)}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
@@ -102,7 +113,6 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
         />
       )}
       renderOption={(props, member, { inputValue }) => {
-        console.log("member");
         const { firstName, lastName, _id } = member;
         const suggestionText = `${firstName} ${lastName}`;
 

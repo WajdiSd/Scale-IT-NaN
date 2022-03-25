@@ -2,6 +2,9 @@
 import authService from '../service/authService';
 import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { resetWorkspace, getWorkspaces} from './workspaceSlice'; 
+import { resetProject } from './projectSlice';
+
 // const isHr = createAction('isHr');
 // const isNotHr = createAction('isNotHr');
 // const isProjectManager = createAction('isProjectManager');
@@ -36,7 +39,10 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
 // Login user
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
-    return await authService.login(user);
+
+    const loginUser =  await authService.login(user);
+    await thunkAPI.dispatch(getWorkspaces(loginUser._id))
+    return loginUser;
   } catch (error) {
     console.log('ezrzr');
     console.log(error.response);
@@ -120,7 +126,10 @@ export const updateUser = createAsyncThunk('auth/updateUser', async (data, thunk
   }
 });
 
-export const logout = createAsyncThunk('auth/logout', async () => {
+export const logout = createAsyncThunk('auth/logout', async (req,thunkAPI) => {
+  thunkAPI.dispatch(resetAuth());
+  thunkAPI.dispatch(resetWorkspace());
+  thunkAPI.dispatch(resetProject());
   await authService.logout();
 });
 /**
@@ -192,8 +201,9 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: (state) => {
+    resetAuth: (state) => {
       state.isHr = false;
+      state.idProjectManager = null;
       state.isProjectManager = false;
       state.isLoading = false;
       state.isAuthenticated = false;
@@ -343,5 +353,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset } = authSlice.actions;
+export const { resetAuth } = authSlice.actions;
 export default authSlice.reducer;

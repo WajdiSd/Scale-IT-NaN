@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use("/api/members", require("./routes/memberRoutes"));
@@ -29,7 +29,6 @@ app.use("/api/project", require("./routes/projectRoutes"));
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
-
 
 var mailOptions = {
     from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address
@@ -42,9 +41,3 @@ var mailOptions = {
 };
 
 // trigger the sending of the E-mail
-/*transporter.sendMail(mailOptions, function(error, info){
-    if(error){
-        return console.log(error);
-    }
-    console.log('Message sent: ' + info.response);
-});*/

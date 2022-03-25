@@ -25,6 +25,11 @@ const projectSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      default: "started",
+      enum: ["started", "finished", "aborted", "finished with delay"],
+    },
     assigned_members: [
       {
         memberId: {
@@ -33,12 +38,13 @@ const projectSchema = mongoose.Schema(
         },
         isProjectManager: { type: Boolean, default: false },
         isTeamLeader: { type: Boolean, default: false },
+        isDeleted: { type: Boolean, default: false },
       },
     ],
     workspace: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Workspace",
-    }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Workspace",
+    },
   },
   {
     timestamps: true,

@@ -24,7 +24,7 @@ ProjectCard.propTypes = {
 
 export default function ProjectCard({ loaded, projects }) {
   const { isProjectManager, user } = useAuth();
-  const { deleteProjectHook, restoreProjectHook } = useProject();
+  const { deleteProjectHook, restoreProjectHook, updateProjectHook } = useProject();
   const { query, projectsFilter, searchProjects } = useProjectFilter(projects);
   const { id } = useParams();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -40,7 +40,6 @@ export default function ProjectCard({ loaded, projects }) {
     <Box sx={{ mt: 5 }}>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Add Project'}</DialogTitle>
-
         <AddProjectForm onCancel={handleCloseModal} />
       </DialogAnimate>
 
@@ -101,6 +100,7 @@ export default function ProjectCard({ loaded, projects }) {
                 userId={user._id}
                 restoreProjectHook={restoreProjectHook}
                 deleteProjectHook={deleteProjectHook}
+                updateProjectHook={updateProjectHook}
                 project={project}
                 isProjectManager={isProjectManager}
               />

@@ -20,8 +20,13 @@ const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
 
+router.get("/get/:id/:iduser", protect, getProject);
+router.get("/list", protect, getProjects);
 router.get("/get/:id", protect, getProject);
+<<<<<<< HEAD
 router.get("/list", getProjects);
+=======
+>>>>>>> 5d2252d440495ede3eeb40e3f8807f9f157a2bdd
 router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
 router.get(
   "/listbymanager/:idworkspace/:idmember",
@@ -44,15 +49,20 @@ router.post("/add", protect, addProject);
 router.put("/delete/:id", protect, deleteProject);
 router.put("/undelete/:id", protect, unDeleteProject);
 
-router.put("/assignteamleader/:id", protect, assignTeamLeader);
 router.put(
-  "/dischargeteamleader/:idproject/:idmember/:idpm",
+  "/assignteamleader/:idproject/:idmember/:idpm",
   protect,
-  dischargeTeamLeader
+  assignTeamLeader
 );
 
+<<<<<<< HEAD
 router.put("/update/:idproject/:idpm",  protect, updateProject);
 router.put("/invite-members/:idproject/:idtl", inviteMembers);
 router.put("/delete-members/:idproject/:idtl", deleteMembers);
+=======
+router.put("/update/:idproject/:idpm", protect, updateProject);
+router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
+router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
+>>>>>>> 5d2252d440495ede3eeb40e3f8807f9f157a2bdd
 
 module.exports = router;

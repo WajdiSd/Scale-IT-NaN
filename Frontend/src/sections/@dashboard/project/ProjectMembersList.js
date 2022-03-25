@@ -26,7 +26,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 // _mock_
 import { _bankingQuickTransfer } from 'src/_mock';
 // components
-import { CarouselArrows } from 'src/components/carousel';
+import { CarouselArrows, CarouselDots } from 'src/components/carousel';
 import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
@@ -52,28 +52,26 @@ export default function ProjectMembersList() {
   const [amount, setAmount] = useState(0);
 
 
-  console.log("im in project members list");
   //console.log(usersInProject);
 
   const {usersInProject} = useProject();
-  console.log("-----------------------");
-  console.log(usersInProject);
 
   
   const getContactInfo = _bankingQuickTransfer.find((_, index) => index === selectContact);
   const sliderSettings = {
-    dots: false,
-    arrows: false,
-    slidesToShow: 7,
     centerMode: true,
-    swipeToSlide: true,
-    focusOnSelect: true,
     centerPadding: '0px',
+    arrows: false,
+    dots: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
     rtl: Boolean(theme.direction === 'rtl'),
+    ...CarouselDots(),
+    focusOnSelect: true,
     beforeChange: (current, next) => setSelectContact(next),
     responsive: [
       {
-        breakpoint: theme.breakpoints.values.xl,
+        breakpoint: theme.breakpoints.values.md,
         settings: {
           slidesToShow: 5,
         },
@@ -127,6 +125,8 @@ export default function ProjectMembersList() {
 
   return (
     <>
+      
+      
       <RootStyle>
         <CardHeader title="Team" />
         <Box sx={{ p: 3 }}>
@@ -134,7 +134,7 @@ export default function ProjectMembersList() {
             <Typography variant="overline" sx={{ color: 'text.secondary' }}>
               Recent
             </Typography>
-            <Link component={RouterLink} to="#" sx={{ typography: 'button' }}>
+            <Link component={RouterLink} to="#test" sx={{ typography: 'button' }}>
               View All
             </Link>
           </Stack>
@@ -155,10 +155,11 @@ export default function ProjectMembersList() {
               }}
             >
               <Slider ref={carouselRef} {...sliderSettings}>
+                
                 {usersInProject?.map((contact, index) => (
-                  <Box key={contact._id} sx={{ py: 5 }}>
+                  <Box key={contact?._id} sx={{ py: 5, display:'flex!important', justifyContent:'center!important' }}>
                     <Box sx={{ width: 40, height: 40 }}>
-                      <Tooltip key={contact._id} title={contact.firstName} arrow placement="top">
+                      <Tooltip key={contact?._id} title={contact?.firstName} arrow placement="top">
                         <Avatar
                           src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
                           sx={{
@@ -179,16 +180,6 @@ export default function ProjectMembersList() {
               </Slider>
             </CarouselArrows>
           </Box>
-
-          <Stack spacing={3}>
-            <Typography variant="overline" sx={{ color: 'text.secondary' }}>
-              insert amount
-            </Typography>
-
-            <Button variant="contained" size="large" disabled={amount === 0} onClick={handleOpenConfirm}>
-              Transfer Now
-            </Button>
-          </Stack>
         </Box>
       </RootStyle>
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import Label from 'src/components/Label';
 import { useParams } from 'react-router';
 import useWorkspace from './useWorkspace';
+import useProject from './useProject';
 
 // ----------------------------------------------------------------------
 
@@ -37,14 +38,16 @@ const ICONS = {
 const useNav = () => {
   const { rootWorkspace } = useWorkspaceId();
   const {workspace} = useWorkspace();
+  const {project} = useProject();
 
-  const {id} = useParams();
+  const {id, projectid} = useParams();
 
 
   const [navConfig, setNavConfig] = useState([]);
 
   useEffect(() => {
-    setNavConfig([
+
+    let navlist = [
       // GENERAL
       // ----------------------------------------------------------------------
       {
@@ -146,8 +149,28 @@ const useNav = () => {
           },
         ],
       },
-    ]);
-  }, [workspace]);
+    ];
+
+    if(projectid){
+      let projectsItems = 
+      {
+        title: 'projects',
+        path: PATH_DASHBOARD.workspaces.root,
+        icon: ICONS.workspace,
+        children: [
+          {
+            title: 'details',
+            path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}`,
+            icon: ICONS.workspace,
+          },
+        ],
+      };
+      navlist[0].items.splice(1, 0, projectsItems);
+    }
+
+    
+    setNavConfig(navlist);
+  }, [workspace, project]);
 
   return { navConfig };
 };

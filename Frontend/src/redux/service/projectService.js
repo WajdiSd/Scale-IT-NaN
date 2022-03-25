@@ -22,31 +22,44 @@ const getWorkspaceProjectsForEmployees = async (idWorkspace, idMember) => {
 
 //deletes project
 const deleteProject = async (projectId, workspaceId, memberId) => {
-  console.log('\n\n----------------------------------------------------');
-  console.log('in deleteProject in projectService');
-  console.log(projectId);
-  console.log(workspaceId);
-  console.log(memberId);
-  console.log('\n\n----------------------------------------------------');
   const response = await axiosInstance.put(API_URL + 'delete/' + projectId, { workspaceId, memberId });
+  return response.data;
+};
+
+//deletes members
+const removeMembersFromProject = async (idproject, idtl, userIds) => {
+  const response = await axiosInstance.put(API_URL + 'delete-members/' + idproject+'/'+idtl, userIds);
   return response.data;
 };
 
 //restores project
 const restoreProject = async (projectId, workspaceId, memberId) => {
-  console.log('\n\n----------------------------------------------------');
-  console.log('in restoreProject in projectService');
-  console.log(projectId);
-  console.log(workspaceId);
-  console.log(memberId);
-  console.log('\n\n----------------------------------------------------');
   const response = await axiosInstance.put(API_URL + 'undelete/' + projectId, { workspaceId, memberId });
   return response.data;
 };
 
+//update project 
+const updateProject = async (data) => {
+  const idProject = data.idProject;
+  const idPM = data.idPM;
+  data.idProject = undefined;
+  data.idPM = undefined; 
+  const response = await axiosInstance.put(API_URL + 'update/' + idProject + '/' + idPM, data);
+  return response.data;
+};
+
+//updateTeamLeader 
+const updateTeamLeader = async (data) => {
+  const idproject = data.idproject;
+  const idpm = data.idpm;
+  const idmember = data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignteamleader/' + idproject + '/' + idmember+'/'+idpm);
+  return response.data;
+};
+
 // get project by id
-const getProject = async (idProject) => {
-  const response = await axiosInstance.get(API_URL + 'get/' + idProject);
+const getProject = async (idProject,idUser) => {
+  const response = await axiosInstance.get(API_URL + 'get/' + idProject+'/'+idUser);
   return response.data;
 };
 
@@ -64,6 +77,9 @@ const projectService = {
   restoreProject,
   getProject,
   getFullMemberByProject,
+  updateProject,
+  removeMembersFromProject,
+  updateTeamLeader,
 };
 
 export default projectService;
