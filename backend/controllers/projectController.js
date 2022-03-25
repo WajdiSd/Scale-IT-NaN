@@ -476,13 +476,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
   var verif = true;
   const emails = req.body.emails;
   const project = await Project.findById(req.params.idproject);
-  for (let i = 0; i < project.assigned_members.length; i++) {
-    if (
-      project.assigned_members[i].memberId == req.params.idpm &&
-      project.assigned_members[i].isTeamLeader == true
-    )
-      verif = true;
-  }
+
 
   if (!verif) {
     es.status(404);
@@ -491,9 +485,23 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
     for (let i = 0; i < emails.length; i++) {
       let member = await Member.findOne({ email: emails[i] });
 
-      //Member must belong to workspace first?
-      //Should we add it next?
-      //Can outsiders work in projects not belonging to their workspace?
+      //Member must belong to workspace first
+      var belongs = false;
+      const wkspId = project.workspace._id;
+      console.log(wkspId);
+      const workspaceExist = await Workspace.findById(wkspId);
+      console.log(workspaceExist);
+
+      for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
+        if (
+          workspaceExist.assigned_members[i].member._id == member._id
+        )
+        belongs = true;
+      }
+      if (!belongs)
+        {res.status(404);
+          throw new Error("user does not belong in workspace");}
+      else { 
 
       const invitedMember = {
         memberId: member._id,
@@ -509,7 +517,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
       );
     }
     return res.status(200).json(emails);
-  }
+  } }
 });
 
 /**
