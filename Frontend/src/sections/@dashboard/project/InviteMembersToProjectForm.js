@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } from '@mui/material';
+import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions, OutlinedInput } from '@mui/material';
 import { LoadingButton, MobileDatePicker, MobileDateTimePicker } from '@mui/lab';
 // redux
 import { useDispatch } from '../../../redux/store';
@@ -18,7 +18,10 @@ import { FormProvider, RHFTextField, RHFSwitch } from '../../../components/hook-
 import MemberSearchAutocomplete from '../workspace/MemberSearchAutocomplete';
 import useAuth from 'src/hooks/useAuth';
 import { useState } from 'react';
+import { styled, alpha } from '@mui/material/styles';
 
+import { inviteMemberToProject } from 'src/redux/slices/projectSlice';
+import { setUserError} from 'src/redux/slices/workspaceInviteSlice';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -56,13 +59,40 @@ export default function InviteMembersToProjectForm({ onCancel }) {
 
   const {id} = useParams();
 
-  const [invitedMemberId, setInvitedMemberId] = useState(null);
+  const [invitedMember, setInvitedMember] = useState('');
+  const [invitedMembers, setInvitedMembers] = useState('');
 
-  const handleSetInvitedMemberId = (_id) => {
-    console.log("innn dirrab invitemm");
+  function handleMemberInput(event) {
+    setInvitedMembers('');
+    setInvitedMember(event.target.value);
+  }
+
+  const validateEmail = (email) => {
+    console.log(email);
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  /**
+   * addMembersToProject (data : idproject,idtl, array of members)
+   * add list of members to project
+   * TODO:  add foreach to test validateEmail on all members array 
+   */
+  const addMembersToProject = (data) => { 
+    const { members } = data;
+    console.log("*-------------------------------*");
+    console.log(data);
+    validateEmail(members[0]) ? dispatch(inviteMemberToProject(data)) : dispatch(setUserError('Please add a valid email')); 
+  }
+
+  /*const handleSetInvitedMemberId = (_id) => {
     console.log(_id);
     setInvitedMemberId(_id);
-  };
+  };*/
+
   const dispatch = useDispatch();
 
   const EventSchema = Yup.object().shape({
@@ -125,12 +155,37 @@ export default function InviteMembersToProjectForm({ onCancel }) {
 
   const values = watch();
 
+  
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ p: 3 }}>
-        <MemberSearchAutocomplete handleSetInvitedMemberId={handleSetInvitedMemberId}/>
-        <RHFTextField name="members" label="colleagues" multiline rows={4} />
+        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+              <OutlinedInput
+                size="small"
+                placeholder="Member Emails"
+                type="text"
+                value={invitedMember}
+                onChange={handleMemberInput}
+                sx={{
+                  width: 0.8,
+                  color: 'common.white',
+                  fontWeight: 'fontWeightMedium',
+                  bgcolor: (theme) => alpha(theme.palette.common.black, 0.16),
+                  '& input::placeholder': {
+                    color: (theme) => alpha(theme.palette.common.white, 0.48),
+                  },
+                  '& fieldset': { display: 'none' },
+                }}
+              />
+              <Button onClick={()=> {
+                
+                setInvitedMembers(invitedMember+' ');
+              }} color="warning" variant="contained">
+                Add Member
+              </Button>
+            </Stack>
+        <RHFTextField name="members" label="colleagues" disabled value={invitedMembers} multiline rows={4} />
       </Stack>
       <DialogActions>
         <Box sx={{ flexGrow: 1 }} />

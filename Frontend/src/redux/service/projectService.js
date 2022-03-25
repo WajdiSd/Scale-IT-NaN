@@ -54,7 +54,11 @@ const getFullMemberByProject = async (idProject) => {
   return response.data;
 };
 
-const inviteMemberToProject = async (idproject,idtl,data) => {
+const inviteMemberToProject = async (data) => {
+  const idproject = data.idproject;
+  const idtl = data.idtl;
+  data.idproject = undefined;
+  data.idtl = undefined;
   const response = await axiosInstance.put(API_URL + 'invite/'+idproject+'/'+idtl, data);
   return response.data;
 };

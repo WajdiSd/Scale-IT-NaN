@@ -61,14 +61,6 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     const state = thunkAPI.getState();
     const id = state.workspaces.workspace._id;
     const users = state.workspaceInvite.users;
-
-    // console.log('\n\n----------------------------------------------------');
-    // console.log('users state in submit invitations');
-    // console.log(users);
-    // console.log('id state in submit invitations');
-    // console.log(id);
-    // console.log('\n\n----------------------------------------------------');
-
     if (!users) {
       setUserError('No Valid Users Passed!');
       return 'No Valid Users Passed';
@@ -77,22 +69,10 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       if (user.isManager) return user.email;
     });
     const managerEmails = managersFiltered.map((user) => user.email);
-
-    // console.log('\n\n----------------------------------------------------');
-    // console.log('manager Emails');
-    // console.log(managerEmails);
-    // console.log('\n\n----------------------------------------------------');
-
     const membersFiltered = users.filter((user) => {
       if (!user.isManager) return user.email;
     });
     const memberEmails = membersFiltered.map((user) => user.email);
-
-    // console.log('\n\n----------------------------------------------------');
-    // console.log('member Emails');
-    // console.log(memberEmails);
-    // console.log('\n\n----------------------------------------------------');
-
     const managers = {
       info: {
         emails: managerEmails,
@@ -100,7 +80,6 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       },
       id,
     };
-
     const members = {
       info: {
         emails: memberEmails,
@@ -108,24 +87,8 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       },
       id,
     };
-
-    // console.log('\n\n----------------------------------------------------');
-    // console.log('Managers before await');
-    // console.log(managers);
-    // console.log('Members before await');
-    // console.log(members);
-    // console.log('\n\n----------------------------------------------------');
-
     const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
     const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
-
-    // console.log('\n\n----------------------------------------------------');
-    // console.log('Manager Submit before return');
-    // console.log(managerSubmit);
-    // console.log('Member Submit before return');
-    // console.log(memberSubmit);
-    // console.log('\n\n----------------------------------------------------');
-
     thunkAPI.dispatch(resetWorkspaceInvite());
 
     return [managerSubmit, memberSubmit];

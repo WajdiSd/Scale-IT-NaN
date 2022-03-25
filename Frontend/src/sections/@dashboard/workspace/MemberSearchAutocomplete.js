@@ -29,7 +29,7 @@ const PopperStyle = styled((props) => <Popper placement="bottom-start" {...props
 
 // ----------------------------------------------------------------------
 
-export default function MemberSearchAutocomplete({handleSetTeamLeadId,handleSetInvitedMemberId}) {
+export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
   const navigate = useNavigate();
 
   const isMountedRef = useIsMountedRef();
@@ -104,7 +104,7 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId,handleSetI
         return (
           <li {...props}>
             {/*<Image alt={cover} src={cover} sx={{ width: 48, height: 48, borderRadius: 1, flexShrink: 0, mr: 1.5 }} />*/}
-            <Link underline="none" onClick={() => {handleSetTeamLeadId(_id) ,handleSetInvitedMemberId(_id)}}>
+            <Link underline="none" onClick={() => {handleSetTeamLeadId(_id)}}>
               {parts.map((part, index) => (
                 <Typography
                   key={index}
