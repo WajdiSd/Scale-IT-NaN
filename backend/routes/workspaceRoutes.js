@@ -24,7 +24,7 @@ router.put("/invite-members/:id", protect, inviteManyMembers);
 
 router.post("/add/:idmember", protect, addWorkspace);
 router.put("/update/:idworkspace/:idhr", protect, updateWorkspace);
-router.get("/:idmember", protect, getWorkspaces);
+router.get("/:idmember", getWorkspaces);
 router.get("/details/:id", protect, getWorkspaceById);
 router.get("/fetch-users/:idworkspace", protect, fetchUsersByWorkspace);
 
@@ -37,7 +37,7 @@ router.put(
   removeMemberFromWorkspace
 );
 router.put(
-  "/assignPM/:idworkspace/:idmember/:idhr",
+  "/assignPM/:idworkspace/:idmember/:idhr", 
   protect,
   assignProjectManager
 );

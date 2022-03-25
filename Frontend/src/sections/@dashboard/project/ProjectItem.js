@@ -44,6 +44,7 @@ export default function ProjectItem({
   userId,
   workspaceId,
   deleteProjectHook,
+  updateProjectHook,
   restoreProjectHook,
   isProjectManager,
 }) {
@@ -109,8 +110,10 @@ export default function ProjectItem({
         ) : (
           <MoreProjectOptions
             deleteProjectHook={deleteProjectHook}
+            updateProjectHook={updateProjectHook}
             userId={userId}
             projectId={projectId}
+            project={project}
             workspaceId={workspaceId}
             linkTo={linkTo}
             isProjectManager={isProjectManager}

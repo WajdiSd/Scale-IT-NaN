@@ -21,16 +21,20 @@ export const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
-    reset: (state) => {
-      (state.workspaces = []), (state.isLoading = false);
-      (state.workspace = null), (state.isSuccess = false);
-      state.isError = false;
-      state.message = '';
+    resetWorkspace: (state) => {
+      state.workspaces= [],
+      state.workspace= null,
+      state.usersInWorkspace= [],
+      state.isError= false,
+      state.isSuccess= false,
+      state.isLoading= false,
+      state.message= '';
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getWorkspace.fulfilled, (state, action) => {
+        console.log('get Workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
@@ -46,6 +50,7 @@ export const workspaceSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.workspaces = []
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -58,6 +63,7 @@ export const workspaceSlice = createSlice({
           workspac.workspace = null;
           localStorage.setItem('redux-workspaces', workspac);
         }
+        
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;
@@ -88,7 +94,8 @@ export const workspaceSlice = createSlice({
         console.log('delete workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
-        state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload.id);
+        state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload._id);
+      
       })
       .addCase(deleteWorkspace.rejected, (state, action) => {
         console.log('delete workspace rejected');
@@ -164,6 +171,18 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(AssignProjectManagerTomember.fulfilled, (state, action) => {
+        console.log('Assign Project Manager fulfilled');
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(AssignProjectManagerTomember.rejected, (state, action) => {
+        console.log(state, action);
+        console.log('Assign Project Manager rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
@@ -191,11 +210,13 @@ export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (
 
 export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
   try {
+
     const workspace = await workspaceService.getWorkspace(id);
     if (workspace) {
-      thunkAPI.dispatch(isHr(workspace));
-      thunkAPI.dispatch(isProjectManager(workspace));
-      thunkAPI.dispatch(usersbyworkspace(workspace._id));
+      //await thunkAPI.dispatch(resetProjectList());
+      await thunkAPI.dispatch(isHr(workspace));
+      await thunkAPI.dispatch(isProjectManager(workspace));
+      await thunkAPI.dispatch(usersbyworkspace(workspace._id));
       return workspace;
     }
   } catch (error) {
@@ -257,6 +278,18 @@ export const setRatesToMember = createAsyncThunk('workspace/setRatesToMember', a
     return thunkAPI.rejectWithValue(message);
   }
 });
+export const AssignProjectManagerTomember = createAsyncThunk(
+  'workspace/AssignProjectManagerTomember',
+  async (Data, thunkAPI) => {
+    try {
+      return await workspaceService.AssignProjectManagerToMember(Data);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',
@@ -271,5 +304,5 @@ export const removememberfromworkspace = createAsyncThunk(
   }
 );
 
-export const { reset } = workspaceSlice.actions;
+export const { resetWorkspace } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

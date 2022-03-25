@@ -69,12 +69,6 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
     }
   };
 
-  const handleKeyUp = (event) => {
-    if (event.key === 'Enter') {
-      handleClick(searchQuery);
-    }
-  };
-
   return (
     <Autocomplete
       size="medium"
@@ -90,7 +84,6 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
         <InputStyle
           {...params}
           placeholder="Search members..."
-          onKeyUp={handleKeyUp}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
