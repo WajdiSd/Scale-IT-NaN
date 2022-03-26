@@ -47,6 +47,7 @@ export default function ProjectItem({
   updateProjectHook,
   restoreProjectHook,
   isProjectManager,
+  authority,
 }) {
   const { description, name, startDate, expectedEndDate, _id, workspace, isDeleted } = project;
   const theme = useTheme();
@@ -117,6 +118,7 @@ export default function ProjectItem({
             workspaceId={workspaceId}
             linkTo={linkTo}
             isProjectManager={isProjectManager}
+            authority={authority}
           />
         )}
       </CaptionStyle>
