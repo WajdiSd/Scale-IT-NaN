@@ -395,7 +395,7 @@ const assignTeamLeader = asyncHandler(async (req, res) => {
     }
   }
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     if (!project) {
@@ -543,48 +543,66 @@ const updateProject = asyncHandler(async (req, res) => {
  * @desc invite a list of members to a workspace
  * @var(members,list of member emails )
  * @var(role, so that we can know if the members should be affected as managers or not)
- * @route PUT /api/project/invite-members/:idproject/:idpm
- * idpm : id of current user inviting
+ * @route PUT /api/project/invite-members/:idproject/:idtl
+ * idtl : id of current user inviting
  */
 const inviteMembers = asyncHandler(async (req, res, next) => {
   console.log(req.params);
-  var verif = true;
+  var verif = false;
+  var veriff = false;
   const emails = req.body.emails;
+
   const project = await Project.findById(req.params.idproject);
-  for (let i = 0; i < project.assigned_members.length; i++) {
-    if (
-      project.assigned_members[i].memberId == req.params.idpm &&
-      project.assigned_members[i].isTeamLeader == true
-    )
-      verif = true;
-  }
-
-  if (!verif) {
-    es.status(404);
-    throw new Error("changes are not made by a PM!");
+  if (!project) {
+    res.status(400);
+    throw new Error("invalid project id");
   } else {
-    for (let i = 0; i < emails.length; i++) {
-      let member = await Member.findOne({ email: emails[i] });
-
-      //Member must belong to workspace first?
-      //Should we add it next?
-      //Can outsiders work in projects not belonging to their workspace?
-
-      const invitedMember = {
-        memberId: member._id,
-      };
-      await Project.findOneAndUpdate(
-        { _id: req.params.idproject },
-        {
-          $push: { assigned_members: invitedMember },
-        },
-        {
-          new: true,
-        }
-      );
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idtl &&
+        project.assigned_members[i].isTeamLeader == true
+      )
+        veriff = true;
     }
-    return res.status(200).json(emails);
+    if (!verif) {
+      res.status(401);
+      throw new Error("invalid TeamLeader id");
+    } else {
+      for (let i = 0; i < emails.length; i++) {
+        let member = await Member.findOne({ email: emails[i] });
+
+        //Member must belong to workspace first
+        var belongs = false;
+        const wkspId = project.workspace._id;
+        console.log(wkspId);
+        const workspaceExist = await Workspace.findById(wkspId);
+        console.log(workspaceExist);
+
+        for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
+          if (workspaceExist.assigned_members[i].member._id == member._id)
+            belongs = true;
+        }
+        if (!belongs) {
+          res.status(404);
+          throw new Error("user does not belong in workspace");
+        } else {
+          const invitedMember = {
+            memberId: member._id,
+          };
+          await Project.findOneAndUpdate(
+            { _id: req.params.idproject },
+            {
+              $push: { assigned_members: invitedMember },
+            },
+            {
+              new: true,
+            }
+          );
+        }
+      }
+    }
   }
+  return res.status(200).json(emails);
 });
 
 /**
