@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 // hooks
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useProjectFilter from 'src/hooks/useProjectFilter';
 import useAuth from 'src/hooks/useAuth';
 import useProject from 'src/hooks/useProject';
@@ -25,8 +25,9 @@ ProjectCard.propTypes = {
 export default function ProjectCard({ loaded, projects }) {
   const { isProjectManager, user } = useAuth();
   const { deleteProjectHook, restoreProjectHook, updateProjectHook } = useProject();
-  const { query, projectsFilter, searchProjects } = useProjectFilter(projects);
+  const { query, managedProjects, ledProjects, normalProjects, searchProjects } = useProjectFilter(projects);
   const { id } = useParams();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleAddEvent = () => {
@@ -82,30 +83,101 @@ export default function ProjectCard({ loaded, projects }) {
         {!projects || projects.length === 0 ? (
           <Typography variant="h1">No projects found.</Typography>
         ) : (
-          <Box
-            sx={{
-              display: 'grid',
-              gap: 3,
-              gridTemplateColumns: {
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-              },
-            }}
-          >
-            {projectsFilter.map((project) => (
-              <ProjectItem
-                key={project._id}
-                workspaceId={id}
-                userId={user._id}
-                restoreProjectHook={restoreProjectHook}
-                deleteProjectHook={deleteProjectHook}
-                updateProjectHook={updateProjectHook}
-                project={project}
-                isProjectManager={isProjectManager}
-              />
-            ))}
-          </Box>
+          <>
+            {managedProjects.length === 0 ? (
+              ''
+            ) : (
+              <>
+                <Typography variant="h2">Projects you manage.</Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                    },
+                  }}
+                >
+                  {managedProjects.map((project) => (
+                    <ProjectItem
+                      key={project._id}
+                      workspaceId={id}
+                      userId={user._id}
+                      restoreProjectHook={restoreProjectHook}
+                      deleteProjectHook={deleteProjectHook}
+                      updateProjectHook={updateProjectHook}
+                      project={project}
+                      isProjectManager={isProjectManager}
+                    />
+                  ))}
+                </Box>
+              </>
+            )}
+            {ledProjects.length === 0 ? (
+              ''
+            ) : (
+              <>
+                <Typography variant="h2">Projects you lead.</Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                    },
+                  }}
+                >
+                  {ledProjects.map((project) => (
+                    <ProjectItem
+                      key={project._id}
+                      workspaceId={id}
+                      userId={user._id}
+                      restoreProjectHook={restoreProjectHook}
+                      deleteProjectHook={deleteProjectHook}
+                      updateProjectHook={updateProjectHook}
+                      project={project}
+                      isProjectManager={isProjectManager}
+                    />
+                  ))}
+                </Box>
+              </>
+            )}
+            {normalProjects.length === 0 ? (
+              ''
+            ) : (
+              <>
+                <Typography variant="h2">Projects you're in.</Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                    },
+                  }}
+                >
+                  {normalProjects.map((project) => (
+                    <ProjectItem
+                      key={project._id}
+                      workspaceId={id}
+                      userId={user._id}
+                      restoreProjectHook={restoreProjectHook}
+                      deleteProjectHook={deleteProjectHook}
+                      updateProjectHook={updateProjectHook}
+                      project={project}
+                      isProjectManager={isProjectManager}
+                    />
+                  ))}
+                </Box>
+              </>
+            )}
+          </>
         )}
       </Card>
     </Box>

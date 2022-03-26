@@ -138,8 +138,13 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
 
   for (const member of project.assigned_members) {
     let member1 = await Member.findById(member.memberId);
-    if(member1){
-      let obj2 = {...member1._doc, isProjectManager: member.isProjectManager , isTeamLeader: member.isTeamLeader, isDeleted: member.isDeleted};
+    if (member1) {
+      let obj2 = {
+        ...member1._doc,
+        isProjectManager: member.isProjectManager,
+        isTeamLeader: member.isTeamLeader,
+        isDeleted: member.isDeleted,
+      };
       members.push(obj2);
     }
   }
@@ -320,7 +325,7 @@ const assignTeamLeader = asyncHandler(async (req, res) => {
     }
   }
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     if (!project) {
@@ -481,55 +486,51 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
   if (!project) {
     res.status(400);
     throw new Error("invalid project id");
-  }
-  else {
-  for (let i = 0; i < project.assigned_members.length; i++) {
-    if (
-      project.assigned_members[i].memberId == req.params.idtl &&
-      project.assigned_members[i].isTeamLeader == true
-    )
-      veriff = true;
-  }
-  if (!verif) {
-    res.status(401);
-    throw new Error("invalid TeamLeader id");
+  } else {
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idtl &&
+        project.assigned_members[i].isTeamLeader == true
+      )
+        veriff = true;
     }
-    else {
+    if (!verif) {
+      res.status(401);
+      throw new Error("invalid TeamLeader id");
+    } else {
+      for (let i = 0; i < emails.length; i++) {
+        let member = await Member.findOne({ email: emails[i] });
 
-    for (let i = 0; i < emails.length; i++) {
-      let member = await Member.findOne({ email: emails[i] });
+        //Member must belong to workspace first
+        var belongs = false;
+        const wkspId = project.workspace._id;
+        console.log(wkspId);
+        const workspaceExist = await Workspace.findById(wkspId);
+        console.log(workspaceExist);
 
-      //Member must belong to workspace first
-      var belongs = false;
-      const wkspId = project.workspace._id;
-      console.log(wkspId);
-      const workspaceExist = await Workspace.findById(wkspId);
-      console.log(workspaceExist);
-
-      for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
-        if (
-          workspaceExist.assigned_members[i].member._id == member._id
-        )
-        belongs = true;
-      }
-            if (!belongs)
-            {res.status(404);
-            throw new Error("user does not belong in workspace");
-            }  
-            else { 
-            const invitedMember = {
-              memberId: member._id,
-            };
-            await Project.findOneAndUpdate(
-              { _id: req.params.idproject },
-              {
-                $push: { assigned_members: invitedMember },
-              },
-              {
-                new: true,
-              });
+        for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
+          if (workspaceExist.assigned_members[i].member._id == member._id)
+            belongs = true;
+        }
+        if (!belongs) {
+          res.status(404);
+          throw new Error("user does not belong in workspace");
+        } else {
+          const invitedMember = {
+            memberId: member._id,
+          };
+          await Project.findOneAndUpdate(
+            { _id: req.params.idproject },
+            {
+              $push: { assigned_members: invitedMember },
+            },
+            {
+              new: true,
             }
-    }}
+          );
+        }
+      }
+    }
   }
   return res.status(200).json(emails);
 });
@@ -563,16 +564,12 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
     throw new Error("changes are not made by a TL!");
   } else {
     for (let i = 0; i < userIds.length; i++) {
-
-
       await Project.findOneAndUpdate(
-        { _id: req.params.idproject,
-          "assigned_members.memberId": userIds[i],
-        },
+        { _id: req.params.idproject, "assigned_members.memberId": userIds[i] },
         {
           $set: {
             "assigned_members.$.isDeleted": true,
-        }
+          },
         },
         {
           new: true,
