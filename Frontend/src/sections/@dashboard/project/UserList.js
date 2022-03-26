@@ -1,5 +1,6 @@
 import { paramCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -43,6 +44,9 @@ import { useDispatch } from '../../../redux/store';
 import { getFullMemberByProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
+import { ToastContainer, toast } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.css';
+
 
 
 // ----------------------------------------------------------------------
@@ -87,8 +91,8 @@ export default function UserList() {
     onChangeRowsPerPage,
   } = useTable();
 
-  const { themeStretch } = useSettings();
-  const {usersInProject} = useProject();
+  const { themeStretch, themeMode } = useSettings();
+  const {usersInProject, project} = useProject();
   const {user} = useAuth();
 
   const navigate = useNavigate();
@@ -109,8 +113,19 @@ export default function UserList() {
 
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
   let dataFiltered=null;
+  let toastId = useRef(null);
+
+
+  const notify = (text) => {
+    toastId.current = 
+    themeMode === 'dark'? toast(text, { autoClose: false, type: toast.TYPE.INFO })
+    :
+    toast.dark(text, { autoClose: false, type: toast.TYPE.INFO })
+  }
+  const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
 
   useEffect(() => {
+
     setReloadData(false)
     setTableData(usersInProject);
     dataFiltered = applySortFilter({
@@ -144,7 +159,11 @@ export default function UserList() {
       idtl: user._id,
     }
     try {
+    notify("Removing member...")
+
       dispatch(removeMembersFromProject(data)).then(()=>{
+      update("Member removed")
+
         setReloadData(true);
       });
     } catch (error) {
@@ -163,17 +182,26 @@ export default function UserList() {
   };
 
   const handleAssignTeamLeader = (id) => {
+    
     //:idproject/:idmember/:idpm
+    /*if(themeMode === 'dark')
+      toast("Assigning Team Leader...");
+    else
+      toast.dark("Wow so easy !");*/
+
     console.log(id);
     const data={
       idproject: projectid,
       idpm: user._id,
       idmember: id,
     }
+    notify("Assigning Team Leader...")
     dispatch(updateTeamLeader(data)).then((res)=>{
-      enqueueSnackbar(res.payload.msg)
+      update(res.payload.msg)
+      //enqueueSnackbar(res.payload.msg)
       setReloadData(true);
     })
+    
   };
 
   dataFiltered = applySortFilter({
@@ -192,8 +220,19 @@ export default function UserList() {
     (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title="User: List">
+    <Page title={"Project: "+project?.name}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
         <HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}

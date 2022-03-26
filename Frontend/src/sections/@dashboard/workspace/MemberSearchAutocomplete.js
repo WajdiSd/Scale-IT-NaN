@@ -19,7 +19,6 @@ import InputStyle from '../../../components/InputStyle';
 import SearchNotFound from '../../../components/SearchNotFound';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
-import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 

@@ -67,7 +67,7 @@ export default function ProjectMembersList() {
     slidesToScroll: 1,
     rtl: Boolean(theme.direction === 'rtl'),
     ...CarouselDots(),
-    focusOnSelect: true,
+    focusOnSelect: false,
     beforeChange: (current, next) => setSelectContact(next),
     responsive: [
       {
@@ -125,8 +125,6 @@ export default function ProjectMembersList() {
 
   return (
     <>
-      
-      
       <RootStyle>
         <CardHeader title="Team" />
         <Box sx={{ p: 3 }}>
