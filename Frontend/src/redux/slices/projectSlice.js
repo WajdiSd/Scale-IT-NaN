@@ -449,7 +449,12 @@ export const getFullMemberByProject = createAsyncThunk('project/fullmembers', as
 
 export const inviteMemberToProject = createAsyncThunk('project/inviteMemberToProject', async (data, thunkAPI) => {
   try {
-    return await projectService.inviteMemberToProject(data);
+    const invited = await projectService.inviteMemberToProject(data);
+    if (invited) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return invited;
+    }
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

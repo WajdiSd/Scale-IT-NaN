@@ -64,12 +64,12 @@ const getInitialValues = () => {
 
 InviteMembersToProjectForm.propTypes = {
   onCancel: PropTypes.func,
+  onInviteMembers: PropTypes.func,
 };
 
-export default function InviteMembersToProjectForm({ onCancel }) {
+export default function InviteMembersToProjectForm({ onInviteMembers,onCancel }) {
   const { enqueueSnackbar } = useSnackbar();
-  const { user } = useAuth();
-  const { id,projectid } = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
 
   let users = [];
@@ -78,7 +78,6 @@ export default function InviteMembersToProjectForm({ onCancel }) {
   const [invitedMembers, setInvitedMembers] = useState([]);
 
   function handleMemberInput(event) {
-    //setInvitedMembers('');
     setInvitedMember(event.target.value);
   }
 
@@ -112,20 +111,10 @@ export default function InviteMembersToProjectForm({ onCancel }) {
     formState: { isSubmitting },
   } = methods;
 
-  const onInviteMembers = async (idproject,idtl,members) => {
-    const data = {
-      idproject: projectid,
-      idtl: user._id,
-      members
-    }
-    dispatch(inviteMemberToProject(data));
-  };
-
   let isInWorkspace= false;
-  const handleAddMemberToList= () => {
+  const handleAddMemberToList= (e) => {
+    e.preventDefault();
     isInWorkspace = dispatch(userExistsInWorkspace({id,invitedMember}));
-      console.log("------------------------");
-      console.log(isInWorkspace);
     isInWorkspace.then(
       (res) => {
         if (res&&validateEmail(invitedMember)) {
@@ -229,14 +218,14 @@ export default function InviteMembersToProjectForm({ onCancel }) {
           type="submit"
           onClick={(e) => {
             e.preventDefault();
-            console.log(invitedMembers);
+            onCancel();
             onInviteMembers(invitedMembers);
           }}
           variant="contained"
           loading={isSubmitting}
           loadingIndicator="Loading..."
         >
-          Add
+          Invite
         </LoadingButton>
       </DialogActions>
     </FormProvider>
