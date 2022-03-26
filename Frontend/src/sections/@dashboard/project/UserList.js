@@ -18,6 +18,7 @@ import {
   TableContainer,
   TablePagination,
   FormControlLabel,
+  DialogTitle,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -38,9 +39,12 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 // sections
 import { UserTableToolbar, UserTableRow } from './user';
 import useProject from 'src/hooks/useProject';
+import { DialogAnimate } from 'src/components/animate';
+
+import InviteMembersToProjectForm from './InviteMembersToProjectForm';
 
 import { useDispatch } from '../../../redux/store';
-import { getFullMemberByProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
+import { getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
 
@@ -99,19 +103,47 @@ export default function UserList() {
 
   const [filterRole, setFilterRole] = useState('all');
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const [inviteMemberClicked, setInviteMemberClicked] = useState(false);
+
+  const handleOpenInviteDialog = () => {
+    setInviteMemberClicked(true);
+    setIsOpenModal(true);
+  }
+
+  const handleCloseInviteDialog = () => {
+    setInviteMemberClicked(false);
+  }
+
+  const handleInviteEvent = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
+
+
+  const onInviteMembers = async (members) => {
+    const data = {
+      idproject: projectid,
+      idtl: user._id,
+      members
+    }
+    dispatch(inviteMemberToProject(data)).then(() => {
+      setReloadData(true);
+      enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+    });
+  };
+
+
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
   let dataFiltered = null;
 
   useEffect(() => {
     setReloadData(false);
     setTableData(usersInProject);
-    dataFiltered = applySortFilter({
-      tableData,
-      comparator: getComparator(order, orderBy),
-      filterName,
-      filterRole,
-      filterStatus,
-    });
   }, [reloadData]);
 
   const handleFilterName = (filterName) => {
@@ -126,10 +158,6 @@ export default function UserList() {
   };
 
   const handleDeleteRow = (id) => {
-    /*const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);*/
-
     const data = {
       userIds: [id],
       idproject: projectid,
@@ -187,6 +215,10 @@ export default function UserList() {
   return (
     <Page title="User: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+        <DialogTitle>{'Invite Members to project'}</DialogTitle>
+        <InviteMembersToProjectForm onInviteMembers={onInviteMembers} onCancel={handleCloseModal}/>
+      </DialogAnimate>
         <HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}
@@ -196,8 +228,9 @@ export default function UserList() {
               component={RouterLink}
               to={PATH_DASHBOARD.user}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
+              onClick={handleOpenInviteDialog}
             >
-              New User
+              Invite members
             </Button>
           }
         />
@@ -320,7 +353,7 @@ export default function UserList() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
-  const stabilizedThis = tableData.map((el, index) => [el, index]);
+  const stabilizedThis = tableData?.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);

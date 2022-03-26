@@ -564,11 +564,10 @@ const updateProject = asyncHandler(async (req, res) => {
  * @route PUT /api/project/invite-members/:idproject/:idtl
  * idtl : id of current user inviting
  */
-const inviteMembers = asyncHandler(async (req, res, next) => {
+ const inviteMembers = asyncHandler(async (req, res, next) => {
   console.log(req.params);
-  var verif = false;
   var veriff = false;
-  const emails = req.body.emails;
+  const emails = req.body.members;
 
   const project = await Project.findById(req.params.idproject);
   if (!project) {
@@ -582,7 +581,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
       )
         veriff = true;
     }
-    if (!verif) {
+    if (!veriff) {
       res.status(401);
       throw new Error("invalid TeamLeader id");
     } else {
@@ -597,7 +596,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
         console.log(workspaceExist);
 
         for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
-          if (workspaceExist.assigned_members[i].member._id == member._id)
+          if (workspaceExist.assigned_members[i].member._id.equals(member._id))
             belongs = true;
         }
         if (!belongs) {
@@ -632,12 +631,6 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
 const deleteMembers = asyncHandler(async (req, res, next) => {
   var verif = false;
   const userIds = req.body;
-  console.log("userIds");
-  console.log(userIds);
-  console.log("req.params.idproject");
-  console.log(req.params.idproject);
-  console.log("req.params.idtl");
-  console.log(req.params.idtl);
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
