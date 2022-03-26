@@ -28,7 +28,7 @@ const deleteProject = async (projectId, workspaceId, memberId) => {
 
 //deletes members
 const removeMembersFromProject = async (idproject, idtl, userIds) => {
-  const response = await axiosInstance.put(API_URL + 'delete-members/' + idproject+'/'+idtl, userIds);
+  const response = await axiosInstance.put(API_URL + 'delete-members/' + idproject + '/' + idtl, userIds);
   return response.data;
 };
 
@@ -38,28 +38,28 @@ const restoreProject = async (projectId, workspaceId, memberId) => {
   return response.data;
 };
 
-//update project 
+//update project
 const updateProject = async (data) => {
   const idProject = data.idProject;
   const idPM = data.idPM;
   data.idProject = undefined;
-  data.idPM = undefined; 
+  data.idPM = undefined;
   const response = await axiosInstance.put(API_URL + 'update/' + idProject + '/' + idPM, data);
   return response.data;
 };
 
-//updateTeamLeader 
+//updateTeamLeader
 const updateTeamLeader = async (data) => {
   const idproject = data.idproject;
   const idpm = data.idpm;
   const idmember = data.idmember;
-  const response = await axiosInstance.put(API_URL + 'assignteamleader/' + idproject + '/' + idmember+'/'+idpm);
+  const response = await axiosInstance.put(API_URL + 'assignteamleader/' + idproject + '/' + idmember + '/' + idpm);
   return response.data;
 };
 
 // get project by id
-const getProject = async (idProject,idUser) => {
-  const response = await axiosInstance.get(API_URL + 'get/' + idProject+'/'+idUser);
+const getProject = async (idProject, idUser) => {
+  const response = await axiosInstance.get(API_URL + 'get/' + idProject + '/' + idUser);
   return response.data;
 };
 
@@ -77,6 +77,15 @@ const inviteMemberToProject = async (data) => {
   const response = await axiosInstance.put(API_URL + 'invite-members/'+idproject+'/'+idtl, data);
   return response.data;
 };
+const abortProject = async (projectId, pmId) => {
+  const response = await axiosInstance.put(API_URL + 'abortproject/' + projectId + '/' + pmId);
+  return response.data;
+};
+
+const finishProject = async (projectId, pmId) => {
+  const response = await axiosInstance.put(API_URL + 'finishproject/' + projectId + '/' + pmId);
+  return response.data;
+};
 
 const projectService = {
   addProject,
@@ -90,6 +99,8 @@ const projectService = {
   inviteMemberToProject,
   removeMembersFromProject,
   updateTeamLeader,
+  abortProject,
+  finishProject,
 };
 
 export default projectService;

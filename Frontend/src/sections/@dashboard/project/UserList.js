@@ -48,17 +48,11 @@ import { getFullMemberByProject, removeMembersFromProject, updateTeamLeader } fr
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
 
-
 // ----------------------------------------------------------------------
 
 const STATUS_OPTIONS = ['all', 'active', 'removed'];
 
-const ROLE_OPTIONS = [
-  'all',
-  'Project Manager',
-  'Team Leader',
-  'Member',
-];
+const ROLE_OPTIONS = ['all', 'Project Manager', 'Team Leader', 'Member'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
@@ -92,16 +86,14 @@ export default function UserList() {
   } = useTable();
 
   const { themeStretch } = useSettings();
-  const {usersInProject} = useProject();
-  const {user} = useAuth();
+  const { usersInProject } = useProject();
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const {projectid} = useParams();
+  const { projectid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-
-
 
   const [tableData, setTableData] = useState(usersInProject);
   const [deletedUsers, setDeletedUsers] = useState([]);
@@ -135,10 +127,10 @@ export default function UserList() {
 
 
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
-  let dataFiltered=null;
+  let dataFiltered = null;
 
   useEffect(() => {
-    setReloadData(false)
+    setReloadData(false);
     setTableData(usersInProject);
     dataFiltered = applySortFilter({
       tableData,
@@ -148,14 +140,14 @@ export default function UserList() {
       filterStatus,
     });
   }, [reloadData]);
-  
+
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
     setPage(0);
   };
 
   const handleFilterRole = (event) => {
-    console.log("handleFilterRole");
+    console.log('handleFilterRole');
     console.log(event.target.value);
     setFilterRole(event.target.value);
   };
@@ -165,13 +157,13 @@ export default function UserList() {
     setSelected([]);
     setTableData(deleteRow);*/
 
-    const data ={
+    const data = {
       userIds: [id],
       idproject: projectid,
       idtl: user._id,
-    }
+    };
     try {
-      dispatch(removeMembersFromProject(data)).then(()=>{
+      dispatch(removeMembersFromProject(data)).then(() => {
         setReloadData(true);
       });
     } catch (error) {
@@ -192,15 +184,16 @@ export default function UserList() {
   const handleAssignTeamLeader = (id) => {
     //:idproject/:idmember/:idpm
     console.log(id);
-    const data={
+    const data = {
       idproject: projectid,
       idpm: user._id,
       idmember: id,
-    }
-    dispatch(updateTeamLeader(data)).then((res)=>{
-      enqueueSnackbar(res.payload.msg)
+    };
+    dispatch(updateTeamLeader(data)).then((res) => {
+      console.log(res);
+      enqueueSnackbar(res.payload.msg);
       setReloadData(true);
-    })
+    });
   };
 
   dataFiltered = applySortFilter({
@@ -304,15 +297,14 @@ export default function UserList() {
                   }
                 />
 
-                {
-                  !usersInProject?
-                  ( <TableBody>
+                {!usersInProject ? (
+                  <TableBody>
                     <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
 
-                  <TableNoData isNotFound={isNotFound} />
-                  </TableBody>)
-                  :
-                  (<TableBody>
+                    <TableNoData isNotFound={isNotFound} />
+                  </TableBody>
+                ) : (
+                  <TableBody>
                     {dataFiltered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                       <UserTableRow
                         key={row?._id}
@@ -324,13 +316,12 @@ export default function UserList() {
                         onAssignTeamLeader={() => handleAssignTeamLeader(row?._id)}
                       />
                     ))}
-  
+
                     <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
-  
+
                     <TableNoData isNotFound={isNotFound} />
-                  </TableBody>)
-                }
-                
+                  </TableBody>
+                )}
               </Table>
             </TableContainer>
           </Scrollbar>
@@ -362,7 +353,7 @@ export default function UserList() {
 
 function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
-  
+
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -370,50 +361,50 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   });
 
   tableData = stabilizedThis.map((el) => el[0]);
-  
+
   if (filterName) {
-    tableData = tableData.filter((item) => item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 || item.lastName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter(
+      (item) =>
+        item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.lastName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    );
   }
 
   if (filterStatus !== 'all') {
     //tableData = tableData.filter((item) => item.status === filterStatus);
-    if(filterStatus === "removed"){
+    if (filterStatus === 'removed') {
       tableData = tableData.filter((item) => {
-        if(item.isDeleted){
+        if (item.isDeleted) {
           return item;
         }
       });
-    }else{
+    } else {
       tableData = tableData.filter((item) => {
-        if(!item.isDeleted){
+        if (!item.isDeleted) {
           return item;
         }
       });
     }
-
-
   }
 
   if (filterRole !== 'all') {
     if (filterRole === 'Team Leader') {
       tableData = tableData.filter((item) => {
-        console.log("item");
-        if(item.isTeamLeader){
-        console.log(item);
+        console.log('item');
+        if (item.isTeamLeader) {
+          console.log(item);
           return item;
         }
       });
-    }else
-    if (filterRole === 'Project Manager') {
-
+    } else if (filterRole === 'Project Manager') {
       tableData = tableData.filter((item) => {
-        if(item.isProjectManager){
-            return item;
+        if (item.isProjectManager) {
+          return item;
         }
       });
-    }else{
+    } else {
       tableData = tableData.filter((item) => {
-        if(!item.isTeamLeader && !item.isProjectManager){
+        if (!item.isTeamLeader && !item.isProjectManager) {
           return item;
         }
       });
