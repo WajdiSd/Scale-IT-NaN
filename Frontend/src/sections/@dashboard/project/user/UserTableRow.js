@@ -7,6 +7,7 @@ import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mu
 import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -16,12 +17,13 @@ UserTableRow.propTypes = {
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func,
+  onAssignTeamLeader: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader }) {
   const theme = useTheme();
-
-  const { company, role, isVerified, status, phone, updatedAt, lastName, firstName, isValidated, isDeleted, gender, email } = row;
+  const { company, role, isVerified, isTeamLeader, isDeleted, isProjectManager, status, phone, updatedAt, lastName, firstName, isValidated, gender, email } = row;
+  const {isTL, isPM} = useProject();
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -32,6 +34,11 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
   const handleCloseMenu = () => {
     setOpenMenuActions(null);
   };
+
+  const handleAssignTeamLeader = () => {
+    
+  };
+  
 
   return (
     <TableRow hover selected={selected}>
@@ -49,17 +56,26 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left">{company}</TableCell>
 
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-        {role}
+       {
+         isTeamLeader?
+         ('Team Leader')
+         :
+         (isProjectManager?
+          ('Project Manager')
+          :
+          ('Member')
+          )
+       }
       </TableCell>
 
       <TableCell align="center">
         <Iconify
-          icon={isVerified ? 'eva:checkmark-circle-fill' : 'eva:clock-outline'}
+          //icon={isVerified ? 'eva:checkmark-circle-fill' : 'eva:clock-outline'}
+          icon='eva:checkmark-circle-fill'
           sx={{
             width: 20,
             height: 20,
             color: 'success.main',
-            ...(!isVerified && { color: 'warning.main' }),
           }}
         />
       </TableCell>
@@ -67,10 +83,11 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(status === 'banned' && 'error') || 'success'}
+          color={ isDeleted? 'error' : 'success'}
           sx={{ textTransform: 'capitalize' }}
         >
-          {status}
+          { isDeleted?
+           'removed' : 'active'}
         </Label>
       </TableCell>
 
@@ -81,25 +98,65 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
           onClose={handleCloseMenu}
           actions={
             <>
-              <MenuItem
-                onClick={() => {
-                  onDeleteRow();
-                  handleCloseMenu();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  onEditRow();
-                  handleCloseMenu();
-                }}
-              >
-                <Iconify icon={'eva:edit-fill'} />
-                Edit
-              </MenuItem>
+            {isTL?
+            ( 
+              isProjectManager?
+              (<></>)
+              :
+              (
+                <>
+            <MenuItem
+              onClick={() => {
+                handleCloseMenu();
+                onDeleteRow();
+              }}
+              sx={{ color: 'error.main' }}
+            >
+              <Iconify icon={'eva:trash-2-outline'} />
+              Delete
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                onEditRow();
+                handleCloseMenu();
+              }}
+            >
+              <Iconify icon={'eva:edit-fill'} />
+              Edit
+            </MenuItem>
+            </>
+              )
+            )
+            :
+            (isPM?
+              (
+                !isProjectManager && !isTeamLeader && !isDeleted?
+                (<MenuItem
+                  onClick={() => {
+                    handleCloseMenu();
+                    onAssignTeamLeader();
+                  }}
+                >
+                  <Iconify icon={'eva:edit-fill'} />
+                  Make Team Leader
+                </MenuItem>)
+                :
+                (<></>)
+                
+              )
+              :
+              (<></>)
+            )
+            }
+             <MenuItem
+              onClick={() => {
+                handleCloseMenu();
+                
+              }}
+            >
+              <Iconify icon={'ant-design:eye-filled'} />
+              View profile
+            </MenuItem>
             </>
           }
         />

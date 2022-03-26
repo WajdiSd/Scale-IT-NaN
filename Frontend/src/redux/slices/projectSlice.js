@@ -160,7 +160,7 @@ export const projectSlice = createSlice({
         console.log("getProject fulfilled");
         console.log(action.payload);
         state.project = action.payload.data;
-        state.usersInProject = action.payload.data.assigned_users;
+        //state.usersInProject = action.payload.data.assigned_users;
         state.isProjectManager = action.payload.isProjectManager;
         state.isTeamLeader = action.payload.isTeamLeader;
         state.isLoading = false;
@@ -175,13 +175,59 @@ export const projectSlice = createSlice({
         state.isSuccess = false;
       })
       .addCase(getFullMemberByProject.fulfilled, (state, action) => {
+        console.log('getFullMemberByProject fulfilled');
         state.usersInProject = action.payload.data;
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(getFullMemberByProject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
       })
       .addCase(getFullMemberByProject.rejected, (state, action) => {
         state.projectsErrorMessage = 'Ooops, there have been a problem finding your Members By Project';
       })
       .addCase(updateProject.fulfilled, (state, action) => {
         state.project = action.payload.project;
+      })
+      .addCase(removeMembersFromProject.fulfilled, (state, action) => {
+        console.log("removeMembersFromProject fulfilled");
+        console.log(action.payload);
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(removeMembersFromProject.pending, (state, action) => {
+        console.log("removeMembersFromProject pending");
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(removeMembersFromProject.rejected, (state, action) => {
+        console.log("removeMembersFromProject rejected");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
+      .addCase(updateTeamLeader.fulfilled, (state, action) => {
+        console.log("updateTeamLeader fulfilled");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.pending, (state, action) => {
+        console.log("updateTeamLeader pending");
+        console.log(action);
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(updateTeamLeader.rejected, (state, action) => {
+        console.log("updateTeamLeader rejected");
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
       });
   },
 });
@@ -221,6 +267,22 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (da
   }
 });
 
+// Delete Members From Project
+export const removeMembersFromProject = createAsyncThunk('project/removeMembersFromProject', async (data, thunkAPI) => {
+  try { 
+    const project = await projectService.removeMembersFromProject(data.idproject, data.idtl, data.userIds);
+    if (project) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // restore project
 export const restoreProject = createAsyncThunk('project/restoreProject', async (data, thunkAPI) => {
   try {
@@ -237,6 +299,24 @@ export const restoreProject = createAsyncThunk('project/restoreProject', async (
 export const updateProject = createAsyncThunk('project/updateProject', async (data, thunkAPI) => {
   try {
     return await projectService.updateProject(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// updateTeamLeader
+export const updateTeamLeader = createAsyncThunk('project/updateTeamLeader', async (data, thunkAPI) => {
+  try {
+
+    const project = await projectService.updateTeamLeader(data);
+    if (project) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -274,7 +354,8 @@ export const getProject = createAsyncThunk('project/getProject', async (objet, t
   try {
     const project = await projectService.getProject(objet.idProject, objet.idUser);
     if (project) {
-      thunkAPI.dispatch(getFullMemberByProject(objet.idProject));
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(objet.idProject));
       return project;
     }
   } catch (error) {

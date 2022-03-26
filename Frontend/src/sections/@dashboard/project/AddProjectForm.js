@@ -63,6 +63,7 @@ export default function AddProjectForm({ onCancel }) {
   const [teamLeadId, setTeamLeadId] = useState(null);
 
   const handleSetTeamLeadId = (_id) => {
+    console.log("_id");
     console.log(_id);
     setTeamLeadId(_id);
   };

@@ -2,8 +2,9 @@
 import authService from '../service/authService';
 import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { resetWorkspace } from './workspaceSlice'; 
+import { resetWorkspace, getWorkspaces} from './workspaceSlice'; 
 import { resetProject } from './projectSlice';
+
 // const isHr = createAction('isHr');
 // const isNotHr = createAction('isNotHr');
 // const isProjectManager = createAction('isProjectManager');
@@ -38,7 +39,10 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
 // Login user
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
-    return await authService.login(user);
+
+    const loginUser =  await authService.login(user);
+    await thunkAPI.dispatch(getWorkspaces(loginUser._id))
+    return loginUser;
   } catch (error) {
     console.log('ezrzr');
     console.log(error.response);

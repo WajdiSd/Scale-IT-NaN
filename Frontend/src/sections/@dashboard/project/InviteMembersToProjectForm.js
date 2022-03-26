@@ -7,7 +7,19 @@ import { useSnackbar } from 'notistack';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions, OutlinedInput } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Button,
+  Tooltip,
+  TextField,
+  IconButton,
+  DialogActions,
+  OutlinedInput,
+  Chip,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { LoadingButton, MobileDatePicker, MobileDateTimePicker } from '@mui/lab';
 // redux
 import { useDispatch } from '../../../redux/store';
@@ -17,11 +29,13 @@ import { useParams } from 'react-router';
 import { FormProvider, RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import MemberSearchAutocomplete from '../workspace/MemberSearchAutocomplete';
 import useAuth from 'src/hooks/useAuth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 
 import { inviteMemberToProject } from 'src/redux/slices/projectSlice';
-import { setUserError} from 'src/redux/slices/workspaceInviteSlice';
+import { setUserError } from 'src/redux/slices/workspaceInviteSlice';
+import palette from 'src/theme/palette';
+import {userExistsInWorkspace } from 'src/redux/slices/workspaceSlice';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -54,16 +68,17 @@ InviteMembersToProjectForm.propTypes = {
 
 export default function InviteMembersToProjectForm({ onCancel }) {
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuth();
+  const { id,projectid } = useParams();
+  const dispatch = useDispatch();
 
-  const {user} = useAuth();
-
-  const {id} = useParams();
+  let users = [];
 
   const [invitedMember, setInvitedMember] = useState('');
-  const [invitedMembers, setInvitedMembers] = useState('');
+  const [invitedMembers, setInvitedMembers] = useState([]);
 
   function handleMemberInput(event) {
-    setInvitedMembers('');
+    //setInvitedMembers('');
     setInvitedMember(event.target.value);
   }
 
@@ -76,34 +91,18 @@ export default function InviteMembersToProjectForm({ onCancel }) {
       );
   };
 
-  /**
-   * addMembersToProject (data : idproject,idtl, array of members)
-   * add list of members to project
-   * TODO:  add foreach to test validateEmail on all members array 
-   */
-  const addMembersToProject = (data) => { 
-    const { members } = data;
-    console.log("*-------------------------------*");
-    console.log(data);
-    validateEmail(members[0]) ? dispatch(inviteMemberToProject(data)) : dispatch(setUserError('Please add a valid email')); 
-  }
-
-  /*const handleSetInvitedMemberId = (_id) => {
-    console.log(_id);
-    setInvitedMemberId(_id);
-  };*/
-
-  const dispatch = useDispatch();
 
   const EventSchema = Yup.object().shape({
-    title: Yup.string().max(255).required('Title is required'),
-    description: Yup.string().max(5000).required('Description is required'),
+    title: Yup.string(),
+    description: Yup.string(),
   });
-
   const methods = useForm({
     resolver: yupResolver(EventSchema),
     defaultValues: getInitialValues(),
   });
+
+  const handleRemoveUser = (event) =>
+    setInvitedMembers((invitedMembers) => invitedMembers.filter((user) => user !== event.target.innerHTML));
 
   const {
     reset,
@@ -113,79 +112,111 @@ export default function InviteMembersToProjectForm({ onCancel }) {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (data) => {
-    console.log("data");
-    try {
-      const invitedMember = {
-
-      }
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-      console.error(error);
+  const onInviteMembers = async (idproject,idtl,members) => {
+    const data = {
+      idproject: projectid,
+      idtl: user._id,
+      members
     }
-
-    /*try {
-      const newProject = {
-        name: data.title,
-        description: data.description,
-        startDate: data.start,
-        expectedEndDate: data.end,
-        projectManagerId: user._id,
-        teamLeadId: teamLeadId,
-        workspaceId: id,
-      };
-      onCancel();
-      reset();
-        dispatch(addProject(newProject))
-        .then(res=>{
-          if(!res.error)
-            enqueueSnackbar("Successfully added project")
-          else
-            enqueueSnackbar("unable to add project",{
-              variant: 'error',
-            })
-      });
-      
-    } catch (error) {
-      console.error(error);
-    }
-    */
+    dispatch(inviteMemberToProject(data));
   };
 
+  let isInWorkspace= false;
+  const handleAddMemberToList= () => {
+    isInWorkspace = dispatch(userExistsInWorkspace({id,invitedMember}));
+      console.log("------------------------");
+      console.log(isInWorkspace);
+    isInWorkspace.then(
+      (res) => {
+        if (res&&validateEmail(invitedMember)) {
+          setInvitedMembers((invitedMembers) => [...invitedMembers, invitedMember]);
+          setInvitedMember('');
+        } else {
+          enqueueSnackbar('User not in workspace', { variant: 'error' });
+        }
+      }
+    )
+     
+     
+  }
 
   const values = watch();
 
-  
-
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <FormProvider methods={methods}>
       <Stack spacing={3} sx={{ p: 3 }}>
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-              <OutlinedInput
-                size="small"
-                placeholder="Member Emails"
-                type="text"
-                value={invitedMember}
-                onChange={handleMemberInput}
+          <OutlinedInput
+            size="small"
+            placeholder="Member Emails"
+            type="text"
+            value={invitedMember}
+            onChange={handleMemberInput}
+            sx={{
+              width: 0.8,
+              color: 'common.white',
+              fontWeight: 'fontWeightMedium',
+              bgcolor: (theme) => alpha(theme.palette.common.black, 0.16),
+              '& input::placeholder': {
+                color: (theme) => alpha(theme.palette.common.white, 0.48),
+              },
+              '& fieldset': { display: 'none' },
+            }}
+          />
+          <Button
+            onClick={handleAddMemberToList}
+            color="warning"
+            variant="contained"
+          >
+            Add Member
+          </Button>
+        </Stack>
+      </Stack>
+      <Stack
+        direction="row"
+        divider={<Divider orientation="vertical" flexItem />}
+        spacing={{ xs: 1, md: 2 }}
+        alignItems="center"
+        justifyContent="start"
+        sx={{
+          width: 1,
+          flexWrap: 'wrap',
+        }}
+      >
+        {invitedMembers.length > 0 ? (
+          invitedMembers.map((user, index) =>
+            true ? (
+              <Chip
+                key={index}
+                label={user}
+                variant="filled"
                 sx={{
-                  width: 0.8,
+                  p: 1,
+                  m: 1,
                   color: 'common.white',
                   fontWeight: 'fontWeightMedium',
-                  bgcolor: (theme) => alpha(theme.palette.common.black, 0.16),
-                  '& input::placeholder': {
-                    color: (theme) => alpha(theme.palette.common.white, 0.48),
-                  },
-                  '& fieldset': { display: 'none' },
+                  bgcolor: (theme) => alpha(palette.light.secondary.dark, 0.7),
                 }}
               />
-              <Button onClick={()=> {
-                
-                setInvitedMembers(invitedMember+' ');
-              }} color="warning" variant="contained">
-                Add Member
-              </Button>
-            </Stack>
-        <RHFTextField name="members" label="colleagues" disabled value={invitedMembers} multiline rows={4} />
+            ) : (
+              ''
+            )
+          )
+        ) : (
+          <Chip
+            label="no members"
+            clickable
+            onClick={handleRemoveUser}
+            variant="filled"
+            sx={{
+              p: 1,
+              m: 1,
+              color: 'common.white',
+              fontWeight: 'fontWeightMedium',
+              bgcolor: (theme) => alpha(palette.light.primary.main, 0.7),
+            }}
+          />
+        )}
       </Stack>
       <DialogActions>
         <Box sx={{ flexGrow: 1 }} />
@@ -194,7 +225,17 @@ export default function InviteMembersToProjectForm({ onCancel }) {
           Cancel
         </Button>
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting} loadingIndicator="Loading...">
+        <LoadingButton
+          type="submit"
+          onClick={(e) => {
+            e.preventDefault();
+            console.log(invitedMembers);
+            onInviteMembers(invitedMembers);
+          }}
+          variant="contained"
+          loading={isSubmitting}
+          loadingIndicator="Loading..."
+        >
           Add
         </LoadingButton>
       </DialogActions>

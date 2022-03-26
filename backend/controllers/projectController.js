@@ -7,7 +7,6 @@ const {
   MemberInWorkspace,
 } = require("../helpers/functions");
 
-
 const getProject = asyncHandler(async (req, res, next) => {
   const { id, iduser } = req.params;
   const project = await Project.findById(id);
@@ -17,20 +16,17 @@ const getProject = asyncHandler(async (req, res, next) => {
       error: "Project not found",
     });
   }
-  let isTeamLeader= false;
+  let isTeamLeader = false;
   let isProjectManager = false;
 
-
-
-
-  project.assigned_members.forEach(element => {
-    if (String(element.memberId)==iduser) {
-      if(element.isTeamLeader){
+  project.assigned_members.forEach((element) => {
+    if (String(element.memberId) == iduser) {
+      if (element.isTeamLeader) {
         isTeamLeader = true;
-      } else if (element.isProjectManager){
+      } else if (element.isProjectManager) {
         isProjectManager = true;
       }
-    } 
+    }
   });
   return res.status(200).json({
     success: true,
@@ -141,13 +137,11 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
   let members = [];
 
   for (const member of project.assigned_members) {
-    let member1  = null;
-    let member2 = await Member.findById(member.memberId);
-    member1.isProjectManager = member.isProjectManager;
-    member1.isTeamLeader = member.isTeamLeader;
-    member1 = {...member2};
-    members.push(member1);
-    
+    let member1 = await Member.findById(member.memberId);
+    if(member1){
+      let obj2 = {...member1._doc, isProjectManager: member.isProjectManager , isTeamLeader: member.isTeamLeader, isDeleted: member.isDeleted};
+      members.push(obj2);
+    }
   }
   if (!members) {
     return res.status(200).json({
@@ -156,7 +150,6 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
       error: "No members found for this project",
     });
   }
-  console.log(members);
   res.status(200).json({
     success: true,
     count: members.length,
@@ -311,39 +304,10 @@ const unDeleteProject = asyncHandler(async (req, res) => {
   res.status(200).json(project._id);
 });
 
-// @route put /api/project/assignteamleader/:id
+// @route put /api/project/assignteamleader/:idproject/:idmember/:idpm
 const assignTeamLeader = asyncHandler(async (req, res) => {
-  const projectId = req.params.id;
-  const memberId = req.body.memberId;
-  const project = await Project.findById(projectId);
-  if (!project) {
-    res.status(404);
-    throw new Error("project not found");
-  }
-  const member = await Member.findById(memberId);
-  if (!member) {
-    res.status(404);
-    throw new Error("member not found");
-  }
-  if (ProjectHasTeamLeader(projectId)) {
-    // a project necessarily has ONLY ONE team leader
-    res.status(400);
-    throw new Error("project already has a team leader");
-  }
-  const teamLeader = {
-    memberId: memberId,
-    isTeamLeader: true,
-  };
-  project.assigned_members.push(teamLeader);
-  project.save();
-  res.status(200).json("team leader assigned");
-});
-
-// @route put /api/project/discharge/:idproject/:idmember/:idpm
-// idmember : member to discharge
-// idpm : id of the current user : is it a pm?
-const dischargeTeamLeader = asyncHandler(async (req, res) => {
   var verif = false;
+  var idTeamLeader = null;
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
@@ -351,6 +315,9 @@ const dischargeTeamLeader = asyncHandler(async (req, res) => {
       project.assigned_members[i].isProjectManager == true
     )
       verif = true;
+    else if (project.assigned_members[i].isTeamLeader == true) {
+      idTeamLeader = project.assigned_members[i].memberId;
+    }
   }
   if (!verif) {
     es.status(404);
@@ -372,13 +339,29 @@ const dischargeTeamLeader = asyncHandler(async (req, res) => {
           },
           {
             $set: {
-              "assigned_members.$.isTeamLeader": false,
+              "assigned_members.$.isTeamLeader": true,
             },
           },
           function (err, success) {
             if (err) throw err;
             else {
-              res.send({ msg: "Discharged TEAMLEADER" });
+              Project.updateOne(
+                {
+                  _id: req.params.idproject,
+                  "assigned_members.memberId": idTeamLeader,
+                },
+                {
+                  $set: {
+                    "assigned_members.$.isTeamLeader": false,
+                  },
+                },
+                function (err, success) {
+                  if (err) throw err;
+                  else {
+                    res.send({ msg: "Assigned new Team Leader" });
+                  }
+                }
+              );
             }
           }
         );
@@ -387,9 +370,58 @@ const dischargeTeamLeader = asyncHandler(async (req, res) => {
   }
 });
 
+// @route put /api/project/discharge/:idproject/:idmember/:idpm
+// idmember : member to discharge
+// idpm : id of the current user : is it a pm?
+// const dischargeTeamLeader = asyncHandler(async (req, res) => {
+//   var verif = false;
+//   const project = await Project.findById(req.params.idproject);
+//   for (let i = 0; i < project.assigned_members.length; i++) {
+//     if (
+//       project.assigned_members[i].memberId == req.params.idpm &&
+//       project.assigned_members[i].isProjectManager == true
+//     )
+//       verif = true;
+//   }
+//   if (!verif) {
+//     es.status(404);
+//     throw new Error("changes are not made by a PM!");
+//   } else {
+//     if (!project) {
+//       res.status(404);
+//       throw new Error("project not found");
+//     } else {
+//       const member = await Member.findById(req.params.idmember);
+//       if (!member) {
+//         res.status(404);
+//         throw new Error("member not found");
+//       } else {
+//         Project.updateOne(
+//           {
+//             _id: req.params.idproject,
+//             "assigned_members.memberId": req.params.idmember,
+//           },
+//           {
+//             $set: {
+//               "assigned_members.$.isTeamLeader": false,
+//             },
+//           },
+//           function (err, success) {
+//             if (err) throw err;
+//             else {
+//               res.send({ msg: "Discharged TEAMLEADER" });
+//             }
+//           }
+//         );
+//       }
+//     }
+//   }
+// });
+
 // @route post /api/project/update/:idproject/:idpm
 // you need to provide the required fields in the body
 // you need to provide memberId(the member creating the project) in the body
+
 const updateProject = asyncHandler(async (req, res) => {
   var verif = false;
   const project = await Project.findById(req.params.idproject);
@@ -440,6 +472,7 @@ const updateProject = asyncHandler(async (req, res) => {
  * idpm : id of current user inviting
  */
 const inviteMembers = asyncHandler(async (req, res, next) => {
+  console.log(req.params);
   var verif = true;
   const emails = req.body.emails;
   const project = await Project.findById(req.params.idproject);
@@ -452,7 +485,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
   }
 
   if (!verif) {
-    es.status(404);
+    res.status(404);
     throw new Error("changes are not made by a PM!");
   } else {
     for (let i = 0; i < emails.length; i++) {
@@ -461,7 +494,7 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
       //Member must belong to workspace first?
       //Should we add it next?
       //Can outsiders work in projects not belonging to their workspace?
-      
+
       const invitedMember = {
         memberId: member._id,
       };
@@ -480,15 +513,20 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
 });
 
 /**
- * @desc invite a list of members to a workspace
- * @var(members,list of member emails )
- * @var(role, so that we can know if the members should be affected as managers or not)
+ * @desc remove a list of members from a project
+ * @var(members,list of member ids )
  * @route PUT /api/project/delete-members/:idproject/:idtl
  * idpm : id of current user inviting
  */
 const deleteMembers = asyncHandler(async (req, res, next) => {
   var verif = false;
-  const emails = req.body.emails;
+  const userIds = req.body;
+  console.log("userIds");
+  console.log(userIds);
+  console.log("req.params.idproject");
+  console.log(req.params.idproject);
+  console.log("req.params.idtl");
+  console.log(req.params.idtl);
   const project = await Project.findById(req.params.idproject);
   for (let i = 0; i < project.assigned_members.length; i++) {
     if (
@@ -500,24 +538,26 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
 
   if (!verif) {
     res.status(404);
-    throw new Error("changes are not made by a PM!");
+    throw new Error("changes are not made by a TL!");
   } else {
-    for (let i = 0; i < emails.length; i++) {
-      let member = await Member.findOne({ email: emails[i] });
-      const invitedMember = {
-        memberId: member._id,
-      };
+    for (let i = 0; i < userIds.length; i++) {
+
+
       await Project.findOneAndUpdate(
-        { _id: req.params.idproject },
+        { _id: req.params.idproject,
+          "assigned_members.memberId": userIds[i],
+        },
         {
-          $pull: { assigned_members: invitedMember },
+          $set: {
+            "assigned_members.$.isDeleted": true,
+        }
         },
         {
           new: true,
         }
       );
     }
-    return res.status(200).json(emails);
+    return res.status(200).json(userIds);
   }
 });
 
@@ -527,7 +567,6 @@ module.exports = {
   unDeleteProject,
   assignTeamLeader,
   updateProject,
-  dischargeTeamLeader,
   inviteMembers,
   deleteMembers,
   getProjects,
