@@ -37,6 +37,7 @@ export default function MoreProjectOptions({
   updateProjectHook,
   userId,
   linkTo,
+  authority,
 }) {
   const [openPopover, setOpenPopover] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -44,7 +45,6 @@ export default function MoreProjectOptions({
 
   const deleteProject = () => deleteProjectHook({ projectId, workspaceId, memberId: userId });
 
-  const { isProjectManager,isTeamLeader } = useProject();
   const handleDeleteProject = () => {
     deleteProject();
     setOpenDialog(false);
@@ -69,17 +69,15 @@ export default function MoreProjectOptions({
 
   const handleCloseUpdateDialog = () => {
     setOpenUpdateDialog(false);
-  }
+  };
 
   const handleOpenUpdateDialog = () => {
     setOpenUpdateDialog(true);
-  }
+  };
 
   const handleClickOpen = () => {
     setOpenDialog(true);
   };
-
-
 
   const ICON = {
     mr: 2,
@@ -87,6 +85,9 @@ export default function MoreProjectOptions({
     height: 20,
   };
 
+  console.log('-------------------------------');
+  console.log('-------------------------------');
+  console.log(authority);
   return (
     <>
       <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpenPopover}>
@@ -128,13 +129,13 @@ export default function MoreProjectOptions({
         </Link>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
-        {isProjectManager && (
+        {authority === 'manager' && (
           <MenuItem onClick={handleOpenUpdateDialog} sx={{ color: 'white' }}>
             <Iconify icon={'eva:edit-2-outline'} sx={{ ...ICON }} />
             Update
           </MenuItem>
         )}
-        {isProjectManager && (
+        {authority === 'manager' && (
           <MenuItem onClick={handleClickOpen} sx={{ color: 'error.main' }}>
             <Iconify icon={'eva:trash-2-outline'} sx={{ ...ICON }} />
             Delete
@@ -143,10 +144,8 @@ export default function MoreProjectOptions({
       </MenuPopover>
       <DialogAnimate sx={{ minWidth: '50%' }} open={openUpdateDialog} onClose={handleCloseUpdateDialog}>
         <DialogTitle>{'Update Project'}</DialogTitle>
-        <UpdateProjectForm project={project} onCancel={handleCloseUpdateDialog}/>
-
+        <UpdateProjectForm project={project} onCancel={handleCloseUpdateDialog} />
       </DialogAnimate>
-
 
       <Dialog
         open={openDialog}
