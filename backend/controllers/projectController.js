@@ -328,11 +328,17 @@ const abortproject = asyncHandler(async (req, res) => {
     if (verif) {
       let proj = {};
       var date = new Date();
-      proj = await Project.findByIdAndUpdate(req.params.idproject, {
-        endDate: date,
-        status: "aborted",
-      });
-      res.status(200).json(proj.status);
+      proj = await Project.findByIdAndUpdate(
+        req.params.idproject,
+        {
+          endDate: date,
+          status: "aborted",
+        },
+        {
+          new: true,
+        }
+      );
+      res.status(200).json(proj);
     } else {
       res.status(401);
       throw new Error("invalid ProjectManager id");
@@ -360,17 +366,29 @@ const finishproject = asyncHandler(async (req, res) => {
       let proj = {};
       var date = new Date();
       if (project.expectedEndDate >= date) {
-        proj = await Project.findByIdAndUpdate(req.params.idproject, {
-          endDate: date,
-          status: "finished",
-        });
-        res.status(200).json(proj.status);
+        proj = await Project.findByIdAndUpdate(
+          req.params.idproject,
+          {
+            endDate: date,
+            status: "finished",
+          },
+          {
+            new: true,
+          }
+        );
+        res.status(200).json(proj);
       } else if (project.expectedEndDate < date) {
-        proj = await Project.findByIdAndUpdate(req.params.idproject, {
-          endDate: date,
-          status: "finished with delay",
-        });
-        res.status(200).json(proj.status);
+        proj = await Project.findByIdAndUpdate(
+          req.params.idproject,
+          {
+            endDate: date,
+            status: "finished with delay",
+          },
+          {
+            new: true,
+          }
+        );
+        res.status(200).json(proj);
       }
     } else {
       res.status(401);

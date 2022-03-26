@@ -246,6 +246,32 @@ export const projectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
+      })
+      .addCase(abortproject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(abortproject.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(abortproject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.project = action.payload;
+      })
+      .addCase(finishproject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(finishproject.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(finishproject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.project = action.payload;
       });
   },
 });
@@ -384,6 +410,26 @@ export const getProject = createAsyncThunk('project/getProject', async (objet, t
       await thunkAPI.dispatch(getFullMemberByProject(objet.idProject));
       return project;
     }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const abortproject = createAsyncThunk('project/abortproject', async (objet, thunkAPI) => {
+  try {
+    return await projectService.abortProject(objet.projectId, objet.pmId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const finishproject = createAsyncThunk('project/finishproject', async (objet, thunkAPI) => {
+  try {
+    return await projectService.finishProject(objet.projectId, objet.pmId);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
