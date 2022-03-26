@@ -309,6 +309,94 @@ const unDeleteProject = asyncHandler(async (req, res) => {
   res.status(200).json(project._id);
 });
 
+const abortproject = asyncHandler(async (req, res) => {
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idpm &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      let proj = {};
+      var date = new Date();
+      proj = await Project.findByIdAndUpdate(
+        req.params.idproject,
+        {
+          endDate: date,
+          status: "aborted",
+        },
+        {
+          new: true,
+        }
+      );
+      res.status(200).json(proj);
+    } else {
+      res.status(401);
+      throw new Error("invalid ProjectManager id");
+    }
+  }
+});
+
+const finishproject = asyncHandler(async (req, res) => {
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idpm &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      let proj = {};
+      var date = new Date();
+      if (project.expectedEndDate >= date) {
+        proj = await Project.findByIdAndUpdate(
+          req.params.idproject,
+          {
+            endDate: date,
+            status: "finished",
+          },
+          {
+            new: true,
+          }
+        );
+        res.status(200).json(proj);
+      } else if (project.expectedEndDate < date) {
+        proj = await Project.findByIdAndUpdate(
+          req.params.idproject,
+          {
+            endDate: date,
+            status: "finished with delay",
+          },
+          {
+            new: true,
+          }
+        );
+        res.status(200).json(proj);
+      }
+    } else {
+      res.status(401);
+      throw new Error("invalid ProjectManager id");
+    }
+  }
+});
+
 // @route put /api/project/assignteamleader/:idproject/:idmember/:idpm
 const assignTeamLeader = asyncHandler(async (req, res) => {
   var verif = false;
@@ -458,7 +546,7 @@ const updateProject = asyncHandler(async (req, res) => {
         function (err, success) {
           if (err) throw err;
           else {
-            res.status(201).json({ project });
+            res.status(200).json({ project });
           }
         }
       );
@@ -595,4 +683,6 @@ module.exports = {
   getProjectsByMember,
   getProject,
   getFullMembersByProject,
+  abortproject,
+  finishproject,
 };
