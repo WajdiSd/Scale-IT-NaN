@@ -70,12 +70,10 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       if (user.isManager) return user.email;
     });
     const managerEmails = managersFiltered.map((user) => user.email);
-
     const membersFiltered = users.filter((user) => {
       if (!user.isManager) return user.email;
     });
     const memberEmails = membersFiltered.map((user) => user.email);
-
     const managers = {
       info: {
         emails: managerEmails,
@@ -83,7 +81,6 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       },
       id,
     };
-
     const members = {
       info: {
         emails: memberEmails,
@@ -91,10 +88,8 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
       },
       id,
     };
-
     const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
     const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
-
     thunkAPI.dispatch(resetWorkspaceInvite());
 
     return [managerSubmit, memberSubmit];

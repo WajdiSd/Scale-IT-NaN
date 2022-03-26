@@ -302,5 +302,17 @@ export const removememberfromworkspace = createAsyncThunk(
   }
 );
 
+export const userExistsInWorkspace = createAsyncThunk(
+  'workspace/userExistsInWorkspace',
+  async (object, thunkAPI) => {
+    try {
+      return await workspaceService.checkIfUserExistsInWorkspace(object.id,object.invitedMember);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const { resetWorkspace } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

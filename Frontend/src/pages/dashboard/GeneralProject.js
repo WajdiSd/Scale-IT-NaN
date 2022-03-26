@@ -14,6 +14,7 @@ import {
   BankingExpensesCategories,
 } from '../../sections/@dashboard/general/banking';
 import ProjectMembersList from 'src/sections/@dashboard/project/ProjectMembersList';
+import ProjectStatus from 'src/sections/@dashboard/project/ProjectStatus';
 import { getFullMemberByProject, getProject } from 'src/redux/slices/projectSlice';
 import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
@@ -34,24 +35,23 @@ export default function GeneralProject() {
   const { project, usersInProject, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
-  
+
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
-  console.log(projectid);
+    console.log(projectid);
 
     const obj = {
-      idProject : projectid,
-      idUser : user._id,
-    }
+      idProject: projectid,
+      idUser: user._id,
+    };
     dispatch(getProject(obj));
   }, []);
 
-return (
+  return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-      <HeaderBreadcrumbs
+        <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"
           links={[
@@ -59,13 +59,10 @@ return (
             { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
             { key: 2, name: 'project', href: '' },
             { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
-
-
           ]}
         />
-        {
-          isLoading && usersInProject?.length==0?
-          (<Box
+        {isLoading && usersInProject?.length == 0 ? (
+          <Box
             sx={{
               mt: 10,
               width: '100%',
@@ -75,56 +72,52 @@ return (
             }}
           >
             <CircularProgress size={150} color="success" />
-          </Box>)
-          :
-          (
-            <Grid container spacing={3}>
-        
-          <Grid item xs={12} md={7}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
-              <BankingWidgetSummary
-                title="Income"
-                icon={'eva:diagonal-arrow-left-down-fill'}
-                percent={2.6}
-                total={18765}
-                chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
-              />
-              <BankingWidgetSummary
-                title="Expenses"
-                color="warning"
-                icon={'eva:diagonal-arrow-right-up-fill'}
-                percent={-0.5}
-                total={8938}
-                chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
-              />
-            </Stack>
-          </Grid>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={7}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+                <BankingWidgetSummary
+                  title="Income"
+                  icon={'eva:diagonal-arrow-left-down-fill'}
+                  percent={2.6}
+                  total={18765}
+                  chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+                />
+                <BankingWidgetSummary
+                  title="Expenses"
+                  color="warning"
+                  icon={'eva:diagonal-arrow-right-up-fill'}
+                  percent={-0.5}
+                  total={8938}
+                  chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+                />
+              </Stack>
+            </Grid>
 
-          <Grid item xs={12} md={5}>
-            <BankingCurrentBalance />
-          </Grid>
+            <Grid item xs={12} md={5}>
+              <BankingCurrentBalance />
+            </Grid>
 
-          <Grid item xs={12} md={8}>
-            <Stack spacing={3}>
-              <BankingBalanceStatistics />
-              <BankingExpensesCategories />
-            </Stack>
-          </Grid>
+            <Grid item xs={12} md={8}>
+              <Stack spacing={3}>
+                <BankingBalanceStatistics />
+                <BankingExpensesCategories />
+              </Stack>
+            </Grid>
 
-          <Grid item xs={12} md={4}>
-            <Stack spacing={3}>
-              <ProjectMembersList />
-              <BankingContacts />
-            </Stack>
+            <Grid item xs={12} md={4}>
+              <Stack spacing={3}>
+                <ProjectStatus />
+                <ProjectMembersList />
+                <BankingContacts />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <UserList />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={12}>
-          <UserList />
-          </Grid>
-
-        </Grid>
-          )
-        }
-        
+        )}
       </Container>
     </Page>
   );
