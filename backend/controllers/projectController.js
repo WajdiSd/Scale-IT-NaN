@@ -138,8 +138,13 @@ const getFullMembersByProject = asyncHandler(async (req, res) => {
 
   for (const member of project.assigned_members) {
     let member1 = await Member.findById(member.memberId);
-    if(member1){
-      let obj2 = {...member1._doc, isProjectManager: member.isProjectManager , isTeamLeader: member.isTeamLeader, isDeleted: member.isDeleted};
+    if (member1) {
+      let obj2 = {
+        ...member1._doc,
+        isProjectManager: member.isProjectManager,
+        isTeamLeader: member.isTeamLeader,
+        isDeleted: member.isDeleted,
+      };
       members.push(obj2);
     }
   }
@@ -304,6 +309,76 @@ const unDeleteProject = asyncHandler(async (req, res) => {
   res.status(200).json(project._id);
 });
 
+const abortproject = asyncHandler(async (req, res) => {
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idpm &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      let proj = {};
+      var date = new Date();
+      proj = await Project.findByIdAndUpdate(req.params.idproject, {
+        endDate: date,
+        status: "aborted",
+      });
+      res.status(200).json(proj.status);
+    } else {
+      res.status(401);
+      throw new Error("invalid ProjectManager id");
+    }
+  }
+});
+
+const finishproject = asyncHandler(async (req, res) => {
+  var verif = false;
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idpm &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      let proj = {};
+      var date = new Date();
+      if (project.expectedEndDate >= date) {
+        proj = await Project.findByIdAndUpdate(req.params.idproject, {
+          endDate: date,
+          status: "finished",
+        });
+        res.status(200).json(proj.status);
+      } else if (project.expectedEndDate < date) {
+        proj = await Project.findByIdAndUpdate(req.params.idproject, {
+          endDate: date,
+          status: "finished with delay",
+        });
+        res.status(200).json(proj.status);
+      }
+    } else {
+      res.status(401);
+      throw new Error("invalid ProjectManager id");
+    }
+  }
+});
+
 // @route put /api/project/assignteamleader/:idproject/:idmember/:idpm
 const assignTeamLeader = asyncHandler(async (req, res) => {
   var verif = false;
@@ -453,7 +528,7 @@ const updateProject = asyncHandler(async (req, res) => {
         function (err, success) {
           if (err) throw err;
           else {
-            res.status(201).json({ project });
+            res.status(200).json({ project });
           }
         }
       );
@@ -541,16 +616,12 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
     throw new Error("changes are not made by a TL!");
   } else {
     for (let i = 0; i < userIds.length; i++) {
-
-
       await Project.findOneAndUpdate(
-        { _id: req.params.idproject,
-          "assigned_members.memberId": userIds[i],
-        },
+        { _id: req.params.idproject, "assigned_members.memberId": userIds[i] },
         {
           $set: {
             "assigned_members.$.isDeleted": true,
-        }
+          },
         },
         {
           new: true,
@@ -576,4 +647,6 @@ module.exports = {
   getProjectsByMember,
   getProject,
   getFullMembersByProject,
+  abortproject,
+  finishproject,
 };

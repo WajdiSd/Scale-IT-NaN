@@ -5,7 +5,8 @@ const {
   unDeleteProject,
   assignTeamLeader,
   updateProject,
-  dischargeTeamLeader,
+  abortproject,
+  finishproject,
   inviteMembers,
   deleteMembers,
   getProjects,
@@ -50,6 +51,10 @@ router.put(
   protect,
   assignTeamLeader
 );
+
+router.put("/abortproject/:idproject/:idpm", protect, abortproject);
+
+router.put("/finishproject/:idproject/:idpm", protect, finishproject);
 
 router.put("/update/:idproject/:idpm", protect, updateProject);
 router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
