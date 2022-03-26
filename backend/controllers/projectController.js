@@ -468,20 +468,34 @@ const updateProject = asyncHandler(async (req, res) => {
  * @desc invite a list of members to a workspace
  * @var(members,list of member emails )
  * @var(role, so that we can know if the members should be affected as managers or not)
- * @route PUT /api/project/invite-members/:idproject/:idpm
- * idpm : id of current user inviting
+ * @route PUT /api/project/invite-members/:idproject/:idtl
+ * idtl : id of current user inviting
  */
 const inviteMembers = asyncHandler(async (req, res, next) => {
   console.log(req.params);
-  var verif = true;
+  var verif = false;
+  var veriff = false;
   const emails = req.body.emails;
+
   const project = await Project.findById(req.params.idproject);
-
-
+  if (!project) {
+    res.status(400);
+    throw new Error("invalid project id");
+  }
+  else {
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idtl &&
+      project.assigned_members[i].isTeamLeader == true
+    )
+      veriff = true;
+  }
   if (!verif) {
-    es.status(404);
-    throw new Error("changes are not made by a PM!");
-  } else {
+    res.status(401);
+    throw new Error("invalid TeamLeader id");
+    }
+    else {
+
     for (let i = 0; i < emails.length; i++) {
       let member = await Member.findOne({ email: emails[i] });
 
@@ -498,26 +512,26 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
         )
         belongs = true;
       }
-      if (!belongs)
-        {res.status(404);
-          throw new Error("user does not belong in workspace");}
-      else { 
-
-      const invitedMember = {
-        memberId: member._id,
-      };
-      await Project.findOneAndUpdate(
-        { _id: req.params.idproject },
-        {
-          $push: { assigned_members: invitedMember },
-        },
-        {
-          new: true,
-        }
-      );
-    }
-    return res.status(200).json(emails);
-  } }
+            if (!belongs)
+            {res.status(404);
+            throw new Error("user does not belong in workspace");
+            }  
+            else { 
+            const invitedMember = {
+              memberId: member._id,
+            };
+            await Project.findOneAndUpdate(
+              { _id: req.params.idproject },
+              {
+                $push: { assigned_members: invitedMember },
+              },
+              {
+                new: true,
+              });
+            }
+    }}
+  }
+  return res.status(200).json(emails);
 });
 
 /**
