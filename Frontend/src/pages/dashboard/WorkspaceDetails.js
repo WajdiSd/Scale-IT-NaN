@@ -69,7 +69,6 @@ export default function WorkspaceDetails() {
   const { workspace, usersInWorkspace } = useWorkspace();
 
   const [idWorkspace, setIdWorkspace] = useState(id);
-  const [searchValue, setSearchValue] = useState('');
 
   const dispatch = useDispatch();
 
@@ -85,7 +84,6 @@ export default function WorkspaceDetails() {
     resetProjectsStore();
     getUserWorkspace();
     getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
-
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
