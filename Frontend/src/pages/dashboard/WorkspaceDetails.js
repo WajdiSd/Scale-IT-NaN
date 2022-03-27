@@ -28,6 +28,7 @@ import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
 
 // slices
 import { getWorkspace } from 'src/redux/slices/workspaceSlice';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -146,12 +147,22 @@ export default function WorkspaceDetails() {
 
   return (
     <Page title="Workspace: Details">
-      <Snackbar open={projectError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={projectError.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
           {projectError}
         </Alert>
       </Snackbar>
-      <Snackbar open={projectSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={projectSuccess.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           {projectSuccess}
         </Alert>
