@@ -369,11 +369,12 @@ export const getWorkspaceProjectsForMembers = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const listProjects = await projectService.getWorkspaceProjectsForEmployees(data.idWorkspace, data.idMember);
-      const data = {
+      const memberData = {
         projects: listProjects.data,
         userId: data.idMember,
       };
-      return data;
+
+      return memberData;
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
