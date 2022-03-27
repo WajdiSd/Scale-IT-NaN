@@ -62,6 +62,8 @@ export const projectSlice = createSlice({
       .addCase(addProject.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        const project = action.payload.project;
+        project.isProjectManager = true;
         state.projects.push(action.payload.project);
         state.unarchivedProjects.push(action.payload.project);
       })
