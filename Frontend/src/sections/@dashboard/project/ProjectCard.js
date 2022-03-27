@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 // hooks
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useProjectFilter from 'src/hooks/useProjectFilter';
 import useAuth from 'src/hooks/useAuth';
 import useProject from 'src/hooks/useProject';
@@ -109,6 +109,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
+                      authority={"manager"}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -140,6 +141,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
+                      authority={"teamleader"}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -171,6 +173,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
+                      authority={"none"}
                       isProjectManager={isProjectManager}
                     />
                   ))}
