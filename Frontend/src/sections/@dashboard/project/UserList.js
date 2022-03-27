@@ -90,7 +90,7 @@ export default function UserList() {
   } = useTable();
 
   const { themeStretch, themeMode } = useSettings();
-  const {usersInProject, project} = useProject();
+  const {usersInProject, project, isTL} = useProject();
   const {user} = useAuth();
 
   const navigate = useNavigate();
@@ -262,7 +262,7 @@ export default function UserList() {
         <DialogTitle>{'Invite Members to project'}</DialogTitle>
         <InviteMembersToProjectForm onInviteMembers={onInviteMembers} onCancel={handleCloseModal}/>
       </DialogAnimate>
-        <HeaderBreadcrumbs
+        {isTL&&(<HeaderBreadcrumbs
           heading=""
           links={[{ name: '', href: '' }]}
           action={
@@ -276,7 +276,7 @@ export default function UserList() {
               Invite members
             </Button>
           }
-        />
+        />)}
 
         <Card>
           <Tabs

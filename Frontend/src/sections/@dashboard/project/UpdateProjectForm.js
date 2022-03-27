@@ -90,12 +90,15 @@ export default function UpdateProjectForm({ project,onCancel }) {
       onCancel();
       reset();
       dispatch(updateProject(newProject)).then((res) => {
-        if (!res.error) enqueueSnackbar('Successfully updated project');
+        if (!res.error) {enqueueSnackbar('Successfully updated project');
+        window.location.reload();
+      }
         else
           enqueueSnackbar('unable to update project', {
             variant: 'error',
           });
       });
+
     } catch (error) {
       console.error(error);
     }
