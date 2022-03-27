@@ -3,15 +3,13 @@ import { useParams } from 'react-router';
 import useWorkspace from './useWorkspace';
 
 const useWorkspaceId = () => {
-  const {workspace} = useWorkspace();
-  const {id} = useParams();
+  const { workspace } = useWorkspace();
+  const { id } = useParams();
 
   const [rootWorkspace, setRootWorkspace] = useState('');
 
   useEffect(() => {
-    console.log("spacefdgfdgfdgfdgdfg", id);
-
-    setRootWorkspace(id)
+    setRootWorkspace(id);
     /*setTimeout(() => {
       console.log('\n\n-----------------------------------------------------------------');
       console.log('rootWorkspace func useWorkspaceId');
@@ -37,7 +35,6 @@ const useWorkspaceId = () => {
         console.log('redux-workspaces null');
       }
         }, 500);*/
-    
   }, [id]);
 
   return { rootWorkspace };
