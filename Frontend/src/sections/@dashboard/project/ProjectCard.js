@@ -93,6 +93,7 @@ export default function ProjectCard({ loaded, projects }) {
                       sm: 'repeat(2, 1fr)',
                       md: 'repeat(3, 1fr)',
                     },
+                    mb: 8,
                   }}
                 >
                   {managedProjects.map((project) => (
@@ -125,6 +126,7 @@ export default function ProjectCard({ loaded, projects }) {
                       sm: 'repeat(2, 1fr)',
                       md: 'repeat(3, 1fr)',
                     },
+                    mb: 8,
                   }}
                 >
                   {ledProjects.map((project) => (
