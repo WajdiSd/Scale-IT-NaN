@@ -99,7 +99,6 @@ export default function UserList() {
   const { projectid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [tableData, setTableData] = useState(usersInProject);
   const [deletedUsers, setDeletedUsers] = useState([]);
   const [reloadData, setReloadData] = useState(false);
 
@@ -129,15 +128,22 @@ export default function UserList() {
   };
 
 
-  const onInviteMembers = async (members) => {
+  const onInviteMembers = (members) => {
     const data = {
       idproject: projectid,
       idtl: user._id,
       members
     }
-    dispatch(inviteMemberToProject(data)).then(() => {
-      setReloadData(true);
-      enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+    console.log("onInviteMembers");
+    console.log(data);
+    dispatch(inviteMemberToProject(data)).then((res) => {
+      console.log("res");
+      console.log(res);
+      if(res.payload){
+        setReloadData(true);
+        enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+      }
+      
     });
   };
 
@@ -157,9 +163,8 @@ export default function UserList() {
   const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
 
   useEffect(() => {
-
+    console.log("useEffect");
     setReloadData(false)
-    setTableData(usersInProject);
   }, [reloadData]);
 
   const handleFilterName = (filterName) => {
@@ -192,9 +197,9 @@ export default function UserList() {
   };
 
   const handleDeleteRows = (selected) => {
-    //const deleteRows = tableData.filter((row) => !selected.includes(row.id));
+    //const deleteRows = usersInProject.filter((row) => !selected.includes(row.id));
     //setSelected([]);
-    //setTableData(deleteRows);
+    //setusersInProject(deleteRows);
   };
 
   const handleEditRow = (id) => {
@@ -225,7 +230,7 @@ export default function UserList() {
   };
 
   dataFiltered = applySortFilter({
-    tableData,
+    usersInProject,
     comparator: getComparator(order, orderBy),
     filterName,
     filterRole,
@@ -303,11 +308,11 @@ export default function UserList() {
                 <TableSelectedActions
                   dense={dense}
                   numSelected={selected.length}
-                  rowCount={tableData.length}
+                  rowCount={usersInProject?.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row._id)
+                      usersInProject?.map((row) => row._id)
                     )
                   }
                   actions={
@@ -325,20 +330,20 @@ export default function UserList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={usersInProject?.length}
                   numSelected={selected.length}
                   onSort={onSort}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row._id)
+                      usersInProject?.map((row) => row._id)
                     )
                   }
                 />
 
                 {!usersInProject ? (
                   <TableBody>
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, usersInProject?.length)} />
 
                     <TableNoData isNotFound={isNotFound} />
                   </TableBody>
@@ -356,7 +361,7 @@ export default function UserList() {
                       />
                     ))}
 
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, usersInProject?.length)} />
 
                     <TableNoData isNotFound={isNotFound} />
                   </TableBody>
@@ -390,8 +395,8 @@ export default function UserList() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
-  const stabilizedThis = tableData?.map((el, index) => [el, index]);
+function applySortFilter({ usersInProject, comparator, filterName, filterStatus, filterRole }) {
+  const stabilizedThis = usersInProject?.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -399,10 +404,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     return a[1] - b[1];
   });
 
-  tableData = stabilizedThis.map((el) => el[0]);
+  usersInProject = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
+    usersInProject = usersInProject.filter(
       (item) =>
         item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.lastName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
@@ -410,15 +415,15 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterStatus !== 'all') {
-    //tableData = tableData.filter((item) => item.status === filterStatus);
+    //usersInProject = usersInProject.filter((item) => item.status === filterStatus);
     if (filterStatus === 'removed') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (item.isDeleted) {
           return item;
         }
       });
     } else {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (!item.isDeleted) {
           return item;
         }
@@ -428,7 +433,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
 
   if (filterRole !== 'all') {
     if (filterRole === 'Team Leader') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         console.log('item');
         if (item.isTeamLeader) {
           console.log(item);
@@ -436,18 +441,18 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
         }
       });
     } else if (filterRole === 'Project Manager') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (item.isProjectManager) {
           return item;
         }
       });
     } else {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (!item.isTeamLeader && !item.isProjectManager) {
           return item;
         }
       });
     }
   }
-  return tableData;
+  return usersInProject;
 }

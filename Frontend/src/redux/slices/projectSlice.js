@@ -194,6 +194,7 @@ export const projectSlice = createSlice({
       })
       .addCase(getFullMemberByProject.fulfilled, (state, action) => {
         console.log('getFullMemberByProject fulfilled');
+        console.log(action);
         state.usersInProject = action.payload.data;
         state.isLoading = false;
         state.isSuccess = true;
@@ -272,7 +273,27 @@ export const projectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.project = action.payload;
-      });
+      })
+      .addCase(inviteMemberToProject.fulfilled, (state, action) => {
+        console.log('inviteMemberToProject fulfilled');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(inviteMemberToProject.pending, (state, action) => {
+        console.log('inviteMemberToProject pending');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(inviteMemberToProject.rejected, (state, action) => {
+        console.log('inviteMemberToProject rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
+      ;
   },
 });
 
@@ -450,11 +471,10 @@ export const getFullMemberByProject = createAsyncThunk('project/fullmembers', as
 export const inviteMemberToProject = createAsyncThunk('project/inviteMemberToProject', async (data, thunkAPI) => {
   try {
     const invited = await projectService.inviteMemberToProject(data);
-    if (invited) {
       console.log('getFullMemberByProject');
-      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      console.log(data);
+      thunkAPI.dispatch(getFullMemberByProject(invited));
       return invited;
-    }
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

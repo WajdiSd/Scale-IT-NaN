@@ -591,9 +591,7 @@ const updateProject = asyncHandler(async (req, res) => {
         //Member must belong to workspace first
         var belongs = false;
         const wkspId = project.workspace._id;
-        console.log(wkspId);
         const workspaceExist = await Workspace.findById(wkspId);
-        console.log(workspaceExist);
 
         for (let i = 0; i < workspaceExist.assigned_members.length; i++) {
           if (workspaceExist.assigned_members[i].member._id.equals(member._id))
@@ -617,9 +615,9 @@ const updateProject = asyncHandler(async (req, res) => {
           );
         }
       }
+      res.status(200).json(req.params.idproject);
     }
   }
-  return res.status(200).json(emails);
 });
 
 /**
