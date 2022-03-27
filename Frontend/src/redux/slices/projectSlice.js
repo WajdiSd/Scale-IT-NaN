@@ -248,6 +248,32 @@ export const projectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
+      })
+      .addCase(abortproject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(abortproject.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(abortproject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.project = action.payload;
+      })
+      .addCase(finishproject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(finishproject.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(finishproject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.project = action.payload;
       });
   },
 });
@@ -393,9 +419,44 @@ export const getProject = createAsyncThunk('project/getProject', async (objet, t
   }
 });
 
+export const abortproject = createAsyncThunk('project/abortproject', async (objet, thunkAPI) => {
+  try {
+    return await projectService.abortProject(objet.projectId, objet.pmId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const finishproject = createAsyncThunk('project/finishproject', async (objet, thunkAPI) => {
+  try {
+    return await projectService.finishProject(objet.projectId, objet.pmId);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const getFullMemberByProject = createAsyncThunk('project/fullmembers', async (idProject, thunkAPI) => {
   try {
     return await projectService.getFullMemberByProject(idProject);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const inviteMemberToProject = createAsyncThunk('project/inviteMemberToProject', async (data, thunkAPI) => {
+  try {
+    const invited = await projectService.inviteMemberToProject(data);
+    if (invited) {
+      console.log('getFullMemberByProject');
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return invited;
+    }
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

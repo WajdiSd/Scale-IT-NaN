@@ -85,6 +85,14 @@ const AssignProjectManagerToMember = async (Data) => {
   return response.data;
 };
 
+const DischargeProjectManager = async (Data) => {
+  const idworkspace = Data.idworkspace;
+  const idHR = Data.idHR;
+  const idmember = Data.idmember;
+  const response = await axiosInstance.put(API_URL + 'deletePM/' + idworkspace + '/' + idmember + '/' + idHR);
+  return response.data;
+};
+
 const workspaceService = {
   getWorkspaces,
   addworkspace,
@@ -98,6 +106,7 @@ const workspaceService = {
   removeMemberFromWorkspace,
   setRatestomember,
   AssignProjectManagerToMember,
+  DischargeProjectManager,
 };
 
 export default workspaceService;

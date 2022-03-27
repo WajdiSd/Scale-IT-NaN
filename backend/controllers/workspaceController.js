@@ -461,22 +461,12 @@ const assignRatestoMember = asyncHandler(async (req, res) => {
 const checkIfUserExistsInWorkspace = asyncHandler(async (req, res) => {
   const email = req.params.email;
   const id = req.params.workspaceid;
-
-  console.log("params");
-  console.log(req.params);
-
-  console.log(id);
-
   const workspace = await Workspace.findOne({ _id: id });
   const user = await Member.findOne({ email });
 
   if (workspace) {
     let matchy = false;
-    // console.log("user");
-    // console.log(user);
     workspace.assigned_members.forEach((assignee) => {
-      // console.log("assigned member");
-      // console.log(assignee);
       assignee.member.equals(user._id) ? (matchy = true) : "";
     });
 
