@@ -109,7 +109,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"manager"}
+                      authority={'manager'}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -141,7 +141,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"teamleader"}
+                      authority={'teamleader'}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -173,7 +173,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"none"}
+                      authority={'none'}
                       isProjectManager={isProjectManager}
                     />
                   ))}

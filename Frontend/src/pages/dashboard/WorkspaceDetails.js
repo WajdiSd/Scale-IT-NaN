@@ -68,13 +68,24 @@ export default function WorkspaceDetails() {
   } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
 
+  let isHrAfterLoad = isHr;
+  let isPmAfterLoad = isProjectManager;
+
   const [idWorkspace, setIdWorkspace] = useState(id);
 
   const dispatch = useDispatch();
 
   const getUserWorkspace = () => {
     try {
-      dispatch(getWorkspace(idWorkspace));
+      dispatch(getWorkspace(idWorkspace)).then((data) => {
+        data.payload.assigned_members.forEach((member) => {
+          if (member.member === user._id) {
+            isHrAfterLoad = member.isHr;
+            isPmAfterLoad = member.isProjectManager;
+          }
+        });
+        getWorkspaceProjectsHook(idWorkspace, user._id, isHrAfterLoad || isPmAfterLoad);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +94,6 @@ export default function WorkspaceDetails() {
   useEffect(() => {
     resetProjectsStore();
     getUserWorkspace();
-    getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
