@@ -19,13 +19,13 @@ export const workspaceSlice = createSlice({
   initialState,
   reducers: {
     resetWorkspace: (state) => {
-      state.workspaces= [],
-      state.workspace= null,
-      state.usersInWorkspace= [],
-      state.isError= false,
-      state.isSuccess= false,
-      state.isLoading= false,
-      state.message= '';
+      (state.workspaces = []),
+        (state.workspace = null),
+        (state.usersInWorkspace = []),
+        (state.isError = false),
+        (state.isSuccess = false),
+        (state.isLoading = false),
+        (state.message = '');
     },
   },
   extraReducers: (builder) => {
@@ -47,7 +47,7 @@ export const workspaceSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
-        state.workspaces = []
+        state.workspaces = [];
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
         console.log('getWorkspaces fulfilled');
@@ -61,7 +61,6 @@ export const workspaceSlice = createSlice({
           workspac.workspace = null;
           localStorage.setItem('redux-workspaces', workspac);
         }
-        
       })
       .addCase(getWorkspaces.rejected, (state, action) => {
         state.isLoading = false;
@@ -93,7 +92,6 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload._id);
-      
       })
       .addCase(deleteWorkspace.rejected, (state, action) => {
         console.log('delete workspace rejected');
@@ -124,60 +122,56 @@ export const workspaceSlice = createSlice({
         state.usersInWorkspace = action.payload;
       })
       .addCase(usersbyworkspace.rejected, (state, action) => {
-        console.log('users by workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(removememberfromworkspace.pending, (state) => {
-        console.log('remove member from workspace pending');
         state.isLoading = true;
       })
       .addCase(removememberfromworkspace.fulfilled, (state, action) => {
-        console.log('remove member from workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.usersInWorkspace = state.usersInWorkspace.filter((memb) => memb._id !== action.payload.idmember);
       })
       .addCase(removememberfromworkspace.rejected, (state, action) => {
-        console.log('remove member from workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(updateWorkspace.fulfilled, (state, action) => {
-        console.log('update workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.workspace = action.payload;
       })
       .addCase(updateWorkspace.rejected, (state, action) => {
-        console.log(state, action);
-        console.log('update workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(setRatesToMember.fulfilled, (state, action) => {
-        console.log('set rates fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(setRatesToMember.rejected, (state, action) => {
-        console.log(state, action);
-        console.log('set rates rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(AssignProjectManagerTomember.fulfilled, (state, action) => {
-        console.log('Assign Project Manager fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(AssignProjectManagerTomember.rejected, (state, action) => {
-        console.log(state, action);
-        console.log('Assign Project Manager rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(dischargeprojectmanager.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(dischargeprojectmanager.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -208,7 +202,6 @@ export const getWorkspaces = createAsyncThunk('workspace/getWorkspaces', async (
 
 export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id, thunkAPI) => {
   try {
-
     const workspace = await workspaceService.getWorkspace(id);
     if (workspace) {
       //await thunkAPI.dispatch(resetProjectList());
@@ -288,6 +281,16 @@ export const AssignProjectManagerTomember = createAsyncThunk(
     }
   }
 );
+
+export const dischargeprojectmanager = createAsyncThunk('workspace/dischargeprojectmanager', async (Data, thunkAPI) => {
+  try {
+    return await workspaceService.DischargeProjectManager(Data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',
@@ -302,17 +305,14 @@ export const removememberfromworkspace = createAsyncThunk(
   }
 );
 
-export const userExistsInWorkspace = createAsyncThunk(
-  'workspace/userExistsInWorkspace',
-  async (object, thunkAPI) => {
-    try {
-      return await workspaceService.checkIfUserExistsInWorkspace(object.id,object.invitedMember);
-    } catch (error) {
-      const message =
-        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
+export const userExistsInWorkspace = createAsyncThunk('workspace/userExistsInWorkspace', async (object, thunkAPI) => {
+  try {
+    return await workspaceService.checkIfUserExistsInWorkspace(object.id, object.invitedMember);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
   }
-);
+});
 export const { resetWorkspace } = workspaceSlice.actions;
 export default workspaceSlice.reducer;
