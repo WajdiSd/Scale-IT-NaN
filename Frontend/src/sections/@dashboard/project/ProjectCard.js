@@ -17,6 +17,7 @@ import { DialogAnimate } from 'src/components/animate';
 import AddProjectForm from './AddProjectForm';
 import InputStyle from 'src/components/InputStyle';
 import ProjectItem from './ProjectItem';
+import { Stack } from '@mui/material';
 
 ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,
@@ -47,37 +48,31 @@ export default function ProjectCard({ loaded, projects }) {
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
-
-      <HeaderBreadcrumbs
-        heading=""
-        links={[{ name: '', href: '' }]}
-        action={
-          isProjectManager ? (
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              New Project
-            </Button>
-          ) : null
-        }
-      />
-
-      <InputStyle
-        stretchStart={240}
-        value={query}
-        onChange={(event) => searchProjects(event.target.value)}
-        placeholder="Find projects..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-            </InputAdornment>
-          ),
-        }}
-        sx={{ mb: 5 }}
-      />
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ p: 0.75 }}>
+        <InputStyle
+          stretchStart={240}
+          value={query}
+          onChange={(event) => searchProjects(event.target.value)}
+          placeholder="Find projects..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mb: 5 }}
+        />
+        {isProjectManager ? (
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+            onClick={handleAddEvent}
+          >
+            New Project
+          </Button>
+        ) : null}
+      </Stack>
 
       <Card sx={{ p: 3 }}>
         {!projects || projects.length === 0 ? (
