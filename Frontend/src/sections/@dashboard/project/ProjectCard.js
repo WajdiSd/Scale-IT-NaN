@@ -24,8 +24,8 @@ ProjectCard.propTypes = {
 };
 
 export default function ProjectCard({ loaded, projects }) {
-  const { isProjectManager, user } = useAuth();
-  const { deleteProjectHook, restoreProjectHook, updateProjectHook } = useProject();
+  const { isProjectManager, user, isHr } = useAuth();
+  const { deleteProjectHook, restoreProjectHook, updateProjectHook, unarchivedProjects } = useProject();
   const { query, managedProjects, ledProjects, normalProjects, searchProjects } = useProjectFilter(projects);
   const { id } = useParams();
 
@@ -79,6 +79,36 @@ export default function ProjectCard({ loaded, projects }) {
           <Typography variant="h1">No projects found.</Typography>
         ) : (
           <>
+            {isHr && unarchivedProjects.length > 0 ? (
+              <>
+                <Typography variant="h2">Projects in your workspace.</Typography>
+
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                    },
+                  }}
+                >
+                  {unarchivedProjects.map((project) => (
+                    <ProjectItem
+                      key={project._id}
+                      workspaceId={id}
+                      userId={user._id}
+                      project={project}
+                      authority={'member'}
+                      isProjectManager={isProjectManager}
+                    />
+                  ))}
+                </Box>
+              </>
+            ) : (
+              ''
+            )}
             {managedProjects.length === 0 ? (
               ''
             ) : (
