@@ -8,6 +8,7 @@ import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import useProject from 'src/hooks/useProject';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -20,9 +21,11 @@ UserTableRow.propTypes = {
   onAssignTeamLeader: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader }) {
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader, onAssignProjectManager }) {
   const theme = useTheme();
-  const { company, role, isVerified, isTeamLeader, isDeleted, isProjectManager, status, phone, updatedAt, lastName, firstName, isValidated, gender, email } = row;
+  const {user} = useAuth();
+
+  const { _id, company, role, isVerified, isTeamLeader, isDeleted, isProjectManager, status, phone, updatedAt, lastName, firstName, isValidated, gender, email } = row;
   const {isTL, isPM} = useProject();
 
   const [openMenu, setOpenMenuActions] = useState(null);
@@ -43,7 +46,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
   return (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
+        <Checkbox checked={selected} onClick={onSelectRow} disabled={_id == user._id}/> 
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -91,76 +94,111 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         </Label>
       </TableCell>
 
-      <TableCell align="right">
-        <TableMoreMenu
-          open={openMenu}
-          onOpen={handleOpenMenu}
-          onClose={handleCloseMenu}
-          actions={
-            <>
-            {isTL?
-            ( 
-              isProjectManager?
-              (<></>)
-              :
-              (
-                <>
-            <MenuItem
-              onClick={() => {
-                handleCloseMenu();
-                onDeleteRow();
-              }}
-              sx={{ color: 'error.main' }}
-            >
-              <Iconify icon={'eva:trash-2-outline'} />
-              Delete
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                onEditRow();
-                handleCloseMenu();
-              }}
-            >
-              <Iconify icon={'eva:edit-fill'} />
-              Edit
-            </MenuItem>
-            </>
-              )
-            )
-            :
-            (isPM?
-              (
-                !isProjectManager && !isTeamLeader && !isDeleted?
-                (<MenuItem
-                  onClick={() => {
-                    handleCloseMenu();
-                    onAssignTeamLeader();
-                  }}
-                >
-                  <Iconify icon={'eva:edit-fill'} />
-                  Make Team Leader
-                </MenuItem>)
-                :
-                (<></>)
-                
-              )
-              :
-              (<></>)
-            )
-            }
-             <MenuItem
-              onClick={() => {
-                handleCloseMenu();
-                
-              }}
-            >
-              <Iconify icon={'ant-design:eye-filled'} />
-              View profile
-            </MenuItem>
-            </>
-          }
-        />
-      </TableCell>
+        {
+          _id == user._id?
+          (<></>)
+          :
+          (
+            <TableCell align="right">
+              <TableMoreMenu
+                open={openMenu}
+                onOpen={handleOpenMenu}
+                onClose={handleCloseMenu}
+                actions={
+                  <>
+                  {isTL?
+                  ( 
+                    isProjectManager?
+                    (<></>)
+                    :
+                    (
+                      <>
+                      {isDeleted?
+                        (
+                          <MenuItem
+                            onClick={() => {
+                              handleCloseMenu();
+                            }}
+                            sx={{ color: 'error.main' }}
+                          >
+                            <Iconify icon={'eva:trash-2-outline'} />
+                            Restore
+                          </MenuItem>
+                        )
+                        :
+                        (
+                          <MenuItem
+                            onClick={() => {
+                              handleCloseMenu();
+                              onDeleteRow();
+                            }}
+                            sx={{ color: 'error.main' }}
+                          >
+                            <Iconify icon={'eva:trash-2-outline'} />
+                            Delete
+                          </MenuItem>
+                        )
+                      }
+                  <MenuItem
+                    onClick={() => {
+                      onEditRow();
+                      handleCloseMenu();
+                    }}
+                  >
+                    <Iconify icon={'eva:edit-fill'} />
+                    Edit
+                  </MenuItem>
+                  </>
+                    )
+                  )
+                  :
+                  (isPM?
+                    (
+                      !isProjectManager && !isTeamLeader && !isDeleted?
+                      (<>
+                      <MenuItem
+                        onClick={() => {
+                          handleCloseMenu();
+                          onAssignTeamLeader();
+                        }}
+                      >
+                        <Iconify icon={'eva:edit-fill'} />
+                        Make Team Leader
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleCloseMenu();
+                          onAssignProjectManager();
+                        }}
+                      >
+                        <Iconify icon={'eva:edit-fill'} />
+                        Make Project Manager
+                      </MenuItem>
+                      </>)
+                      :
+                      (<></>)
+                      
+                    )
+                    :
+                    (<></>)
+                  )
+                  }
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseMenu();
+                      
+                    }}
+                  >
+                    <Iconify icon={'ant-design:eye-filled'} />
+                    View profile
+                  </MenuItem>
+                  </>
+                }
+              />
+            </TableCell>
+          )
+        }
+      
     </TableRow>
   );
 }

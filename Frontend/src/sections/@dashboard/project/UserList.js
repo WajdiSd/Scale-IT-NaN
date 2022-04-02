@@ -1,5 +1,6 @@
 import { paramCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -44,9 +45,12 @@ import { DialogAnimate } from 'src/components/animate';
 import InviteMembersToProjectForm from './InviteMembersToProjectForm';
 
 import { useDispatch } from '../../../redux/store';
-import { getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
+import { assignProjectManager, getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
+import { ToastContainer, toast } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.css';
+
 
 // ----------------------------------------------------------------------
 
@@ -85,9 +89,9 @@ export default function UserList() {
     onChangeRowsPerPage,
   } = useTable();
 
-  const { themeStretch } = useSettings();
-  const { usersInProject,isTL } = useProject();
-  const { user } = useAuth();
+  const { themeStretch, themeMode } = useSettings();
+  const {usersInProject, project, isTL} = useProject();
+  const {user} = useAuth();
 
   const navigate = useNavigate();
 
@@ -95,7 +99,6 @@ export default function UserList() {
   const { projectid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [tableData, setTableData] = useState(usersInProject);
   const [deletedUsers, setDeletedUsers] = useState([]);
   const [reloadData, setReloadData] = useState(false);
 
@@ -125,25 +128,43 @@ export default function UserList() {
   };
 
 
-  const onInviteMembers = async (members) => {
+  const onInviteMembers = (members) => {
     const data = {
       idproject: projectid,
       idtl: user._id,
       members
     }
-    dispatch(inviteMemberToProject(data)).then(() => {
-      setReloadData(true);
-      enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+    console.log("onInviteMembers");
+    console.log(data);
+    dispatch(inviteMemberToProject(data)).then((res) => {
+      console.log("res");
+      console.log(res);
+      if(res.payload){
+        setReloadData(true);
+        enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+      }
+      
     });
   };
 
 
   const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
-  let dataFiltered = null;
+
+  let dataFiltered=null;
+  let toastId = useRef(null);
+
+
+  const notify = (text) => {
+    toastId.current = 
+    themeMode === 'dark'? toast(text, { autoClose: false, type: toast.TYPE.INFO })
+    :
+    toast.dark(text, { autoClose: false, type: toast.TYPE.INFO })
+  }
+  const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
 
   useEffect(() => {
-    setReloadData(false);
-    setTableData(usersInProject);
+    console.log("useEffect");
+    setReloadData(false)
   }, [reloadData]);
 
   const handleFilterName = (filterName) => {
@@ -164,7 +185,10 @@ export default function UserList() {
       idtl: user._id,
     };
     try {
-      dispatch(removeMembersFromProject(data)).then(() => {
+    notify("Removing member...")
+
+      dispatch(removeMembersFromProject(data)).then(()=>{
+      update("Member removed")
         setReloadData(true);
       });
     } catch (error) {
@@ -173,9 +197,9 @@ export default function UserList() {
   };
 
   const handleDeleteRows = (selected) => {
-    //const deleteRows = tableData.filter((row) => !selected.includes(row.id));
+    //const deleteRows = usersInProject.filter((row) => !selected.includes(row.id));
     //setSelected([]);
-    //setTableData(deleteRows);
+    //setusersInProject(deleteRows);
   };
 
   const handleEditRow = (id) => {
@@ -183,22 +207,41 @@ export default function UserList() {
   };
 
   const handleAssignTeamLeader = (id) => {
-    //:idproject/:idmember/:idpm
+
     console.log(id);
     const data = {
       idproject: projectid,
       idpm: user._id,
       idmember: id,
-    };
-    dispatch(updateTeamLeader(data)).then((res) => {
-      console.log(res);
-      enqueueSnackbar(res.payload.msg);
+    }
+
+    notify("Assigning Team Leader...")
+    dispatch(updateTeamLeader(data)).then((res)=>{
+      update(res.payload.msg)
+      //enqueueSnackbar(res.payload.msg)
       setReloadData(true);
-    });
+    })
+  };
+
+  const onAssignProjectManager = (id) => {
+
+    console.log(id);
+    const data = {
+      idproject: projectid,
+      idpm: user._id,
+      idmember: id,
+    }
+
+    notify("Assigning Project Manager...")
+    dispatch(assignProjectManager(data)).then((res)=>{
+      update(res.payload.msg)
+      //enqueueSnackbar(res.payload.msg)
+      setReloadData(true);
+    })
   };
 
   dataFiltered = applySortFilter({
-    tableData,
+    usersInProject,
     comparator: getComparator(order, orderBy),
     filterName,
     filterRole,
@@ -213,8 +256,19 @@ export default function UserList() {
     (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title="User: List">
+    <Page title={"Project: "+project?.name}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Invite Members to project'}</DialogTitle>
         <InviteMembersToProjectForm onInviteMembers={onInviteMembers} onCancel={handleCloseModal}/>
@@ -265,11 +319,11 @@ export default function UserList() {
                 <TableSelectedActions
                   dense={dense}
                   numSelected={selected.length}
-                  rowCount={tableData.length}
+                  rowCount={usersInProject?.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row._id)
+                      usersInProject?.map((row) => row._id)
                     )
                   }
                   actions={
@@ -287,20 +341,20 @@ export default function UserList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={usersInProject?.length}
                   numSelected={selected.length}
                   onSort={onSort}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row._id)
+                      usersInProject?.map((row) => row._id)
                     )
                   }
                 />
 
                 {!usersInProject ? (
                   <TableBody>
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, usersInProject?.length)} />
 
                     <TableNoData isNotFound={isNotFound} />
                   </TableBody>
@@ -315,10 +369,11 @@ export default function UserList() {
                         onDeleteRow={() => handleDeleteRow(row?._id)}
                         onEditRow={() => handleEditRow(row?._id)}
                         onAssignTeamLeader={() => handleAssignTeamLeader(row?._id)}
+                        onAssignProjectManager={() => onAssignProjectManager(row?._id)}
                       />
                     ))}
 
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, usersInProject?.length)} />
 
                     <TableNoData isNotFound={isNotFound} />
                   </TableBody>
@@ -352,8 +407,8 @@ export default function UserList() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
-  const stabilizedThis = tableData?.map((el, index) => [el, index]);
+function applySortFilter({ usersInProject, comparator, filterName, filterStatus, filterRole }) {
+  const stabilizedThis = usersInProject?.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -361,10 +416,10 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     return a[1] - b[1];
   });
 
-  tableData = stabilizedThis.map((el) => el[0]);
+  usersInProject = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
+    usersInProject = usersInProject.filter(
       (item) =>
         item.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.lastName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
@@ -372,15 +427,15 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterStatus !== 'all') {
-    //tableData = tableData.filter((item) => item.status === filterStatus);
+    //usersInProject = usersInProject.filter((item) => item.status === filterStatus);
     if (filterStatus === 'removed') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (item.isDeleted) {
           return item;
         }
       });
     } else {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (!item.isDeleted) {
           return item;
         }
@@ -390,7 +445,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
 
   if (filterRole !== 'all') {
     if (filterRole === 'Team Leader') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         console.log('item');
         if (item.isTeamLeader) {
           console.log(item);
@@ -398,18 +453,18 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
         }
       });
     } else if (filterRole === 'Project Manager') {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (item.isProjectManager) {
           return item;
         }
       });
     } else {
-      tableData = tableData.filter((item) => {
+      usersInProject = usersInProject.filter((item) => {
         if (!item.isTeamLeader && !item.isProjectManager) {
           return item;
         }
       });
     }
   }
-  return tableData;
+  return usersInProject;
 }

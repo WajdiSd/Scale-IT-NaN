@@ -70,14 +70,10 @@ const getFullMemberByProject = async (idProject) => {
 };
 
 const inviteMemberToProject = async (data) => {
-  console.log("----------------------------");
-  console.log(data);
   const idproject = data.idproject;
   const idtl = data.idtl;
   data.idproject = undefined;
   data.idtl = undefined;
-  console.log("----------------------------");
-  console.log(data);
   const response = await axiosInstance.put(API_URL + 'invite-members/'+idproject+'/'+idtl, data);
   return response.data;
 };
@@ -88,6 +84,15 @@ const abortProject = async (projectId, pmId) => {
 
 const finishProject = async (projectId, pmId) => {
   const response = await axiosInstance.put(API_URL + 'finishproject/' + projectId + '/' + pmId);
+  return response.data;
+};
+
+//assignProjectManager
+const assignProjectManager = async (data) => {
+  const idproject = data.idproject;
+  const idpm = data.idpm;
+  const idmember = data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignnewpm/' + idproject + '/' + idmember + '/' + idpm);
   return response.data;
 };
 
@@ -105,6 +110,7 @@ const projectService = {
   updateTeamLeader,
   abortProject,
   finishProject,
+  assignProjectManager,
 };
 
 export default projectService;
