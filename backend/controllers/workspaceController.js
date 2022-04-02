@@ -266,6 +266,71 @@ const assignProjectManager = asyncHandler(async (req, res) => {
   }
 });
 
+// Assign HR
+// @desc assign HR
+// @route post /api/workspace/assignHR/:idworkspace/:idMember/:idHR
+// @access public
+const assignHR = asyncHandler(async (req, res) => {
+  /*verify workspaceid is valid*/
+  var verif = false;
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    /*if yes, verify if changes are made by an HR */
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idhr &&
+        workspace.assigned_members[i].isHR == true
+      )
+        verif = true;
+    }
+    if (verif) {
+      /*if yes, assign HR*/
+      // find workspace and member in this workspace
+      Workspace.updateOne(
+        {
+          _id: req.params.idworkspace,
+          "assigned_members.member": req.params.idmember,
+        },
+        {
+          $set: {
+            "assigned_members.$.isHR": true,
+          },
+        },
+        function (err, success) {
+          if (err) throw err;
+          else {
+            Workspace.updateOne(
+              {
+                _id: req.params.idworkspace,
+                "assigned_members.member": req.params.idhr,
+              },
+              {
+                $set: {
+                  "assigned_members.$.isHR": false,
+                },
+              },
+              function (err, success) {
+                if (err) throw err;
+                else {
+                  res.send({ msg: "Assigned new HR successfully" });
+                }
+              }
+            );
+          }
+        }
+      );
+    } else {
+      /*if not, deny changes*/
+      res.status(401);
+      throw new Error("invalid HR id");
+    }
+  }
+});
+
 // Delete Project Manager
 // @desc delete project manager
 // @route post /api/workspace/deletePM/:idworkspace/:idMember/idHR
@@ -495,4 +560,5 @@ module.exports = {
   countWkspMembers,
   assignRatestoMember,
   checkIfUserExistsInWorkspace,
+  assignHR,
 };

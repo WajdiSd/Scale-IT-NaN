@@ -17,14 +17,15 @@ import { DialogAnimate } from 'src/components/animate';
 import AddProjectForm from './AddProjectForm';
 import InputStyle from 'src/components/InputStyle';
 import ProjectItem from './ProjectItem';
+import { Stack } from '@mui/material';
 
 ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,
 };
 
 export default function ProjectCard({ loaded, projects }) {
-  const { isProjectManager, user } = useAuth();
-  const { deleteProjectHook, restoreProjectHook, updateProjectHook } = useProject();
+  const { isProjectManager, user, isHr } = useAuth();
+  const { deleteProjectHook, restoreProjectHook, updateProjectHook, unarchivedProjects } = useProject();
   const { query, managedProjects, ledProjects, normalProjects, searchProjects } = useProjectFilter(projects);
   const { id } = useParams();
 
@@ -47,43 +48,67 @@ export default function ProjectCard({ loaded, projects }) {
       <Typography variant="h4" sx={{ mb: 3 }}>
         Projects
       </Typography>
-
-      <HeaderBreadcrumbs
-        heading=""
-        links={[{ name: '', href: '' }]}
-        action={
-          isProjectManager ? (
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              New Project
-            </Button>
-          ) : null
-        }
-      />
-
-      <InputStyle
-        stretchStart={240}
-        value={query}
-        onChange={(event) => searchProjects(event.target.value)}
-        placeholder="Find projects..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-            </InputAdornment>
-          ),
-        }}
-        sx={{ mb: 5 }}
-      />
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ p: 0.75 }}>
+        <InputStyle
+          stretchStart={240}
+          value={query}
+          onChange={(event) => searchProjects(event.target.value)}
+          placeholder="Find projects..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mb: 5 }}
+        />
+        {isProjectManager ? (
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon={'eva:plus-fill'} width={20} height={20} />}
+            onClick={handleAddEvent}
+          >
+            New Project
+          </Button>
+        ) : null}
+      </Stack>
 
       <Card sx={{ p: 3 }}>
         {!projects || projects.length === 0 ? (
           <Typography variant="h1">No projects found.</Typography>
         ) : (
           <>
+            {isHr && unarchivedProjects.length > 0 ? (
+              <>
+                <Typography variant="h2">Projects in your workspace.</Typography>
+
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                    },
+                  }}
+                >
+                  {unarchivedProjects.map((project) => (
+                    <ProjectItem
+                      key={project._id}
+                      workspaceId={id}
+                      userId={user._id}
+                      project={project}
+                      authority={'member'}
+                      isProjectManager={isProjectManager}
+                    />
+                  ))}
+                </Box>
+              </>
+            ) : (
+              ''
+            )}
             {managedProjects.length === 0 ? (
               ''
             ) : (
@@ -98,6 +123,7 @@ export default function ProjectCard({ loaded, projects }) {
                       sm: 'repeat(2, 1fr)',
                       md: 'repeat(3, 1fr)',
                     },
+                    mb: 8,
                   }}
                 >
                   {managedProjects.map((project) => (
@@ -109,7 +135,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"manager"}
+                      authority={'manager'}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -130,6 +156,7 @@ export default function ProjectCard({ loaded, projects }) {
                       sm: 'repeat(2, 1fr)',
                       md: 'repeat(3, 1fr)',
                     },
+                    mb: 8,
                   }}
                 >
                   {ledProjects.map((project) => (
@@ -141,7 +168,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"teamleader"}
+                      authority={'teamleader'}
                       isProjectManager={isProjectManager}
                     />
                   ))}
@@ -173,7 +200,7 @@ export default function ProjectCard({ loaded, projects }) {
                       deleteProjectHook={deleteProjectHook}
                       updateProjectHook={updateProjectHook}
                       project={project}
-                      authority={"none"}
+                      authority={'none'}
                       isProjectManager={isProjectManager}
                     />
                   ))}

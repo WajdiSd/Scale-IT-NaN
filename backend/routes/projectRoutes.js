@@ -16,6 +16,7 @@ const {
   getProjectsByTeamLeader,
   getProject,
   getFullMembersByProject,
+  assignNewProjectManager,
 } = require("../controllers/projectController");
 const router = express.Router();
 
@@ -51,6 +52,12 @@ router.put(
   "/assignteamleader/:idproject/:idmember/:idpm",
   protect,
   assignTeamLeader
+);
+
+router.put(
+  "/assignnewpm/:idproject/:idmember/:idpm",
+  protect,
+  assignNewProjectManager
 );
 
 router.put("/abortproject/:idproject/:idpm", protect, abortproject);

@@ -25,7 +25,6 @@ import MenuPopover from 'src/components/MenuPopover';
 import { updateProject } from 'src/redux/slices/projectSlice';
 import UpdateProjectForm from './UpdateProjectForm';
 import { DialogAnimate } from 'src/components/animate';
-import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -85,9 +84,6 @@ export default function MoreProjectOptions({
     height: 20,
   };
 
-  console.log('-------------------------------');
-  console.log('-------------------------------');
-  console.log(authority);
   return (
     <>
       <IconButton sx={{ top: 8, right: 8, position: 'absolute' }} onClick={handleOpenPopover}>
@@ -130,8 +126,8 @@ export default function MoreProjectOptions({
 
         <Divider sx={{ borderStyle: 'dashed' }} />
         {authority === 'manager' && (
-          <MenuItem onClick={handleOpenUpdateDialog} sx={{ color: 'white' }}>
-            <Iconify icon={'eva:edit-2-outline'} sx={{ ...ICON }} />
+          <MenuItem onClick={handleOpenUpdateDialog}>
+            <Iconify icon={'ant-design:edit-filled'} sx={{ ...ICON }} />
             Update
           </MenuItem>
         )}

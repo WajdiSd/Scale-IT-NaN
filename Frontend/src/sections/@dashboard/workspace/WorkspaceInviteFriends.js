@@ -60,12 +60,22 @@ export default function WorkspaceInviteFriends() {
 
   return (
     <div>
-      <Snackbar open={userError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={userError.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
           {userError}
         </Alert>
       </Snackbar>
-      <Snackbar open={userSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={userSuccess.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           {userSuccess}
         </Alert>

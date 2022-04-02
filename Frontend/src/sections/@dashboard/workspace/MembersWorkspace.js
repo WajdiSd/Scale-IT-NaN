@@ -29,7 +29,14 @@ import MenuPopover from 'src/components/MenuPopover';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useDispatch } from 'react-redux';
-import { AssignProjectManagerTomember, removememberfromworkspace } from 'src/redux/slices/workspaceSlice';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  AssignProjectManagerTomember,
+  dischargeprojectmanager,
+  removememberfromworkspace,
+  AssignHR,
+} from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
 import { CalendarForm } from '../calendar';
 import { DialogAnimate } from 'src/components/animate';
@@ -97,6 +104,7 @@ function MemberCard({ member }) {
   const { gender, lastName, phone, email, avatarUrl, firstName, _id, isHR, isProjectManager } = member;
   console.log('member');
   console.log(member);
+  const { user } = useAuth();
 
   return (
     <Card
@@ -126,8 +134,14 @@ function MemberCard({ member }) {
       </Typography>
 
       <SocialsButton initialColor />
-
-      <MoreMenuButton id={_id} />
+      {
+        user._id != _id?
+        (
+          <MoreMenuButton id={_id} isPM={isProjectManager} isHumRes={isHR} />
+        )
+        :
+        (<></>)
+      }
     </Card>
   );
 }
@@ -143,21 +157,26 @@ function applyFilter(array, query) {
 
 // ----------------------------------------------------------------------
 
-function MoreMenuButton(id) {
+function MoreMenuButton({ id, isPM, isHumRes }) {
+  console.log('id fel butt');
+  console.log(id);
   const { isHr } = useAuth();
   const { idHR } = useAuth();
   const { workspace } = useWorkspace();
   const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [openDia, setOpenDia] = useState(false);
   const [openAssDia, setOpenAssDia] = useState(false);
+  const [openAssHRDia, setOpenAssHRDia] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [openDisDia, setOpenDisDia] = useState(false);
 
   const deletemember = () => {
     try {
       const obj = {
-        idmember: id.id,
+        idmember: id,
         idhr: idHR,
         idworkspace: workspace._id,
       };
@@ -172,7 +191,7 @@ function MoreMenuButton(id) {
   const AssignProjectManager = () => {
     try {
       const obj = {
-        idmember: id.id,
+        idmember: id,
         idHR: idHR,
         idworkspace: workspace._id,
       };
@@ -183,6 +202,47 @@ function MoreMenuButton(id) {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const AssignHRMember = () => {
+    try {
+      const obj = {
+        idmember: id,
+        idHR: idHR,
+        idworkspace: workspace._id,
+      };
+      handleCloseAssHRDialogue();
+      dispatch(AssignHR(obj)).then((res) => {
+        enqueueSnackbar('Assigned HR successfully');
+
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const DischargeProjectManager = () => {
+    try {
+      const obj = {
+        idmember: id,
+        idHR: idHR,
+        idworkspace: workspace._id,
+      };
+      dispatch(dischargeprojectmanager(obj)).then((res) => {
+        enqueueSnackbar('Discharge Project Manager successfully');
+        window.location.reload();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCloseDisDialogue = () => {
+    setOpenDisDia(false);
+  };
+
+  const handleClickDisOpen = () => {
+    setOpenDisDia(true);
   };
   const handleAddEvent = () => {
     setIsOpenModal(true);
@@ -216,6 +276,14 @@ function MoreMenuButton(id) {
     setOpenAssDia(true);
   };
 
+  const handleCloseAssHRDialogue = () => {
+    setOpenAssHRDia(false);
+  };
+
+  const handleClickAssHROpen = () => {
+    setOpenAssHRDia(true);
+  };
+
   const ICON = {
     mr: 2,
     width: 20,
@@ -242,15 +310,32 @@ function MoreMenuButton(id) {
         }}
       >
         <MenuItem>
-          <Iconify icon={'eva:download-fill'} sx={{ ...ICON }} />
-          Download
+          <Iconify icon={'ic:baseline-assignment-ind'} sx={{ ...ICON }} />
+          Show Profil
         </MenuItem>
 
-        {isHr && (
-          <MenuItem onClick={handleClickAssOpen}>
-            <Iconify icon={'ic:baseline-assignment-ind'} sx={{ ...ICON }} />
-            Assign PM
-          </MenuItem>
+        {isHr ? (
+          !isPM ? (
+            <>
+            <MenuItem onClick={handleClickAssOpen}>
+              <Iconify icon={'entypo:add-user'} sx={{ ...ICON }} />
+              Assign PM
+            </MenuItem>
+            <MenuItem onClick={()=>{ handleClose(); handleClickAssHROpen();}}>
+              <Iconify icon={'entypo:add-user'} sx={{ ...ICON }} />
+              Assign HR
+            </MenuItem>
+            </>
+          ) : !isHumRes ? (
+            <MenuItem onClick={handleClickDisOpen}>
+              <Iconify icon={'entypo:remove-user'} sx={{ ...ICON }} />
+              Remove PM
+            </MenuItem>
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
         )}
 
         {isHr && (
@@ -297,6 +382,42 @@ function MoreMenuButton(id) {
         <DialogActions>
           <Button onClick={handleCloseAssDialogue}>Cancel</Button>
           <Button onClick={AssignProjectManager} autoFocus>
+            Assign
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog
+        open={openDisDia}
+        onClose={handleCloseDisDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to discharge this PM ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">Discharge this Project Manager </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDisDialogue}>Cancel</Button>
+          <Button onClick={DischargeProjectManager} autoFocus>
+            Discharge
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openAssHRDia}
+        onClose={handleCloseAssHRDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to assign this member as HR ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">You will be a regular member</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAssDialogue}>Cancel</Button>
+          <Button onClick={AssignHRMember} autoFocus>
             Assign
           </Button>
         </DialogActions>
