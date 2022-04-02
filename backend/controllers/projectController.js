@@ -463,6 +463,71 @@ const assignTeamLeader = asyncHandler(async (req, res) => {
   }
 });
 
+const assignNewProjectManager = asyncHandler(async (req, res) => {
+  var verif = false;
+  var idTeamLeader = null;
+  const project = await Project.findById(req.params.idproject);
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idpm &&
+      project.assigned_members[i].isProjectManager == true
+    )
+      verif = true;
+    else if (project.assigned_members[i].isTeamLeader == true) {
+      idTeamLeader = project.assigned_members[i].memberId;
+    }
+  }
+  if (!verif) {
+    res.status(404);
+    throw new Error("changes are not made by a PM!");
+  } else {
+    if (!project) {
+      res.status(404);
+      throw new Error("project not found");
+    } else {
+      const member = await Member.findById(req.params.idmember);
+      if (!member) {
+        res.status(404);
+        throw new Error("member not found");
+      } else {
+        Project.updateOne(
+          {
+            _id: req.params.idproject,
+            "assigned_members.memberId": req.params.idmember,
+          },
+          {
+            $set: {
+              "assigned_members.$.isProjectManager": true,
+            },
+          },
+          function (err, success) {
+            if (err) throw err;
+            else {
+              Project.updateOne(
+                {
+                  _id: req.params.idproject,
+                  "assigned_members.memberId": req.params.idpm,
+                },
+                {
+                  $set: {
+                    "assigned_members.$.isProjectManager": false,
+                  },
+                },
+                function (err, success) {
+                  if (err) throw err;
+                  else {
+                    res.send({ msg: "Assigned new Project Manager" });
+                  }
+                }
+              );
+            }
+          }
+        );
+      }
+    }
+  }
+});
+
 // @route put /api/project/discharge/:idproject/:idmember/:idpm
 // idmember : member to discharge
 // idpm : id of the current user : is it a pm?
@@ -564,7 +629,7 @@ const updateProject = asyncHandler(async (req, res) => {
  * @route PUT /api/project/invite-members/:idproject/:idtl
  * idtl : id of current user inviting
  */
- const inviteMembers = asyncHandler(async (req, res, next) => {
+const inviteMembers = asyncHandler(async (req, res, next) => {
   console.log(req.params);
   var veriff = false;
   const emails = req.body.members;
@@ -676,4 +741,5 @@ module.exports = {
   getFullMembersByProject,
   abortproject,
   finishproject,
+  assignNewProjectManager,
 };
