@@ -92,7 +92,7 @@ const assignProjectManager = async (data) => {
   const idproject = data.idproject;
   const idpm = data.idpm;
   const idmember = data.idmember;
-  const response = await axiosInstance.put(API_URL + 'assignProjectManager/' + idproject + '/' + idmember + '/' + idpm);
+  const response = await axiosInstance.put(API_URL + 'assignnewpm/' + idproject + '/' + idmember + '/' + idpm);
   return response.data;
 };
 
