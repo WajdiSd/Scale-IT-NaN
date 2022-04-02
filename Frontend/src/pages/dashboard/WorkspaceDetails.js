@@ -28,6 +28,7 @@ import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
 
 // slices
 import { getWorkspace } from 'src/redux/slices/workspaceSlice';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -68,13 +69,24 @@ export default function WorkspaceDetails() {
   } = useProject();
   const { workspace, usersInWorkspace } = useWorkspace();
 
+  let isHrAfterLoad = isHr;
+  let isPmAfterLoad = isProjectManager;
+
   const [idWorkspace, setIdWorkspace] = useState(id);
 
   const dispatch = useDispatch();
 
   const getUserWorkspace = () => {
     try {
-      dispatch(getWorkspace(idWorkspace));
+      dispatch(getWorkspace(idWorkspace)).then((data) => {
+        data.payload.assigned_members.forEach((member) => {
+          if (member.member === user._id) {
+            isHrAfterLoad = member.isHr;
+            isPmAfterLoad = member.isProjectManager;
+          }
+        });
+        getWorkspaceProjectsHook(idWorkspace, user._id, isHrAfterLoad || isPmAfterLoad);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +95,6 @@ export default function WorkspaceDetails() {
   useEffect(() => {
     resetProjectsStore();
     getUserWorkspace();
-    getWorkspaceProjectsHook(idWorkspace, user._id, isHr || isProjectManager);
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');
@@ -136,12 +147,22 @@ export default function WorkspaceDetails() {
 
   return (
     <Page title="Workspace: Details">
-      <Snackbar open={projectError.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={projectError.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
           {projectError}
         </Alert>
       </Snackbar>
-      <Snackbar open={projectSuccess.length > 0} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={projectSuccess.length > 0}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           {projectSuccess}
         </Alert>

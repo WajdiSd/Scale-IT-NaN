@@ -13,10 +13,8 @@ const useProjectFilter = (projects) => {
 
   useEffect(() => {
     if (query) {
-      console.log('ena lenna');
       searchProjects(query);
     } else {
-      console.log('éna fel else');
       setProjectsFilter(initialProjects);
       setManagedProjects(initialProjects.filter((project) => project.hasOwnProperty('isProjectManager')));
       setLedProjects(initialProjects.filter((project) => project.hasOwnProperty('isTeamLeader')));

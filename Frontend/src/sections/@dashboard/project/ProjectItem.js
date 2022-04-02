@@ -21,6 +21,7 @@ import { sentenceCase } from 'change-case';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import MoreProjectOptions from './MoreProjectOptions';
 import { fDate } from 'src/utils/formatTime';
+import ProjectItemLabel from './ProjectItemLabel';
 
 // ----------------------------------------------------------------------
 const CaptionStyle = styled(CardContent)(({ theme }) => ({
@@ -49,15 +50,12 @@ export default function ProjectItem({
   isProjectManager,
   authority,
 }) {
-  const { description, name, startDate, expectedEndDate, _id, workspace, isDeleted } = project;
-  const theme = useTheme();
+  const { description, name, startDate, expectedEndDate, _id, workspace, status, isDeleted } = project;
   const [projectId, setProjectId] = useState(_id);
 
-  const isLight = theme.palette.mode === 'light';
   const now = new Date();
   const expectedEndDateJs = new Date(expectedEndDate);
-  const projectCompleted = expectedEndDateJs.getTime() < now.getTime();
-  const color = projectCompleted ? 'error' : 'in_progress' && 'warning';
+  const respectsDeadline = expectedEndDateJs.getTime() < now.getTime();
   const linkTo = `${PATH_DASHBOARD.workspaces.details}${workspaceId}/project/${projectId}`;
 
   const handleRestore = () => restoreProjectHook({ projectId: projectId, workspaceId: workspaceId, memberId: userId });
@@ -65,23 +63,7 @@ export default function ProjectItem({
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
       <Image alt="gallery image" ratio="1/1" src={''} />
-      {isDeleted ? (
-        <Label
-          sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-          variant={isLight ? 'ghost' : 'filled'}
-          color="error"
-        >
-          {sentenceCase('deleted')}
-        </Label>
-      ) : (
-        <Label
-          sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-          variant={isLight ? 'ghost' : 'filled'}
-          color={color}
-        >
-          {projectCompleted ? sentenceCase('overdue') : sentenceCase('in progress')}
-        </Label>
-      )}
+      <ProjectItemLabel isDeleted={isDeleted} status={status} respectsDeadline={respectsDeadline} />
 
       <CaptionStyle>
         <div>

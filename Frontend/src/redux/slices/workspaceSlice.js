@@ -31,7 +31,6 @@ export const workspaceSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkspace.fulfilled, (state, action) => {
-        console.log('get Workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
@@ -50,7 +49,6 @@ export const workspaceSlice = createSlice({
         state.workspaces = [];
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
-        console.log('getWorkspaces fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
@@ -68,55 +66,37 @@ export const workspaceSlice = createSlice({
         state.isError = true;
       })
       .addCase(addWorkspace.pending, (state) => {
-        console.log('add workspace pending');
         state.isLoading = true;
       })
       .addCase(addWorkspace.fulfilled, (state, action) => {
-        console.log('add workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.workspaces.push(action.payload);
       })
       .addCase(addWorkspace.rejected, (state, action) => {
-        console.log('add workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
       .addCase(deleteWorkspace.pending, (state) => {
-        console.log('delete workspace pending');
         state.isLoading = true;
       })
       .addCase(deleteWorkspace.fulfilled, (state, action) => {
-        console.log('delete workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.workspaces = state.workspaces.filter((workspace) => workspace._id !== action.payload._id);
       })
       .addCase(deleteWorkspace.rejected, (state, action) => {
-        console.log('delete workspace rejected');
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(getWorkspaceId.fulfilled, (state, action) => {
-        console.log('\n\n--------------------------------------------');
-        console.log('getWorkspace id FULFILLED ');
-        console.log(action.payload);
-        console.log('\n\n--------------------------------------------');
-      })
-      .addCase(getWorkspaceId.rejected, (state, action) => {
-        console.log('\n\n--------------------------------------------');
-        console.log('getWorkspace id REJECTED ');
-        console.log(action.payload);
-        console.log('\n\n--------------------------------------------');
-      })
+      .addCase(getWorkspaceId.fulfilled, (state, action) => {})
+      .addCase(getWorkspaceId.rejected, (state, action) => {})
       .addCase(usersbyworkspace.pending, (state) => {
-        console.log('users by workspace pending');
         state.isLoading = true;
       })
       .addCase(usersbyworkspace.fulfilled, (state, action) => {
-        console.log('users by workspace fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.usersInWorkspace = action.payload;
