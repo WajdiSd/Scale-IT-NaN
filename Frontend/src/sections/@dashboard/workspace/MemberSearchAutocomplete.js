@@ -19,6 +19,7 @@ import InputStyle from '../../../components/InputStyle';
 import SearchNotFound from '../../../components/SearchNotFound';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
+import { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -97,8 +98,9 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
       noOptionsText={<SearchNotFound searchQuery={searchQuery} />}
       isOptionEqualToValue={(option, value) => option._id === value._id}
       renderInput={(params) => (
-        <InputStyle
+        <RHFTextField
           {...params}
+          name="teamLeader"
           placeholder="Select Team Leader..."
           onKeyUp={(event, value) => handleKeyUp(event)}
           InputProps={{

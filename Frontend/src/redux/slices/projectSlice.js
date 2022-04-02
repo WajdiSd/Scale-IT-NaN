@@ -275,6 +275,27 @@ export const projectSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
       })
+      .addCase(assignProjectManager.rejected, (state, action) => {
+        console.log('inviteMemberToProject rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
+      .addCase(assignProjectManager.pending, (state, action) => {
+        console.log('assignProjectManager rejected');
+        console.log(action);
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(assignProjectManager.fulfilled, (state, action) => {
+        console.log('assignProjectManager rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
       ;
   },
 });
@@ -454,6 +475,21 @@ export const inviteMemberToProject = createAsyncThunk('project/inviteMemberToPro
       console.log(data);
       thunkAPI.dispatch(getFullMemberByProject(invited));
       return invited;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// assignProjectManager
+export const assignProjectManager = createAsyncThunk('project/assignProjectManager', async (data, thunkAPI) => {
+  try {
+    const project = await projectService.assignProjectManager(data);
+    if (project) {
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

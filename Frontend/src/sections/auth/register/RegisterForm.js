@@ -46,7 +46,7 @@ export default function RegisterForm() {
     email: '',
     password: '',
     phone: '',
-    gender: '',
+    gender: 'female',
   };
 
   const methods = useForm({

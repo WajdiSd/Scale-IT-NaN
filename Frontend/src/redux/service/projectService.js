@@ -87,6 +87,15 @@ const finishProject = async (projectId, pmId) => {
   return response.data;
 };
 
+//assignProjectManager
+const assignProjectManager = async (data) => {
+  const idproject = data.idproject;
+  const idpm = data.idpm;
+  const idmember = data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignProjectManager/' + idproject + '/' + idmember + '/' + idpm);
+  return response.data;
+};
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
@@ -101,6 +110,7 @@ const projectService = {
   updateTeamLeader,
   abortProject,
   finishProject,
+  assignProjectManager,
 };
 
 export default projectService;

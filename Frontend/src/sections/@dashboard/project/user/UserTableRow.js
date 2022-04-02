@@ -21,7 +21,7 @@ UserTableRow.propTypes = {
   onAssignTeamLeader: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader }) {
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader, onAssignProjectManager }) {
   const theme = useTheme();
   const {user} = useAuth();
 
@@ -155,7 +155,8 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                   (isPM?
                     (
                       !isProjectManager && !isTeamLeader && !isDeleted?
-                      (<MenuItem
+                      (<>
+                      <MenuItem
                         onClick={() => {
                           handleCloseMenu();
                           onAssignTeamLeader();
@@ -163,7 +164,17 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                       >
                         <Iconify icon={'eva:edit-fill'} />
                         Make Team Leader
-                      </MenuItem>)
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleCloseMenu();
+                          onAssignProjectManager();
+                        }}
+                      >
+                        <Iconify icon={'eva:edit-fill'} />
+                        Make Project Manager
+                      </MenuItem>
+                      </>)
                       :
                       (<></>)
                       

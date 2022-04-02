@@ -45,7 +45,7 @@ import { DialogAnimate } from 'src/components/animate';
 import InviteMembersToProjectForm from './InviteMembersToProjectForm';
 
 import { useDispatch } from '../../../redux/store';
-import { getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
+import { assignProjectManager, getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
 import { ToastContainer, toast } from 'material-react-toastify';
@@ -207,12 +207,6 @@ export default function UserList() {
   };
 
   const handleAssignTeamLeader = (id) => {
-    
-    //:idproject/:idmember/:idpm
-    /*if(themeMode === 'dark')
-      toast("Assigning Team Leader...");
-    else
-      toast.dark("Wow so easy !");*/
 
     console.log(id);
     const data = {
@@ -223,6 +217,23 @@ export default function UserList() {
 
     notify("Assigning Team Leader...")
     dispatch(updateTeamLeader(data)).then((res)=>{
+      update(res.payload.msg)
+      //enqueueSnackbar(res.payload.msg)
+      setReloadData(true);
+    })
+  };
+
+  const onAssignProjectManager = (id) => {
+
+    console.log(id);
+    const data = {
+      idproject: projectid,
+      idpm: user._id,
+      idmember: id,
+    }
+
+    notify("Assigning Project Manager...")
+    dispatch(assignProjectManager(data)).then((res)=>{
       update(res.payload.msg)
       //enqueueSnackbar(res.payload.msg)
       setReloadData(true);
@@ -358,6 +369,7 @@ export default function UserList() {
                         onDeleteRow={() => handleDeleteRow(row?._id)}
                         onEditRow={() => handleEditRow(row?._id)}
                         onAssignTeamLeader={() => handleAssignTeamLeader(row?._id)}
+                        onAssignProjectManager={() => onAssignProjectManager(row?._id)}
                       />
                     ))}
 
