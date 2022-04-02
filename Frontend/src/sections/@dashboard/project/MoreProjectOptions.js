@@ -126,8 +126,8 @@ export default function MoreProjectOptions({
 
         <Divider sx={{ borderStyle: 'dashed' }} />
         {authority === 'manager' && (
-          <MenuItem onClick={handleOpenUpdateDialog} sx={{ color: 'white' }}>
-            <Iconify icon={'eva:edit-2-outline'} sx={{ ...ICON }} />
+          <MenuItem onClick={handleOpenUpdateDialog}>
+            <Iconify icon={'ant-design:edit-filled'} sx={{ ...ICON }} />
             Update
           </MenuItem>
         )}
