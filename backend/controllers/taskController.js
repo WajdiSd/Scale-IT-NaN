@@ -50,6 +50,18 @@ const addTask = asyncHandler(async (req, res) => {
   res.status(201).json({ task });
 });
 
+const updateTask = asyncHandler(async (req, res) => {
+  const data = req.body;
+  const task = await Task.findByIdAndUpdate(req.params.id, data).catch(
+    (err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    }
+  );
+  res.status(201).json({ msg: 'task updated successfully' });
+});
+
 module.exports = {
   addTask,
+  updateTask,
 };
