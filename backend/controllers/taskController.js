@@ -69,22 +69,20 @@ const updateTaskState = asyncHandler(async (req, res) => {
     teamLeadId,
     projectId,
   } = req.body;
-
+  if (!status || !teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
   const project = await Project.findById(projectId);
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAA");
-    console.log(project);
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
-
   var isTl=false;
   project.assigned_members.forEach((element) => {      
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
         isTl=true;
-        console.log(isTl);
-
       }
     }
   });
@@ -93,31 +91,108 @@ const updateTaskState = asyncHandler(async (req, res) => {
         throw new Error("you are not allowed to update a task");}
   else  
   {
-  if (!status || !teamLeadId || !projectId ) {
-    res.status(400);
-    throw new Error("please add status");
-  }
-
   var possibleStates = ["to do", "doing", "done", "review"];
   var stateIsValid=possibleStates.includes(status);
-
   if (!stateIsValid)
     {
       res.status(404);
       throw new Error("invalid tasks status");
     }
   else {
-  const task = await Task.findByIdAndUpdate(req.params.id, status).catch(
+  const task = await Task.findByIdAndUpdate(req.params.id, {status}).catch(
     (err) => {
       res.status(400);
       throw new Error("could not update task", err);
     }
   );
-  res.status(200).json(task);}}
+  res.status(200).json(task);}
+}
 });
+
+
+//PS: soft delete to keep data
+const deleteTask = asyncHandler(async (req, res) => {
+  const {
+    teamLeadId,
+    projectId,
+  } = req.body;
+  if (!teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
+  const project = await Project.findById(projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl=false;
+  project.assigned_members.forEach((element) => {      
+    if (element.memberId == teamLeadId) {
+      if (element.isTeamLeader == true) {
+        isTl=true;
+      }
+    }
+  });
+  if (!isTl)
+        {res.status(403);
+        throw new Error("you are not allowed to delete a task");}
+  else  
+  {
+  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'true'}).catch(
+    (err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    }
+  );
+  res.status(200).json(task);
+}
+});
+
+
+//PS: recover after soft delete, in case its a mistake
+const recoverTask = asyncHandler(async (req, res) => {
+  const {
+    teamLeadId,
+    projectId,
+  } = req.body;
+  if (!teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
+  const project = await Project.findById(projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl=false;
+  project.assigned_members.forEach((element) => {      
+    if (element.memberId == teamLeadId) {
+      if (element.isTeamLeader == true) {
+        isTl=true;
+      }
+    }
+  });
+  if (!isTl)
+        {res.status(403);
+        throw new Error("you are not allowed to recover a task");}
+  else  
+  {
+  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'false'}).catch(
+    (err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    }
+  );
+  res.status(200).json(task);
+}
+});
+
+
 
 module.exports = {
   addTask,
   updateTask,
-  updateTaskState
+  updateTaskState,
+  deleteTask,
+  recoverTask
 };
