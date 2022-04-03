@@ -27,17 +27,26 @@ const taskSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      default: "to do",
-      enum: ["to do", "doing", "done", "review"],
+      default: "to_do",
+      enum: ["to_do", "doing", "done", "review"],
+    },
+    priority: {
+      type: String,
+      default: "Low",
+      enum: ["Low", "Medium", "High"],
     },
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
     },
-    member: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Member",
-    },
+    members:[
+      {
+        memberId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Member",
+        }
+      }
+    ]
   },
   {
     timestamps: true,
