@@ -5,8 +5,8 @@ const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/add", addTask);
-router.put("/update/:id", updateTask);
-router.put("/updatestate/:id", updateTaskState);
+router.post("/add", protect, addTask);
+router.put("/update/:id", protect, updateTask);
+router.put("/updatestate/:id", protect, updateTaskState);
 
 module.exports = router;
