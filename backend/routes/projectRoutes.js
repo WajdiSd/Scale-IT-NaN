@@ -16,15 +16,16 @@ const {
   getProjectsByTeamLeader,
   getProject,
   getFullMembersByProject,
+  assignNewProjectManager,
 } = require("../controllers/projectController");
 const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/get/:id/:iduser", protect, getProject);
-router.get("/list", protect, getProjects);
-router.get("/get/:id", protect, getProject);
-router.get("/list", protect, getProjects);
+router.get("/list", getProjects);
+router.get("/get/:id", getProject);
+router.get("/list", getProjects);
 router.get("/list/:idworkspace", protect, getProjectsByWorkspace);
 router.get(
   "/listbymanager/:idworkspace/:idmember",
@@ -53,12 +54,16 @@ router.put(
   assignTeamLeader
 );
 
+router.put(
+  "/assignnewpm/:idproject/:idmember/:idpm",
+  protect,
+  assignNewProjectManager
+);
+
 router.put("/abortproject/:idproject/:idpm", protect, abortproject);
 
 router.put("/finishproject/:idproject/:idpm", protect, finishproject);
 
 router.put("/update/:idproject/:idpm", protect, updateProject);
-router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
-router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
 
 module.exports = router;

@@ -15,6 +15,7 @@ const {
   countWkspMembers,
   assignRatestoMember,
   checkIfUserExistsInWorkspace,
+  assignHR,
 } = require("../controllers/workspaceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -37,8 +38,7 @@ router.put(
   removeMemberFromWorkspace
 );
 router.put(
-  "/assignPM/:idworkspace/:idmember/:idhr", 
-  protect,
+  "/assignPM/:idworkspace/:idmember/:idhr",
   assignProjectManager
 );
 router.put(
@@ -53,5 +53,10 @@ router.put(
   assignRatestoMember
 );
 router.get("/countmembers/:idworkspace", protect, countWkspMembers);
+router.put(
+  "/assignHR/:idworkspace/:idmember/:idhr", 
+  protect,
+  assignHR
+);
 
 module.exports = router;

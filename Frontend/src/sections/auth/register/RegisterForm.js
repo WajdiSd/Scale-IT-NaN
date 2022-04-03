@@ -18,8 +18,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { PATH_AUTH } from '../../../routes/paths';
 
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { SentIcon } from 'src/assets';
 // ----------------------------------------------------------------------
 
@@ -48,7 +46,7 @@ export default function RegisterForm() {
     email: '',
     password: '',
     phone: '',
-    gender: '',
+    gender: 'female',
   };
 
   const methods = useForm({

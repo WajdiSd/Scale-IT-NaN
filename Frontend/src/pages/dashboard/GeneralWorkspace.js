@@ -55,8 +55,6 @@ export default function GeneralWorkspace() {
 
   useEffect(() => {
     getUserWorkspaces();
-    console.log("workspaces");
-    console.log(workspaces);
   }, []);
 
   return (

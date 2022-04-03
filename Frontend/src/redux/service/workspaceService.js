@@ -93,6 +93,15 @@ const DischargeProjectManager = async (Data) => {
   return response.data;
 };
 
+
+const AssignHR = async (Data) => {
+  const idworkspace = Data.idworkspace;
+  const idHR = Data.idHR;
+  const idmember = Data.idmember;
+  const response = await axiosInstance.put(API_URL + 'assignHR/' + idworkspace + '/' + idmember + '/' + idHR);
+  return response.data;
+};
+
 const workspaceService = {
   getWorkspaces,
   addworkspace,
@@ -107,6 +116,7 @@ const workspaceService = {
   setRatestomember,
   AssignProjectManagerToMember,
   DischargeProjectManager,
+  AssignHR,
 };
 
 export default workspaceService;

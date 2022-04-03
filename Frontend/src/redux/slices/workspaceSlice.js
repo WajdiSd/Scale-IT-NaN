@@ -155,7 +155,22 @@ export const workspaceSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-      });
+      })
+      .addCase(AssignHR.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(AssignHR.pending, (state, action) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(AssignHR.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      ;
   },
 });
 
@@ -249,6 +264,7 @@ export const setRatesToMember = createAsyncThunk('workspace/setRatesToMember', a
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const AssignProjectManagerTomember = createAsyncThunk(
   'workspace/AssignProjectManagerTomember',
   async (Data, thunkAPI) => {
@@ -271,6 +287,7 @@ export const dischargeprojectmanager = createAsyncThunk('workspace/dischargeproj
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',
@@ -294,5 +311,22 @@ export const userExistsInWorkspace = createAsyncThunk('workspace/userExistsInWor
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+export const AssignHR = createAsyncThunk(
+  'workspace/AssignHR',
+  async (Data, thunkAPI) => {
+    try {
+      const res = await workspaceService.AssignHR(Data);
+      if (res) {
+        await thunkAPI.dispatch(getWorkspace(Data.idworkspace));
+        return res;
+      }
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const { resetWorkspace } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

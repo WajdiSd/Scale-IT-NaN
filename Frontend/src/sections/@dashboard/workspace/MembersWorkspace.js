@@ -29,10 +29,13 @@ import MenuPopover from 'src/components/MenuPopover';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import {
   AssignProjectManagerTomember,
   dischargeprojectmanager,
   removememberfromworkspace,
+  AssignHR,
 } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
 import { CalendarForm } from '../calendar';
@@ -101,6 +104,7 @@ function MemberCard({ member }) {
   const { gender, lastName, phone, email, avatarUrl, firstName, _id, isHR, isProjectManager } = member;
   console.log('member');
   console.log(member);
+  const { user } = useAuth();
 
   return (
     <Card
@@ -130,8 +134,14 @@ function MemberCard({ member }) {
       </Typography>
 
       <SocialsButton initialColor />
-
-      <MoreMenuButton id={_id} isPM={isProjectManager} isHumRes={isHR} />
+      {
+        user._id != _id?
+        (
+          <MoreMenuButton id={_id} isPM={isProjectManager} isHumRes={isHR} />
+        )
+        :
+        (<></>)
+      }
     </Card>
   );
 }
@@ -155,8 +165,10 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
   const { workspace } = useWorkspace();
   const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [openDia, setOpenDia] = useState(false);
   const [openAssDia, setOpenAssDia] = useState(false);
+  const [openAssHRDia, setOpenAssHRDia] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [openDisDia, setOpenDisDia] = useState(false);
@@ -186,6 +198,23 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
       dispatch(AssignProjectManagerTomember(obj)).then((res) => {
         enqueueSnackbar('Assign Project Manager successfully');
         window.location.reload();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const AssignHRMember = () => {
+    try {
+      const obj = {
+        idmember: id,
+        idHR: idHR,
+        idworkspace: workspace._id,
+      };
+      handleCloseAssHRDialogue();
+      dispatch(AssignHR(obj)).then((res) => {
+        enqueueSnackbar('Assigned HR successfully');
+
       });
     } catch (error) {
       console.error(error);
@@ -247,6 +276,14 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
     setOpenAssDia(true);
   };
 
+  const handleCloseAssHRDialogue = () => {
+    setOpenAssHRDia(false);
+  };
+
+  const handleClickAssHROpen = () => {
+    setOpenAssHRDia(true);
+  };
+
   const ICON = {
     mr: 2,
     width: 20,
@@ -279,10 +316,16 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
 
         {isHr ? (
           !isPM ? (
+            <>
             <MenuItem onClick={handleClickAssOpen}>
               <Iconify icon={'entypo:add-user'} sx={{ ...ICON }} />
               Assign PM
             </MenuItem>
+            <MenuItem onClick={()=>{ handleClose(); handleClickAssHROpen();}}>
+              <Iconify icon={'entypo:add-user'} sx={{ ...ICON }} />
+              Assign HR
+            </MenuItem>
+            </>
           ) : !isHumRes ? (
             <MenuItem onClick={handleClickDisOpen}>
               <Iconify icon={'entypo:remove-user'} sx={{ ...ICON }} />
@@ -343,7 +386,7 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
           </Button>
         </DialogActions>
       </Dialog>
-
+      
       <Dialog
         open={openDisDia}
         onClose={handleCloseDisDialogue}
@@ -362,6 +405,23 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={openAssHRDia}
+        onClose={handleCloseAssHRDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to assign this member as HR ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">You will be a regular member</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAssDialogue}>Cancel</Button>
+          <Button onClick={AssignHRMember} autoFocus>
+            Assign
+          </Button>
+        </DialogActions>
+      </Dialog>
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Set Rates'}</DialogTitle>
 
