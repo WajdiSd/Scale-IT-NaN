@@ -38,8 +38,7 @@ router.put(
   removeMemberFromWorkspace
 );
 router.put(
-  "/assignPM/:idworkspace/:idmember/:idhr", 
-  protect,
+  "/assignPM/:idworkspace/:idmember/:idhr",
   assignProjectManager
 );
 router.put(

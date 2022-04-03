@@ -264,6 +264,7 @@ export const setRatesToMember = createAsyncThunk('workspace/setRatesToMember', a
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const AssignProjectManagerTomember = createAsyncThunk(
   'workspace/AssignProjectManagerTomember',
   async (Data, thunkAPI) => {
@@ -286,6 +287,7 @@ export const dischargeprojectmanager = createAsyncThunk('workspace/dischargeproj
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 //remove member from workspace
 export const removememberfromworkspace = createAsyncThunk(
   'workspace/removememberfromworkspace',
