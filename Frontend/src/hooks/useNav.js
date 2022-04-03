@@ -163,6 +163,11 @@ const useNav = () => {
             path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}`,
             icon: ICONS.workspace,
           },
+          {
+            title: 'tasks',
+            path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}/tasks/list`,
+            icon: ICONS.workspace,
+          },
         ],
       };
       navlist[0].items.splice(1, 0, projectsItems);

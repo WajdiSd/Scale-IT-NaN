@@ -4,6 +4,7 @@ const Member = require("../models/memberModel");
 const Task = require("../models/taskModel");
 
 const addTask = asyncHandler(async (req, res) => {
+  console.log(req.body);
   const {
     name,
     description,
@@ -11,6 +12,8 @@ const addTask = asyncHandler(async (req, res) => {
     expectedEndDate,
     teamLeadId,
     projectId,
+    members,
+    prority
   } = req.body;
   if (!name || !description || !startDate || !expectedEndDate) {
     res.status(400);
@@ -44,6 +47,8 @@ const addTask = asyncHandler(async (req, res) => {
     startDate,
     expectedEndDate,
     project: projectId,
+    members: members,
+    prority: prority
   }).catch((err) => {
     res.status(400);
     throw new Error("could not create task", err);
