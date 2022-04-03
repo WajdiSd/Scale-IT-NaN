@@ -91,7 +91,7 @@ const updateTaskState = asyncHandler(async (req, res) => {
         throw new Error("you are not allowed to update a task");}
   else  
   {
-  var possibleStates = ["to do", "doing", "done", "review"];
+  var possibleStates = ["to_do", "doing", "done", "review"];
   var stateIsValid=possibleStates.includes(status);
   if (!stateIsValid)
     {
