@@ -22,8 +22,7 @@ const addTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("project not found");
   }
-  project.assigned_members.forEach((element) => {      
-
+  project.assigned_members.forEach((element) => {
     if (element.memberId.equals(teamLeadId)) {
       if (!element.isTeamLeader) {
         res.status(403);
@@ -52,24 +51,39 @@ const addTask = asyncHandler(async (req, res) => {
 });
 
 const updateTask = asyncHandler(async (req, res) => {
+  //const status = req.body;
+  const { id, iduser, idproject } = req.params;
   const data = req.body;
-  const task = await Task.findByIdAndUpdate(req.params.id, data).catch(
-    (err) => {
-      res.status(400);
-      throw new Error("could not update task", err);
+  const project = await Project.findById(idproject);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
+    if (element.memberId == iduser) {
+      if (element.isTeamLeader == true) {
+        isTl = true;
+      }
     }
-  );
-  res.status(201).json({ msg: 'task updated successfully' });
+  });
+  if (!isTl) {
+    res.status(403);
+    throw new Error("you are not allowed to update a task");
+  } else {
+      const task = await Task.findByIdAndUpdate(req.params.id, data).catch((err) => {
+        res.status(400);
+        throw new Error("could not update task", err);
+      });
+      res.status(200).json(task);
+    
+  }
 });
 
 const updateTaskState = asyncHandler(async (req, res) => {
   //const status = req.body;
-  const {
-    status,
-    teamLeadId,
-    projectId,
-  } = req.body;
-  if (!status || !teamLeadId || !projectId ) {
+  const { status, teamLeadId, projectId } = req.body;
+  if (!status || !teamLeadId || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
@@ -78,45 +92,39 @@ const updateTaskState = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("project not found");
   }
-  var isTl=false;
-  project.assigned_members.forEach((element) => {      
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
-        isTl=true;
+        isTl = true;
       }
     }
   });
-  if (!isTl)
-        {res.status(403);
-        throw new Error("you are not allowed to update a task");}
-  else  
-  {
-  var possibleStates = ["to_do", "doing", "done", "review"];
-  var stateIsValid=possibleStates.includes(status);
-  if (!stateIsValid)
-    {
+  if (!isTl) {
+    res.status(403);
+    throw new Error("you are not allowed to update a task");
+  } else {
+    var possibleStates = ["to_do", "doing", "done", "review"];
+    var stateIsValid = possibleStates.includes(status);
+    if (!stateIsValid) {
       res.status(404);
       throw new Error("invalid tasks status");
+    } else {
+      const task = await Task.findByIdAndUpdate(req.params.id, {
+        status,
+      }).catch((err) => {
+        res.status(400);
+        throw new Error("could not update task", err);
+      });
+      res.status(200).json(task);
     }
-  else {
-  const task = await Task.findByIdAndUpdate(req.params.id, {status}).catch(
-    (err) => {
-      res.status(400);
-      throw new Error("could not update task", err);
-    }
-  );
-  res.status(200).json(task);}
-}
+  }
 });
-
 
 //PS: soft delete to keep data
 const deleteTask = asyncHandler(async (req, res) => {
-  const {
-    teamLeadId,
-    projectId,
-  } = req.body;
-  if (!teamLeadId || !projectId ) {
+  const { teamLeadId, projectId } = req.body;
+  if (!teamLeadId || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
@@ -125,37 +133,33 @@ const deleteTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("project not found");
   }
-  var isTl=false;
-  project.assigned_members.forEach((element) => {      
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
-        isTl=true;
+        isTl = true;
       }
     }
   });
-  if (!isTl)
-        {res.status(403);
-        throw new Error("you are not allowed to delete a task");}
-  else  
-  {
-  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'true'}).catch(
-    (err) => {
+  if (!isTl) {
+    res.status(403);
+    throw new Error("you are not allowed to delete a task");
+  } else {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id },
+      { isDeleted: "true" }
+    ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
-    }
-  );
-  res.status(200).json(task);
-}
+    });
+    res.status(200).json(task);
+  }
 });
-
 
 //PS: recover after soft delete, in case its a mistake
 const recoverTask = asyncHandler(async (req, res) => {
-  const {
-    teamLeadId,
-    projectId,
-  } = req.body;
-  if (!teamLeadId || !projectId ) {
+  const { teamLeadId, projectId } = req.body;
+  if (!teamLeadId || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
@@ -164,35 +168,33 @@ const recoverTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("project not found");
   }
-  var isTl=false;
-  project.assigned_members.forEach((element) => {      
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
-        isTl=true;
+        isTl = true;
       }
     }
   });
-  if (!isTl)
-        {res.status(403);
-        throw new Error("you are not allowed to recover a task");}
-  else  
-  {
-  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'false'}).catch(
-    (err) => {
+  if (!isTl) {
+    res.status(403);
+    throw new Error("you are not allowed to recover a task");
+  } else {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id },
+      { isDeleted: "false" }
+    ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
-    }
-  );
-  res.status(200).json(task);
-}
+    });
+    res.status(200).json(task);
+  }
 });
-
-
 
 module.exports = {
   addTask,
   updateTask,
   updateTaskState,
   deleteTask,
-  recoverTask
+  recoverTask,
 };
