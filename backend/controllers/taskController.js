@@ -69,22 +69,20 @@ const updateTaskState = asyncHandler(async (req, res) => {
     teamLeadId,
     projectId,
   } = req.body;
-
+  if (!status || !teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
   const project = await Project.findById(projectId);
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAA");
-    console.log(project);
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
-
   var isTl=false;
   project.assigned_members.forEach((element) => {      
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
         isTl=true;
-        console.log(isTl);
-
       }
     }
   });
@@ -93,27 +91,22 @@ const updateTaskState = asyncHandler(async (req, res) => {
         throw new Error("you are not allowed to update a task");}
   else  
   {
-  if (!status || !teamLeadId || !projectId ) {
-    res.status(400);
-    throw new Error("please add status");
-  }
-
   var possibleStates = ["to do", "doing", "done", "review"];
   var stateIsValid=possibleStates.includes(status);
-
   if (!stateIsValid)
     {
       res.status(404);
       throw new Error("invalid tasks status");
     }
   else {
-  const task = await Task.findByIdAndUpdate(req.params.id, status).catch(
+  const task = await Task.findByIdAndUpdate(req.params.id, {status}).catch(
     (err) => {
       res.status(400);
       throw new Error("could not update task", err);
     }
   );
-  res.status(200).json(task);}}
+  res.status(200).json(task);}
+}
 });
 
 module.exports = {

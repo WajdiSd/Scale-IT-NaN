@@ -7,6 +7,6 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post("/add", protect, addTask);
 router.put("/update/:id", protect, updateTask);
-router.put("/updatestate/:id", protect, updateTaskState);
+router.put("/updatestate/:id", updateTaskState);
 
 module.exports = router;
