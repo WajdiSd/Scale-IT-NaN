@@ -109,8 +109,90 @@ const updateTaskState = asyncHandler(async (req, res) => {
 }
 });
 
+
+//PS: soft delete to keep data
+const deleteTask = asyncHandler(async (req, res) => {
+  const {
+    teamLeadId,
+    projectId,
+  } = req.body;
+  if (!teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
+  const project = await Project.findById(projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl=false;
+  project.assigned_members.forEach((element) => {      
+    if (element.memberId == teamLeadId) {
+      if (element.isTeamLeader == true) {
+        isTl=true;
+      }
+    }
+  });
+  if (!isTl)
+        {res.status(403);
+        throw new Error("you are not allowed to delete a task");}
+  else  
+  {
+  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'true'}).catch(
+    (err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    }
+  );
+  res.status(200).json(task);
+}
+});
+
+
+//PS: recover after soft delete, in case its a mistake
+const recoverTask = asyncHandler(async (req, res) => {
+  const {
+    teamLeadId,
+    projectId,
+  } = req.body;
+  if (!teamLeadId || !projectId ) {
+    res.status(400);
+    throw new Error("please add all fields");
+  }
+  const project = await Project.findById(projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl=false;
+  project.assigned_members.forEach((element) => {      
+    if (element.memberId == teamLeadId) {
+      if (element.isTeamLeader == true) {
+        isTl=true;
+      }
+    }
+  });
+  if (!isTl)
+        {res.status(403);
+        throw new Error("you are not allowed to recover a task");}
+  else  
+  {
+  const task = await Task.findOneAndUpdate( { _id: req.params.id }, {isDeleted: 'false'}).catch(
+    (err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    }
+  );
+  res.status(200).json(task);
+}
+});
+
+
+
 module.exports = {
   addTask,
   updateTask,
-  updateTaskState
+  updateTaskState,
+  deleteTask,
+  recoverTask
 };
