@@ -9,8 +9,8 @@ const addTask = async (data) => {
 };
 
 //get projects from Workspace for Hr and Project Manager
-const getTasksByProject = async (idWorkspace) => {
-  const response = await axiosInstance.get(API_URL + 'list/' + idWorkspace);
+const getTasksByProject = async (idproject) => {
+  const response = await axiosInstance.get(API_URL + 'tasksbyproject/' + idproject);
   return response.data;
 };
 

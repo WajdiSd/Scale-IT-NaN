@@ -2,14 +2,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import taskService from '../service/taskService';
 
-
 const initialState = {
   tasks: [],
   tasks_to_do: [],
   tasks_doing: [],
   tasks_done: [],
   tasks_review: [],
-  
+
   isProjectManager: false,
   isTeamLeader: false,
 
@@ -43,25 +42,42 @@ export const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(addTask.pending, (state) => {
-      state.isLoading = true;
-      state.isSuccess = false;
-      state.isError = false;
-    })
-    .addCase(addTask.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.isError = false;
-    })
-    .addCase(addTask.rejected, (state) => {
-      state.isLoading = false;
-      state.isSuccess = false;
-      state.isError = true;
-    })
-    ;
+      .addCase(addTask.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(addTask.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(addTask.rejected, (state) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
+      .addCase(getTasksByProject.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(getTasksByProject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.tasks_to_do = action.payload.tasksToDo;
+        state.tasks_doing = action.payload.tasksDoing;
+        state.tasks_done = action.payload.tasksDone;
+        state.tasks_review = action.payload.tasksReview;
+      })
+      .addCase(getTasksByProject.rejected, (state) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      });
   },
 });
-
 
 // Create new project
 export const addTask = createAsyncThunk('task/addTask', async (data, thunkAPI) => {
@@ -74,12 +90,11 @@ export const addTask = createAsyncThunk('task/addTask', async (data, thunkAPI) =
   }
 });
 
-// Fetch projects in workspace for HR and ProjectManagers
-export const getTasksByProject = createAsyncThunk('task/getTasksByProject', async (idWorkspace, thunkAPI) => {
+// Fetch tasks in project
+export const getTasksByProject = createAsyncThunk('task/getTasksByProject', async (idproject, thunkAPI) => {
   try {
-    const listProjects = await taskService.getTasksByProject(idWorkspace);
-    
-    return listProjects;
+    const listTasks = await taskService.getTasksByProject(idproject);
+    return listTasks;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
