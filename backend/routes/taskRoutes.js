@@ -5,6 +5,7 @@ const {
   updateTaskState,
   deleteTask,
   recoverTask,
+  getTasksByProject,
   assignTaskToMembers,
 } = require("../controllers/taskController");
 
@@ -18,5 +19,6 @@ router.put("/updatestate/:id", protect, updateTaskState);
 router.put("/assign-members/:id", protect, assignTaskToMembers);
 router.put("/delete/:id", protect, deleteTask);
 router.put("/recover/:id", protect, recoverTask);
+router.get("/tasksbyproject/:projectid", getTasksByProject);
 
 module.exports = router;
