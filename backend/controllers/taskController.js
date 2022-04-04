@@ -172,6 +172,30 @@ const recoverTask = asyncHandler(async (req, res) => {
   }
 });
 
+
+const getTasksByProject = asyncHandler(async (req, res) => {
+  const tasksToDo = await Task.find({
+    project: req.params.projectid,
+    status: "to_do",
+  });
+  const tasksDoing = await Task.find({
+    project: req.params.projectid,
+    status: "doing",
+  });
+  const tasksDone = await Task.find({
+    project: req.params.projectid,
+    status: "done",
+  });
+  const tasksReview = await Task.find({
+    project: req.params.projectid,
+    status: "review",
+  });
+  res.status(200).json({
+    tasksToDo: tasksToDo,
+    tasksDoing: tasksDoing,
+    tasksDone: tasksDone,
+    tasksReview: tasksReview,
+
 // assign task to members
 const assignTaskToMembers = asyncHandler(async (req, res) => {
   const { memberIds } = req.body;
@@ -240,5 +264,6 @@ module.exports = {
   updateTaskState,
   deleteTask,
   recoverTask,
+  getTasksByProject,
   assignTaskToMembers,
 };
