@@ -81,12 +81,15 @@ export const projectSlice = createSlice({
           });
           return project;
         });
-        state.projects = filteredProjects;
         state.isLoading = false;
         state.isSuccess = true;
         state.projects = filteredProjects.sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
+        console.log("------------in here --------------------");
+        console.log(filteredProjects);
+        console.log("------------in here --------------------");
+        console.log(state.unarchivedProjects);
       })
       .addCase(getWorkspaceProjects.pending, (state, action) => {
         state.isLoading = true;
