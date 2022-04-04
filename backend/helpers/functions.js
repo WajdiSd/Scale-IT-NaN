@@ -17,6 +17,22 @@ async function MemberInWorkspace(memberId, workspaceId) {
   return exist;
 }
 
+async function MemberInProject(memberId, projectId) {
+  let exist = false;
+  const project = await projectModel.findById(projectId);
+  if (!project) {
+    return false;
+  } else {
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (project.assigned_members[i].memberId.equals(memberId)) {
+        exist = true;
+      }
+    }
+  }
+
+  return exist;
+}
+
 async function ProjectHasTeamLeader(projectId) {
   const project = await projectModel.findOne({ _id: projectId });
   if (!project||project.assigned_members.length === 0) {
@@ -30,4 +46,4 @@ async function ProjectHasTeamLeader(projectId) {
   return false;
 }
 
-module.exports = { MemberInWorkspace, ProjectHasTeamLeader };
+module.exports = { MemberInWorkspace, ProjectHasTeamLeader, MemberInProject};
