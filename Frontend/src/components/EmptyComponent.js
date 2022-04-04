@@ -16,8 +16,6 @@ const RootStyle = styled('div')(({ theme }) => ({
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  paddingTop: theme.spacing(15),
-  paddingBottom: theme.spacing(10),
 }));
 
 const CountdownStyle = styled('div')({
@@ -38,7 +36,6 @@ export default function EmptyComponent() {
   const countdown = useCountdown(new Date('07/07/2022 21:30'));
 
   return (
-    <Page alignItems="center" sx={{ height: 1 }}>
       <RootStyle>
         <Container>
           <Box sx={{ maxWidth: 480, margin: 'auto', textAlign: 'center' }}>
@@ -51,6 +48,5 @@ export default function EmptyComponent() {
           </Box>
         </Container>
       </RootStyle>
-    </Page>
   );
 }
