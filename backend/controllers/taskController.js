@@ -71,12 +71,13 @@ const updateTask = asyncHandler(async (req, res) => {
     res.status(403);
     throw new Error("you are not allowed to update a task");
   } else {
-      const task = await Task.findByIdAndUpdate(req.params.id, data).catch((err) => {
-        res.status(400);
-        throw new Error("could not update task", err);
-      });
-      res.status(200).json(task);
-    
+    const task = await Task.findByIdAndUpdate(req.params.id, data, {
+      new: true,
+    }).catch((err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    });
+    res.status(200).json(task);
   }
   res.status(201).json({ msg: "task updated successfully" });
 });
@@ -111,9 +112,13 @@ const updateTaskState = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error("invalid tasks status");
     } else {
-      const task = await Task.findByIdAndUpdate(req.params.id, {
-        status,
-      }).catch((err) => {
+      const task = await Task.findByIdAndUpdate(
+        req.params.id,
+        {
+          status,
+        },
+        { new: true }
+      ).catch((err) => {
         res.status(400);
         throw new Error("could not update task", err);
       });
@@ -148,7 +153,8 @@ const deleteTask = asyncHandler(async (req, res) => {
   } else {
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id },
-      { isDeleted: "true" }
+      { isDeleted: "true" },
+      { new: true }
     ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
@@ -183,7 +189,8 @@ const recoverTask = asyncHandler(async (req, res) => {
   } else {
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id },
-      { isDeleted: "false" }
+      { isDeleted: "false" },
+      { new: true }
     ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
@@ -191,8 +198,6 @@ const recoverTask = asyncHandler(async (req, res) => {
     res.status(200).json(task);
   }
 });
-
-
 
 const getTasksByProject = asyncHandler(async (req, res) => {
   const tasksToDo = await Task.find({
@@ -218,8 +223,6 @@ const getTasksByProject = asyncHandler(async (req, res) => {
     tasksReview: tasksReview,
   });
 });
-
-
 
 // assign task to members
 const assignTaskToMembers = asyncHandler(async (req, res) => {
