@@ -57,13 +57,34 @@ const addTask = asyncHandler(async (req, res) => {
 });
 
 const updateTask = asyncHandler(async (req, res) => {
+  //const status = req.body;
+  const { id, iduser, idproject } = req.params;
   const data = req.body;
-  const task = await Task.findByIdAndUpdate(req.params.id, data).catch(
-    (err) => {
+  const project = await Project.findById(idproject);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
+    if (element.memberId == iduser) {
+      if (element.isTeamLeader == true) {
+        isTl = true;
+      }
+    }
+  });
+  if (!isTl) {
+    res.status(403);
+    throw new Error("you are not allowed to update a task");
+  } else {
+    const task = await Task.findByIdAndUpdate(req.params.id, data, {
+      new: true,
+    }).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
-    }
-  );
+    });
+    res.status(200).json(task);
+  }
   res.status(201).json({ msg: "task updated successfully" });
 });
 
@@ -97,9 +118,13 @@ const updateTaskState = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error("invalid tasks status");
     } else {
-      const task = await Task.findByIdAndUpdate(req.params.id, {
-        status,
-      }).catch((err) => {
+      const task = await Task.findByIdAndUpdate(
+        req.params.id,
+        {
+          status,
+        },
+        { new: true }
+      ).catch((err) => {
         res.status(400);
         throw new Error("could not update task", err);
       });
@@ -134,7 +159,8 @@ const deleteTask = asyncHandler(async (req, res) => {
   } else {
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id },
-      { isDeleted: "true" }
+      { isDeleted: "true" },
+      { new: true }
     ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);
@@ -169,7 +195,8 @@ const recoverTask = asyncHandler(async (req, res) => {
   } else {
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id },
-      { isDeleted: "false" }
+      { isDeleted: "false" },
+      { new: true }
     ).catch((err) => {
       res.status(400);
       throw new Error("could not update task", err);

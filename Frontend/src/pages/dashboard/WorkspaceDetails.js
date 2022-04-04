@@ -81,7 +81,7 @@ export default function WorkspaceDetails() {
       dispatch(getWorkspace(idWorkspace)).then((data) => {
         data.payload.assigned_members.forEach((member) => {
           if (member.member === user._id) {
-            isHrAfterLoad = member.isHr;
+            isHrAfterLoad = member.isHR;
             isPmAfterLoad = member.isProjectManager;
           }
         });
