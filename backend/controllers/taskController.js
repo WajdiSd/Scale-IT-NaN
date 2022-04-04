@@ -172,6 +172,7 @@ const recoverTask = asyncHandler(async (req, res) => {
   }
 });
 
+
 const getTasksByProject = asyncHandler(async (req, res) => {
   const tasksToDo = await Task.find({
     project: req.params.projectid,
@@ -194,6 +195,66 @@ const getTasksByProject = asyncHandler(async (req, res) => {
     tasksDoing: tasksDoing,
     tasksDone: tasksDone,
     tasksReview: tasksReview,
+
+// assign task to members
+const assignTaskToMembers = asyncHandler(async (req, res) => {
+  const { memberIds } = req.body;
+
+  const task = await Task.findById(req.params.id);
+  if (!task) {
+    res.status(400);
+    throw new Error("Task not found");
+  }
+  const tobeUpdatedTask = task;
+  const alreadyExistingMembers = [];
+
+  const updateTask = async (memberId) =>
+    await Task.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $push: { members: memberId },
+      },
+      { new: true }
+    ).then((task) => Object.assign(tobeUpdatedTask, task));
+
+  const assign = new Promise((resolve, reject) => {
+    memberIds.forEach(async (id, index, array) => {
+      const member = await Member.findById(id);
+      if (!member) {
+        res.status(400);
+        throw new Error(`Member ${id} was not found`);
+      }
+      const memberId = {
+        memberId: id,
+      };
+
+      let test = false;
+
+      if (!(task.members.length === 0)) {
+        task.members.forEach(async (memberIdInTask) => {
+          if (memberIdInTask.memberId.equals(memberId.memberId)) {
+            alreadyExistingMembers.push({ memberId: id });
+            if (index === array.length - 1) resolve();
+            test = true;
+            return;
+          }
+        });
+      }
+
+      if (test) return;
+
+      updateTask(memberId).then(() =>
+        index === array.length - 1 ? resolve() : ""
+      );
+    });
+  });
+
+  assign.then(() => {
+    const data = {
+      tobeUpdatedTask,
+      alreadyExistingMembers,
+    };
+    return res.status(200).json(data);
   });
 });
 
@@ -204,4 +265,5 @@ module.exports = {
   deleteTask,
   recoverTask,
   getTasksByProject,
+  assignTaskToMembers,
 };
