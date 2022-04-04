@@ -172,7 +172,6 @@ const recoverTask = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getTasksByProject = asyncHandler(async (req, res) => {
   const tasksToDo = await Task.find({
     project: req.params.projectid,
@@ -195,6 +194,8 @@ const getTasksByProject = asyncHandler(async (req, res) => {
     tasksDoing: tasksDoing,
     tasksDone: tasksDone,
     tasksReview: tasksReview,
+  });
+});
 
 // assign task to members
 const assignTaskToMembers = asyncHandler(async (req, res) => {
