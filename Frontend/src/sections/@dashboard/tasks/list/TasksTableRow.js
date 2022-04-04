@@ -12,10 +12,11 @@ import Label from '../../../../components/Label';
 import Avatar from '../../../../components/Avatar';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
-InvoiceTableRow.propTypes = {
+TasksTableRow.propTypes = {
   row: PropTypes.object.isRequired,
   selected: PropTypes.bool,
   onSelectRow: PropTypes.func,
@@ -24,10 +25,10 @@ InvoiceTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
 };
 
-export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
+export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
-
-  const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
+  const {user} = useAuth();
+  const { name, description, startDate, expectedEndDate, status, endDate, priority } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -46,29 +47,29 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={invoiceTo.name} color={createAvatar(invoiceTo.name).color} sx={{ mr: 2 }}>
-          {createAvatar(invoiceTo.name).name}
+        <Avatar alt={user.firstName} color={createAvatar(user.firstName).color} sx={{ mr: 2 }}>
+          {createAvatar(user.firstName).name}
         </Avatar>
 
         <Stack>
           <Typography variant="subtitle2" noWrap>
-            {invoiceTo.name}
+          {user.firstName} {user.lastName}
           </Typography>
 
           <Link noWrap variant="body2" onClick={onViewRow} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
-            {invoiceNumber}
+            invoiceNumber
           </Link>
         </Stack>
       </TableCell>
 
-      <TableCell align="left">{fDate(createDate)}</TableCell>
+      <TableCell align="left">{fDate(startDate)}</TableCell>
 
-      <TableCell align="left">{fDate(dueDate)}</TableCell>
+      <TableCell align="left">{fDate(expectedEndDate)}</TableCell>
 
-      <TableCell align="center">{fCurrency(totalPrice)}</TableCell>
+      <TableCell align="center">{fCurrency(100)}</TableCell>
 
       <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
-        {sent}
+      sent
       </TableCell>
 
       <TableCell align="left">

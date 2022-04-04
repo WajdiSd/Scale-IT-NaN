@@ -39,7 +39,6 @@ export default function GeneralProject() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(projectid);
 
     const obj = {
       idProject: projectid,

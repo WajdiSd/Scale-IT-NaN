@@ -8,26 +8,26 @@ import Iconify from '../../../../components/Iconify';
 
 const INPUT_WIDTH = 160;
 
-InvoiceTableToolbar.propTypes = {
+TasksTableToolbar.propTypes = {
   filterName: PropTypes.string,
   filterService: PropTypes.string,
   filterEndDate: PropTypes.instanceOf(Date),
   filterStartDate: PropTypes.instanceOf(Date),
   onFilterName: PropTypes.func,
   onFilterEndDate: PropTypes.func,
-  onFilterService: PropTypes.func,
+  onFilterPriority: PropTypes.func,
   onFilterStartDate: PropTypes.func,
-  optionsService: PropTypes.arrayOf(PropTypes.string),
+  optionsPriority: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default function InvoiceTableToolbar({
-  optionsService,
+export default function TasksTableToolbar({
+  optionsPriority,
   filterStartDate,
   filterEndDate,
   filterName,
   filterService,
   onFilterName,
-  onFilterService,
+  onFilterPriority,
   onFilterStartDate,
   onFilterEndDate,
 }) {
@@ -36,9 +36,9 @@ export default function InvoiceTableToolbar({
       <TextField
         fullWidth
         select
-        label="Service type"
+        label="Priority"
         value={filterService}
-        onChange={onFilterService}
+        onChange={onFilterPriority}
         SelectProps={{
           MenuProps: {
             sx: { '& .MuiPaper-root': { maxHeight: 260 } },
@@ -49,7 +49,7 @@ export default function InvoiceTableToolbar({
           textTransform: 'capitalize',
         }}
       >
-        {optionsService.map((option) => (
+        {optionsPriority.map((option) => (
           <MenuItem
             key={option}
             value={option}

@@ -1,2 +1,2 @@
-export { default as InvoiceTableRow } from './InvoiceTableRow';
-export { default as InvoiceTableToolbar } from './InvoiceTableToolbar';
+export { default as TasksTableRow } from './TasksTableRow';
+export { default as TasksTableToolbar } from './TasksTableToolbar';

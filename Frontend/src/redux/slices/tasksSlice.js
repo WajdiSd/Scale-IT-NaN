@@ -67,6 +67,26 @@ export const tasksSlice = createSlice({
       state.isSuccess = false;
       state.isError = true;
     })
+    .addCase(getUserTasks.pending, (state, action) => {
+      console.log("getUserTasks pending");
+      state.isLoading = true;
+      state.isSuccess = false;
+      state.isError = false;
+    })
+    .addCase(getUserTasks.fulfilled, (state, action) => {
+      console.log("getUserTasks fulfilled");
+      state.memberTasks = action.payload.tasks;
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+    })
+    .addCase(getUserTasks.rejected, (state, action) => {
+      console.log("getUserTasks rejected");
+      console.log(action);
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = true;
+    })
     ;
   },
 });
@@ -84,9 +104,9 @@ export const addTask = createAsyncThunk('task/addTask', async (data, thunkAPI) =
 });
 
 // Fetch projects in workspace for HR and ProjectManagers
-export const getTasksByProject = createAsyncThunk('task/getTasksByProject', async (idWorkspace, thunkAPI) => {
+export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object, thunkAPI) => {
   try {
-    const listProjects = await taskService.getTasksByProject(idWorkspace);
+    const listProjects = await taskService.getUserTasks(object);
     
     return listProjects;
   } catch (error) {

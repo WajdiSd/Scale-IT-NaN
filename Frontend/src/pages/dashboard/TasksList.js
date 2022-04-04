@@ -1,6 +1,8 @@
 import sumBy from 'lodash/sumBy';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router';
+
 // @mui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -39,19 +41,23 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 // sections
 import TasksAnalytic from '../../sections/@dashboard/tasks/TasksAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/tasks/list';
+import { TasksTableRow, TasksTableToolbar } from '../../sections/@dashboard/tasks/list';
 import { DialogAnimate } from 'src/components/animate';
 import AddTaskForm from 'src/sections/@dashboard/tasks/AddTaskForm';
+import { useDispatch } from 'react-redux';
+import { getUserTasks } from 'src/redux/slices/tasksSlice';
+import useAuth from 'src/hooks/useAuth';
+import useTask from 'src/hooks/useTask';
 
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
+
+
+const PRIORITY_OPTIONS = [
   'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
+  'Low',
+  'Medium',
+  'High',
 ];
 
 const TABLE_HEAD = [
@@ -73,6 +79,12 @@ export default function TasksList() {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  const { user } = useAuth();
+  const { memberTasks } = useTask();
+  const {id, projectid} = useParams();
+
   const {
     dense,
     page,
@@ -92,7 +104,6 @@ export default function TasksList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
 
   const [filterName, setFilterName] = useState('');
 
@@ -103,13 +114,23 @@ export default function TasksList() {
   const [filterEndDate, setFilterEndDate] = useState(null);
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
+  
+  useEffect(() => {
+
+    const data = {
+      memberId: user._id,
+      projectId: projectid,
+    }
+    dispatch(getUserTasks(data))
+  }, []);
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
     setPage(0);
   };
 
-  const handleFilterService = (event) => {
+  const onFilterPriority = (event) => {
+    console.log(event.target.value);
     setFilterService(event.target.value);
   };
 
@@ -134,7 +155,7 @@ export default function TasksList() {
   };
 
   const dataFiltered = applySortFilter({
-    tableData,
+    memberTasks,
     comparator: getComparator(order, orderBy),
     filterName,
     filterService,
@@ -146,28 +167,32 @@ export default function TasksList() {
   const denseHeight = dense ? 56 : 76;
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterStatus) ||
-    (!dataFiltered.length && !!filterService) ||
-    (!dataFiltered.length && !!filterEndDate) ||
-    (!dataFiltered.length && !!filterStartDate);
+    (!dataFiltered?.length && !!filterName) ||
+    (!dataFiltered?.length && !!filterStatus) ||
+    (!dataFiltered?.length && !!filterService) ||
+    (!dataFiltered?.length && !!filterEndDate) ||
+    (!dataFiltered?.length && !!filterStartDate);
 
-  const getLengthByStatus = (status) => tableData.filter((item) => item.status === status).length;
+  const getLengthByStatus = (status) => {
+    
+    return memberTasks?.filter((item) => 
+    item.status === status).length;
+  }
 
   const getTotalPriceByStatus = (status) =>
     sumBy(
-      tableData.filter((item) => item.status === status),
+      memberTasks?.filter((item) => item.status === status),
       'totalPrice'
     );
 
-  const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
+  const getPercentByStatus = (status) => (getLengthByStatus(status) / memberTasks?.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'all', label: 'All', color: 'info', count: memberTasks.length },
+    { value: 'to_do', label: 'To Do', color: 'success', count: getLengthByStatus('to_do') },
+    { value: 'doing', label: 'Doing', color: 'default', count: getLengthByStatus('doing') },
+    { value: 'done', label: 'Done', color: 'success', count: getLengthByStatus('done') },
+    { value: 'review', label: 'Review', color: 'default', count: getLengthByStatus('review') },
   ];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const handleAddEvent = () => {
@@ -207,9 +232,9 @@ export default function TasksList() {
             >
               <TasksAnalytic
                 title="Total"
-                total={tableData.length}
+                total={memberTasks?.length}
                 percent={100}
-                price={sumBy(tableData, 'totalPrice')}
+                price={sumBy(memberTasks, 'totalPrice')}
                 icon="ic:round-receipt"
                 color={theme.palette.info.main}
               />
@@ -274,20 +299,20 @@ export default function TasksList() {
 
           <Divider />
 
-          <InvoiceTableToolbar
+          <TasksTableToolbar
             filterName={filterName}
             filterService={filterService}
             filterStartDate={filterStartDate}
             filterEndDate={filterEndDate}
             onFilterName={handleFilterName}
-            onFilterService={handleFilterService}
+            onFilterPriority={onFilterPriority}
             onFilterStartDate={(newValue) => {
               setFilterStartDate(newValue);
             }}
             onFilterEndDate={(newValue) => {
               setFilterEndDate(newValue);
             }}
-            optionsService={SERVICE_OPTIONS}
+            optionsPriority={PRIORITY_OPTIONS}
           />
 
           <Scrollbar>
@@ -338,31 +363,31 @@ export default function TasksList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={memberTasks?.length}
                   numSelected={selected.length}
                   onSort={onSort}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      memberTasks?.map((row) => row.id)
                     )
                   }
                 />
 
                 <TableBody>
-                  {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                    <InvoiceTableRow
-                      key={row.id}
+                  {dataFiltered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                    <TasksTableRow
+                      key={row._id}
                       row={row}
-                      selected={selected.includes(row.id)}
-                      onSelectRow={() => onSelectRow(row.id)}
-                      onViewRow={() => handleViewRow(row.id)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
+                      selected={selected.includes(row._id)}
+                      onSelectRow={() => onSelectRow(row._id)}
+                      onViewRow={() => handleViewRow(row._id)}
+                      onEditRow={() => handleEditRow(row._id)}
+                      onDeleteRow={() => handleDeleteRow(row._id)}
                     />
                   ))}
 
-                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
+                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, memberTasks?.length)} />
 
                   <TableNoData isNotFound={isNotFound} />
                 </TableBody>
@@ -374,7 +399,7 @@ export default function TasksList() {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={dataFiltered.length}
+              count={dataFiltered?.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={onChangePage}
@@ -396,7 +421,7 @@ export default function TasksList() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({
-  tableData,
+  memberTasks,
   comparator,
   filterName,
   filterStatus,
@@ -404,38 +429,38 @@ function applySortFilter({
   filterStartDate,
   filterEndDate,
 }) {
-  const stabilizedThis = tableData.map((el, index) => [el, index]);
+  const stabilizedThis = memberTasks?.map((el, index) => [el, index]);
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  tableData = stabilizedThis.map((el) => el[0]);
+  memberTasks = stabilizedThis?.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
+    memberTasks = memberTasks.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
   if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.status === filterStatus);
+    memberTasks = memberTasks.filter((item) => item.status === filterStatus);
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    memberTasks = memberTasks.filter((item) => item.priority === filterService);
   }
 
   if (filterStartDate && filterEndDate) {
-    tableData = tableData.filter(
+    memberTasks = memberTasks.filter(
       (item) =>
         item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
     );
   }
 
-  return tableData;
+  return memberTasks;
 }

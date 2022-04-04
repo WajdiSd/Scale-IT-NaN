@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Task = require("../models/taskModel");
+const { MemberInProject } = require("../helpers/functions");
 
 const addTask = asyncHandler(async (req, res) => {
   console.log(req.body);
@@ -192,6 +193,30 @@ const recoverTask = asyncHandler(async (req, res) => {
 }
 });
 
+// @route get /api/task/getUserTasks/projectId/memberId
+const getUserTasks = asyncHandler(async (req, res) => {
+
+  const project = await Project.findById(req.params.projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+
+  let exists = await MemberInProject(req.params.memberId, req.params.projectId);
+
+  if(!exists){
+    res.status(404);
+    throw new Error("user is not in project");
+  }
+  const tasksToDo = await Task.find({
+    project: req.params.projectId,
+    "members.memberId" : req.params.memberId
+  });
+  res.status(200).json({
+    tasks : tasksToDo
+  });
+});
+
 
 
 module.exports = {
@@ -199,5 +224,6 @@ module.exports = {
   updateTask,
   updateTaskState,
   deleteTask,
-  recoverTask
+  recoverTask,
+  getUserTasks,
 };
