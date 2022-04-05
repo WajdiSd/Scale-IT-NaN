@@ -3,11 +3,7 @@ const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Task = require("../models/taskModel");
 const { MemberInProject } = require("../helpers/functions");
-const { 
-  v1: uuidv1,
-  v4: uuidv4,
-} = require('uuid');
-
+const { v1: uuidv1, v4: uuidv4 } = require("uuid");
 
 const addTask = asyncHandler(async (req, res) => {
   console.log(req.body);
@@ -19,7 +15,7 @@ const addTask = asyncHandler(async (req, res) => {
     teamLeadId,
     projectId,
     members,
-    prority
+    prority,
   } = req.body;
   if (!name || !description || !startDate || !expectedEndDate) {
     res.status(400);
@@ -53,7 +49,7 @@ const addTask = asyncHandler(async (req, res) => {
     expectedEndDate,
     project: projectId,
     members: members,
-    prority: prority
+    prority: prority,
   }).catch((err) => {
     res.status(400);
     throw new Error("could not create task", err);
@@ -115,7 +111,7 @@ const updateTaskState = asyncHandler(async (req, res) => {
       }
     }
   });*/
-  
+
   /*if (!isTl) {
     res.status(403);
     throw new Error("you are not allowed to update a task");
@@ -157,7 +153,6 @@ const updateTaskState = asyncHandler(async (req, res) => {
     });
     res.status(200).json(task);
   }
-
 });
 
 //PS: soft delete to keep data
@@ -234,7 +229,6 @@ const recoverTask = asyncHandler(async (req, res) => {
 
 // @route get /api/task/getUserTasks/projectId/memberId
 const getUserTasks = asyncHandler(async (req, res) => {
-
   const project = await Project.findById(req.params.projectId);
   if (!project) {
     res.status(404);
@@ -243,19 +237,18 @@ const getUserTasks = asyncHandler(async (req, res) => {
 
   let exists = await MemberInProject(req.params.memberId, req.params.projectId);
 
-  if(!exists){
+  if (!exists) {
     res.status(404);
     throw new Error("user is not in project");
   }
   const tasksToDo = await Task.find({
     project: req.params.projectId,
-    "members.memberId" : req.params.memberId
+    "members.memberId": req.params.memberId,
   });
   res.status(200).json({
-    tasks : tasksToDo
+    tasks: tasksToDo,
   });
 });
-
 
 const getTasksByProject = asyncHandler(async (req, res) => {
   /*const tasksToDo = await Task.find({
@@ -278,59 +271,63 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   const tasks = await Task.find({
     project: req.params.projectid,
   });
-  let columns, columnOrder, cards=[]
+  let columns,
+    columnOrder,
+    cards = [];
   columns = [
-  {
-      "_id": uuidv4(),
-      "name": "to_do",
-      "cardIds": 
-        tasks.filter((task)=>{
-          if (task.status == "to_do") return task
-        }).map((tasks)=>{
-          return tasks._id
+    {
+      _id: uuidv4(),
+      name: "to_do",
+      cardIds: tasks
+        .filter((task) => {
+          if (task.status == "to_do") return task;
         })
-  },
-  {
-      "_id": uuidv4(),
-      "name": "doing",
-      "cardIds": 
-        tasks.filter((task)=>{
-          if (task.status == "doing") return task
-        }).map((tasks)=>{
-          return tasks._id
+        .map((tasks) => {
+          return tasks._id;
+        }),
+    },
+    {
+      _id: uuidv4(),
+      name: "doing",
+      cardIds: tasks
+        .filter((task) => {
+          if (task.status == "doing") return task;
         })
-  },
-  {
-    "_id": uuidv4(),
-    "name": "review",
-    "cardIds": 
-      tasks.filter((task)=>{
-        if (task.status == "review") return task
-      }).map((tasks)=>{
-        return tasks._id
-      })
-  },
-  {
-    "_id": uuidv4(),
-    "name": "done",
-    "cardIds": 
-      tasks.filter((task)=>{
-        if (task.status == "done") return task
-      }).map((tasks)=>{
-        return tasks._id
-      })
-  },
-  
-  ]
-  columnOrder= columns.map((col)=>{
-    return col._id
-  })
-
+        .map((tasks) => {
+          return tasks._id;
+        }),
+    },
+    {
+      _id: uuidv4(),
+      name: "review",
+      cardIds: tasks
+        .filter((task) => {
+          if (task.status == "review") return task;
+        })
+        .map((tasks) => {
+          return tasks._id;
+        }),
+    },
+    {
+      _id: uuidv4(),
+      name: "done",
+      cardIds: tasks
+        .filter((task) => {
+          if (task.status == "done") return task;
+        })
+        .map((tasks) => {
+          return tasks._id;
+        }),
+    },
+  ];
+  columnOrder = columns.map((col) => {
+    return col._id;
+  });
 
   res.status(200).json({
-    cards:tasks,
-    columns:columns,
-    columnOrder:columnOrder,
+    cards: tasks,
+    columns: columns,
+    columnOrder: columnOrder,
   });
 });
 
@@ -343,6 +340,7 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Task not found");
   }
+  const projectId = task.project;
   const tobeUpdatedTask = task;
   const alreadyExistingMembers = [];
 
@@ -362,24 +360,33 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error(`Member ${id} was not found`);
       }
+
       const memberId = {
         memberId: id,
       };
+      const existsInProject = await MemberInProject(
+        memberId.memberId,
+        projectId
+      );
+      if (!existsInProject) {
+        res.status(400);
+        throw new Error(`Member ${member.email} was not found in the project`);
+      }
 
-      let test = false;
+      let existsInTask = false;
 
       if (!(task.members.length === 0)) {
         task.members.forEach(async (memberIdInTask) => {
           if (memberIdInTask.memberId.equals(memberId.memberId)) {
             alreadyExistingMembers.push({ memberId: id });
             if (index === array.length - 1) resolve();
-            test = true;
+            existsInTask = true;
             return;
           }
         });
       }
 
-      if (test) return;
+      if (existsInTask) return;
 
       updateTask(memberId).then(() =>
         index === array.length - 1 ? resolve() : ""
