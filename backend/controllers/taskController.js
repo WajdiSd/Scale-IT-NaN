@@ -3,6 +3,11 @@ const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Task = require("../models/taskModel");
 const { MemberInProject } = require("../helpers/functions");
+const { 
+  v1: uuidv1,
+  v4: uuidv4,
+} = require('uuid');
+
 
 const addTask = asyncHandler(async (req, res) => {
   console.log(req.body);
@@ -231,7 +236,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
 
 
 const getTasksByProject = asyncHandler(async (req, res) => {
-  const tasksToDo = await Task.find({
+  /*const tasksToDo = await Task.find({
     project: req.params.projectid,
     status: "to_do",
   });
@@ -247,11 +252,66 @@ const getTasksByProject = asyncHandler(async (req, res) => {
     project: req.params.projectid,
     status: "review",
   });
+*/
+  const tasks = await Task.find({
+    project: req.params.projectid,
+  });
+  let columns, columnOrder, cards=[]
+  columns = [
+  {
+      "_id": uuidv4(),
+      "name": "To Do",
+      "cardIds": 
+        tasks.filter((task)=>{
+          console.log();
+          if (task.status == "to_do") return task
+        }).map((tasks)=>{
+          return tasks._id
+        })
+  },
+  {
+      "_id": uuidv4(),
+      "name": "Doing",
+      "cardIds": 
+        tasks.filter((task)=>{
+          console.log();
+          if (task.status == "doing") return task
+        }).map((tasks)=>{
+          return tasks._id
+        })
+  },
+  {
+    "_id": uuidv4(),
+    "name": "Done",
+    "cardIds": 
+      tasks.filter((task)=>{
+        console.log();
+        if (task.status == "done") return task
+      }).map((tasks)=>{
+        return tasks._id
+      })
+  },
+  {
+    "_id": uuidv4(),
+    "name": "Review",
+    "cardIds": 
+      tasks.filter((task)=>{
+        console.log();
+        if (task.status == "review") return task
+      }).map((tasks)=>{
+        return tasks._id
+      })
+  },
+  ]
+  columnOrder= columns.map((col)=>{
+    return col._id
+  })
+
+
   res.status(200).json({
-    tasksToDo: tasksToDo,
-    tasksDoing: tasksDoing,
-    tasksDone: tasksDone,
-    tasksReview: tasksReview,
+    cards:tasks,
+    columns:columns,
+    columnOrder:columnOrder,
   });
 });
 

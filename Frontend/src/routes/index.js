@@ -96,7 +96,8 @@ export default function Router() {
                 { path: '', element: <WorkspaceDetails /> },
                 { path: 'project/:projectid' ,element: <GeneralProject/>,},
                 { path: 'project/:projectid/tasks/list', element: <TasksList /> },
-
+                { path: 'project/:projectid/tasks/Kanban', element: <Kanban /> },
+                
               ],
             },
             ,

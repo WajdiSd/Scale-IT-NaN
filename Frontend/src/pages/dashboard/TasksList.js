@@ -263,42 +263,37 @@ export default function TasksList() {
               sx={{ py: 2 }}
             >
               <TasksAnalytic
-                title="Total"
+                title="All"
                 total={memberTasks?.length}
                 percent={100}
-                price={sumBy(memberTasks, 'totalPrice')}
                 icon="ic:round-receipt"
                 color={theme.palette.info.main}
               />
               <TasksAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
+                title="To Do"
+                total={getLengthByStatus('to_do')}
+                percent={getPercentByStatus('to_do')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
               />
               <TasksAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
+                title="Doing"
+                total={getLengthByStatus('doing')}
+                percent={getPercentByStatus('doing')}
                 icon="eva:clock-fill"
                 color={theme.palette.warning.main}
               />
               <TasksAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
+                title="Done"
+                total={getLengthByStatus('done')}
+                percent={getPercentByStatus('done')}
                 icon="eva:bell-fill"
                 color={theme.palette.error.main}
               />
               <TasksAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
+                title="Review"
+                total={getLengthByStatus('review')}
+                percent={getPercentByStatus('review')}
                 icon="eva:file-fill"
                 color={theme.palette.text.secondary}
               />

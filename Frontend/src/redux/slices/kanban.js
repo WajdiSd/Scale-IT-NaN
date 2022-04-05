@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import omit from 'lodash/omit';
 // utils
 import axios from '../../utils/axios';
+import axiosInstance from 'src/utils/axios';
+
 //
 import { dispatch } from '../store';
 
 // ----------------------------------------------------------------------
 
-function objFromArray(array, key = 'id') {
+function objFromArray(array, key = '_id') {
   return array.reduce((accumulator, current) => {
     accumulator[current[key]] = current;
     return accumulator;
@@ -115,12 +117,13 @@ export const { actions } = slice;
 
 // ----------------------------------------------------------------------
 
-export function getBoard() {
+export function getBoard(projectid) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/kanban/board');
-      dispatch(slice.actions.getBoardSuccess(response.data.board));
+      const response = await axiosInstance.get('task/tasksbyproject/'+projectid);
+      console.log(response);
+      dispatch(slice.actions.getBoardSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -183,6 +186,8 @@ export function persistColumn(newColumnOrder) {
 // ----------------------------------------------------------------------
 
 export function persistCard(columns) {
+  console.log("persistCard");
+  console.log(columns);
   return () => {
     dispatch(slice.actions.persistCard(columns));
   };

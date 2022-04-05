@@ -13,11 +13,6 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { SkeletonKanbanColumn } from '../../components/skeleton';
 // sections
 import { KanbanColumn, KanbanColumnAdd } from '../../sections/@dashboard/kanban';
-import useAuth from 'src/hooks/useAuth';
-import useTask from 'src/hooks/useTask';
-import { useNavigate, useParams } from 'react-router';
-import useProject from 'src/hooks/useProject';
-import useWorkspace from 'src/hooks/useWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -25,17 +20,8 @@ export default function Kanban() {
   const dispatch = useDispatch();
   const { board } = useSelector((state) => state.kanban);
 
-  const navigate = useNavigate();
-
-
-  const { user } = useAuth();
-  const { memberTasks } = useTask();
-  const {id, projectid} = useParams();
-  const { project } = useProject();
-  const { workspace } = useWorkspace();
-
   useEffect(() => {
-    dispatch(getBoard(projectid));
+    dispatch(getBoard());
   }, [dispatch]);
 
   const onDragEnd = (result) => {
@@ -58,7 +44,7 @@ export default function Kanban() {
     const start = board.columns[source.droppableId];
     const finish = board.columns[destination.droppableId];
 
-    if (start._id === finish._id) {
+    if (start.id === finish.id) {
       const updatedCardIds = [...start.cardIds];
       updatedCardIds.splice(source.index, 1);
       updatedCardIds.splice(destination.index, 0, draggableId);
@@ -71,7 +57,7 @@ export default function Kanban() {
       dispatch(
         persistCard({
           ...board.columns,
-          [updatedColumn._id]: updatedColumn,
+          [updatedColumn.id]: updatedColumn,
         })
       );
       return;
@@ -94,8 +80,8 @@ export default function Kanban() {
     dispatch(
       persistCard({
         ...board.columns,
-        [updatedStart._id]: updatedStart,
-        [updatedFinish._id]: updatedFinish,
+        [updatedStart.id]: updatedStart,
+        [updatedFinish.id]: updatedFinish,
       })
     );
   };
@@ -103,16 +89,14 @@ export default function Kanban() {
   return (
     <Page title="Kanban" sx={{ height: 1 }}>
       <Container maxWidth={false} sx={{ height: 1 }}>
-      <HeaderBreadcrumbs
-          key={project?.name}
+        <HeaderBreadcrumbs
           heading="Kanban"
           links={[
-            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
-            { key: 2, name: 'Project', href: '' },
-            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}`, },
-            { key: 4, name: 'Kanban', href: '' },
-
+            {
+              name: 'Dashboard',
+              href: PATH_DASHBOARD.root,
+            },
+            { name: 'Kanban' },
           ]}
         />
         <DragDropContext onDragEnd={onDragEnd}>
@@ -126,11 +110,10 @@ export default function Kanban() {
                 spacing={3}
                 sx={{ height: 'calc(100% - 32px)', overflowY: 'hidden' }}
               >
-                {!board?.columnOrder?.length ? (
+                {!board.columnOrder.length ? (
                   <SkeletonKanbanColumn />
                 ) : (
                   board.columnOrder.map((columnId, index) => (
-
                     <KanbanColumn index={index} key={columnId} column={board.columns[columnId]} />
                   ))
                 )}

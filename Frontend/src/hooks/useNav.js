@@ -175,6 +175,11 @@ const useNav = () => {
             path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}/tasks/list`,
             icon: ICONS.workspace,
           },
+          {
+            title: 'kanban',
+            path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}/tasks/kanban`,
+            icon: ICONS.kanban,
+          },
         ],
       };
       navlist[0].items.splice(1, 0, projectsItems);
