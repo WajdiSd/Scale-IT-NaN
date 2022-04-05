@@ -95,8 +95,10 @@ const updateTask = asyncHandler(async (req, res) => {
 
 const updateTaskState = asyncHandler(async (req, res) => {
   //const status = req.body;
-  const { status, teamLeadId, projectId } = req.body;
-  if (!status || !teamLeadId || !projectId) {
+  //const { status, teamLeadId, projectId } = req.body;
+  const { status, projectId } = req.body;
+  console.log(req.body);
+  if (!status || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
@@ -106,14 +108,15 @@ const updateTaskState = asyncHandler(async (req, res) => {
     throw new Error("project not found");
   }
   var isTl = false;
-  project.assigned_members.forEach((element) => {
+  /*project.assigned_members.forEach((element) => {
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
         isTl = true;
       }
     }
-  });
-  if (!isTl) {
+  });*/
+  
+  /*if (!isTl) {
     res.status(403);
     throw new Error("you are not allowed to update a task");
   } else {
@@ -135,7 +138,26 @@ const updateTaskState = asyncHandler(async (req, res) => {
       });
       res.status(200).json(task);
     }
+  }*/
+  var possibleStates = ["to_do", "doing", "done", "review"];
+  var stateIsValid = possibleStates.includes(status);
+  if (!stateIsValid) {
+    res.status(404);
+    throw new Error("invalid tasks status");
+  } else {
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      {
+        status,
+      },
+      { new: true }
+    ).catch((err) => {
+      res.status(400);
+      throw new Error("could not update task", err);
+    });
+    res.status(200).json(task);
   }
+
 });
 
 //PS: soft delete to keep data
@@ -260,10 +282,9 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   columns = [
   {
       "_id": uuidv4(),
-      "name": "To Do",
+      "name": "to_do",
       "cardIds": 
         tasks.filter((task)=>{
-          console.log();
           if (task.status == "to_do") return task
         }).map((tasks)=>{
           return tasks._id
@@ -271,10 +292,9 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   },
   {
       "_id": uuidv4(),
-      "name": "Doing",
+      "name": "doing",
       "cardIds": 
         tasks.filter((task)=>{
-          console.log();
           if (task.status == "doing") return task
         }).map((tasks)=>{
           return tasks._id
@@ -282,10 +302,9 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   },
   {
     "_id": uuidv4(),
-    "name": "Done",
+    "name": "done",
     "cardIds": 
       tasks.filter((task)=>{
-        console.log();
         if (task.status == "done") return task
       }).map((tasks)=>{
         return tasks._id
@@ -293,10 +312,9 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   },
   {
     "_id": uuidv4(),
-    "name": "Review",
+    "name": "review",
     "cardIds": 
       tasks.filter((task)=>{
-        console.log();
         if (task.status == "review") return task
       }).map((tasks)=>{
         return tasks._id

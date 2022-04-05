@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { Container, Stack } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { getBoard, persistColumn, persistCard } from '../../redux/slices/kanban';
+import { persistColumn, persistCard, updateTaskStatus, getBoard } from '../../redux/slices/kanban';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -18,30 +18,35 @@ import useTask from 'src/hooks/useTask';
 import { useNavigate, useParams } from 'react-router';
 import useProject from 'src/hooks/useProject';
 import useWorkspace from 'src/hooks/useWorkspace';
+import useKanban from 'src/hooks/useKanban';
 
 // ----------------------------------------------------------------------
 
 export default function Kanban() {
   const dispatch = useDispatch();
-  const { board } = useSelector((state) => state.kanban);
 
   const navigate = useNavigate();
+  const [refreshTasks, setRefreshTasks] = useState(false);
 
 
   const { user } = useAuth();
+  const { board } = useKanban();
   const { memberTasks } = useTask();
   const {id, projectid} = useParams();
   const { project } = useProject();
   const { workspace } = useWorkspace();
 
   useEffect(() => {
+  console.log("useEffect");
+    setRefreshTasks(false)
     dispatch(getBoard(projectid));
-  }, [dispatch]);
+  }, []);
 
   const onDragEnd = (result) => {
     // Reorder card
     const { destination, source, draggableId, type } = result;
-
+    console.log("draggableId");
+    console.log(draggableId);
     if (!destination) return;
 
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
@@ -57,17 +62,17 @@ export default function Kanban() {
 
     const start = board.columns[source.droppableId];
     const finish = board.columns[destination.droppableId];
-
+    console.log("finish");
+    console.log(finish.name);
     if (start._id === finish._id) {
       const updatedCardIds = [...start.cardIds];
       updatedCardIds.splice(source.index, 1);
       updatedCardIds.splice(destination.index, 0, draggableId);
-
+     
       const updatedColumn = {
         ...start,
         cardIds: updatedCardIds,
       };
-
       dispatch(
         persistCard({
           ...board.columns,
@@ -90,14 +95,26 @@ export default function Kanban() {
       ...finish,
       cardIds: finishCardIds,
     };
+    let data = {
+      taskid: draggableId,
+      status: finish.name,
+      projectId : projectid,
+    }
+      dispatch(updateTaskStatus(data))
+      dispatch(persistCard({
+        ...board.columns,
+        [updatedStart._id]: updatedStart,
+        [updatedFinish._id]: updatedFinish,
+      }))
 
+    /*
     dispatch(
       persistCard({
         ...board.columns,
         [updatedStart._id]: updatedStart,
         [updatedFinish._id]: updatedFinish,
       })
-    );
+    );*/
   };
 
   return (

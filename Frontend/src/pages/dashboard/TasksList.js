@@ -273,8 +273,8 @@ export default function TasksList() {
                 title="To Do"
                 total={getLengthByStatus('to_do')}
                 percent={getPercentByStatus('to_do')}
-                icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
+                icon="eva:file-fill"
+                color={theme.palette.text.secondary}
               />
               <TasksAnalytic
                 title="Doing"
@@ -287,15 +287,17 @@ export default function TasksList() {
                 title="Done"
                 total={getLengthByStatus('done')}
                 percent={getPercentByStatus('done')}
-                icon="eva:bell-fill"
-                color={theme.palette.error.main}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.success.main}
+                
               />
               <TasksAnalytic
                 title="Review"
                 total={getLengthByStatus('review')}
                 percent={getPercentByStatus('review')}
-                icon="eva:file-fill"
-                color={theme.palette.text.secondary}
+                icon="eva:bell-fill"
+                color={theme.palette.error.main}
+                
               />
             </Stack>
           </Scrollbar>
