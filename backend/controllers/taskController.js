@@ -302,16 +302,6 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   },
   {
     "_id": uuidv4(),
-    "name": "done",
-    "cardIds": 
-      tasks.filter((task)=>{
-        if (task.status == "done") return task
-      }).map((tasks)=>{
-        return tasks._id
-      })
-  },
-  {
-    "_id": uuidv4(),
     "name": "review",
     "cardIds": 
       tasks.filter((task)=>{
@@ -320,6 +310,17 @@ const getTasksByProject = asyncHandler(async (req, res) => {
         return tasks._id
       })
   },
+  {
+    "_id": uuidv4(),
+    "name": "done",
+    "cardIds": 
+      tasks.filter((task)=>{
+        if (task.status == "done") return task
+      }).map((tasks)=>{
+        return tasks._id
+      })
+  },
+  
   ]
   columnOrder= columns.map((col)=>{
     return col._id
