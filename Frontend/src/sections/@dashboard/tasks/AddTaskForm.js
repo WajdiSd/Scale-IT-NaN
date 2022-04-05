@@ -55,8 +55,7 @@ AddTaskForm.propTypes = {
   onCancel: PropTypes.func,
 };
 
-export default function AddTaskForm({ onCancel }) {
-  const { enqueueSnackbar } = useSnackbar();
+export default function AddTaskForm({ onCancel, handleAddTask}) {
 
   const {user} = useAuth();
 
@@ -107,18 +106,9 @@ export default function AddTaskForm({ onCancel }) {
         projectId: projectid,
         prority: prioritize,
       };
-      console.log(newTask);
       onCancel();
       reset();
-        dispatch(addTask(newTask))
-        .then(res=>{
-          if(!res.error)
-            enqueueSnackbar("Successfully added task")
-          else
-            enqueueSnackbar("unable to add task",{
-              variant: 'error',
-            })
-      });
+      handleAddTask(newTask)  
       
     } catch (error) {
       console.error(error);

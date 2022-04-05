@@ -100,7 +100,7 @@ export default function TasksTableToolbar({
         fullWidth
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
-        placeholder="Search client or invoice number..."
+        placeholder="Search task by name..."
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

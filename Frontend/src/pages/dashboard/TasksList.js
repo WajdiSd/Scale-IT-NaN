@@ -2,7 +2,7 @@ import sumBy from 'lodash/sumBy';
 import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
-
+import moment from 'moment'
 // @mui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -45,9 +45,12 @@ import { TasksTableRow, TasksTableToolbar } from '../../sections/@dashboard/task
 import { DialogAnimate } from 'src/components/animate';
 import AddTaskForm from 'src/sections/@dashboard/tasks/AddTaskForm';
 import { useDispatch } from 'react-redux';
-import { getUserTasks } from 'src/redux/slices/tasksSlice';
+import { addTask, getUserTasks } from 'src/redux/slices/tasksSlice';
 import useAuth from 'src/hooks/useAuth';
 import useTask from 'src/hooks/useTask';
+import useProject from 'src/hooks/useProject';
+import useWorkspace from 'src/hooks/useWorkspace';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -61,11 +64,11 @@ const PRIORITY_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
+  { id: 'task', label: 'Task', align: 'left' },
   { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
+  { id: 'expectedDueDate', label: 'Due', align: 'left' },
+  { id: 'assignees', label: 'Assignees', align: 'center', width: 140 },
+  { id: 'priority', label: 'Priority', align: 'center', width: 140 },
   { id: 'status', label: 'Status', align: 'left' },
   { id: '' },
 ];
@@ -84,6 +87,11 @@ export default function TasksList() {
   const { user } = useAuth();
   const { memberTasks } = useTask();
   const {id, projectid} = useParams();
+  const { project } = useProject();
+  const { workspace } = useWorkspace();
+
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const {
     dense,
@@ -113,8 +121,10 @@ export default function TasksList() {
 
   const [filterEndDate, setFilterEndDate] = useState(null);
 
+  const [refreshTasks, setRefreshTasks] = useState(false);
+
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
-  
+
   useEffect(() => {
 
     const data = {
@@ -122,7 +132,7 @@ export default function TasksList() {
       projectId: projectid,
     }
     dispatch(getUserTasks(data))
-  }, []);
+  }, [refreshTasks]);
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -145,6 +155,21 @@ export default function TasksList() {
     setSelected([]);
     setTableData(deleteRows);
   };
+
+  const handleAddTask = (data) => {
+    dispatch(addTask(data))
+        .then(res=>{
+          if(!res.error)
+            {
+              enqueueSnackbar("Successfully added task")
+              setRefreshTasks(true)
+            }
+          else
+            enqueueSnackbar("unable to add task",{
+              variant: 'error',
+            })
+      });
+  }
 
   const handleEditRow = (id) => {
     navigate(PATH_DASHBOARD.invoice.edit(id));
@@ -204,10 +229,17 @@ export default function TasksList() {
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      
         <HeaderBreadcrumbs
-          heading="Invoice List"
+          key={project?.name}
+          heading="Tasks"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
+            { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
+            { key: 2, name: 'Project', href: '' },
+            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}`, },
+            { key: 4, name: 'Tasks', href: '' },
+
           ]}
           action={
             <Button
@@ -215,13 +247,13 @@ export default function TasksList() {
               onClick={handleAddEvent}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Invoice
+              New Task
             </Button>
           }
         />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Add Task'}</DialogTitle>
-        <AddTaskForm onCancel={handleCloseModal} />
+        <AddTaskForm onCancel={handleCloseModal} handleAddTask={handleAddTask} />
       </DialogAnimate>
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
@@ -321,11 +353,11 @@ export default function TasksList() {
                 <TableSelectedActions
                   dense={dense}
                   numSelected={selected.length}
-                  rowCount={tableData.length}
+                  rowCount={memberTasks?.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      memberTasks?.map((row) => row.id)
                     )
                   }
                   actions={
@@ -456,11 +488,21 @@ function applySortFilter({
   }
 
   if (filterStartDate && filterEndDate) {
+    console.log(memberTasks);
+    
     memberTasks = memberTasks.filter(
-      (item) =>
-        item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
+      
+      (item) =>{
+        
+        if(moment(item.startDate,'YYYY-MM-DD').isSameOrAfter(moment(filterStartDate,'YYYY-MM-DD'), 'day'
+        ) && moment(item.expectedEndDate,'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate,'YYYY-MM-DD'), 'day')
+        ){
+          console.log(item);
+          console.log(moment(item.expectedEndDate,'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate,'YYYY-MM-DD'), 'day'))
+          return item ;  
+        }
+      }   
     );
   }
-
   return memberTasks;
 }
