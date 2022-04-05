@@ -13,9 +13,22 @@ const getUserTasks = async (object) => {
   return response.data;
 };
 
+const getBoard = async (projectid) => {
+  const response = await axiosInstance.get(API_URL+'tasksbyproject/'+projectid);
+  return response.data;
+};
+
+//add task
+const updateTaskStatus = async (data) => {
+  const response = await axiosInstance.put(API_URL + 'updatestate/'+data.taskid, data);
+  return response.data;
+};
+
 const taskService = {
   addTask,
   getUserTasks,
+  updateTaskStatus,
+  getBoard,
 };
 
 export default taskService;

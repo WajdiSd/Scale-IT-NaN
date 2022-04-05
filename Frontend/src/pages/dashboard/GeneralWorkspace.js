@@ -91,7 +91,7 @@ export default function GeneralWorkspace() {
           <>
           <CardHeader title="Workspaces that you manage" subheader="" />
           <Grid container spacing={3} mt={3}>
-          {userWorkspaces
+          {userWorkspaces?.length>0
             ? userWorkspaces.map((workspace, index) =>
                 workspace ? (
                   <Grid key={workspace._id} item xs={12} sm={6} md={(index === 0 && 6) || 3}>
@@ -103,13 +103,19 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : <h1>empty</h1>}
+            : 
+            <Grid item xs={12} sm={12} md={12}>
+              <EmptyComponent/>
+            </Grid>
+            }
         </Grid>
           </>
         )
         :
         ( 
-        <EmptyComponent/>
+          <Grid item xs={12} sm={12} md={12}>
+          <EmptyComponent/>
+          </Grid>
         )
         }
         {
@@ -118,7 +124,7 @@ export default function GeneralWorkspace() {
             <>
         <CardHeader title="Workspaces that you joined" subheader="" />
         <Grid container spacing={3}>
-          {userJoinedspaces
+          {userJoinedspaces?.length>0
             ? userJoinedspaces.map((workspace, index) =>
                 workspace ? (
                   <Grid key={index} item xs={12} sm={6} md={(index === 0 && 6) || 3}>
@@ -128,7 +134,10 @@ export default function GeneralWorkspace() {
                   <SkeletonPostItem key={index} />
                 )
               )
-            : <h1>empty</h1>}
+            : <Grid item xs={12} sm={12} md={12}>
+                <EmptyComponent/>
+              </Grid>
+          }
                 
         </Grid>
             </>
@@ -136,7 +145,9 @@ export default function GeneralWorkspace() {
           )
           :
           (
-            <EmptyComponent/>
+            <Grid item xs={12} sm={12} md={12}>
+              <EmptyComponent/>
+            </Grid>
           )
         }
           </>

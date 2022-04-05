@@ -8,6 +8,7 @@ import Label from 'src/components/Label';
 import { useParams } from 'react-router';
 import useWorkspace from './useWorkspace';
 import useProject from './useProject';
+import useAuth from './useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +40,7 @@ const useNav = () => {
   const { rootWorkspace } = useWorkspaceId();
   const {workspace} = useWorkspace();
   const {project} = useProject();
+  const { isHr } = useAuth();
 
   const {id, projectid} = useParams();
 
@@ -58,11 +60,7 @@ const useNav = () => {
             path: PATH_DASHBOARD.workspaces.root,
             icon: ICONS.workspace,
             children: [
-              {
-                title: 'invite members',
-                path: `${PATH_DASHBOARD.workspaces.memberInvite}${id}/invite`,
-                icon: ICONS.workspace,
-              },
+              
             ],
           },
           { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
@@ -151,6 +149,15 @@ const useNav = () => {
       },
     ];
 
+    if(id && isHr){
+      let inviteItem = {
+        title: 'invite members',
+        path: `${PATH_DASHBOARD.workspaces.memberInvite}${id}/invite`,
+        icon: ICONS.workspace,
+      }
+      navlist[0].items[0].children.splice(1, 0, inviteItem);
+    }
+
     if(projectid){
       let projectsItems = 
       {
@@ -167,6 +174,11 @@ const useNav = () => {
             title: 'tasks',
             path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}/tasks/list`,
             icon: ICONS.workspace,
+          },
+          {
+            title: 'kanban',
+            path: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}/tasks/kanban`,
+            icon: ICONS.kanban,
           },
         ],
       };

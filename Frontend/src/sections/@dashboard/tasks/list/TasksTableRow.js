@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from '@mui/material';
+import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem, AvatarGroup, Box } from '@mui/material';
 // utils
 import { fDate } from '../../../../utils/formatTime';
 import createAvatar from '../../../../utils/createAvatar';
@@ -13,6 +13,7 @@ import Avatar from '../../../../components/Avatar';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import useAuth from 'src/hooks/useAuth';
+import moment from 'moment'
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ TasksTableRow.propTypes = {
 export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
   const {user} = useAuth();
-  const { name, description, startDate, expectedEndDate, status, endDate, priority } = row;
+  const { name, description, startDate, expectedEndDate, status, endDate, priority, members } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -53,32 +54,52 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
 
         <Stack>
           <Typography variant="subtitle2" noWrap>
-          {user.firstName} {user.lastName}
+          {name}
+          
           </Typography>
 
           <Link noWrap variant="body2" onClick={onViewRow} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
-            invoiceNumber
+          {user.firstName} {user.lastName}
           </Link>
         </Stack>
       </TableCell>
 
-      <TableCell align="left">{fDate(startDate)}</TableCell>
+      <TableCell align="left">{moment(startDate).zone('-0100').format('YYYY-MM-DD')}</TableCell>
 
-      <TableCell align="left">{fDate(expectedEndDate)}</TableCell>
+      <TableCell align="left">{moment(expectedEndDate).zone('-0100').format('YYYY-MM-DD')}</TableCell>
 
-      <TableCell align="center">{fCurrency(100)}</TableCell>
+      <TableCell align="center">
+          <AvatarGroup max={2} sx={{ '& .MuiAvatar-root': { width: 32, height: 32 } }}>
+            {members.map((person) => (
+              <Avatar key={person._id} alt={person._id} src={person._id} />
+            ))}
+          </AvatarGroup>
+      </TableCell>
 
-      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
-      sent
+      <TableCell align="center" sx={{ display: 'flex' , mx: 1, my: 0.5, borderRadius: 1 }}>
+      <Box
+        sx={{
+        mr: 1,
+        width: 14,
+        height: 14,
+        borderRadius: 0.5,
+        bgcolor: 'error.main',
+        ...(priority === 'Low' && { bgcolor: 'info.main' }),
+        ...(priority === 'Medium' && { bgcolor: 'warning.main' }),
+                      }}
+      />
+      <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+        {priority}
+      </Typography>
       </TableCell>
 
       <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
           color={
-            (status === 'paid' && 'success') ||
-            (status === 'unpaid' && 'warning') ||
-            (status === 'overdue' && 'error') ||
+            (status === 'to_do' && 'success') ||
+            (status === 'done' && 'success') ||
+            (status === 'review' && 'warning') ||
             'default'
           }
           sx={{ textTransform: 'capitalize' }}

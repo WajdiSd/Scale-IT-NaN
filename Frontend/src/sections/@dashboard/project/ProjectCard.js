@@ -8,7 +8,7 @@ import useProject from 'src/hooks/useProject';
 import { useParams } from 'react-router';
 
 // @mui
-import { Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle } from '@mui/material';
+import { Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle, Grid } from '@mui/material';
 
 // components
 import Iconify from '../../../components/Iconify';
@@ -18,6 +18,7 @@ import AddProjectForm from './AddProjectForm';
 import InputStyle from 'src/components/InputStyle';
 import ProjectItem from './ProjectItem';
 import { Stack } from '@mui/material';
+import EmptyComponent from 'src/components/EmptyComponent';
 
 ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,
@@ -76,7 +77,9 @@ export default function ProjectCard({ loaded, projects }) {
 
       <Card sx={{ p: 3 }}>
         {!projects || projects.length === 0 ? (
-          <Typography variant="h1">No projects found.</Typography>
+          <Grid item xs={12} sm={12} md={12}>
+            <EmptyComponent/>
+          </Grid>
         ) : (
           <>
             {isHr && unarchivedProjects.length > 0 ? (

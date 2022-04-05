@@ -18,6 +18,7 @@ KanbanTaskCard.propTypes = {
 };
 
 export default function KanbanTaskCard({ card, onDeleteTask, index }) {
+  
   const { name, attachments } = card;
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -37,7 +38,7 @@ export default function KanbanTaskCard({ card, onDeleteTask, index }) {
   };
 
   return (
-    <Draggable draggableId={card.id} index={index}>
+    <Draggable draggableId={card._id} index={index}>
       {(provided) => (
         <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
           <Paper
@@ -49,13 +50,13 @@ export default function KanbanTaskCard({ card, onDeleteTask, index }) {
               '&:hover': {
                 boxShadow: (theme) => theme.customShadows.z16,
               },
-              ...(attachments.length > 0 && {
+              ...(attachments?.length > 0 && {
                 pt: 2,
               }),
             }}
           >
             <Box onClick={handleOpenDetails} sx={{ cursor: 'pointer' }}>
-              {attachments.length > 0 && (
+              {attachments?.length > 0 && (
                 <Box
                   sx={{
                     pt: '60%',
@@ -106,7 +107,7 @@ export default function KanbanTaskCard({ card, onDeleteTask, index }) {
             card={card}
             isOpen={openDetails}
             onClose={handleCloseDetails}
-            onDeleteTask={() => onDeleteTask(card.id)}
+            onDeleteTask={() => onDeleteTask(card._id)}
           />
         </div>
       )}
