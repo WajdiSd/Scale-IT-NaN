@@ -340,6 +340,7 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Task not found");
   }
+  const projectId = task.project;
   const tobeUpdatedTask = task;
   const alreadyExistingMembers = [];
 
@@ -359,24 +360,33 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error(`Member ${id} was not found`);
       }
+
       const memberId = {
         memberId: id,
       };
+      const existsInProject = await MemberInProject(
+        memberId.memberId,
+        projectId
+      );
+      if (!existsInProject) {
+        res.status(400);
+        throw new Error(`Member ${member.email} was not found in the project`);
+      }
 
-      let test = false;
+      let existsInTask = false;
 
       if (!(task.members.length === 0)) {
         task.members.forEach(async (memberIdInTask) => {
           if (memberIdInTask.memberId.equals(memberId.memberId)) {
             alreadyExistingMembers.push({ memberId: id });
             if (index === array.length - 1) resolve();
-            test = true;
+            existsInTask = true;
             return;
           }
         });
       }
 
-      if (test) return;
+      if (existsInTask) return;
 
       updateTask(memberId).then(() =>
         index === array.length - 1 ? resolve() : ""
