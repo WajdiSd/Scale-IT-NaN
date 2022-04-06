@@ -4,6 +4,7 @@ import taskService from '../service/taskService';
 
 const initialState = {
   tasks: [],
+  memberTasks: [],
   tasks_to_do: [],
   tasks_doing: [],
   tasks_done: [],
@@ -25,15 +26,16 @@ export const tasksSlice = createSlice({
   initialState,
   reducers: {
     resetTask: (state) => {
-      (state.projects = []),
+      (state.tasks = []),
+        (state.memberTasks = []),
+        (state.tasks_to_do = []),
+        (state.tasks_doing = []),
+        (state.tasks_done = []),
+        (state.tasks_review = []),
         (state.isProjectManager = false),
         (state.isTeamLeader = false),
-        (state.archivedProjects = []),
-        (state.unarchivedProjects = []),
-        (state.project = null),
-        (state.usersInProject = []),
-        (state.projectsErrorMessage = ''),
-        (state.projectsSuccessMessage = ''),
+        (state.task = null),
+        (state.usersInTask = []),
         (state.isError = false),
         (state.isSuccess = false),
         (state.isLoading = false),
@@ -42,36 +44,41 @@ export const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addTask.pending, (state) => {
+      .addCase(addTask.pending, (state, action) => {
+        console.log('addTask pending');
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
       })
-      .addCase(addTask.fulfilled, (state) => {
+      .addCase(addTask.fulfilled, (state, action) => {
+        console.log('addTask fulfilled');
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
       })
-      .addCase(addTask.rejected, (state) => {
+      .addCase(addTask.rejected, (state, action) => {
+        console.log('addTask rejected');
+        console.log(action);
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
       })
-      .addCase(getTasksByProject.pending, (state) => {
+      .addCase(getUserTasks.pending, (state, action) => {
+        console.log('getUserTasks pending');
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
       })
-      .addCase(getTasksByProject.fulfilled, (state, action) => {
+      .addCase(getUserTasks.fulfilled, (state, action) => {
+        console.log('getUserTasks fulfilled');
+        state.memberTasks = action.payload.tasks;
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.tasks_to_do = action.payload.tasksToDo;
-        state.tasks_doing = action.payload.tasksDoing;
-        state.tasks_done = action.payload.tasksDone;
-        state.tasks_review = action.payload.tasksReview;
       })
-      .addCase(getTasksByProject.rejected, (state) => {
+      .addCase(getUserTasks.rejected, (state, action) => {
+        console.log('getUserTasks rejected');
+        console.log(action);
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
@@ -90,11 +97,12 @@ export const addTask = createAsyncThunk('task/addTask', async (data, thunkAPI) =
   }
 });
 
-// Fetch tasks in project
-export const getTasksByProject = createAsyncThunk('task/getTasksByProject', async (idproject, thunkAPI) => {
+// Fetch projects in workspace for HR and ProjectManagers
+export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object, thunkAPI) => {
   try {
-    const listTasks = await taskService.getTasksByProject(idproject);
-    return listTasks;
+    const listProjects = await taskService.getUserTasks(object);
+
+    return listProjects;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

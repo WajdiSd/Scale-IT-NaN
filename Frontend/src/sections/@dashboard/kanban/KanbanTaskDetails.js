@@ -56,7 +56,7 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
   const [taskCompleted, setTaskCompleted] = useState(card.completed);
   const [prioritize, setPrioritize] = useState('low');
 
-  const { name, description, due, assignee, attachments, comments } = card;
+  const { name, description, startDate, expectedEndDate, members, attachments } = card;
 
   const {
     dueDate,
@@ -69,7 +69,7 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
     onOpenPicker,
     onClosePicker,
   } = useDatePicker({
-    date: due,
+    date: [startDate, expectedEndDate],
   });
 
   const handleAttach = () => {
@@ -156,7 +156,7 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             <Stack direction="row">
               <LabelStyle sx={{ mt: 1.5 }}>Assignee</LabelStyle>
               <Stack direction="row" flexWrap="wrap" alignItems="center">
-                {assignee.map((user) => (
+                {members.map((user) => (
                   <Avatar key={user.id} alt={user.name} src={user.avatar} sx={{ m: 0.5, width: 36, height: 36 }} />
                 ))}
                 <Tooltip title="Add assignee">
@@ -256,12 +256,12 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             <Stack direction="row">
               <LabelStyle sx={{ mt: 2 }}>Attachments</LabelStyle>
               <Stack direction="row" flexWrap="wrap">
-                <KanbanTaskAttachments attachments={attachments} />
+                {/*<KanbanTaskAttachments attachments={attachments} />*/}
               </Stack>
             </Stack>
           </Stack>
 
-          {comments.length > 0 && <KanbanTaskCommentList comments={comments} />}
+          {/*comments.length > 0 && <KanbanTaskCommentList comments={comments} />*/}
         </Scrollbar>
 
         <Divider />

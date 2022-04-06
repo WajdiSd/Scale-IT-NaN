@@ -94,7 +94,10 @@ export default function Router() {
               children: [
                 { path: 'invite', element: <WorkspaceInvite /> },
                 { path: '', element: <WorkspaceDetails /> },
-                { path: 'project/:projectid' ,element: <GeneralProject/>}
+                { path: 'project/:projectid' ,element: <GeneralProject/>,},
+                { path: 'project/:projectid/tasks/list', element: <TasksList /> },
+                { path: 'project/:projectid/tasks/Kanban', element: <Kanban /> },
+                
               ],
             },
             ,
@@ -221,4 +224,8 @@ const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 
 //Project
 const GeneralProject = Loadable(lazy(() => import('../pages/dashboard/GeneralProject')));
+
+//tasks
+const TasksList = Loadable(lazy(() => import('../pages/dashboard/TasksList')));
+
 
