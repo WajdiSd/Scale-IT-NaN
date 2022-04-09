@@ -8,6 +8,7 @@ const {
   getTasksByProject,
   assignTaskToMembers,
   getUserTasks,
+  removeMemversFromTask,
 } = require("../controllers/taskController");
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.put("/delete/:id", protect, deleteTask);
 router.put("/recover/:id", protect, recoverTask);
 router.get("/getUserTasks/:projectId/:memberId", protect, getUserTasks);
 router.get("/tasksbyproject/:projectid", getTasksByProject);
+router.put("/remove-members/:projectId/:idtask/:idtl", removeMemversFromTask);
 
 module.exports = router;
