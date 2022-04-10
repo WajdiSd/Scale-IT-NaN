@@ -116,5 +116,15 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
   }
 });
 
+export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
+  try {
+    return await taskService.deleteTask(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const { resetTask } = tasksSlice.actions;
 export default tasksSlice.reducer;

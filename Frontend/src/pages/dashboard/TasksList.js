@@ -45,7 +45,7 @@ import { TasksTableRow, TasksTableToolbar } from '../../sections/@dashboard/task
 import { DialogAnimate } from 'src/components/animate';
 import AddTaskForm from 'src/sections/@dashboard/tasks/AddTaskForm';
 import { useDispatch } from 'react-redux';
-import { addTask, getUserTasks } from 'src/redux/slices/tasksSlice';
+import { addTask, deleteTask, getUserTasks } from 'src/redux/slices/tasksSlice';
 import useAuth from 'src/hooks/useAuth';
 import useTask from 'src/hooks/useTask';
 import useProject from 'src/hooks/useProject';
@@ -53,7 +53,6 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
-
 
 
 const PRIORITY_OPTIONS = [
@@ -145,9 +144,12 @@ export default function TasksList() {
   };
 
   const handleDeleteRow = (id) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
+    const teamLeadId = user._id;
+    const projectId = projectid;
+    dispatch(deleteTask({memberId: teamLeadId, projectId: projectId, taskId: id}));
+    //const deleteRow = tableData.filter((row) => row.id !== id);
     setSelected([]);
-    setTableData(deleteRow);
+    //setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected) => {
