@@ -63,7 +63,6 @@ const updateTask = asyncHandler(async (req, res) => {
 });
 
 const updateTaskState = asyncHandler(async (req, res) => {
-  //const status = req.body;
   const {
     status,
     teamLeadId,
