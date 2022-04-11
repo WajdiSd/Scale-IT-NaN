@@ -148,10 +148,28 @@ const updateTaskState = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("invalid tasks status");
   } else {
+    var finishDate = new Date();
+    if (status == "done") {
+      const task = await Task.findByIdAndUpdate(
+        req.params.id,
+        {
+          status,
+          endDate : finishDate,
+        },
+        { new: true }
+      ).catch((err) => {
+        res.status(400);
+        throw new Error("could not update task", err);
+      });
+      res.status(200).json(task);
+    }
+    else {
     const task = await Task.findByIdAndUpdate(
       req.params.id,
       {
         status,
+        endDate : null,
+
       },
       { new: true }
     ).catch((err) => {
@@ -159,7 +177,7 @@ const updateTaskState = asyncHandler(async (req, res) => {
       throw new Error("could not update task", err);
     });
     res.status(200).json(task);
-  }
+  }}
 });
 
 //PS: soft delete to keep data
