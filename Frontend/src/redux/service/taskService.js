@@ -9,7 +9,7 @@ const addTask = async (data) => {
 };
 
 const getUserTasks = async (object) => {
-  const response = await axiosInstance.get(API_URL + 'getUserTasks/' + object.projectId+'/'+object.memberId);
+  const response = await axiosInstance.get(API_URL + 'getUserTasks/' + object.projectId+'/'+object.memberId+'/'+object.isExecutive );
   return response.data;
 };
 

@@ -20,7 +20,7 @@ router.put("/updatestate/:id", protect, updateTaskState);
 router.put("/assign-members/:id", protect, assignTaskToMembers);
 router.put("/delete/:id", protect, deleteTask);
 router.put("/recover/:id", protect, recoverTask);
-router.get("/getUserTasks/:projectId/:memberId", protect, getUserTasks);
+router.get("/getUserTasks/:projectId/:memberId/:isExecutive", protect, getUserTasks);
 router.get("/tasksbyproject/:projectid", getTasksByProject);
 
 module.exports = router;
