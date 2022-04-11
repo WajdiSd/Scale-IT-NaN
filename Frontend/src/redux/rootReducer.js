@@ -11,6 +11,7 @@ import authReducer from './slices/authSlice';
 import workspacesReducer from './slices/workspaceSlice';
 import workspaceInviteReducer from './slices/workspaceInviteSlice';
 import projectReducer from './slices/projectSlice';
+import taskReducer from './slices/tasksSlice';
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +47,14 @@ const projectsPersistConfig = {
   key: 'projects',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['projects', 'project', 'usersInProject'],
+  whitelist: ['projects', 'project', 'usersInProject', 'isProjectManager', 'isTeamLeader'],
+};
+
+const tasksPersistConfig = {
+  key: 'tasks',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: ['tasks', 'tasks_to_do', 'tasks_doing', 'tasks_doing', 'tasks_done', 'tasks_review', 'isProjectManager', 'isTeamLeader', 'task', 'usersInTask'],
 };
 
 const rootReducer = combineReducers({
@@ -59,6 +67,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
   projects: persistReducer(projectsPersistConfig, projectReducer),
+  tasks: persistReducer(tasksPersistConfig, taskReducer),
 });
 
 export { rootPersistConfig, rootReducer };

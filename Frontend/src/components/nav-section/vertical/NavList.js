@@ -35,15 +35,7 @@ export function NavListRoot({ list, isCollapse }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {(list.children || []).map((item, key) =>
-                item.title === 'invite members' ? (
-                  isHr ? (
-                    <NavListSub key={key} list={item} />
-                  ) : (
-                    <></>
-                  )
-                ) : (
-                  <NavListSub key={key} list={item} />
-                )
+                <NavListSub key={key} list={item} />
               )}
             </List>
           </Collapse>

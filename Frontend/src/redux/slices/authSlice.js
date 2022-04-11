@@ -44,9 +44,6 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     await thunkAPI.dispatch(getWorkspaces(loginUser._id))
     return loginUser;
   } catch (error) {
-    console.log('ezrzr');
-    console.log(error.response);
-    console.log(error.data);
     let message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     if (error.response.data.message && error.response.data._id) {
@@ -83,7 +80,6 @@ export const updateUserPassword = createAsyncThunk('auth/updateUserPassword', as
   try {
     return await authService.updateUserPassword(obj);
   } catch (error) {
-    console.log(error);
 
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -96,7 +92,6 @@ export const resetUserPassword = createAsyncThunk('auth/resetUserPassword', asyn
   try {
     return await authService.resetUserPassword(obj);
   } catch (error) {
-    console.log(error);
 
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -330,25 +325,21 @@ export const authSlice = createSlice({
         state.isError = false;
       })
       .addCase(isHr.fulfilled, (state, action) => {
-        console.log('hr');
-        console.log(action);
+
         state.isHr = action.payload.isHr;
         state.idHR = action.payload.idHR;
       })
       .addCase(isHr.rejected, (state, action) => {
         console.log('hr rejected');
-        console.log(action);
       })
       .addCase(isProjectManager.fulfilled, (state, action) => {
         console.log('pm');
-        console.log(action);
         state.isProjectManager = action.payload.isPM;
         state.idProjectManager = action.payload.idProjectManager;
         
       })
       .addCase(isProjectManager.rejected, (state, action) => {
         console.log('pm rejected');
-        console.log(action);
       });
   },
 });

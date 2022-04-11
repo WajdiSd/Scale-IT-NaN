@@ -27,8 +27,8 @@ export default function KanbanColumn({ column, index }) {
   const { enqueueSnackbar } = useSnackbar();
   const { board } = useSelector((state) => state.kanban);
   const [open, setOpen] = useState(false);
-
-  const { name, cardIds, id } = column;
+  
+  const { name, cardIds, _id } = column;
 
   const handleOpenAddTask = () => {
     setOpen((prev) => !prev);
@@ -39,13 +39,13 @@ export default function KanbanColumn({ column, index }) {
   };
 
   const handleDeleteTask = (cardId) => {
-    dispatch(deleteTask({ cardId, columnId: id }));
+    dispatch(deleteTask({ cardId, columnId: _id }));
   };
 
   const handleUpdateColumn = async (newName) => {
     try {
       if (newName !== name) {
-        dispatch(updateColumn(id, { ...column, name: newName }));
+        dispatch(updateColumn(_id, { ...column, name: newName }));
         enqueueSnackbar('Update success!');
       }
     } catch (error) {
@@ -55,19 +55,19 @@ export default function KanbanColumn({ column, index }) {
 
   const handleDeleteColumn = async () => {
     try {
-      dispatch(deleteColumn(id));
+      dispatch(deleteColumn(_id));
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleAddTask = (task) => {
-    dispatch(addTask({ card: task, columnId: id }));
+    dispatch(addTask({ card: task, columnId: _id }));
     handleCloseAddTask();
   };
 
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={_id} index={index}>
       {(provided) => (
         <Paper
           {...provided.draggableProps}
@@ -78,7 +78,7 @@ export default function KanbanColumn({ column, index }) {
           <Stack spacing={3} {...provided.dragHandleProps}>
             <KanbanColumnToolBar columnName={name} onDelete={handleDeleteColumn} onUpdate={handleUpdateColumn} />
 
-            <Droppable droppableId={id} type="task">
+            <Droppable droppableId={_id} type="task">
               {(provided) => (
                 <Stack ref={provided.innerRef} {...provided.droppableProps} spacing={2} width={280}>
                   {cardIds.map((cardId, index) => (
