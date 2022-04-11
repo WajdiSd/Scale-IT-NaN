@@ -3,9 +3,13 @@ const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
 const Task = require("../models/taskModel");
 
+/**
+ * todo: change "push in tables" by compteur .
+ */
 const getPerformanceByMember = asyncHandler(async (req, res) => {
   const task = await Task.find({
     "members.memberId": req.params.memberId,
+    status: "done",
   });
 
   const ftfe = [];
@@ -48,8 +52,14 @@ const getPerformanceByMember = asyncHandler(async (req, res) => {
   console.log("ftit", ftit);
   console.log("fcat", fcat);
 
+  const performance =
+    ftfe.length* 3 +
+    fcit.length * 4.5 +
+    fcfaster.length * 6 +
+    ftit.length * 2 +
+    (ftat.length * 1 + fcat.length * 1.5);
   res.status(200).json({
-    msg: "zzezez",
+    performance: performance,
   });
 });
 
