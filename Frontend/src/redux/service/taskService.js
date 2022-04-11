@@ -27,7 +27,7 @@ const updateTaskStatus = async (data) => {
 const deleteTask = async (data) => {
   const taskid = data.taskId;
   data.taskid = undefined;
-  const response = await axiosInstance.delete(API_URL + 'delete/'+taskid, data);
+  const response = await axiosInstance.put(API_URL + 'delete/'+taskid, data);
   return response.data;
 };
 
