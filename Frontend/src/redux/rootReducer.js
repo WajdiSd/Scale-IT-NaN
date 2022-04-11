@@ -47,7 +47,7 @@ const projectsPersistConfig = {
   key: 'projects',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['projects', 'project', 'usersInProject'],
+  whitelist: ['projects', 'project', 'usersInProject', 'isProjectManager', 'isTeamLeader'],
 };
 
 const tasksPersistConfig = {

@@ -40,7 +40,7 @@ export default function TasksAnalytic({ title, total, icon, color, percent, pric
         <Typography variant="subtitle2">
           {fShortenNumber(total)}{' '}
           <Box component="span" sx={{ color: 'text.secondary', typography: 'body2' }}>
-            invoice
+            tasks
           </Box>
         </Typography>
 
