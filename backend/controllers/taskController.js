@@ -439,6 +439,38 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
   });
 });
 
+const removeMemversFromTask = asyncHandler(async (req, res, next) => {
+  const { memberIds } = req.body;
+  const project = await Project.findById(req.params.projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
+    if (element.memberId == req.params.idtl) {
+      if (element.isTeamLeader == true) {
+        isTl = true;
+      }
+    }
+  });
+  if (!isTl) {
+    res.status(404);
+    throw new Error("changes are not made by a TL!");
+  } else {
+    for (let i = 0; i < memberIds.length; i++) {
+      const t = await Task.findOneAndUpdate(
+        { _id: req.params.idtask },
+        {
+          $pull: { members: { memberId: memberIds[i] } },
+        },
+        { new: true }
+      );
+    }
+    return res.status(200).json(memberIds);
+  }
+});
+
 module.exports = {
   addTask,
   updateTask,
@@ -448,4 +480,5 @@ module.exports = {
   getUserTasks,
   getTasksByProject,
   assignTaskToMembers,
+  removeMemversFromTask,
 };
