@@ -241,13 +241,24 @@ const getUserTasks = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("user is not in project");
   }
-  const tasksToDo = await Task.find({
-    project: req.params.projectId,
-    "members.memberId": req.params.memberId,
-  });
-  res.status(200).json({
-    tasks: tasksToDo,
-  });
+  if(req.params.isExecutive){
+    const tasks = await Task.find({
+      project: req.params.projectId,
+    });
+    res.status(200).json({
+      tasks: tasks,
+    });
+  }
+  else{
+    const tasksToDo = await Task.find({
+      project: req.params.projectId,
+      "members.memberId": req.params.memberId,
+    });
+    res.status(200).json({
+      tasks: tasksToDo,
+    });
+  }
+  
 });
 
 const getTasksByProject = asyncHandler(async (req, res) => {
