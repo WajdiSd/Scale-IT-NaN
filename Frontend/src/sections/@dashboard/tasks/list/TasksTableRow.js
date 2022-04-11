@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem, AvatarGroup, Box } from '@mui/material';
+import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem, AvatarGroup, Box, Tooltip } from '@mui/material';
 // utils
 import { fDate } from '../../../../utils/formatTime';
 import createAvatar from '../../../../utils/createAvatar';
@@ -13,6 +13,7 @@ import Avatar from '../../../../components/Avatar';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import useAuth from 'src/hooks/useAuth';
+import useProject from 'src/hooks/useProject';
 import moment from 'moment'
 
 // ----------------------------------------------------------------------
@@ -29,8 +30,23 @@ TasksTableRow.propTypes = {
 export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
   const {user} = useAuth();
-  const { name, description, startDate, expectedEndDate, status, endDate, priority, members } = row;
+  const {usersInProject} = useProject();
 
+  const { name, description, startDate, expectedEndDate, status, endDate, priority, members } = row;
+  const [membersInTask, setMembersInTask] = useState([]);
+
+  useEffect(() => {
+    members.map((memberinTask)=>{
+      usersInProject.map((memberInfo)=>{
+        if (memberinTask.memberId == memberInfo._id){
+          let member = {...memberinTask, fullName: memberInfo.firstName+' '+memberInfo.lastName};
+          setMembersInTask((oldArray) => [...oldArray, member]);
+        }
+      })
+    })
+  }, []);
+
+  
   const [openMenu, setOpenMenuActions] = useState(null);
 
   const handleOpenMenu = (event) => {
@@ -70,8 +86,12 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
 
       <TableCell align="center">
           <AvatarGroup max={2} sx={{ '& .MuiAvatar-root': { width: 32, height: 32 } }}>
-            {members.map((person) => (
-              <Avatar key={person._id} alt={person._id} src={person._id} />
+            {membersInTask.map((person) => (
+              <Tooltip title={person.fullName} placement="top">
+                <Avatar key={person._id} alt={person.fullName} color={createAvatar(person.fullName).color} sx={{ mr: 2 }}>
+                  {createAvatar(person.fullName).name}
+                </Avatar>
+              </Tooltip>
             ))}
           </AvatarGroup>
       </TableCell>

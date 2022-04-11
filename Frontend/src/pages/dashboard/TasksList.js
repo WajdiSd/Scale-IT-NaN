@@ -83,10 +83,10 @@ export default function TasksList() {
 
   const dispatch = useDispatch();
 
-  const { user } = useAuth();
+  const { user, idProjectManager, isHr } = useAuth();
   const { memberTasks } = useTask();
   const {id, projectid} = useParams();
-  const { project } = useProject();
+  const { project, isTL, isPM } = useProject();
   const { workspace } = useWorkspace();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -109,7 +109,7 @@ export default function TasksList() {
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable({ defaultOrderBy: 'createDate' });
+  } = useTable({ defaultOrderBy: 'startDate' });
 
 
   const [filterName, setFilterName] = useState('');
@@ -129,7 +129,9 @@ export default function TasksList() {
     const data = {
       memberId: user._id,
       projectId: projectid,
+      isExecutive: isTL || isPM || idProjectManager || isHr, 
     }
+
     dispatch(getUserTasks(data))
   }, [refreshTasks]);
 
@@ -148,12 +150,13 @@ export default function TasksList() {
     const projectId = projectid;
     dispatch(deleteTask({teamLeadId: teamLeadId, projectId: projectId, taskId: id}));
     //const deleteRow = tableData.filter((row) => row.id !== id);
+    const deleteRow = memberTasks.filter((row) => row.id !== id);
     setSelected([]);
     //setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
+    const deleteRows = memberTasks.filter((row) => !selected.includes(row.id));
     setSelected([]);
     setTableData(deleteRows);
   };
@@ -215,7 +218,7 @@ export default function TasksList() {
   const getPercentByStatus = (status) => (getLengthByStatus(status) / memberTasks?.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: memberTasks.length },
+    { value: 'all', label: 'All', color: 'info', count: memberTasks?.length },
     { value: 'to_do', label: 'To Do', color: 'success', count: getLengthByStatus('to_do') },
     { value: 'doing', label: 'Doing', color: 'default', count: getLengthByStatus('doing') },
     { value: 'done', label: 'Done', color: 'success', count: getLengthByStatus('done') },
@@ -243,14 +246,21 @@ export default function TasksList() {
             { key: 4, name: 'Tasks', href: '' },
 
           ]}
+          
           action={
-            <Button
-              variant="contained"
-              onClick={handleAddEvent}
-              startIcon={<Iconify icon={'eva:plus-fill'} />}
-            >
-              New Task
-            </Button>
+            
+              isTL?
+              (
+                <Button
+                  variant="contained"
+                  onClick={handleAddEvent}
+                  startIcon={<Iconify icon={'eva:plus-fill'} />}
+                >
+                  New Task
+                </Button>
+              )
+              :
+              (<></>)
           }
         />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
