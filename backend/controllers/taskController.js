@@ -92,17 +92,20 @@ const updateTask = asyncHandler(async (req, res) => {
 const updateTaskState = asyncHandler(async (req, res) => {
   const { status, teamLeadId, projectId } = req.body;
   //const { status, projectId } = req.body;
+  // TEST 1 :
   //verify if all fields are added
   if (!status || !teamLeadId || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
+  // TEST 2 :
   //verify if project exists
   const project = await Project.findById(projectId);
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
+  //TEST 3 :
   //verify if changes are made by a TL
   var isTl = false;
   project.assigned_members.forEach((element) => {
@@ -112,24 +115,16 @@ const updateTaskState = asyncHandler(async (req, res) => {
       }
     }
   });
-  //case 1 : changes are not made by a TL
-  if (!isTl) {
-    res.status(403);
-    throw new Error("you are not allowed to update a task");
-            }
-  //case 2 : changes are made by a TL
-  else {
+    //TEST 4 :
     //check if new status is valid
     var possibleStates = ["to_do", "doing", "done", "review"];
     var stateIsValid = possibleStates.includes(status);
-    //if not,
     if (!stateIsValid) {
       res.status(404);
       throw new Error("invalid tasks status");
-    //else, if status is valid:
     } else {
       var finishDate = new Date();
-      //taskState == review : task finished yet NOT APPROVED
+      //new taskState == review : task finished yet NOT APPROVED
       if (status == "review") {
         const task = await Task.findByIdAndUpdate(
           req.params.id,
@@ -145,23 +140,29 @@ const updateTaskState = asyncHandler(async (req, res) => {
         res.status(200).json(task);
       }
       else {
-      //taskState == done : task finished AND approved
+      //new taskState == done : task finished AND approved
         if (status == "done") { 
-            
-          const task = await Task.findByIdAndUpdate(
-            req.params.id,
-            {
-              status,
-            },
-            { new: true }
-          ).catch((err) => {
-            res.status(400);
-            throw new Error("could not update task", err);
-          });
-          res.status(200).json(task);
-          }
+          //only TL can approve a task 
+          if (!isTl) {
+            res.status(403);
+            throw new Error("Only teamleader can approve this task");
+                    }
+          else {
+              const task = await Task.findByIdAndUpdate(
+                req.params.id,
+                {
+                  status,
+                },
+                { new: true }
+              ).catch((err) => {
+                res.status(400);
+                throw new Error("could not update task", err);
+              });
+              res.status(200).json(task);
+              }
+              }
         else {
-          //taskState == todo,doing : task NOT FINISHED , endDate = null.
+          // new taskState == todo,doing : task NOT FINISHED,endDate = null.
               const task = await Task.findByIdAndUpdate(
                 req.params.id,
                 {
@@ -175,7 +176,7 @@ const updateTaskState = asyncHandler(async (req, res) => {
                 throw new Error("could not update task", err);
               });
               res.status(200).json(task);
-  }}}}
+  }}}
 });
 
 //PS: soft delete to keep data
