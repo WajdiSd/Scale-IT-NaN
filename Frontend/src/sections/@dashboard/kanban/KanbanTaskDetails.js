@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 // @mui
 import { MobileDateRangePicker } from '@mui/lab';
 import { styled } from '@mui/material/styles';
@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
   OutlinedInput,
+  Badge,
 } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
@@ -27,6 +28,11 @@ import KanbanTaskCommentList from './KanbanTaskCommentList';
 import KanbanTaskAttachments from './KanbanTaskAttachments';
 import KanbanTaskCommentInput from './KanbanTaskCommentInput';
 import { useDatePicker, DisplayTime } from './KanbanTaskAdd';
+import useProject from 'src/hooks/useProject';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
+import { removeMembersFromTask } from 'src/redux/slices/tasksSlice';
+import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -51,13 +57,26 @@ KanbanTaskDetails.propTypes = {
 
 export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask }) {
   const isDesktop = useResponsive('up', 'sm');
-
+  const { id, projectid } = useParams();
+  const { user } = useAuth();
+  const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const [taskCompleted, setTaskCompleted] = useState(card.completed);
   const [prioritize, setPrioritize] = useState('low');
+  const { usersInProject } = useProject();
+  const [membersInTask, setMembersInTask] = useState([]);
 
-  const { name, description, startDate, expectedEndDate, members, attachments } = card;
-
+  const { name, description, startDate, expectedEndDate, members, attachments, _id } = card;
+  useEffect(() => {
+    members.map((memberinTask) => {
+      usersInProject.map((memberInfo) => {
+        if (memberinTask.memberId == memberInfo._id) {
+          let member = { ...memberinTask, fullName: memberInfo.firstName + ' ' + memberInfo.lastName };
+          setMembersInTask((oldArray) => [...oldArray, member]);
+        }
+      });
+    });
+  }, []);
   const {
     dueDate,
     startTime,
@@ -72,6 +91,15 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
     date: [startDate, expectedEndDate],
   });
 
+  const removemembersfromtask = (id) => {
+    const data = {
+      memberIds: [id],
+      projectId: projectid,
+      idtask: _id,
+      idtl: user._id,
+    };
+    dispatch(removeMembersFromTask(data));
+  };
   const handleAttach = () => {
     fileInputRef.current?.click();
   };
@@ -156,8 +184,21 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             <Stack direction="row">
               <LabelStyle sx={{ mt: 1.5 }}>Assignee</LabelStyle>
               <Stack direction="row" flexWrap="wrap" alignItems="center">
-                {members.map((user) => (
-                  <Avatar key={user.id} alt={user.name} src={user.avatar} sx={{ m: 0.5, width: 36, height: 36 }} />
+                {membersInTask.map((user) => (
+                  <Badge
+                    badgeContent="x"
+                    color="error"
+                    overlap="circular"
+                    onClick={() => removemembersfromtask(user.memberId)}
+                  >
+                    {/* <MailIcon color="action" /> */}
+                    <Avatar
+                      key={user.memberId}
+                      alt={user.firstName}
+                      src={user.firstName}
+                      sx={{ m: 0.5, width: 36, height: 36 }}
+                    />
+                  </Badge>
                 ))}
                 <Tooltip title="Add assignee">
                   <IconButtonAnimate sx={{ p: 1, ml: 0.5, border: (theme) => `dashed 1px ${theme.palette.divider}` }}>
@@ -266,7 +307,7 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
 
         <Divider />
 
-        <KanbanTaskCommentInput />
+        {/* <KanbanTaskCommentInput /> */}
       </Drawer>
     </>
   );
