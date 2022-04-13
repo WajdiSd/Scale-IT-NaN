@@ -134,14 +134,12 @@ export default function UserList() {
       idtl: user._id,
       members
     }
-    console.log("onInviteMembers");
-    console.log(data);
+    notify("Inviting member...")
     dispatch(inviteMemberToProject(data)).then((res) => {
-      console.log("res");
-      console.log(res);
+      
       if(res.payload){
         setReloadData(true);
-        enqueueSnackbar('Invite members to project successfully', { variant: 'success' });
+        update('Invited member to project successfully');
       }
       
     });
