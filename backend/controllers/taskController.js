@@ -90,58 +90,33 @@ const updateTask = asyncHandler(async (req, res) => {
 });
 
 const updateTaskState = asyncHandler(async (req, res) => {
-/*  const {
-    status,
-    teamLeadId,
-    projectId,
-  } = req.body;
-  if (!status || !teamLeadId || !projectId ) {
-*/
-  //const status = req.body;
-  //const { status, teamLeadId, projectId } = req.body;
-  const { status, projectId } = req.body;
-  console.log(req.body);
-  if (!status || !projectId) {
+  const { status, teamLeadId, projectId } = req.body;
+  //const { status, projectId } = req.body;
+  // TEST 1 :
+  //verify if all fields are added
+  if (!status || !teamLeadId || !projectId) {
     res.status(400);
     throw new Error("please add all fields");
   }
+  // TEST 2 :
+  //verify if project exists
   const project = await Project.findById(projectId);
   if (!project) {
     res.status(404);
     throw new Error("project not found");
   }
+  //TEST 3 :
+  //verify if changes are made by a TL
   var isTl = false;
-  /*project.assigned_members.forEach((element) => {
+  project.assigned_members.forEach((element) => {
     if (element.memberId == teamLeadId) {
       if (element.isTeamLeader == true) {
         isTl = true;
       }
     }
-  });*/
-
-  /*if (!isTl) {
-    res.status(403);
-    throw new Error("you are not allowed to update a task");
-  } else {
-    var possibleStates = ["to_do", "doing", "done", "review"];
-    var stateIsValid = possibleStates.includes(status);
-    if (!stateIsValid) {
-      res.status(404);
-      throw new Error("invalid tasks status");
-    } else {
-      const task = await Task.findByIdAndUpdate(
-        req.params.id,
-        {
-          status,
-        },
-        { new: true }
-      ).catch((err) => {
-        res.status(400);
-        throw new Error("could not update task", err);
-      });
-      res.status(200).json(task);
-    }
-  }*/
+  });
+  //TEST 4 :
+  //check if new status is valid
   var possibleStates = ["to_do", "doing", "done", "review"];
   var stateIsValid = possibleStates.includes(status);
   if (!stateIsValid) {
@@ -149,12 +124,13 @@ const updateTaskState = asyncHandler(async (req, res) => {
     throw new Error("invalid tasks status");
   } else {
     var finishDate = new Date();
-    if (status == "done") {
+    //new taskState == review : task finished yet NOT APPROVED
+    if (status == "review") {
       const task = await Task.findByIdAndUpdate(
         req.params.id,
         {
           status,
-          endDate : finishDate,
+          endDate: finishDate,
         },
         { new: true }
       ).catch((err) => {
@@ -162,22 +138,43 @@ const updateTaskState = asyncHandler(async (req, res) => {
         throw new Error("could not update task", err);
       });
       res.status(200).json(task);
+    } else {
+      //new taskState == done : task finished AND approved
+      if (status == "done") {
+        //only TL can approve a task
+        if (!isTl) {
+          res.status(403);
+          throw new Error("Only teamleader can approve this task");
+        } else {
+          const task = await Task.findByIdAndUpdate(
+            req.params.id,
+            {
+              status,
+            },
+            { new: true }
+          ).catch((err) => {
+            res.status(400);
+            throw new Error("could not update task", err);
+          });
+          res.status(200).json(task);
+        }
+      } else {
+        // new taskState == todo,doing : task NOT FINISHED,endDate = null.
+        const task = await Task.findByIdAndUpdate(
+          req.params.id,
+          {
+            status,
+            endDate: null,
+          },
+          { new: true }
+        ).catch((err) => {
+          res.status(400);
+          throw new Error("could not update task", err);
+        });
+        res.status(200).json(task);
+      }
     }
-    else {
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      {
-        status,
-        endDate : null,
-
-      },
-      { new: true }
-    ).catch((err) => {
-      res.status(400);
-      throw new Error("could not update task", err);
-    });
-    res.status(200).json(task);
-  }}
+  }
 });
 
 //PS: soft delete to keep data
@@ -266,15 +263,14 @@ const getUserTasks = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("user is not in project");
   }
-  if(req.params.isExecutive){
+  if (req.params.isExecutive) {
     const tasks = await Task.find({
       project: req.params.projectId,
     });
     res.status(200).json({
       tasks: tasks,
     });
-  }
-  else{
+  } else {
     const tasksToDo = await Task.find({
       project: req.params.projectId,
       "members.memberId": req.params.memberId,
@@ -283,7 +279,6 @@ const getUserTasks = asyncHandler(async (req, res) => {
       tasks: tasksToDo,
     });
   }
-  
 });
 
 const getTasksByProject = asyncHandler(async (req, res) => {
@@ -367,9 +362,14 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   });
 });
 
-// assign task to members
+/**
+ * @desc assign a list of members to a task
+ * @var(memberEmails,list of member emails )
+ * @route PUT /api/task/assign-members/:id
+ * id; task id
+ */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
-  const { memberIds } = req.body;
+  const { memberEmails } = req.body;
 
   const task = await Task.findById(req.params.id);
   if (!task) {
@@ -390,16 +390,17 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
     ).then((task) => Object.assign(tobeUpdatedTask, task));
 
   const assign = new Promise((resolve, reject) => {
-    memberIds.forEach(async (id, index, array) => {
-      const member = await Member.findById(id);
+    memberEmails.forEach(async (email, index, array) => {
+      const member = await Member.findOne({ email: email });
       if (!member) {
         res.status(400);
-        throw new Error(`Member ${id} was not found`);
+        throw new Error(`Member ${email} was not found`);
       }
 
       const memberId = {
-        memberId: id,
+        memberId: member._id,
       };
+
       const existsInProject = await MemberInProject(
         memberId.memberId,
         projectId
@@ -411,16 +412,18 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
 
       let existsInTask = false;
 
-      if (!(task.members.length === 0)) {
+      !(task.members.length === 0) &&
         task.members.forEach(async (memberIdInTask) => {
           if (memberIdInTask.memberId.equals(memberId.memberId)) {
-            alreadyExistingMembers.push({ memberId: id });
+            alreadyExistingMembers.push({
+              id: member._id,
+              email: member.email,
+            });
             if (index === array.length - 1) resolve();
             existsInTask = true;
             return;
           }
         });
-      }
 
       if (existsInTask) return;
 
@@ -439,6 +442,41 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
   });
 });
 
+const removeMemversFromTask = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
+  const { memberIds } = req.body;
+  const project = await Project.findById(req.params.projectId);
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  var isTl = false;
+  project.assigned_members.forEach((element) => {
+    if (element.memberId == req.params.idtl) {
+      if (element.isTeamLeader == true) {
+        isTl = true;
+      }
+    }
+  });
+  if (!isTl) {
+    res.status(404);
+    throw new Error("changes are not made by a TL!");
+  } else {
+    for (let i = 0; i < memberIds.length; i++) {
+      const t = await Task.findOneAndUpdate(
+        { _id: req.params.idtask },
+        {
+          $pull: { members: { memberId: memberIds[i] } },
+        },
+        { new: true }
+      );
+    }
+    return res
+      .status(200)
+      .json({ memberIds: memberIds, taskid: req.params.idtask });
+  }
+});
+
 module.exports = {
   addTask,
   updateTask,
@@ -448,4 +486,5 @@ module.exports = {
   getUserTasks,
   getTasksByProject,
   assignTaskToMembers,
+  removeMemversFromTask,
 };
