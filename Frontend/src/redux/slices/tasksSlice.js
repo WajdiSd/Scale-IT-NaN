@@ -132,6 +132,7 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
   }
 });
 
+
 export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
   try {
     const t = await taskService.removeMemberFromTask(data);
@@ -139,6 +140,16 @@ export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTas
       thunkAPI.dispatch(getBoard(data.projectId));
       return t;
     }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
+  try {
+    return await taskService.deleteTask(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
