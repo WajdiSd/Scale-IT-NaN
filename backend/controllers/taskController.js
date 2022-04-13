@@ -362,7 +362,12 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   });
 });
 
-// assign task to members
+/**
+ * @desc assign a list of members to a task
+ * @var(memberEmails,list of member emails )
+ * @route PUT /api/task/assign-members/:id
+ * id; task id
+ */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
   const { memberEmails } = req.body;
 
@@ -395,9 +400,6 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
       const memberId = {
         memberId: member._id,
       };
-
-      console.log(member);
-      console.log(memberId);
 
       const existsInProject = await MemberInProject(
         memberId.memberId,
