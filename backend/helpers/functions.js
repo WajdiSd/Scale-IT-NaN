@@ -111,27 +111,52 @@ async function getPerformanceByMember(memberId) {
 
 async function updatescoremembersinworkspace(workspaceId) {
   const workspace = await Workspace.findById(workspaceId);
-  console.log(workspaceId);
   if (!workspace) {
     console.log("invalid workspace id");
   } else {
     for (assignee of workspace.assigned_members) {
       const newscore = await getPerformanceByMember(assignee.member);
-      console.log(newscore);
       if (newscore) {
-        const user_score = await UserScore.findOneAndUpdate(
-          {
+        let scoreExists = await UserScore.exists({member: assignee.member})
+        
+        if(!scoreExists){
+          console.log("mahouch majoud", assignee.member);
+          UserScore.create({
             member: assignee.member,
-            "score_workspace.workspaceId": workspaceId,
-          },
-          {
-            $set: { "score_workspace.score": newscore },
-          },
-          { upsert: true, new: true }
-        );
+            score_workspace: [{workspaceId: workspaceId, score:0}],
+            score_project: []
+          });
+          
+        };
+        
+        let workspaceExistsInScore = await UserScore.exists({member: assignee.member, "score_workspace.workspaceId": workspaceId})
+        
+
+        if(!workspaceExistsInScore){
+
+          await UserScore.findOneAndUpdate(
+            {
+              member: assignee.member,
+            },
+            {
+              $push: { "score_workspace": {workspaceId: workspaceId ,score: newscore }},
+            },
+            { new: true,}
+          );
+        }else{
+          await UserScore.findOneAndUpdate(
+            {
+              member: assignee.member,
+              "score_workspace.workspaceId": workspaceId,
+            },
+            {
+              $set: { "score_workspace.$.score": newscore },
+            },
+            { new: true,  }
+          );
+        }
       }
     }
-    console.log("updating workspace leaderboard");
   }
 }
 

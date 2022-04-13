@@ -37,7 +37,7 @@ app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
-const job = schedule.scheduleJob("5 * * * * *", async () => {
+const job = schedule.scheduleJob("*/5 * * * * *", async () => {
   console.log("updating workspace leaderboard");
   const workspaces = await Workspace.find({
     isDeleted: false,

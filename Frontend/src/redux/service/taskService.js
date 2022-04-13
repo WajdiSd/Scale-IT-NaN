@@ -38,7 +38,7 @@ const removeMemberFromTask = async (data) => {
 const deleteTask = async (data) => {
   const taskid = data.taskId;
   data.taskid = undefined;
-  const response = await axiosInstance.put(API_URL + 'delete/'+taskid, data);
+  const response = await axiosInstance.put(API_URL + 'delete/' + taskid, data);
   return response.data;
 };
 
@@ -47,11 +47,8 @@ const taskService = {
   getUserTasks,
   updateTaskStatus,
   getBoard,
-<<<<<<< HEAD
-  deleteTask,
-=======
   removeMemberFromTask,
->>>>>>> 72ce55c9d9c900fc1e72d57eb9c696c5bad786c4
+  deleteTask,
 };
 
 export default taskService;
