@@ -47,7 +47,7 @@ const job = schedule.scheduleJob("*/5 * * * * *", async () => {
   });
   if (workspaces.length > 0)
     for (worksp of workspaces) {
-      updatescoremembersinworkspace(worksp._id);
+      await updatescoremembersinworkspace(worksp._id);
     }
   // if (projects.length > 0)
   //   for (proj of projects) {

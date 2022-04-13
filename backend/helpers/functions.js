@@ -105,7 +105,6 @@ async function getPerformanceByMember(memberId) {
     ftit.length * 2 +
     (ftat.length * 1 + fcat.length * 1.5);
 
-  console.log(performance);
   return performance;
 }
 
@@ -121,15 +120,50 @@ async function updatescoremembersinworkspace(workspaceId) {
         
         if(!scoreExists){
           console.log("mahouch majoud", assignee.member);
-          UserScore.create({
+          let newScrore = await UserScore.create({
             member: assignee.member,
-            score_workspace: [{workspaceId: workspaceId, score:0}],
+            score_workspace: [],
             score_project: []
           });
+          if(newScrore)
+          console.log("created");
           
         };
-        
         let workspaceExistsInScore = await UserScore.exists({member: assignee.member, "score_workspace.workspaceId": workspaceId})
+          if(workspaceExistsInScore){
+            let updatero = await UserScore.findOneAndUpdate(
+              {
+                member: assignee.member,
+                "score_workspace.workspaceId": workspaceId,
+              },
+              {
+                $set: { "score_workspace.$.score": newscore },
+              },
+              { new: true,  }
+            );
+            if(updatero){
+              console.log("workspaceExistsInScore")
+              console.log("updatero")
+              console.log(updatero)
+            }
+          }else{
+            let updatero = await UserScore.findOneAndUpdate(
+              {
+                member: assignee.member,
+              },
+              {
+                $push: { "score_workspace": {workspaceId: workspaceId ,score: newscore }},
+              },
+              { new: true,}
+            );
+            if(updatero){
+              console.log("not workspaceExistsInScore")
+              console.log("updatero")
+              console.log(updatero)
+            }
+          }
+        /*
+       
         
 
         if(!workspaceExistsInScore){
@@ -154,7 +188,7 @@ async function updatescoremembersinworkspace(workspaceId) {
             },
             { new: true,  }
           );
-        }
+        }*/
       }
     }
   }
