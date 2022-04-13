@@ -2,7 +2,7 @@ import sumBy from 'lodash/sumBy';
 import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
-import moment from 'moment'
+import moment from 'moment';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -51,17 +51,11 @@ import useTask from 'src/hooks/useTask';
 import useProject from 'src/hooks/useProject';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
+import AssignMembersToTask from 'src/sections/@dashboard/tasks/AssignMembersToTask';
 
 // ----------------------------------------------------------------------
 
-
-
-const PRIORITY_OPTIONS = [
-  'all',
-  'Low',
-  'Medium',
-  'High',
-];
+const PRIORITY_OPTIONS = ['all', 'Low', 'Medium', 'High'];
 
 const TABLE_HEAD = [
   { id: 'task', label: 'Task', align: 'left' },
@@ -86,12 +80,11 @@ export default function TasksList() {
 
   const { user, idProjectManager, isHr } = useAuth();
   const { memberTasks } = useTask();
-  const {id, projectid} = useParams();
+  const { id, projectid } = useParams();
   const { project, isTL, isPM } = useProject();
   const { workspace } = useWorkspace();
 
   const { enqueueSnackbar } = useSnackbar();
-
 
   const {
     dense,
@@ -112,7 +105,6 @@ export default function TasksList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'startDate' });
 
-
   const [filterName, setFilterName] = useState('');
 
   const [filterService, setFilterService] = useState('all');
@@ -123,18 +115,27 @@ export default function TasksList() {
 
   const [refreshTasks, setRefreshTasks] = useState(false);
 
+  const [open, setOpen] = useState(false);
+
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
   useEffect(() => {
-
     const data = {
       memberId: user._id,
       projectId: projectid,
-      isExecutive: isTL || isPM || idProjectManager || isHr, 
-    }
+      isExecutive: isTL || isPM || idProjectManager || isHr,
+    };
 
-    dispatch(getUserTasks(data))
+    dispatch(getUserTasks(data));
   }, [refreshTasks]);
+
+  const handleCloseInvite = () => {
+    setOpen(false);
+  };
+
+  const handleInviteRow = () => {
+    setOpen(true);
+  };
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -159,19 +160,16 @@ export default function TasksList() {
   };
 
   const handleAddTask = (data) => {
-    dispatch(addTask(data))
-        .then(res=>{
-          if(!res.error)
-            {
-              enqueueSnackbar("Successfully added task")
-              setRefreshTasks(true)
-            }
-          else
-            enqueueSnackbar("unable to add task",{
-              variant: 'error',
-            })
-      });
-  }
+    dispatch(addTask(data)).then((res) => {
+      if (!res.error) {
+        enqueueSnackbar('Successfully added task');
+        setRefreshTasks(true);
+      } else
+        enqueueSnackbar('unable to add task', {
+          variant: 'error',
+        });
+    });
+  };
 
   const handleEditRow = (id) => {
     navigate(PATH_DASHBOARD.invoice.edit(id));
@@ -201,10 +199,8 @@ export default function TasksList() {
     (!dataFiltered?.length && !!filterStartDate);
 
   const getLengthByStatus = (status) => {
-    
-    return memberTasks?.filter((item) => 
-    item.status === status).length;
-  }
+    return memberTasks?.filter((item) => item.status === status).length;
+  };
 
   const getTotalPriceByStatus = (status) =>
     sumBy(
@@ -230,8 +226,8 @@ export default function TasksList() {
   };
   return (
     <Page title="Invoice: List">
+      <AssignMembersToTask open={open} projectId={''} handleClose={handleCloseInvite} />
       <Container maxWidth={themeStretch ? false : 'lg'}>
-      
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Tasks"
@@ -239,31 +235,23 @@ export default function TasksList() {
             { key: 0, name: 'Workspace', href: PATH_DASHBOARD.general.landing },
             { key: 1, name: workspace?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}` },
             { key: 2, name: 'Project', href: '' },
-            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}`, },
+            { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
             { key: 4, name: 'Tasks', href: '' },
-
           ]}
-          
           action={
-            
-              isTL?
-              (
-                <Button
-                  variant="contained"
-                  onClick={handleAddEvent}
-                  startIcon={<Iconify icon={'eva:plus-fill'} />}
-                >
-                  New Task
-                </Button>
-              )
-              :
-              (<></>)
+            isTL ? (
+              <Button variant="contained" onClick={handleAddEvent} startIcon={<Iconify icon={'eva:plus-fill'} />}>
+                New Task
+              </Button>
+            ) : (
+              <></>
+            )
           }
         />
-      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
-        <DialogTitle>{'Add Task'}</DialogTitle>
-        <AddTaskForm onCancel={handleCloseModal} handleAddTask={handleAddTask} />
-      </DialogAnimate>
+        <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
+          <DialogTitle>{'Add Task'}</DialogTitle>
+          <AddTaskForm onCancel={handleCloseModal} handleAddTask={handleAddTask} />
+        </DialogAnimate>
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
             <Stack
@@ -298,7 +286,6 @@ export default function TasksList() {
                 percent={getPercentByStatus('done')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
-                
               />
               <TasksAnalytic
                 title="Review"
@@ -306,7 +293,6 @@ export default function TasksList() {
                 percent={getPercentByStatus('review')}
                 icon="eva:bell-fill"
                 color={theme.palette.error.main}
-                
               />
             </Stack>
           </Scrollbar>
@@ -421,6 +407,7 @@ export default function TasksList() {
                       onSelectRow={() => onSelectRow(row._id)}
                       onViewRow={() => handleViewRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
+                      onInviteRow={() => handleInviteRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                     />
                   ))}
@@ -495,20 +482,19 @@ function applySortFilter({
 
   if (filterStartDate && filterEndDate) {
     console.log(memberTasks);
-    
-    memberTasks = memberTasks.filter(
-      
-      (item) =>{
-        
-        if(moment(item.startDate,'YYYY-MM-DD').isSameOrAfter(moment(filterStartDate,'YYYY-MM-DD'), 'day'
-        ) && moment(item.expectedEndDate,'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate,'YYYY-MM-DD'), 'day')
-        ){
-          console.log(item);
-          console.log(moment(item.expectedEndDate,'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate,'YYYY-MM-DD'), 'day'))
-          return item ;  
-        }
-      }   
-    );
+
+    memberTasks = memberTasks.filter((item) => {
+      if (
+        moment(item.startDate, 'YYYY-MM-DD').isSameOrAfter(moment(filterStartDate, 'YYYY-MM-DD'), 'day') &&
+        moment(item.expectedEndDate, 'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate, 'YYYY-MM-DD'), 'day')
+      ) {
+        console.log(item);
+        console.log(
+          moment(item.expectedEndDate, 'YYYY-MM-DD').isSameOrBefore(moment(filterEndDate, 'YYYY-MM-DD'), 'day')
+        );
+        return item;
+      }
+    });
   }
   return memberTasks;
 }
