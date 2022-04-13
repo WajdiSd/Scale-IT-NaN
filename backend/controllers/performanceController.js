@@ -1,68 +1,75 @@
 const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
+const Workspace = require("../models/workspaceModel");
+const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
+const { getPerformanceByMember } = require("../helpers/functions");
 
-/**
- * todo: change "push in tables" by compteur .
- */
-const getPerformanceByMember = asyncHandler(async (req, res) => {
-  const task = await Task.find({
-    "members.memberId": req.params.memberId,
-    status: "done",
-  });
-
-  const ftfe = [];
-  const fcit = [];
-  const fcfaster = [];
-  const ftit = [];
-
-  const ftat = [];
-  const fcat = [];
-
-  task.map((task) => {
-    if (task.expectedEndDate > task.endDate) {
-      if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-        fcit.push(task);
-      if (
-        task.expectedEndDate.getTime() - task.startDate.getTime() >= 8 &&
-        task.endDate - task.startDate <=
-          (task.expectedEndDate - task.startDate) * (2 / 3)
-      )
-        fcfaster.push(task);
-      if (
-        task.endDate - task.startDate <=
-        (task.expectedEndDate - task.startDate) * (2 / 3)
-      )
-        ftfe.push(task);
-
-      ftit.push(task);
-    } else {
-      if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-        fcat.push(task);
-
-      ftat.push(task);
+const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const workspace = await Workspace.findById(req.params.workspaceid);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      const userscore = await UserScore.find({
+        member: workspace.assigned_members[i].member,
+      });
+      if (userscore.length > 0) {
+        console.log(userscore);
+        for (let j = 0; j < userscore.score_workspace.length; j++) {
+          if (
+            userscore.score_workspace[j].workspaceId == req.params.workspaceid
+          ) {
+            leaderboard.push({
+              userid: workspace.assigned_members[i].member,
+              score: userscore.score_workspace[j].score,
+            });
+          }
+        }
+      }
     }
-  });
 
-  console.log("ftfe", ftfe);
-  console.log("fcit", fcit);
-  console.log("fcfaster", fcfaster);
-  console.log("ftat", ftat);
-  console.log("ftit", ftit);
-  console.log("fcat", fcat);
+    res.status(200).json({
+      leaderboard: leaderboard.sort((a, b) => a.score - b.score),
+    });
+  }
+});
 
-  const performance =
-    ftfe.length* 3 +
-    fcit.length * 4.5 +
-    fcfaster.length * 6 +
-    ftit.length * 2 +
-    (ftat.length * 1 + fcat.length * 1.5);
-  res.status(200).json({
-    performance: performance,
-  });
+const getleaderboardbyproject = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const project = await Project.findById(req.params.projectid);
+  if (!project) {
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      const userscore = await UserScore.find({
+        member: project.assigned_members[i].memberId,
+      });
+      if (userscore.length > 0) {
+        console.log(userscore);
+        for (let j = 0; j < userscore.score_project.length; j++) {
+          if (userscore.score_project[j].projectId == req.params.projectid) {
+            leaderboard.push({
+              userid: project.assigned_members[i].memberId,
+              score: userscore.score_project[j].score,
+            });
+          }
+        }
+      }
+    }
+
+    res.status(200).json({
+      leaderboard: leaderboard.sort((a, b) => a.score - b.score),
+    });
+  }
 });
 
 module.exports = {
   getPerformanceByMember,
+  getleaderboardbyworkspace,
+  getleaderboardbyproject,
 };
