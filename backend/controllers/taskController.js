@@ -362,9 +362,14 @@ const getTasksByProject = asyncHandler(async (req, res) => {
   });
 });
 
-// assign task to members
+/**
+ * @desc assign a list of members to a task
+ * @var(memberEmails,list of member emails )
+ * @route PUT /api/task/assign-members/:id
+ * id; task id
+ */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
-  const { memberIds } = req.body;
+  const { memberEmails } = req.body;
 
   const task = await Task.findById(req.params.id);
   if (!task) {
@@ -385,16 +390,17 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
     ).then((task) => Object.assign(tobeUpdatedTask, task));
 
   const assign = new Promise((resolve, reject) => {
-    memberIds.forEach(async (id, index, array) => {
-      const member = await Member.findById(id);
+    memberEmails.forEach(async (email, index, array) => {
+      const member = await Member.findOne({ email: email });
       if (!member) {
         res.status(400);
-        throw new Error(`Member ${id} was not found`);
+        throw new Error(`Member ${email} was not found`);
       }
 
       const memberId = {
-        memberId: id,
+        memberId: member._id,
       };
+
       const existsInProject = await MemberInProject(
         memberId.memberId,
         projectId
@@ -406,16 +412,18 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
 
       let existsInTask = false;
 
-      if (!(task.members.length === 0)) {
+      !(task.members.length === 0) &&
         task.members.forEach(async (memberIdInTask) => {
           if (memberIdInTask.memberId.equals(memberId.memberId)) {
-            alreadyExistingMembers.push({ memberId: id });
+            alreadyExistingMembers.push({
+              id: member._id,
+              email: member.email,
+            });
             if (index === array.length - 1) resolve();
             existsInTask = true;
             return;
           }
         });
-      }
 
       if (existsInTask) return;
 
