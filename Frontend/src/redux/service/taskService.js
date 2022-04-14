@@ -20,7 +20,7 @@ const getBoard = async (projectid) => {
   return response.data;
 };
 
-//add task
+//update tasks state
 const updateTaskStatus = async (data) => {
   const response = await axiosInstance.put(API_URL + 'updatestate/' + data.taskid, data);
   return response.data;
@@ -35,11 +35,21 @@ const removeMemberFromTask = async (data) => {
   return response.data;
 };
 
+//update task
+const updateTask = async (data) => {
+  const idproject = data.projectId;
+  const idmember = data.idmember;
+  const idtask = data.idTask;
+  const response = await axiosInstance.put(API_URL + 'update/'+ idtask + '/' + idproject + '/' + idmember,data);
+  return response.data;
+};
+
 const taskService = {
   addTask,
   getUserTasks,
   updateTaskStatus,
   getBoard,
+  updateTask,
   removeMemberFromTask,
 };
 
