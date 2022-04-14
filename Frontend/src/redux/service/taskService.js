@@ -20,7 +20,7 @@ const getBoard = async (projectid) => {
   return response.data;
 };
 
-//update tasks state
+//add task
 const updateTaskStatus = async (data) => {
   const response = await axiosInstance.put(API_URL + 'updatestate/' + data.taskid, data);
   return response.data;
@@ -35,12 +35,18 @@ const removeMemberFromTask = async (data) => {
   return response.data;
 };
 
+// assign members to task
+const assignMembers = async (members) => {
+  const response = await axiosInstance.put(API_URL + 'assign-members/' + members.id, members.emails);
+  return response.data;
+};
+
 //update task
 const updateTask = async (data) => {
   const idproject = data.projectId;
   const idmember = data.idmember;
   const idtask = data.idTask;
-  const response = await axiosInstance.put(API_URL + 'update/'+ idtask + '/' + idproject + '/' + idmember,data);
+  const response = await axiosInstance.put(API_URL + 'update/' + idtask + '/' + idproject + '/' + idmember, data);
   return response.data;
 };
 
@@ -49,8 +55,9 @@ const taskService = {
   getUserTasks,
   updateTaskStatus,
   getBoard,
-  updateTask,
   removeMemberFromTask,
+  assignMembers,
+  updateTask,
 };
 
 export default taskService;

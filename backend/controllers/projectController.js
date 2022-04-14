@@ -5,6 +5,7 @@ const Workspace = require("../models/workspaceModel");
 const {
   ProjectHasTeamLeader,
   MemberInWorkspace,
+  MemberInProject,
 } = require("../helpers/functions");
 
 const getProject = asyncHandler(async (req, res, next) => {
@@ -724,6 +725,35 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Check if user exists in Project
+// @desc Check if user exists in Project
+// @route post /api/project/:projectid/:email
+// @access public
+const userExistsInProject = asyncHandler(async (req, res) => {
+  const email = req.params.email;
+  const id = req.params.projectid;
+  const project = await Project.findOne({ _id: id });
+  const user = await Member.findOne({ email });
+
+  if (project) {
+    let matchy = false;
+    project.assigned_members.forEach((assignee) => {
+      assignee.memberId.equals(user._id) ? (matchy = true) : "";
+    });
+
+    if (matchy) res.status(200).json(user);
+    else {
+      res.status(400);
+      throw new Error(
+        `User ${user.firstName} ${user.lastName} does not exists in Project`
+      );
+    }
+  } else {
+    res.status(400);
+    throw new Error(`Project ${id} not found`);
+  }
+});
+
 module.exports = {
   addProject,
   deleteProject,
@@ -732,6 +762,7 @@ module.exports = {
   updateProject,
   inviteMembers,
   deleteMembers,
+  userExistsInProject,
   getProjects,
   getProjectsByWorkspace,
   getProjectsByManager,

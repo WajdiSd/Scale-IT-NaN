@@ -74,7 +74,7 @@ const inviteMemberToProject = async (data) => {
   const idtl = data.idtl;
   data.idproject = undefined;
   data.idtl = undefined;
-  const response = await axiosInstance.put(API_URL + 'invite-members/'+idproject+'/'+idtl, data);
+  const response = await axiosInstance.put(API_URL + 'invite-members/' + idproject + '/' + idtl, data);
   return response.data;
 };
 const abortProject = async (projectId, pmId) => {
@@ -96,6 +96,12 @@ const assignProjectManager = async (data) => {
   return response.data;
 };
 
+// check if user exists in project
+const checkIfUserExistsInProject = async (projectId, email) => {
+  const response = await axiosInstance.get(API_URL + projectId + '/' + email);
+  return response.data;
+};
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
@@ -111,6 +117,7 @@ const projectService = {
   abortProject,
   finishProject,
   assignProjectManager,
+  checkIfUserExistsInProject,
 };
 
 export default projectService;
