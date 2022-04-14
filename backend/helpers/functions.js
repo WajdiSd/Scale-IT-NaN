@@ -115,53 +115,100 @@ async function updatescoremembersinworkspace(workspaceId) {
   } else {
     for (assignee of workspace.assigned_members) {
       const newscore = await getPerformanceByMember(assignee.member);
+
       if (newscore) {
-        let scoreExists = await UserScore.exists({member: assignee.member})
-        
-        if(!scoreExists){
+        console.log("workspace id ", workspaceId);
+        console.log("member id ", assignee.member);
+        console.log("score ", newscore);
+        let scoreExists = await UserScore.exists({ member: assignee.member });
+
+        if (!scoreExists) {
           console.log("mahouch majoud", assignee.member);
           let newScrore = await UserScore.create({
             member: assignee.member,
             score_workspace: [],
-            score_project: []
+            score_project: [],
           });
-          if(newScrore)
-          console.log("created");
-          
-        };
-        let workspaceExistsInScore = await UserScore.exists({member: assignee.member, "score_workspace.workspaceId": workspaceId})
-          if(workspaceExistsInScore){
-            let updatero = await UserScore.findOneAndUpdate(
-              {
-                member: assignee.member,
-                "score_workspace.workspaceId": workspaceId,
-              },
-              {
-                $set: { "score_workspace.$.score": newscore },
-              },
-              { new: true,  }
-            );
-            if(updatero){
-              console.log("workspaceExistsInScore")
-              console.log("updatero")
-              console.log(updatero)
+          if (newScrore) console.log("created");
+        }
+        let workspaceExistsInScore = await UserScore.exists({
+          member: assignee.member,
+          "score_workspace.workspaceId": workspaceId,
+        });
+        if (workspaceExistsInScore) {
+          UserScore.findOne(
+            {
+              member: assignee.member,
+              "score_workspace.workspaceId": workspaceId,
+            },
+            function (err, success) {
+              if (success) {
+                console.log("success find");
+                console.log(success.member);
+                for (let i = 0; i < success.score_workspace.length; i++) {
+                  console.log(success.score_workspace[i]);
+                }
+              } else {
+                console.log("error", err);
+              }
             }
-          }else{
-            let updatero = await UserScore.findOneAndUpdate(
-              {
-                member: assignee.member,
-              },
-              {
-                $push: { "score_workspace": {workspaceId: workspaceId ,score: newscore }},
-              },
-              { new: true,}
-            );
-            if(updatero){
-              console.log("not workspaceExistsInScore")
-              console.log("updatero")
-              console.log(updatero)
+          );
+          UserScore.updateOne(
+            {
+              member: assignee.member,
+              "score_workspace.workspaceId": workspaceId,
+            },
+            {
+              $set: { "score_workspace.$.score": newscore },
+            },
+            { new: true },
+            function (err, success) {
+              console.log("log zz");
+              if (err) console.log("err", err);
+              else {
+                UserScore.findOne(
+                  {
+                    member: assignee.member,
+                    "score_workspace.workspaceId": workspaceId,
+                  },
+                  function (err, success) {
+                    if (success) {
+                      console.log("success find");
+                      console.log(success.member);
+                      for (let i = 0; i < success.score_workspace.length; i++) {
+                        console.log(success.score_workspace[i]);
+                      }
+                    } else {
+                      console.log("error", err);
+                    }
+                  }
+                );
+              }
             }
+          );
+          // if (updatero) {
+          //   console.log("workspaceExistsInScore");
+          //   console.log("updatero");
+          //   // console.log(updatero);
+          // }
+        } else {
+          let updatero = await UserScore.findOneAndUpdate(
+            {
+              member: assignee.member,
+            },
+            {
+              $push: {
+                score_workspace: { workspaceId: workspaceId, score: newscore },
+              },
+            },
+            { new: true }
+          );
+          if (updatero) {
+            console.log("not workspaceExistsInScore");
+            console.log("updatero");
+            // console.log(updatero);
           }
+        }
         /*
        
         
