@@ -36,9 +36,9 @@ export default function AssignMembersToTask({ open, projectId, handleClose }) {
           top: 0,
           right: 0,
           zIndex: 100,
-          width: '100%',
+          width: '100vw',
           height: '100vh',
-          display: `${open ? 'fixed' : 'none'}`,
+          display: `${open ? 'flex' : 'none'}`,
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: 'rgb(0,0,0,0.2)',
@@ -63,7 +63,7 @@ export default function AssignMembersToTask({ open, projectId, handleClose }) {
           }}
         >
           <Typography variant="h6" sx={{ p: 1.5 }}>
-            Contacts <Typography component="span">({_contacts.length})</Typography>
+            Project Members <Typography component="span">({usersInProject.length})</Typography>
           </Typography>
 
           <Scrollbar sx={{ height: ITEM_HEIGHT * 6 }}>

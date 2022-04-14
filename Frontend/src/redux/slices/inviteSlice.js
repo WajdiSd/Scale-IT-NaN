@@ -60,7 +60,7 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
   try {
     const state = thunkAPI.getState();
     const id = state.workspaces.workspace._id;
-    const users = state.workspaceInvite.users;
+    const users = state.invite.users;
 
     if (!users) {
       setUserError('No Valid Users Passed!');
@@ -90,7 +90,7 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     };
     const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
     const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
-    thunkAPI.dispatch(resetWorkspaceInvite());
+    thunkAPI.dispatch(resetInvite());
 
     return [managerSubmit, memberSubmit];
   } catch (error) {
@@ -100,11 +100,11 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
   }
 });
 
-const workspaceInviteSlice = createSlice({
-  name: 'workspaceInvite',
+const inviteSlice = createSlice({
+  name: 'invite',
   initialState,
   reducers: {
-    resetWorkspaceInvite: (state, action) => {
+    resetInvite: (state, action) => {
       state.users = [];
     },
     removeUser: (state, action) => {
@@ -165,6 +165,6 @@ const workspaceInviteSlice = createSlice({
   },
 });
 
-export const { removeUser, setUserError, resetUserError, resetUserSuccess, setUserSuccess, resetWorkspaceInvite } =
-  workspaceInviteSlice.actions;
-export default workspaceInviteSlice.reducer;
+export const { removeUser, setUserError, resetUserError, resetUserSuccess, setUserSuccess, resetInvite } =
+  inviteSlice.actions;
+export default inviteSlice.reducer;

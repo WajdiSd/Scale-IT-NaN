@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'src/redux/store';
 
 // ----------------------------------------------------------------------
 
-const useWorkspaceInvite = () => {
+const useTaskInvite = () => {
   const users = useSelector((state) => state.invite.users);
   const userError = useSelector((state) => state.invite.userErrorMessage);
   const userSuccess = useSelector((state) => state.invite.userSuccessMessage);
@@ -70,4 +70,4 @@ const useWorkspaceInvite = () => {
   };
 };
 
-export default useWorkspaceInvite;
+export default useTaskInvite;
