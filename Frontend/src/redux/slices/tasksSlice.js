@@ -85,6 +85,19 @@ export const tasksSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
       })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.task = action.payload.task;
+      })
+      .addCase(updateTask.rejected, (state, action) => {
+        console.log('updateTask rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
       .addCase(removeMembersFromTask.pending, (state, action) => {
         console.log('removeMembersFromTask pending');
         state.isLoading = true;
@@ -132,19 +145,30 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
   }
 });
 
-export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
+// update task
+export const updateTask = createAsyncThunk('task/updateTask', async (data, thunkAPI) => {
   try {
-    const t = await taskService.removeMemberFromTask(data);
-    if (t) {
-      thunkAPI.dispatch(getBoard(data.projectId));
-      return t;
-    }
+    return await taskService.updateTask(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
   }
 });
+export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
+  try {
+    const t = await taskService.removeMemberFromTask(data);
+    if (t) {
+      thunkAPI.dispatch(getBoard(data.projectId));
+      return t;
+    }}
+    catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  });
+  
 
 export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
   try {

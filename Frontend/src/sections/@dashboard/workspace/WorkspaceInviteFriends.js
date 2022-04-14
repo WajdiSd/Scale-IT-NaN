@@ -52,8 +52,6 @@ export default function WorkspaceInviteFriends() {
   }
 
   function handleClose() {
-    console.log(userError);
-    console.log(userSuccess);
     resetUserErrorHook();
     resetUserSuccessHook();
   }
