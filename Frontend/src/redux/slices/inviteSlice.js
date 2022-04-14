@@ -1,6 +1,8 @@
 import authService from '../service/authService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import workspaceService from '../service/workspaceService';
+import projectService from '../service/projectService';
+import taskService from '../service/taskService';
 
 const initialState = {
   users: [],
@@ -16,14 +18,14 @@ const initialState = {
 export const addMemberToTask = createAsyncThunk('task/addMemberToTask', async (email, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
-    const id = state.workspaces.workspace._id;
+    const id = state.projects.project._id;
 
     const exists = await authService.checkIfUserExistsByEmail(email);
-    const existsInWorkspace = await workspaceService.checkIfUserExistsInWorkspace(id, email);
+    const existsInProject = await projectService.checkIfUserExistsInProject(id, email);
 
     const user = {
       exists,
-      existsInWorkspace,
+      existsInProject,
       email,
     };
     return user;
@@ -35,43 +37,33 @@ export const addMemberToTask = createAsyncThunk('task/addMemberToTask', async (e
 });
 
 // Submit invitations to users
-export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsToTask', async (_, thunkAPI) => {
+export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsToTask', async (id, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
-    const id = state.workspaces.workspace._id;
     const users = state.invite.users;
+
+    console.log('id');
+    console.log(id);
 
     if (!users) {
       setUserError('No Valid Users Passed!');
       return 'No Valid Users Passed';
     }
-    const managersFiltered = users.filter((user) => {
-      if (user.isManager) return user.email;
-    });
-    const managerEmails = managersFiltered.map((user) => user.email);
-    const membersFiltered = users.filter((user) => {
-      if (!user.isManager) return user.email;
-    });
-    const memberEmails = membersFiltered.map((user) => user.email);
-    const managers = {
-      info: {
-        emails: managerEmails,
-        role: 'manager',
-      },
-      id,
-    };
+
+    const memberEmails = users.map((user) => user.email);
+
     const members = {
-      info: {
-        emails: memberEmails,
-        role: 'member',
-      },
+      emails: memberEmails,
       id,
     };
-    const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
-    const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
+
+    console.log('members');
+    console.log(members);
+
+    const memberSubmit = members.emails.length > 0 ? await taskService.assignMembers(members) : null;
     thunkAPI.dispatch(resetInvite());
 
-    return [managerSubmit, memberSubmit];
+    return memberSubmit;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -205,6 +197,20 @@ const inviteSlice = createSlice({
           state.users = [...state.users, member];
         }
       })
+      .addCase(addMemberToTask.rejected, (state, action) => {
+        state.userErrorMessage = action.payload;
+      })
+      .addCase(addMemberToTask.fulfilled, (state, action) => {
+        if (action.payload.exists) {
+          const member = {
+            email: action.payload.email,
+          };
+
+          state.userSuccessMessage = `Member ${member.email} Added`;
+
+          state.users = [...state.users, member];
+        }
+      })
       .addCase(addMember.rejected, (state, action) => {
         state.userErrorMessage = action.payload;
       })
@@ -227,7 +233,16 @@ const inviteSlice = createSlice({
         state.userSuccessMessage = `Users have been Invited succesfully`;
       })
       .addCase(submitInvitations.rejected, (state, action) => {
-        state.userSuccessMessage = `Oops, an error has occured while submitting invitations`;
+        state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
+      })
+      .addCase(submitInvitationsToTask.fulfilled, (state, action) => {
+        console.log('submitInvitationsToTask.fulfilled');
+        console.log(action.payload);
+        state.userSuccessMessage = `Members have been Assigned succesfully`;
+      })
+      .addCase(submitInvitationsToTask.rejected, (state, action) => {
+        console.log(action.payload);
+        state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
       });
   },
 });

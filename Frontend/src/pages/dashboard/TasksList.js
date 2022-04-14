@@ -116,6 +116,7 @@ export default function TasksList() {
   const [refreshTasks, setRefreshTasks] = useState(false);
 
   const [open, setOpen] = useState(false);
+  const [taskId, setTaskId] = useState('');
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
@@ -130,10 +131,12 @@ export default function TasksList() {
   }, [refreshTasks]);
 
   const handleCloseInvite = () => {
+    setTaskId('');
     setOpen(false);
   };
 
-  const handleInviteRow = () => {
+  const handleInviteRow = (id) => {
+    setTaskId(id);
     setOpen(true);
   };
 
@@ -226,7 +229,7 @@ export default function TasksList() {
   };
   return (
     <Page title="Invoice: List">
-      <AssignMembersToTask open={open} projectId={''} handleClose={handleCloseInvite} />
+      <AssignMembersToTask open={open} taskId={taskId} handleClose={handleCloseInvite} />
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           key={project?.name}

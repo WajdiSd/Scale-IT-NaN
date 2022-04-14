@@ -731,7 +731,7 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
 // @access public
 const userExistsInProject = asyncHandler(async (req, res) => {
   const email = req.params.email;
-  const id = req.params.projectId;
+  const id = req.params.projectid;
   const project = await Project.findOne({ _id: id });
   const user = await Member.findOne({ email });
 

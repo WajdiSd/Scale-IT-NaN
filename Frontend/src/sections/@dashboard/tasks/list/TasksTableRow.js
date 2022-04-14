@@ -160,7 +160,7 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
                   handleCloseMenu();
                 }}
               >
-                <Iconify icon={'eva:eye-fill'} />
+                <Iconify icon={'eva:plus-fill'} />
                 Invite
               </MenuItem>
 

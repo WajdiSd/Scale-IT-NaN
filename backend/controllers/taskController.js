@@ -366,12 +366,13 @@ const getTasksByProject = asyncHandler(async (req, res) => {
  * @desc assign a list of members to a task
  * @var(memberEmails,list of member emails )
  * @route PUT /api/task/assign-members/:id
- * id; task id
+ * id: task id
  */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
-  const { memberEmails } = req.body;
+  const memberEmails = req.body;
 
   const task = await Task.findById(req.params.id);
+
   if (!task) {
     res.status(400);
     throw new Error("Task not found");

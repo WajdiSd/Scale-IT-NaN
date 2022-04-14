@@ -35,12 +35,19 @@ const removeMemberFromTask = async (data) => {
   return response.data;
 };
 
+// assign members to task
+const assignMembers = async (members) => {
+  const response = await axiosInstance.put(API_URL + 'assign-members/' + members.id, members.emails);
+  return response.data;
+};
+
 const taskService = {
   addTask,
   getUserTasks,
   updateTaskStatus,
   getBoard,
   removeMemberFromTask,
+  assignMembers,
 };
 
 export default taskService;
