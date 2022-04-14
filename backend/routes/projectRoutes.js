@@ -17,6 +17,7 @@ const {
   getProject,
   getFullMembersByProject,
   assignNewProjectManager,
+  userExistsInProject,
 } = require("../controllers/projectController");
 const router = express.Router();
 
@@ -69,5 +70,7 @@ router.put("/update/:idproject/:idpm", protect, updateProject);
 router.put("/invite-members/:idproject/:idtl", protect, inviteMembers);
 
 router.put("/delete-members/:idproject/:idtl", protect, deleteMembers);
+
+router.get("/:projectid/:email", protect, userExistsInProject);
 
 module.exports = router;
