@@ -155,20 +155,20 @@ export const updateTask = createAsyncThunk('task/updateTask', async (data, thunk
     return thunkAPI.rejectWithValue(message);
   }
 });
+
 export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
   try {
     const t = await taskService.removeMemberFromTask(data);
     if (t) {
       thunkAPI.dispatch(getBoard(data.projectId));
       return t;
-    }}
-    catch (error) {
-      const message =
-        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
     }
-  });
-  
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 
 export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
   try {
