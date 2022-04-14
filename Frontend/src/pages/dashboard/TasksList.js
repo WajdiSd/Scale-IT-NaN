@@ -45,7 +45,11 @@ import { TasksTableRow, TasksTableToolbar } from '../../sections/@dashboard/task
 import { DialogAnimate } from 'src/components/animate';
 import AddTaskForm from 'src/sections/@dashboard/tasks/AddTaskForm';
 import { useDispatch } from 'react-redux';
+<<<<<<< HEAD
+import { addTask, deleteTask, getUserTasks } from 'src/redux/slices/tasksSlice';
+=======
 import { addTask, getUserTasks, updateTask } from 'src/redux/slices/tasksSlice';
+>>>>>>> 71d84559a91fd974b2cef08a1cc69e0de9a150fa
 import useAuth from 'src/hooks/useAuth';
 import useTask from 'src/hooks/useTask';
 import useProject from 'src/hooks/useProject';
@@ -56,7 +60,17 @@ import UpdateTaskForm from 'src/sections/@dashboard/tasks/UpdateTaskForm';
 
 // ----------------------------------------------------------------------
 
+<<<<<<< HEAD
+
+const PRIORITY_OPTIONS = [
+  'all',
+  'Low',
+  'Medium',
+  'High',
+];
+=======
 const PRIORITY_OPTIONS = ['all', 'Low', 'Medium', 'High'];
+>>>>>>> 71d84559a91fd974b2cef08a1cc69e0de9a150fa
 
 const TABLE_HEAD = [
   { id: 'task', label: 'Task', align: 'left' },
@@ -152,9 +166,13 @@ export default function TasksList() {
   };
 
   const handleDeleteRow = (id) => {
+    const teamLeadId = user._id;
+    const projectId = projectid;
+    dispatch(deleteTask({teamLeadId: teamLeadId, projectId: projectId, taskId: id}));
+    //const deleteRow = tableData.filter((row) => row.id !== id);
     const deleteRow = memberTasks.filter((row) => row.id !== id);
     setSelected([]);
-    setTableData(deleteRow);
+    //setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected) => {

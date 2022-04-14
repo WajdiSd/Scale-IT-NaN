@@ -50,11 +50,19 @@ const updateTask = async (data) => {
   return response.data;
 };
 
+const deleteTask = async (data) => {
+  const taskid = data.taskId;
+  data.taskid = undefined;
+  const response = await axiosInstance.put(API_URL + 'delete/'+taskid, data);
+  return response.data;
+};
+
 const taskService = {
   addTask,
   getUserTasks,
   updateTaskStatus,
   getBoard,
+  deleteTask,
   removeMemberFromTask,
   assignMembers,
   updateTask,
