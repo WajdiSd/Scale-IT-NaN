@@ -42,9 +42,6 @@ export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsT
     const state = thunkAPI.getState();
     const users = state.invite.users;
 
-    console.log('id');
-    console.log(id);
-
     if (!users) {
       setUserError('No Valid Users Passed!');
       return 'No Valid Users Passed';
@@ -56,9 +53,6 @@ export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsT
       emails: memberEmails,
       id,
     };
-
-    console.log('members');
-    console.log(members);
 
     const memberSubmit = members.emails.length > 0 ? await taskService.assignMembers(members) : null;
     thunkAPI.dispatch(resetInvite());
@@ -167,7 +161,6 @@ const inviteSlice = createSlice({
       state.users = [];
     },
     removeUser: (state, action) => {
-      console.log(action.payload);
       state.users = state.users.filter((user) => user.email !== action.payload);
     },
     resetUserError: (state, action) => {
@@ -236,12 +229,9 @@ const inviteSlice = createSlice({
         state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
       })
       .addCase(submitInvitationsToTask.fulfilled, (state, action) => {
-        console.log('submitInvitationsToTask.fulfilled');
-        console.log(action.payload);
         state.userSuccessMessage = `Members have been Assigned succesfully`;
       })
       .addCase(submitInvitationsToTask.rejected, (state, action) => {
-        console.log(action.payload);
         state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
       });
   },
