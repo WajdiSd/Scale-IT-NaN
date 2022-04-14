@@ -37,23 +37,23 @@ app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
-// const job = schedule.scheduleJob("*/5 * * * * *", async () => {
-//   console.log("updating workspace leaderboard");
-//   const workspaces = await Workspace.find({
-//     isDeleted: false,
-//   });
-//   const projects = await Project.find({
-//     isDeleted: false,
-//   });
-//   if (workspaces.length > 0)
-//     for (worksp of workspaces) {
-//       await updatescoremembersinworkspace(worksp._id);
-//     }
-//   // if (projects.length > 0)
-//   //   for (proj of projects) {
-//   //     updatescoremembersinproject(proj._id);
-//   //   }
-// });
+const job = schedule.scheduleJob("*/5 * * * * *", async () => {
+  console.log("updating workspace leaderboard");
+  const workspaces = await Workspace.find({
+    isDeleted: false,
+  });
+  const projects = await Project.find({
+    isDeleted: false,
+  });
+  if (workspaces.length > 0)
+    for (worksp of workspaces) {
+      await updatescoremembersinworkspace(worksp._id);
+    }
+  // if (projects.length > 0)
+  //   for (proj of projects) {
+  //     updatescoremembersinproject(proj._id);
+  //   }
+});
 
 // var mailOptions = {
 //   from: '"Scale IT" <no-reply@scaleitbynan@gmail.com>', // sender address

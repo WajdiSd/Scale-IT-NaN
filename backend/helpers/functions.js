@@ -1,6 +1,7 @@
 const workspaceModel = require("../models/workspaceModel");
 const projectModel = require("../models/projectModel");
 const Task = require("../models/taskModel");
+const Project = require("../models/projectModel");
 const UserScore = require("../models/userscoreModel");
 const Workspace = require("../models/workspaceModel");
 
@@ -52,8 +53,8 @@ async function ProjectHasTeamLeader(projectId) {
 /**
  * todo: change "push in tables" by compteur .
  */
-async function getPerformanceByMember(memberId) {
-  const task = await Task.find({
+async function getPerformanceByMember(memberId, workspaceId) {
+  let task = await Task.find({
     "members.memberId": memberId,
     status: "done",
   });
@@ -66,7 +67,23 @@ async function getPerformanceByMember(memberId) {
   const ftat = [];
   const fcat = [];
 
-  task.map((task) => {
+  let usertasks = [];
+
+  for (let t of task) {
+    let proj = await Project.findById(t.project);
+    if (proj) {
+      console.log(proj.workspace);
+      console.log("////");
+      console.log(workspaceId);
+      if (proj.workspace.equals(workspaceId)) {
+        usertasks.push(t);
+      }
+    }
+  }
+
+  console.log(usertasks);
+
+  usertasks.map((task) => {
     if (task.expectedEndDate > task.endDate) {
       if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
         fcit.push(task);
@@ -111,10 +128,13 @@ async function getPerformanceByMember(memberId) {
 async function updatescoremembersinworkspace(workspaceId) {
   const workspace = await Workspace.findById(workspaceId);
   if (!workspace) {
-    console.log("invalid workspace id");
+    // console.log("invalid workspace id");
   } else {
     for (assignee of workspace.assigned_members) {
-      const newscore = await getPerformanceByMember(assignee.member);
+      const newscore = await getPerformanceByMember(
+        assignee.member,
+        workspaceId
+      );
 
       if (newscore) {
         console.log("workspace id ", workspaceId);
@@ -123,13 +143,13 @@ async function updatescoremembersinworkspace(workspaceId) {
         let scoreExists = await UserScore.exists({ member: assignee.member });
 
         if (!scoreExists) {
-          console.log("mahouch majoud", assignee.member);
+          // console.log("mahouch majoud", assignee.member);
           let newScrore = await UserScore.create({
             member: assignee.member,
             score_workspace: [],
             score_project: [],
           });
-          if (newScrore) console.log("created");
+          // if (newScrore) console.log("created");
         }
         let workspaceExistsInScore = await UserScore.exists({
           member: assignee.member,
@@ -142,15 +162,15 @@ async function updatescoremembersinworkspace(workspaceId) {
               "score_workspace.workspaceId": workspaceId,
             },
             function (err, success) {
-              if (success) {
-                console.log("success find");
-                console.log(success.member);
-                for (let i = 0; i < success.score_workspace.length; i++) {
-                  console.log(success.score_workspace[i]);
-                }
-              } else {
-                console.log("error", err);
-              }
+              // if (success) {
+              //   // console.log("success find");
+              //   // console.log(success.member);
+              //   for (let i = 0; i < success.score_workspace.length; i++) {
+              //     console.log(success.score_workspace[i]);
+              //   }
+              // } else {
+              //   console.log("error", err);
+              // }
             }
           );
           UserScore.updateOne(
@@ -163,7 +183,7 @@ async function updatescoremembersinworkspace(workspaceId) {
             },
             { new: true },
             function (err, success) {
-              console.log("log zz");
+              // console.log("log zz");
               if (err) console.log("err", err);
               else {
                 UserScore.findOne(
@@ -172,15 +192,15 @@ async function updatescoremembersinworkspace(workspaceId) {
                     "score_workspace.workspaceId": workspaceId,
                   },
                   function (err, success) {
-                    if (success) {
-                      console.log("success find");
-                      console.log(success.member);
-                      for (let i = 0; i < success.score_workspace.length; i++) {
-                        console.log(success.score_workspace[i]);
-                      }
-                    } else {
-                      console.log("error", err);
-                    }
+                    // if (success) {
+                    //   console.log("success find");
+                    //   console.log(success.member);
+                    //   for (let i = 0; i < success.score_workspace.length; i++) {
+                    //     console.log(success.score_workspace[i]);
+                    //   }
+                    // } else {
+                    //   console.log("error", err);
+                    // }
                   }
                 );
               }
@@ -192,7 +212,7 @@ async function updatescoremembersinworkspace(workspaceId) {
           //   // console.log(updatero);
           // }
         } else {
-          let updatero = await UserScore.findOneAndUpdate(
+          UserScore.findOneAndUpdate(
             {
               member: assignee.member,
             },
@@ -201,13 +221,24 @@ async function updatescoremembersinworkspace(workspaceId) {
                 score_workspace: { workspaceId: workspaceId, score: newscore },
               },
             },
-            { new: true }
+            { new: true },
+            function (err, success) {
+              // if (success) {
+              //   console.log("success find");
+              //   console.log(success.member);
+              //   for (let i = 0; i < success.score_workspace.length; i++) {
+              //     console.log(success.score_workspace[i]);
+              //   }
+              // } else {
+              //   console.log("error", err);
+              // }
+            }
           );
-          if (updatero) {
-            console.log("not workspaceExistsInScore");
-            console.log("updatero");
-            // console.log(updatero);
-          }
+          // if (updatero) {
+          //   console.log("not workspaceExistsInScore");
+          //   console.log("updatero");
+          //   // console.log(updatero);
+          // }
         }
         /*
        
