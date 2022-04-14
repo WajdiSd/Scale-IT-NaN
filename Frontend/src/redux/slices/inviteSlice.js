@@ -12,6 +12,73 @@ const initialState = {
   message: '',
 };
 
+// Check if member email exists in workspace then add him
+export const addMemberToTask = createAsyncThunk('task/addMemberToTask', async (email, thunkAPI) => {
+  try {
+    const state = thunkAPI.getState();
+    const id = state.workspaces.workspace._id;
+
+    const exists = await authService.checkIfUserExistsByEmail(email);
+    const existsInWorkspace = await workspaceService.checkIfUserExistsInWorkspace(id, email);
+
+    const user = {
+      exists,
+      existsInWorkspace,
+      email,
+    };
+    return user;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// Submit invitations to users
+export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsToTask', async (_, thunkAPI) => {
+  try {
+    const state = thunkAPI.getState();
+    const id = state.workspaces.workspace._id;
+    const users = state.invite.users;
+
+    if (!users) {
+      setUserError('No Valid Users Passed!');
+      return 'No Valid Users Passed';
+    }
+    const managersFiltered = users.filter((user) => {
+      if (user.isManager) return user.email;
+    });
+    const managerEmails = managersFiltered.map((user) => user.email);
+    const membersFiltered = users.filter((user) => {
+      if (!user.isManager) return user.email;
+    });
+    const memberEmails = membersFiltered.map((user) => user.email);
+    const managers = {
+      info: {
+        emails: managerEmails,
+        role: 'manager',
+      },
+      id,
+    };
+    const members = {
+      info: {
+        emails: memberEmails,
+        role: 'member',
+      },
+      id,
+    };
+    const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
+    const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
+    thunkAPI.dispatch(resetInvite());
+
+    return [managerSubmit, memberSubmit];
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 // Check if member email exists then add him
 export const addMember = createAsyncThunk('workspace/addMember', async (email, thunkAPI) => {
   try {
