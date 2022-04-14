@@ -82,7 +82,20 @@ export const tasksSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
-      });
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.task = action.payload.task;
+      })
+      .addCase(updateTask.rejected, (state, action) => {
+        console.log('updateTask rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
   },
 });
 
@@ -109,6 +122,18 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+// update task
+export const updateTask = createAsyncThunk('task/updateTask', async (data, thunkAPI) => {
+  try {
+    return await taskService.updateTask(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 
 export const { resetTask } = tasksSlice.actions;
 export default tasksSlice.reducer;

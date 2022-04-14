@@ -45,12 +45,13 @@ import { TasksTableRow, TasksTableToolbar } from '../../sections/@dashboard/task
 import { DialogAnimate } from 'src/components/animate';
 import AddTaskForm from 'src/sections/@dashboard/tasks/AddTaskForm';
 import { useDispatch } from 'react-redux';
-import { addTask, getUserTasks } from 'src/redux/slices/tasksSlice';
+import { addTask, getUserTasks, updateTask } from 'src/redux/slices/tasksSlice';
 import useAuth from 'src/hooks/useAuth';
 import useTask from 'src/hooks/useTask';
 import useProject from 'src/hooks/useProject';
 import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
+import UpdateTaskForm from 'src/sections/@dashboard/tasks/UpdateTaskForm';
 
 // ----------------------------------------------------------------------
 
@@ -173,8 +174,26 @@ export default function TasksList() {
       });
   }
 
-  const handleEditRow = (id) => {
-    navigate(PATH_DASHBOARD.invoice.edit(id));
+  const handleUpdateTask = (data) => {
+    dispatch(updateTask(data))
+        .then(res=>{
+          console.log(res);
+          if(!res.error)
+            {
+              enqueueSnackbar("Successfully updated task")
+              setRefreshTasks(true)
+            }
+          else
+            enqueueSnackbar("unable to update task",{
+              variant: 'error',
+            })
+      });
+  }
+
+
+  const handleEditRow = (task) => {
+    setSelectedTask(task);
+    setIsOpenUpdateModal(true);
   };
 
   const handleViewRow = (id) => {
@@ -222,11 +241,17 @@ export default function TasksList() {
     { value: 'review', label: 'Review', color: 'default', count: getLengthByStatus('review') },
   ];
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
   const handleAddEvent = () => {
     setIsOpenModal(true);
   };
   const handleCloseModal = () => {
     setIsOpenModal(false);
+  }; 
+  const handleCloseUpdateModal = () => {
+    setIsOpenUpdateModal(false);
   };
   return (
     <Page title="Invoice: List">
@@ -264,6 +289,12 @@ export default function TasksList() {
         <DialogTitle>{'Add Task'}</DialogTitle>
         <AddTaskForm onCancel={handleCloseModal} handleAddTask={handleAddTask} />
       </DialogAnimate>
+
+      <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenUpdateModal} onClose={handleCloseUpdateModal}>
+        <DialogTitle>{'Update Task'}</DialogTitle>
+        <UpdateTaskForm onCancel={handleCloseUpdateModal} handleUpdateTask={handleUpdateTask} task={selectedTask}/>
+      </DialogAnimate>
+      
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
             <Stack
@@ -420,7 +451,7 @@ export default function TasksList() {
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onViewRow={() => handleViewRow(row._id)}
-                      onEditRow={() => handleEditRow(row._id)}
+                      onEditRow={() => handleEditRow(row)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                     />
                   ))}
