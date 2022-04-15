@@ -37,7 +37,7 @@ app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
-const job = schedule.scheduleJob("*/5 * * * * *", async () => {
+const job = schedule.scheduleJob("*/60 * * * * *", async () => {
   console.log("updating workspace leaderboard");
   const workspaces = await Workspace.find({
     isDeleted: false,
@@ -47,12 +47,15 @@ const job = schedule.scheduleJob("*/5 * * * * *", async () => {
   });
   if (workspaces.length > 0)
     for (worksp of workspaces) {
+      console.log("cron workspace");
       await updatescoremembersinworkspace(worksp._id);
     }
-  // if (projects.length > 0)
-  //   for (proj of projects) {
-  //     updatescoremembersinproject(proj._id);
-  //   }
+   if (projects.length > 0)
+     for (proj of projects) {
+      console.log("cron projects");
+
+      await updatescoremembersinproject(proj._id);
+     }
 });
 
 // var mailOptions = {
