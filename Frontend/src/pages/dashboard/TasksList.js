@@ -148,12 +148,11 @@ export default function TasksList() {
   const handleDeleteRow = (id) => {
     const teamLeadId = user._id;
     const projectId = projectid;
-    dispatch(deleteTask({teamLeadId: teamLeadId, projectId: projectId, taskId: id}));
-    //const deleteRow = tableData.filter((row) => row.id !== id);
+    dispatch(deleteTask({ teamLeadId: teamLeadId, projectId: projectId, taskId: id }));
     const deleteRow = memberTasks.filter((row) => row.id !== id);
-    setSelected([]);
-    //setTableData(deleteRow);
+    setRefreshTasks(true);
   };
+
 
   const handleDeleteRows = (selected) => {
     const deleteRows = memberTasks.filter((row) => !selected.includes(row.id));
