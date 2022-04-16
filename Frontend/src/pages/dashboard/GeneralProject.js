@@ -25,6 +25,7 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import UserList from 'src/sections/@dashboard/project/UserList';
 import useAuth from 'src/hooks/useAuth';
+import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject';
 
 // ----------------------------------------------------------------------
 
@@ -109,7 +110,7 @@ export default function GeneralProject() {
               <Stack spacing={3}>
                 <ProjectStatus />
                 <ProjectMembersList />
-                <BankingContacts />
+                <TopMembersProject />
               </Stack>
             </Grid>
             <Grid item xs={12} md={12}>
