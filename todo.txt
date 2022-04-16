@@ -1,1 +1,0 @@
-// baddél l logique kol card tékhou => { id mtaa l member: isTeamLeader || isProjectSpecificManager }
