@@ -6,7 +6,7 @@ const {
 } = require("../controllers/performanceController");
 const router = express.Router();
 
-router.get("/perf/:memberId", getPerformanceByMember);
+// router.get("/perf/:memberId", getPerformanceByMember);
 router.get("/leaderboard-workspace/:workspaceid", getleaderboardbyworkspace);
 router.get("/leaderboard-project/:projectid", getleaderboardbyproject);
 
