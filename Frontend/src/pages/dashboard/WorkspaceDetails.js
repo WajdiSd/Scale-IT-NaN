@@ -27,8 +27,9 @@ import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace
 import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
 
 // slices
-import { getWorkspace } from 'src/redux/slices/workspaceSlice';
+import { getWorkspace, getworspaceleaderboard } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
+import TopMembers from 'src/components/TopMembers';
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +68,7 @@ export default function WorkspaceDetails() {
     getWorkspaceProjectsHook,
     resetProjectsStore,
   } = useProject();
-  const { workspace, usersInWorkspace } = useWorkspace();
+  const { workspace, usersInWorkspace, leaderboardWorkspace } = useWorkspace();
 
   let isHrAfterLoad = isHr;
   let isPmAfterLoad = isProjectManager;
@@ -141,7 +142,7 @@ export default function WorkspaceDetails() {
     {
       value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
+      component: <TopMembers />,
     },
   ];
 
