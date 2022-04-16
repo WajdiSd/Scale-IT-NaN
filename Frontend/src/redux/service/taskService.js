@@ -63,6 +63,7 @@ const taskService = {
   getUserTasks,
   updateTaskStatus,
   getBoard,
+  deleteTask,
   removeMemberFromTask,
   deleteTask,
   assignMembers,
