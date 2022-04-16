@@ -33,9 +33,9 @@ import { useEffect, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 
 import { inviteMemberToProject } from 'src/redux/slices/projectSlice';
-import { setUserError } from 'src/redux/slices/workspaceInviteSlice';
+import { setUserError } from 'src/redux/slices/inviteSlice';
 import palette from 'src/theme/palette';
-import {userExistsInWorkspace } from 'src/redux/slices/workspaceSlice';
+import { userExistsInWorkspace } from 'src/redux/slices/workspaceSlice';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -67,7 +67,7 @@ InviteMembersToProjectForm.propTypes = {
   onInviteMembers: PropTypes.func,
 };
 
-export default function InviteMembersToProjectForm({ onInviteMembers,onCancel }) {
+export default function InviteMembersToProjectForm({ onInviteMembers, onCancel }) {
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -90,7 +90,6 @@ export default function InviteMembersToProjectForm({ onInviteMembers,onCancel })
       );
   };
 
-
   const EventSchema = Yup.object().shape({
     title: Yup.string(),
     description: Yup.string(),
@@ -111,23 +110,19 @@ export default function InviteMembersToProjectForm({ onInviteMembers,onCancel })
     formState: { isSubmitting },
   } = methods;
 
-  let isInWorkspace= false;
-  const handleAddMemberToList= (e) => {
+  let isInWorkspace = false;
+  const handleAddMemberToList = (e) => {
     e.preventDefault();
-    isInWorkspace = dispatch(userExistsInWorkspace({id,invitedMember}));
-    isInWorkspace.then(
-      (res) => {
-        if (res&&validateEmail(invitedMember)) {
-          setInvitedMembers((invitedMembers) => [...invitedMembers, invitedMember]);
-          setInvitedMember('');
-        } else {
-          enqueueSnackbar('User not in workspace', { variant: 'error' });
-        }
+    isInWorkspace = dispatch(userExistsInWorkspace({ id, invitedMember }));
+    isInWorkspace.then((res) => {
+      if (res && validateEmail(invitedMember)) {
+        setInvitedMembers((invitedMembers) => [...invitedMembers, invitedMember]);
+        setInvitedMember('');
+      } else {
+        enqueueSnackbar('User not in workspace', { variant: 'error' });
       }
-    )
-     
-     
-  }
+    });
+  };
 
   const values = watch();
 
@@ -152,11 +147,7 @@ export default function InviteMembersToProjectForm({ onInviteMembers,onCancel })
               '& fieldset': { display: 'none' },
             }}
           />
-          <Button
-            onClick={handleAddMemberToList}
-            color="warning"
-            variant="contained"
-          >
+          <Button onClick={handleAddMemberToList} color="warning" variant="contained">
             Add Member
           </Button>
         </Stack>

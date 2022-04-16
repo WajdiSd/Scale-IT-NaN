@@ -1,4 +1,3 @@
-//import VerifyCode from "src/pages/auth/VerifyCode";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import taskService from '../service/taskService';
@@ -85,6 +84,19 @@ export const tasksSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
       })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.task = action.payload.task;
+      })
+      .addCase(updateTask.rejected, (state, action) => {
+        console.log('updateTask rejected');
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
       .addCase(removeMembersFromTask.pending, (state, action) => {
         console.log('removeMembersFromTask pending');
         state.isLoading = true;
@@ -132,11 +144,17 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
   }
 });
 
-<<<<<<< HEAD
-export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
+// update task
+export const updateTask = createAsyncThunk('task/updateTask', async (data, thunkAPI) => {
   try {
-    return await taskService.deleteTask(data);
-=======
+    return await taskService.updateTask(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
   try {
     const t = await taskService.removeMemberFromTask(data);
@@ -144,7 +162,16 @@ export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTas
       thunkAPI.dispatch(getBoard(data.projectId));
       return t;
     }
->>>>>>> 72ce55c9d9c900fc1e72d57eb9c696c5bad786c4
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
+  try {
+    return await taskService.deleteTask(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
