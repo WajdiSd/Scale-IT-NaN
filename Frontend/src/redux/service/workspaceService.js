@@ -4,6 +4,7 @@ import axiosInstance from 'src/utils/axios';
 import { dispatch } from '../store';
 
 const API_URL = 'workspace/';
+const LEADER_URL = 'performance/';
 const getWorkspaces = async (id) => {
   const response = await axiosInstance.get(API_URL + id);
   return response.data;
@@ -93,12 +94,16 @@ const DischargeProjectManager = async (Data) => {
   return response.data;
 };
 
-
 const AssignHR = async (Data) => {
   const idworkspace = Data.idworkspace;
   const idHR = Data.idHR;
   const idmember = Data.idmember;
   const response = await axiosInstance.put(API_URL + 'assignHR/' + idworkspace + '/' + idmember + '/' + idHR);
+  return response.data;
+};
+
+const getWorkspaceLeaderboard = async (workspaceId) => {
+  const response = await axiosInstance.get(LEADER_URL + 'leaderboard-workspace/' + workspaceId);
   return response.data;
 };
 
@@ -117,6 +122,7 @@ const workspaceService = {
   AssignProjectManagerToMember,
   DischargeProjectManager,
   AssignHR,
+  getWorkspaceLeaderboard,
 };
 
 export default workspaceService;

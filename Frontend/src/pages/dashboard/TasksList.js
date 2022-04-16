@@ -160,13 +160,7 @@ export default function TasksList() {
     //const deleteRow = tableData.filter((row) => row.id !== id);
     const deleteRow = memberTasks.filter((row) => row.id !== id);
     setRefreshTasks(true);
-  };
-
-
-  const handleDeleteRows = (selected) => {
-    const deleteRows = memberTasks.filter((row) => !selected.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
+    
   };
 
   const handleAddTask = (data) => {

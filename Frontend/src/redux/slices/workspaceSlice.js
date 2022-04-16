@@ -8,6 +8,7 @@ const initialState = {
   workspaces: [],
   workspace: null,
   usersInWorkspace: [],
+  leaderboardWorkspace: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -21,7 +22,7 @@ export const workspaceSlice = createSlice({
     resetWorkspace: (state) => {
       (state.workspaces = []),
         (state.workspace = null),
-        (state.usersInWorkspace = []),
+        (leaderboardWorkspace = [])((state.usersInWorkspace = [])),
         (state.isError = false),
         (state.isSuccess = false),
         (state.isLoading = false),
@@ -170,7 +171,25 @@ export const workspaceSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
       })
-      ;
+      .addCase(getworspaceleaderboard.rejected, (state, action) => {
+        console.log('getworspaceleaderboard rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getworspaceleaderboard.pending, (state, action) => {
+        console.log('getworspaceleaderboard pending');
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(getworspaceleaderboard.fulfilled, (state, action) => {
+        console.log('getworspaceleaderboard fulfilled');
+        console.log(action);
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.leaderboardWorkspace = action.payload.leaderboard;
+      });
   },
 });
 
@@ -203,6 +222,7 @@ export const getWorkspace = createAsyncThunk('workspace/getWorkspace', async (id
       await thunkAPI.dispatch(isHr(workspace));
       await thunkAPI.dispatch(isProjectManager(workspace));
       await thunkAPI.dispatch(usersbyworkspace(workspace._id));
+      await thunkAPI.dispatch(getworspaceleaderboard(id));
       return workspace;
     }
   } catch (error) {
@@ -312,15 +332,25 @@ export const userExistsInWorkspace = createAsyncThunk('workspace/userExistsInWor
   }
 });
 
-export const AssignHR = createAsyncThunk(
-  'workspace/AssignHR',
-  async (Data, thunkAPI) => {
+export const AssignHR = createAsyncThunk('workspace/AssignHR', async (Data, thunkAPI) => {
+  try {
+    const res = await workspaceService.AssignHR(Data);
+    if (res) {
+      await thunkAPI.dispatch(getWorkspace(Data.idworkspace));
+      return res;
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const getworspaceleaderboard = createAsyncThunk(
+  'workspace/getworspaceleaderboard',
+  async (workspaceid, thunkAPI) => {
     try {
-      const res = await workspaceService.AssignHR(Data);
-      if (res) {
-        await thunkAPI.dispatch(getWorkspace(Data.idworkspace));
-        return res;
-      }
+      return await workspaceService.getWorkspaceLeaderboard(workspaceid);
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
