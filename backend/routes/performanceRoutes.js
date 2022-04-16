@@ -1,10 +1,6 @@
 const express = require("express");
 const {
   getPerformanceByMember,
-} = require("../controllers/performanceController");
-const router = express.Router();
-
-router.get("/perf/:memberId", getPerformanceByMember);
   getleaderboardbyworkspace,
   getleaderboardbyproject,
 } = require("../controllers/performanceController");
