@@ -145,16 +145,6 @@ export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object,
   }
 });
 
-export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
-  try {
-    return await taskService.deleteTask(data);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-    return thunkAPI.rejectWithValue(message);
-  }
-});
-
 // update task
 export const updateTask = createAsyncThunk('task/updateTask', async (data, thunkAPI) => {
   try {
@@ -166,20 +156,29 @@ export const updateTask = createAsyncThunk('task/updateTask', async (data, thunk
   }
 });
 
-
 export const removeMembersFromTask = createAsyncThunk('task/removeMembersFromTask', async (data, thunkAPI) => {
   try {
     const t = await taskService.removeMemberFromTask(data);
     if (t) {
       thunkAPI.dispatch(getBoard(data.projectId));
       return t;
-    }}
-    catch (error) {
-      const message =
-        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
     }
-  });
-  
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+export const deleteTask = createAsyncThunk('task/deleteTask', async (data, thunkAPI) => {
+  try {
+    return await taskService.deleteTask(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const { resetTask } = tasksSlice.actions;
 export default tasksSlice.reducer;

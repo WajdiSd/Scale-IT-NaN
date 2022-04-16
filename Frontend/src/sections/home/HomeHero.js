@@ -72,7 +72,7 @@ export default function HomeHero() {
       <RootStyle>
         <HeroOverlayStyle
           alt="overlay"
-          src="https://minimal-assets-api.vercel.app/assets/overlay.svg"
+          src="https://minimals.cc/assets/overlay.svg"
           variants={varFade().in}
         />
 

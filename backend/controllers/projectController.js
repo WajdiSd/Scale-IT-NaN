@@ -77,6 +77,7 @@ const getProjectsByMember = asyncHandler(async (req, res) => {
   const projects = await Project.find({
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
+    "assigned_members.isDeleted": false,
   });
   if (projects.length === 0) {
     return res.status(200).json({

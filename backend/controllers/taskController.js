@@ -251,7 +251,10 @@ const recoverTask = asyncHandler(async (req, res) => {
 
 // @route get /api/task/getUserTasks/projectId/memberId
 const getUserTasks = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
+  const project = await Project.findById({
+    _id: req.params.projectId,
+    isDeleted: false,
+  });
   if (!project) {
     res.status(404);
     throw new Error("project not found");
@@ -266,6 +269,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
   if (req.params.isExecutive) {
     const tasks = await Task.find({
       project: req.params.projectId,
+      isDeleted: false,
     });
     res.status(200).json({
       tasks: tasks,
@@ -274,6 +278,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
     const tasksToDo = await Task.find({
       project: req.params.projectId,
       "members.memberId": req.params.memberId,
+      isDeleted: false,
     });
     res.status(200).json({
       tasks: tasksToDo,
