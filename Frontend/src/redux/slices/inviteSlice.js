@@ -1,6 +1,8 @@
 import authService from '../service/authService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import workspaceService from '../service/workspaceService';
+import projectService from '../service/projectService';
+import taskService from '../service/taskService';
 
 const initialState = {
   users: [],
@@ -11,6 +13,57 @@ const initialState = {
   isLoading: false,
   message: '',
 };
+
+// Check if member email exists in workspace then add him
+export const addMemberToTask = createAsyncThunk('task/addMemberToTask', async (email, thunkAPI) => {
+  try {
+    const state = thunkAPI.getState();
+    const id = state.projects.project._id;
+
+    const exists = await authService.checkIfUserExistsByEmail(email);
+    const existsInProject = await projectService.checkIfUserExistsInProject(id, email);
+
+    const user = {
+      exists,
+      existsInProject,
+      email,
+    };
+    return user;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// Submit invitations to users
+export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsToTask', async (id, thunkAPI) => {
+  try {
+    const state = thunkAPI.getState();
+    const users = state.invite.users;
+
+    if (!users) {
+      setUserError('No Valid Users Passed!');
+      return 'No Valid Users Passed';
+    }
+
+    const memberEmails = users.map((user) => user.email);
+
+    const members = {
+      emails: memberEmails,
+      id,
+    };
+
+    const memberSubmit = members.emails.length > 0 ? await taskService.assignMembers(members) : null;
+    thunkAPI.dispatch(resetInvite());
+
+    return memberSubmit;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 
 // Check if member email exists then add him
 export const addMember = createAsyncThunk('workspace/addMember', async (email, thunkAPI) => {
@@ -60,7 +113,7 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
   try {
     const state = thunkAPI.getState();
     const id = state.workspaces.workspace._id;
-    const users = state.workspaceInvite.users;
+    const users = state.invite.users;
 
     if (!users) {
       setUserError('No Valid Users Passed!');
@@ -90,7 +143,7 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
     };
     const managerSubmit = managers.info.emails.length > 0 ? await workspaceService.inviteManagers(managers) : null;
     const memberSubmit = members.info.emails.length > 0 ? await workspaceService.inviteMembers(members) : null;
-    thunkAPI.dispatch(resetWorkspaceInvite());
+    thunkAPI.dispatch(resetInvite());
 
     return [managerSubmit, memberSubmit];
   } catch (error) {
@@ -100,15 +153,14 @@ export const submitInvitations = createAsyncThunk('workspace/submitInvitations',
   }
 });
 
-const workspaceInviteSlice = createSlice({
-  name: 'workspaceInvite',
+const inviteSlice = createSlice({
+  name: 'invite',
   initialState,
   reducers: {
-    resetWorkspaceInvite: (state, action) => {
+    resetInvite: (state, action) => {
       state.users = [];
     },
     removeUser: (state, action) => {
-      console.log(action.payload);
       state.users = state.users.filter((user) => user.email !== action.payload);
     },
     resetUserError: (state, action) => {
@@ -138,6 +190,20 @@ const workspaceInviteSlice = createSlice({
           state.users = [...state.users, member];
         }
       })
+      .addCase(addMemberToTask.rejected, (state, action) => {
+        state.userErrorMessage = action.payload;
+      })
+      .addCase(addMemberToTask.fulfilled, (state, action) => {
+        if (action.payload.exists) {
+          const member = {
+            email: action.payload.email,
+          };
+
+          state.userSuccessMessage = `Member ${member.email} Added`;
+
+          state.users = [...state.users, member];
+        }
+      })
       .addCase(addMember.rejected, (state, action) => {
         state.userErrorMessage = action.payload;
       })
@@ -160,11 +226,17 @@ const workspaceInviteSlice = createSlice({
         state.userSuccessMessage = `Users have been Invited succesfully`;
       })
       .addCase(submitInvitations.rejected, (state, action) => {
-        state.userSuccessMessage = `Oops, an error has occured while submitting invitations`;
+        state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
+      })
+      .addCase(submitInvitationsToTask.fulfilled, (state, action) => {
+        state.userSuccessMessage = `Members have been Assigned succesfully`;
+      })
+      .addCase(submitInvitationsToTask.rejected, (state, action) => {
+        state.userErrorMessage = `Oops, an error has occured while submitting invitations`;
       });
   },
 });
 
-export const { removeUser, setUserError, resetUserError, resetUserSuccess, setUserSuccess, resetWorkspaceInvite } =
-  workspaceInviteSlice.actions;
-export default workspaceInviteSlice.reducer;
+export const { removeUser, setUserError, resetUserError, resetUserSuccess, setUserSuccess, resetInvite } =
+  inviteSlice.actions;
+export default inviteSlice.reducer;

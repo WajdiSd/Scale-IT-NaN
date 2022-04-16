@@ -19,6 +19,7 @@ import { useNavigate, useParams } from 'react-router';
 import useProject from 'src/hooks/useProject';
 import useWorkspace from 'src/hooks/useWorkspace';
 import useKanban from 'src/hooks/useKanban';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -27,12 +28,14 @@ export default function Kanban() {
 
   const navigate = useNavigate();
   const [refreshTasks, setRefreshTasks] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const { user } = useAuth();
   const { board } = useKanban();
   const { memberTasks } = useTask();
   const { id, projectid } = useParams();
-  const { project } = useProject();
+  const { project, isTL } = useProject();
   const { workspace } = useWorkspace();
 
   useEffect(() => {
@@ -94,20 +97,29 @@ export default function Kanban() {
       ...finish,
       cardIds: finishCardIds,
     };
-    let data = {
-      taskid: draggableId,
-      status: finish.name,
-      projectId: projectid,
-      teamLeadId: user._id,
-    };
-    dispatch(updateTaskStatus(data));
-    dispatch(
-      persistCard({
-        ...board.columns,
-        [updatedStart._id]: updatedStart,
-        [updatedFinish._id]: updatedFinish,
+
+    if((finish.name=='done' || (finish.name=='review' && start.name=='done' )) && !isTL){
+      enqueueSnackbar("Action not allowed",{
+        variant: 'error'
       })
-    );
+    }else{
+      let data = {
+        taskid: draggableId,
+        status: finish.name,
+        projectId: projectid,
+        teamLeadId: user._id,
+      };
+      dispatch(updateTaskStatus(data));
+      dispatch(
+        persistCard({
+          ...board.columns,
+          [updatedStart._id]: updatedStart,
+          [updatedFinish._id]: updatedFinish,
+        })
+      );
+    }
+
+    
 
     /*
     dispatch(
