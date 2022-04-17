@@ -4,16 +4,14 @@ import { useState, useEffect } from 'react';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
 import { Backdrop, Divider, Typography, Stack, FormControlLabel, Radio } from '@mui/material';
-// hooks
-import useSettings from '../../hooks/useSettings';
 // utils
-import cssStyles from '../../utils/cssStyles';
+import cssStyles from '../../../utils/cssStyles';
 // config
-import { NAVBAR, defaultSettings } from '../../config';
+import { NAVBAR, defaultSettings } from '../../../config';
 //
-import Iconify from '../Iconify';
-import Scrollbar from '../Scrollbar';
-import { IconButtonAnimate, varFade } from '../animate';
+import Iconify from '../../Iconify';
+import Scrollbar from '../../Scrollbar';
+import { IconButtonAnimate, varFade } from '../../animate';
 //
 import ToggleButton from './ToggleButton';
 import SettingMode from './SettingMode';
@@ -22,7 +20,10 @@ import SettingStretch from './SettingStretch';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
 import SettingColorPresets from './SettingColorPresets';
-import ToggleButtonBot from '../chatBot/ToggleButtonBot';
+import ToggleButtonBot from '../ToggleButtonBot';
+import useSettings from 'src/hooks/useSettings';
+import Chat from '../Chat';
+import ChatWindow from '../chat/ChatWindow';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ const RootStyle = styled(m.div)(({ theme }) => ({
   display: 'flex',
   position: 'fixed',
   overflow: 'hidden',
-  width: NAVBAR.BASE_WIDTH,
+  width: 500,
   flexDirection: 'column',
   margin: theme.spacing(2),
   paddingBottom: theme.spacing(3),
@@ -48,7 +49,7 @@ const RootStyle = styled(m.div)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Settings() {
+export default function ChatSection() {
   const { themeMode, themeDirection, themeColorPresets, themeStretch, themeLayout, onResetSetting } = useSettings();
   const [open, setOpen] = useState(false);
 
@@ -62,12 +63,12 @@ export default function Settings() {
   const varSidebar =
     themeDirection !== 'rtl'
       ? varFade({
-          distance: NAVBAR.BASE_WIDTH,
+          distance: 500,
           durationIn: 0.32,
           durationOut: 0.32,
         }).inRight
       : varFade({
-          distance: NAVBAR.BASE_WIDTH,
+          distance: 500,
           durationIn: 0.32,
           durationOut: 0.32,
         }).inLeft;
@@ -96,7 +97,6 @@ export default function Settings() {
         sx={{ background: 'transparent', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       />
 
-      {!open && <ToggleButton open={open} notDefault={notDefault} onToggle={handleToggle} />}
       {!open && <ToggleButtonBot open={open} notDefault={notDefault} onToggle={handleToggle} />}
 
 
@@ -120,32 +120,7 @@ export default function Settings() {
 
               <Scrollbar sx={{ flexGrow: 1 }}>
                 <Stack spacing={3} sx={{ p: 3 }}>
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Mode</Typography>
-                    <SettingMode />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Direction</Typography>
-                    <SettingDirection />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Layout</Typography>
-                    <SettingLayout />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Presets</Typography>
-                    <SettingColorPresets />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Stretch</Typography>
-                    <SettingStretch />
-                  </Stack>
-
-                  <SettingFullscreen />
+                  <ChatWindow/>
                 </Stack>
               </Scrollbar>
             </RootStyle>

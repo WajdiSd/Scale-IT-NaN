@@ -437,7 +437,7 @@ export default function TasksList() {
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onViewRow={() => handleViewRow(row._id)}
-                      onEditRow={() => handleEditRow(row._id)}
+                      onEditRow={() => handleEditRow(row)}
                       onInviteRow={() => handleInviteRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                     />
