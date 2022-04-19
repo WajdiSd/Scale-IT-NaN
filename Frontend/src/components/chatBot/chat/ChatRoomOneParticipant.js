@@ -62,11 +62,11 @@ export default function ChatRoomOneParticipant({ participants, isCollapse, onCol
           flexDirection: 'column',
         }}
       >
-        <Avatar alt="Mrs.Brain" src="https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_7.jpg" sx={{ width: 96, height: 96 }} />
+        <Avatar alt={participant.name} src={participant.avatar} sx={{ width: 96, height: 96 }} />
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Typography variant="subtitle1">"Mrs.Brain"</Typography>
+          <Typography variant="subtitle1">{participant.name}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Bot
+            {participant.position}
           </Typography>
         </Box>
       </Box>
@@ -92,15 +92,15 @@ export default function ChatRoomOneParticipant({ participants, isCollapse, onCol
         <Box sx={{ px: 2.5, pb: 1 }}>
           <RowStyle>
             <RowIconStyle icon={'eva:pin-fill'} />
-            <RowTextStyle>Mrs.Brain Adr</RowTextStyle>
+            <RowTextStyle>{participant.address}</RowTextStyle>
           </RowStyle>
           <RowStyle>
             <RowIconStyle icon={'eva:phone-fill'} />
-            <RowTextStyle>Mrs.Brain Phone</RowTextStyle>
+            <RowTextStyle>{participant.phone}</RowTextStyle>
           </RowStyle>
           <RowStyle>
             <RowIconStyle icon={'eva:email-fill'} />
-            <RowTextStyle>Mrs.Brain email</RowTextStyle>
+            <RowTextStyle>{participant.email}</RowTextStyle>
           </RowStyle>
         </Box>
       </Collapse>

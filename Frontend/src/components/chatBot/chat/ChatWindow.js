@@ -47,7 +47,7 @@ export default function ChatWindow() {
   const { contacts, recipients, participants, activeConversationId } = useSelector((state) => state.chat);
   const conversation = useSelector((state) => conversationSelector(state));
 
-  const mode = conversationKey ? 'DETAIL' : 'COMPOSE';
+ // const mode = conversationKey ? 'DETAIL' : 'COMPOSE';
   const displayParticipants = participants.filter((item) => item.id !== '8864c717-587d-472a-929a-8e5f298024da-0');
 
   useEffect(() => {
@@ -108,7 +108,6 @@ export default function ChatWindow() {
         </Stack>
 
         {/*mode === 'DETAIL' && <ChatRoom conversation={conversation} participants={displayParticipants} />*/}
-        <ChatRoom conversation={conversation} participants={displayParticipants} />
       </Box>
     </Stack>
   );

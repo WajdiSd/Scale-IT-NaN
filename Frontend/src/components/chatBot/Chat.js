@@ -11,7 +11,7 @@ import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { ChatSidebar, ChatWindow } from '../../sections/@dashboard/chat';
+import ChatWindow from './chat/ChatWindow';
 
 // ----------------------------------------------------------------------
 
@@ -20,8 +20,8 @@ export default function Chat() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getConversations());
-    dispatch(getContacts());
+    //start conversation
+    
   }, [dispatch]);
 
   return (

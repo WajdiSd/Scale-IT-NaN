@@ -72,7 +72,7 @@ export default function ChatMessageItem({ message, conversation, onOpenLightbox 
             }}
           >
             {!isMe && `${firstName},`}&nbsp;
-            {formatDistanceToNowStrict(new Date(), {
+            {formatDistanceToNowStrict(new Date(message.createdAt), {
               addSuffix: true,
             })}
           </InfoStyle>

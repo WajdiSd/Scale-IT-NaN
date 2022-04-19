@@ -37,6 +37,13 @@ export default function ChatMessageList({ conversation }) {
     setSelectedImage(selectedImage);
   };
 
+  const msg = {
+    senderId: 'dsf',
+    contentType: 'text',
+    body:"hello",
+    createdAt: new Date()
+  }
+
   return (
     <>
       <Scrollbar scrollableNodeProps={{ ref: scrollRef }} sx={{ p: 3, height: 1 }}>
@@ -50,7 +57,7 @@ export default function ChatMessageList({ conversation }) {
         ))*/}
         <ChatMessageItem
             key='0'
-            message='hello'
+            message={msg}
             conversation={conversation}
             onOpenLightbox={handleOpenLightbox}
           />

@@ -12,7 +12,7 @@ import workspacesReducer from './slices/workspaceSlice';
 import inviteReducer from './slices/inviteSlice';
 import projectReducer from './slices/projectSlice';
 import taskReducer from './slices/tasksSlice';
-
+import chatbotReducer from './slices/chatbotSlice';
 // ----------------------------------------------------------------------
 
 const rootPersistConfig = {
@@ -67,6 +67,15 @@ const tasksPersistConfig = {
     'usersInTask',
   ],
 };
+const chatbotPersistConfig = {
+  key: 'chatbot',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: [
+    
+  ],
+};
+
 
 const rootReducer = combineReducers({
   mail: mailReducer,
@@ -79,6 +88,7 @@ const rootReducer = combineReducers({
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
   projects: persistReducer(projectsPersistConfig, projectReducer),
   tasks: persistReducer(tasksPersistConfig, taskReducer),
+  chatbot: persistReducer(chatbotPersistConfig, chatbotReducer),
 });
 
 export { rootPersistConfig, rootReducer };
