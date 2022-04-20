@@ -66,7 +66,6 @@ const { getPerformanceByMember } = require("../helpers/functions");
 //   });
 
 const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
-  console.log(req.params.workspaceid);
   let leaderboard = [];
   const workspace = await Workspace.findById(req.params.workspaceid);
   if (!workspace) {
@@ -86,7 +85,7 @@ const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
             last: memb.lastName,
           };
 
-          console.log(obj);
+          // console.log(obj);
           leaderboard.push(obj);
         }
       }
@@ -118,7 +117,7 @@ const getleaderboardbyproject = asyncHandler(async (req, res) => {
             last: memb.lastName,
           };
 
-          console.log(obj);
+          // console.log(obj);
           leaderboard.push(obj);
         }
       }
