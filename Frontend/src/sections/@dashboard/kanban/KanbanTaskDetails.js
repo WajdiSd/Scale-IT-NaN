@@ -68,7 +68,7 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
   const fileInputRef = useRef(null);
   const [taskCompleted, setTaskCompleted] = useState(card.completed);
   const [prioritize, setPrioritize] = useState('low');
-  const { usersInProject } = useProject();
+  const { usersInProject, isTL } = useProject();
   const [membersInTask, setMembersInTask] = useState([]);
   const [open, setOpen] = useState(false);
   const [userid, setUserid] = useState('');
@@ -200,23 +200,39 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             <Stack direction="row">
               <LabelStyle sx={{ mt: 1.5 }}>Assignee</LabelStyle>
               <Stack direction="row" flexWrap="wrap" alignItems="center">
-                {membersInTask.map((user) => (
-                  <Badge
-                    badgeContent="x"
-                    color="error"
-                    overlap="circular"
-                    // onClick={() => removemembersfromtask(user.memberId)}
-                    onClick={() => handleClickOpen(user.memberId)}
-                  >
-                    {/* <MailIcon color="action" /> */}
-                    <Avatar
-                      key={user.memberId}
-                      alt={user.firstName}
-                      src={user.firstName}
-                      sx={{ m: 0.5, width: 36, height: 36 }}
-                    />
-                  </Badge>
-                ))}
+                {isTL ? (
+                  <>
+                    {membersInTask.map((user) => (
+                      <Badge
+                        badgeContent="x"
+                        color="error"
+                        overlap="circular"
+                        // onClick={() => removemembersfromtask(user.memberId)}
+                        onClick={() => handleClickOpen(user.memberId)}
+                      >
+                        {/* <MailIcon color="action" /> */}
+                        <Avatar
+                          key={user.memberId}
+                          alt={user.firstName}
+                          src={user.firstName}
+                          sx={{ m: 0.5, width: 36, height: 36 }}
+                        />
+                      </Badge>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {membersInTask.map((user) => (
+                      <Avatar
+                        key={user.memberId}
+                        alt={user.firstName}
+                        src={user.firstName}
+                        sx={{ m: 0.5, width: 36, height: 36 }}
+                      />
+                    ))}
+                  </>
+                )}
+
                 <Tooltip title="Add assignee">
                   <IconButtonAnimate sx={{ p: 1, ml: 0.5, border: (theme) => `dashed 1px ${theme.palette.divider}` }}>
                     <Iconify icon={'eva:plus-fill'} width={20} height={20} />
