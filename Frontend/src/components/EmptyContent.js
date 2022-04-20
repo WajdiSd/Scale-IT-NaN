@@ -32,7 +32,7 @@ export default function EmptyContent({ title, description, img, ...other }) {
         disabledEffect
         visibleByDefault
         alt="empty content"
-        src={img || 'https://minimal-assets-api.vercel.app/assets/illustrations/illustration_empty_content.svg'}
+        src={img || 'https://minimals.cc/assets/illustrations/illustration_empty_content.svg'}
         sx={{ height: 240, mb: 3 }}
       />
 
