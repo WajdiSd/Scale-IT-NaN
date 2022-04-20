@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Avatar, Typography, ListItemText, ListItemAvatar, MenuItem } from '@mui/material';
@@ -35,6 +35,8 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
   const { usersInProject } = useProject();
   const {
     users,
+    taskMembers,
+    notAssignedMembers,
     addMemberUser,
     removeUserHook,
     userError,
@@ -42,7 +44,14 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
     userSuccess,
     resetUserSuccessHook,
     submitInvite,
+    fetchTaskMembers,
   } = useTaskInvite(taskId);
+
+  useEffect(() => {
+    if (open) {
+      fetchTaskMembers(taskId);
+    }
+  }, [open]);
 
   function handleMemberInput(email) {
     resetUserErrorHook();
@@ -95,29 +104,30 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
         }}
       >
         <Typography variant="h6" sx={{ p: 1.5 }}>
-          Project Members <Typography component="span">({usersInProject.length})</Typography>
+          Project Members <Typography component="span">({notAssignedMembers.length})</Typography>
         </Typography>
 
         <Scrollbar sx={{ height: ITEM_HEIGHT * 6 }}>
-          {usersInProject.map((contact) => (
-            <MenuItem key={contact._id} onClick={() => handleMemberInput(contact.email)}>
-              <ListItemAvatar sx={{ position: 'relative' }}>
-                <Avatar alt={contact.firstName} color={createAvatar(contact.firstName).color} sx={{ mr: 2 }}>
-                  {createAvatar(contact.firstName).name}
-                </Avatar>
-                <BadgeStatus
-                  status={randomInArray(['online', 'offline', 'away', 'busy'])}
-                  sx={{ position: 'absolute', right: 1, bottom: 1 }}
-                />
-              </ListItemAvatar>
+          {notAssignedMembers &&
+            notAssignedMembers.map((contact) => (
+              <MenuItem key={contact._id} onClick={() => handleMemberInput(contact.email)}>
+                <ListItemAvatar sx={{ position: 'relative' }}>
+                  <Avatar alt={contact.firstName} color={createAvatar(contact.firstName).color} sx={{ mr: 2 }}>
+                    {createAvatar(contact.firstName).name}
+                  </Avatar>
+                  <BadgeStatus
+                    status={randomInArray(['online', 'offline', 'away', 'busy'])}
+                    sx={{ position: 'absolute', right: 1, bottom: 1 }}
+                  />
+                </ListItemAvatar>
 
-              <ListItemText
-                primaryTypographyProps={{ typography: 'subtitle2', mb: 0.25 }}
-                primary={`${contact.firstName} ${contact.lastName}`}
-                secondary={contact.email}
-              />
-            </MenuItem>
-          ))}
+                <ListItemText
+                  primaryTypographyProps={{ typography: 'subtitle2', mb: 0.25 }}
+                  primary={`${contact.firstName} ${contact.lastName}`}
+                  secondary={contact.email}
+                />
+              </MenuItem>
+            ))}
         </Scrollbar>
         <div
           style={{

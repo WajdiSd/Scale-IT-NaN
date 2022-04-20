@@ -1,5 +1,3 @@
-import { useState } from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
 import {
   addMemberToTask,
   removeUser,
@@ -8,6 +6,7 @@ import {
   setUserSuccess,
   resetUserSuccess,
   submitInvitationsToTask,
+  getTaskMembers,
 } from 'src/redux/slices/inviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
@@ -15,6 +14,8 @@ import { useSelector, useDispatch } from 'src/redux/store';
 
 const useTaskInvite = (id) => {
   const users = useSelector((state) => state.invite.users);
+  const taskMembers = useSelector((state) => state.invite.taskMembers);
+  const notAssignedMembers = useSelector((state) => state.invite.notAssignedMembers);
   const userError = useSelector((state) => state.invite.userErrorMessage);
   const userSuccess = useSelector((state) => state.invite.userSuccessMessage);
 
@@ -22,6 +23,10 @@ const useTaskInvite = (id) => {
 
   const submitInvite = () => {
     dispatch(submitInvitationsToTask(id));
+  };
+
+  const fetchTaskMembers = () => {
+    dispatch(getTaskMembers(id));
   };
 
   const addMemberUser = (email) => {
@@ -39,6 +44,8 @@ const useTaskInvite = (id) => {
 
   return {
     users,
+    taskMembers,
+    notAssignedMembers,
     addMemberUser,
     removeUserHook,
     userError,
@@ -46,6 +53,7 @@ const useTaskInvite = (id) => {
     userSuccess,
     resetUserSuccessHook,
     submitInvite,
+    fetchTaskMembers,
   };
 };
 
