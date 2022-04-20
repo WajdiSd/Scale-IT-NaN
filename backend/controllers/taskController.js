@@ -375,7 +375,6 @@ const getTasksByProject = asyncHandler(async (req, res) => {
  */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
   const { memberEmails } = req.body;
-  console.log(memberEmails);
 
   const task = await Task.findById(req.params.id);
 
@@ -492,12 +491,19 @@ const getTaskMembers = asyncHandler(async (req, res) => {
     throw new Error("task not found");
   }
 
-  const members = task.members.map(async (memberId) => {
-    const user = await Member.findById(memberId);
-    return user;
+  const users = [];
+
+  const getUsers = new Promise(async (resolve, reject) => {
+    await task.members.forEach(async (member, index, array) => {
+      const user = await Member.findById(member.memberId);
+      users.push(user);
+      if (index === array.length - 1) resolve();
+    });
   });
 
-  res.status(200).json(members);
+  getUsers.then(() => {
+    return res.status(200).json(users);
+  });
 });
 
 module.exports = {
