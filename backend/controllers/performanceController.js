@@ -129,8 +129,17 @@ const getleaderboardbyproject = asyncHandler(async (req, res) => {
   }
 });
 
+const test = asyncHandler(async (req, res) => {
+  console.log("el bot");
+
+  res.status(200).json({
+    message: "test",
+  });
+});
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
+  test,
 };

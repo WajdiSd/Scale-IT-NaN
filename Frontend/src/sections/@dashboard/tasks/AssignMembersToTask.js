@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Avatar, Typography, ListItemText, ListItemAvatar, MenuItem } from '@mui/material';
@@ -31,10 +31,12 @@ const ITEM_HEIGHT = 64;
 
 // ----------------------------------------------------------------------
 
-export default function AssignMembersToTask({ open, taskId, handleClose }) {
+export default function AssignMembersToTask({ open, taskId, handleClose, refresh }) {
   const { usersInProject } = useProject();
   const {
     users,
+    taskMembers,
+    notAssignedMembers,
     addMemberUser,
     removeUserHook,
     userError,
@@ -42,7 +44,19 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
     userSuccess,
     resetUserSuccessHook,
     submitInvite,
+    fetchTaskMembers,
   } = useTaskInvite(taskId);
+
+  useEffect(() => {
+    if (open) {
+      fetchTaskMembers(taskId);
+    }
+  }, [open]);
+
+  function handleSubmit() {
+    submitInvite();
+    handleClose();
+  }
 
   function handleMemberInput(email) {
     resetUserErrorHook();
@@ -95,29 +109,30 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
         }}
       >
         <Typography variant="h6" sx={{ p: 1.5 }}>
-          Project Members <Typography component="span">({usersInProject.length})</Typography>
+          Project Members <Typography component="span">({notAssignedMembers.length})</Typography>
         </Typography>
 
         <Scrollbar sx={{ height: ITEM_HEIGHT * 6 }}>
-          {usersInProject.map((contact) => (
-            <MenuItem key={contact._id} onClick={() => handleMemberInput(contact.email)}>
-              <ListItemAvatar sx={{ position: 'relative' }}>
-                <Avatar alt={contact.firstName} color={createAvatar(contact.firstName).color} sx={{ mr: 2 }}>
-                  {createAvatar(contact.firstName).name}
-                </Avatar>
-                <BadgeStatus
-                  status={randomInArray(['online', 'offline', 'away', 'busy'])}
-                  sx={{ position: 'absolute', right: 1, bottom: 1 }}
-                />
-              </ListItemAvatar>
+          {notAssignedMembers &&
+            notAssignedMembers.map((contact) => (
+              <MenuItem key={contact._id} onClick={() => handleMemberInput(contact.email)}>
+                <ListItemAvatar sx={{ position: 'relative' }}>
+                  <Avatar alt={contact.firstName} color={createAvatar(contact.firstName).color} sx={{ mr: 2 }}>
+                    {createAvatar(contact.firstName).name}
+                  </Avatar>
+                  <BadgeStatus
+                    status={randomInArray(['online', 'offline', 'away', 'busy'])}
+                    sx={{ position: 'absolute', right: 1, bottom: 1 }}
+                  />
+                </ListItemAvatar>
 
-              <ListItemText
-                primaryTypographyProps={{ typography: 'subtitle2', mb: 0.25 }}
-                primary={`${contact.firstName} ${contact.lastName}`}
-                secondary={contact.email}
-              />
-            </MenuItem>
-          ))}
+                <ListItemText
+                  primaryTypographyProps={{ typography: 'subtitle2', mb: 0.25 }}
+                  primary={`${contact.firstName} ${contact.lastName}`}
+                  secondary={contact.email}
+                />
+              </MenuItem>
+            ))}
         </Scrollbar>
         <div
           style={{
@@ -128,15 +143,6 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
             alignItems: 'center',
             flexWrap: 'wrap',
           }}
-          // direction="row"
-          // spacing={{ xs: 1, md: 2 }}
-          // divider={<Divider orientation="vertical" flexItem />}
-          // alignItems="center"
-          // justifyContent="around"
-          // sx={{
-          //   width: 1,
-          //   flexWrap: 'wrap',
-          // }}
         >
           {users.length > 0 ? (
             <>
@@ -167,7 +173,7 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
                   flexWrap: 'nowrap',
                 }}
               >
-                <Button onClick={submitInvite} sx={{ color: 'white' }} color="success" variant="contained">
+                <Button onClick={handleSubmit} sx={{ color: 'white' }} color="success" variant="contained">
                   Submit
                 </Button>
               </Stack>
@@ -177,21 +183,6 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
           )}
         </div>
       </MenuPopover>
-      {/* <Container
-        sx={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          zIndex: 100,
-          width: '100vw',
-          height: '100vh',
-          display: `${open ? 'flex' : 'none'}`,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgb(0,0,0,0.2)',
-        }}
-      >
-      </Container> */}
     </>
   );
 }

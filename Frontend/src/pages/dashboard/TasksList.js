@@ -136,6 +136,7 @@ export default function TasksList() {
   const handleCloseInvite = () => {
     setTaskId('');
     setOpen(false);
+    setRefreshTasks(true);
   };
 
   const handleInviteRow = (id) => {
@@ -159,6 +160,9 @@ export default function TasksList() {
     dispatch(deleteTask({ teamLeadId: teamLeadId, projectId: projectId, taskId: id }));
     const deleteRow = memberTasks.filter((row) => row.id !== id);
     setRefreshTasks(true);
+    //const deleteRow = tableData.filter((row) => row.id !== id);
+    setSelected([]);
+    //setTableData(deleteRow);
   };
 
   const handleAddTask = (data) => {
@@ -434,7 +438,7 @@ export default function TasksList() {
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onViewRow={() => handleViewRow(row._id)}
-                      onEditRow={() => handleEditRow(row._id)}
+                      onEditRow={() => handleEditRow(row)}
                       onInviteRow={() => handleInviteRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                     />

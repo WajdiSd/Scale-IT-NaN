@@ -13,6 +13,7 @@ import ThemeColorPresets from './components/ThemeColorPresets';
 import ThemeLocalization from './components/ThemeLocalization';
 import MotionLazyContainer from './components/animate/MotionLazyContainer';
 import { useSelector } from './redux/store';
+import ChatSection from './components/chatBot/chatSection';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +34,7 @@ export default function App() {
                 <ProgressBarStyle />
                 <ChartStyle />
                 <Settings />
+                <ChatSection/>
                 <ScrollToTop />
                 <Router />
               </MotionLazyContainer>

@@ -1,6 +1,8 @@
 import axiosInstance from 'src/utils/axios';
 
 const API_URL = 'project/';
+const LEADER_URL = 'performance/';
+
 
 //add project
 const addProject = async (data) => {
@@ -102,6 +104,11 @@ const checkIfUserExistsInProject = async (projectId, email) => {
   return response.data;
 };
 
+const getProjectleaderboard = async (projectid) => {
+  const response = await axiosInstance.get(LEADER_URL + 'leaderboard-project/' + projectid);
+  return response.data;
+};
+
 const projectService = {
   addProject,
   getWorkspaceProjects,
@@ -118,6 +125,7 @@ const projectService = {
   finishProject,
   assignProjectManager,
   checkIfUserExistsInProject,
+  getProjectleaderboard,
 };
 
 export default projectService;

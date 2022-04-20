@@ -81,7 +81,7 @@ export default function WorkspaceInviteFriends() {
       <Image
         visibleByDefault
         disabledEffect
-        src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_invite.png"
+        src="https://minimals.cc/assets/illustrations/illustration_invite.png"
         sx={{
           left: 40,
           zIndex: 9,
