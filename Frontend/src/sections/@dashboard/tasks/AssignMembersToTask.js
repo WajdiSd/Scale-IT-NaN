@@ -31,7 +31,7 @@ const ITEM_HEIGHT = 64;
 
 // ----------------------------------------------------------------------
 
-export default function AssignMembersToTask({ open, taskId, handleClose }) {
+export default function AssignMembersToTask({ open, taskId, handleClose, refresh }) {
   const { usersInProject } = useProject();
   const {
     users,
@@ -52,6 +52,11 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
       fetchTaskMembers(taskId);
     }
   }, [open]);
+
+  function handleSubmit() {
+    submitInvite();
+    handleClose();
+  }
 
   function handleMemberInput(email) {
     resetUserErrorHook();
@@ -168,7 +173,7 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
                   flexWrap: 'nowrap',
                 }}
               >
-                <Button onClick={submitInvite} sx={{ color: 'white' }} color="success" variant="contained">
+                <Button onClick={handleSubmit} sx={{ color: 'white' }} color="success" variant="contained">
                   Submit
                 </Button>
               </Stack>

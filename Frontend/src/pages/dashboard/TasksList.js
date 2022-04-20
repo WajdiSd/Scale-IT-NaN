@@ -136,6 +136,7 @@ export default function TasksList() {
   const handleCloseInvite = () => {
     setTaskId('');
     setOpen(false);
+    setRefreshTasks(true);
   };
 
   const handleInviteRow = (id) => {
