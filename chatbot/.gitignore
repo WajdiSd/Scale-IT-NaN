@@ -1,0 +1,11 @@
+# Python files
+env
+
+# Rasa files
+# exclude everything from models folder
+models/*
+# except for .gitkeep, so that folder itself is included
+!models/.gitkeep 
+results
+
+.rasa/cache
