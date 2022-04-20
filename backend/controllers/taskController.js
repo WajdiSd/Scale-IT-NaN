@@ -483,6 +483,22 @@ const removeMemversFromTask = asyncHandler(async (req, res, next) => {
   }
 });
 
+const getTaskMembers = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+
+  if (!task) {
+    res.status(404);
+    throw new Error("task not found");
+  }
+
+  const members = task.members.map(async (memberId) => {
+    const user = await Member.findById(memberId);
+    return user;
+  });
+
+  res.status(200).json(members);
+});
+
 module.exports = {
   addTask,
   updateTask,
@@ -493,4 +509,5 @@ module.exports = {
   getTasksByProject,
   assignTaskToMembers,
   removeMemversFromTask,
+  getTaskMembers,
 };

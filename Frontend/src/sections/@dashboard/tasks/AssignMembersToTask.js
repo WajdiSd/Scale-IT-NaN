@@ -128,15 +128,6 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
             alignItems: 'center',
             flexWrap: 'wrap',
           }}
-          // direction="row"
-          // spacing={{ xs: 1, md: 2 }}
-          // divider={<Divider orientation="vertical" flexItem />}
-          // alignItems="center"
-          // justifyContent="around"
-          // sx={{
-          //   width: 1,
-          //   flexWrap: 'wrap',
-          // }}
         >
           {users.length > 0 ? (
             <>
@@ -177,21 +168,6 @@ export default function AssignMembersToTask({ open, taskId, handleClose }) {
           )}
         </div>
       </MenuPopover>
-      {/* <Container
-        sx={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          zIndex: 100,
-          width: '100vw',
-          height: '100vh',
-          display: `${open ? 'flex' : 'none'}`,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgb(0,0,0,0.2)',
-        }}
-      >
-      </Container> */}
     </>
   );
 }
