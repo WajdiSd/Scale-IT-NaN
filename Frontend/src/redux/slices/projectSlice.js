@@ -11,6 +11,7 @@ const initialState = {
   isTeamLeader: false,
   archivedProjects: [],
   unarchivedProjects: [],
+  leaderboardProject: [],
   project: null,
   usersInProject: [],
   projectsErrorMessage: '',
@@ -45,6 +46,7 @@ export const projectSlice = createSlice({
         (state.unarchivedProjects = []),
         (state.project = null),
         (state.usersInProject = []),
+        (state.leaderboardProject = []),
         (state.projectsErrorMessage = ''),
         (state.projectsSuccessMessage = ''),
         (state.isError = false),
@@ -86,10 +88,7 @@ export const projectSlice = createSlice({
         state.projects = filteredProjects.sort((a, b) => a.isDeleted - b.isDeleted);
         state.unarchivedProjects = state.projects.filter((project) => !project.isDeleted);
         state.archivedProjects = state.projects.filter((project) => project.isDeleted);
-        console.log("------------in here --------------------");
-        console.log(filteredProjects);
-        console.log("------------in here --------------------");
-        console.log(state.unarchivedProjects);
+        
       })
       .addCase(getWorkspaceProjects.pending, (state, action) => {
         state.isLoading = true;
@@ -261,43 +260,51 @@ export const projectSlice = createSlice({
       })
       .addCase(inviteMemberToProject.fulfilled, (state, action) => {
         console.log('inviteMemberToProject fulfilled');
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(inviteMemberToProject.pending, (state, action) => {
         console.log('inviteMemberToProject pending');
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(inviteMemberToProject.rejected, (state, action) => {
         console.log('inviteMemberToProject rejected');
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
       })
       .addCase(assignProjectManager.rejected, (state, action) => {
         console.log('inviteMemberToProject rejected');
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
       })
       .addCase(assignProjectManager.pending, (state, action) => {
         console.log('assignProjectManager rejected');
-        console.log(action);
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
       })
       .addCase(assignProjectManager.fulfilled, (state, action) => {
         console.log('assignProjectManager rejected');
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+      })
+      .addCase(getProjectleaderboard.fulfilled, (state, action) => {
+        console.log('getProjectleaderboard fulfilled');
+        console.log(action);
+        state.leaderboardProject = action.payload.leaderboard;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(getProjectleaderboard.rejected, (state, action) => {
+        console.log('getProjectleaderboard rejected');
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       })
       ;
   },
@@ -475,7 +482,6 @@ export const inviteMemberToProject = createAsyncThunk('project/inviteMemberToPro
   try {
     const invited = await projectService.inviteMemberToProject(data);
       console.log('getFullMemberByProject');
-      console.log(data);
       thunkAPI.dispatch(getFullMemberByProject(invited));
       return invited;
   } catch (error) {
@@ -499,6 +505,19 @@ export const assignProjectManager = createAsyncThunk('project/assignProjectManag
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+export const getProjectleaderboard = createAsyncThunk(
+  'project/getProjectleaderboard',
+  async (projectid, thunkAPI) => {
+    try {
+      return await projectService.getProjectleaderboard(projectid);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const { resetProject, setErrorMessage, resetErrorMessage, resetSuccessMessage } = projectSlice.actions;
 export default projectSlice.reducer;

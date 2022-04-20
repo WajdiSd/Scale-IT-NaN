@@ -22,6 +22,7 @@ import SettingStretch from './SettingStretch';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
 import SettingColorPresets from './SettingColorPresets';
+import ToggleButtonBot from '../chatBot/ToggleButtonBot';
 
 // ----------------------------------------------------------------------
 
@@ -96,6 +97,8 @@ export default function Settings() {
       />
 
       {!open && <ToggleButton open={open} notDefault={notDefault} onToggle={handleToggle} />}
+      {!open && <ToggleButtonBot open={open} notDefault={notDefault} onToggle={handleToggle} />}
+
 
       <AnimatePresence>
         {open && (

@@ -57,7 +57,8 @@ const slice = createSlice({
     // GET CONVERSATION
     getConversationSuccess(state, action) {
       const conversation = action.payload;
-
+      console.log("conversation");
+      console.log(conversation);
       if (conversation) {
         state.conversations.byId[conversation.id] = conversation;
         state.activeConversationId = conversation.id;

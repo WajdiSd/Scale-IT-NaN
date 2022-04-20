@@ -23,6 +23,7 @@ const useProject = () => {
   const isSuccess = useSelector((state) => state.projects.isSuccess);
   const project = useSelector((state) => state.projects.project);
   const usersInProject = useSelector((state) => state.projects.usersInProject);
+  const leaderboardProject = useSelector((state) => state.projects.leaderboardProject);
   const projectError = useSelector((state) => state.projects.projectsErrorMessage);
   const projectSuccess = useSelector((state) => state.projects.projectsSuccessMessage);
 
@@ -61,6 +62,7 @@ const useProject = () => {
     isSuccess,
     isTL,
     isPM,
+    leaderboardProject,
     resetProjectsStore,
     resetSuccessMessageHook,
     resetErrorMessageHook,
