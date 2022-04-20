@@ -374,7 +374,8 @@ const getTasksByProject = asyncHandler(async (req, res) => {
  * id: task id
  */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
-  const memberEmails = req.body;
+  const { memberEmails } = req.body;
+  console.log(memberEmails);
 
   const task = await Task.findById(req.params.id);
 
