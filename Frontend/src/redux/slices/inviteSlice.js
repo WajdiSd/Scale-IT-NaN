@@ -6,6 +6,8 @@ import taskService from '../service/taskService';
 
 const initialState = {
   users: [],
+  taskMembers: [],
+  notAssignedMembers: [],
   userErrorMessage: '',
   userSuccessMessage: '',
   isError: false,
@@ -29,6 +31,31 @@ export const addMemberToTask = createAsyncThunk('task/addMemberToTask', async (e
       email,
     };
     return user;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// Fetch task members
+export const getTaskMembers = createAsyncThunk('task/getTaskMembers', async (idTask, thunkAPI) => {
+  try {
+    const assignedMembers = await taskService.getTaskMembers(idTask);
+    const state = thunkAPI.getState();
+    const usersInProject = state.projects.usersInProject;
+    const notAssignedMembers = usersInProject.filter((user) => {
+      let exists = false;
+      assignedMembers &&
+        assignedMembers.forEach((member) => {
+          if (user._id === member._id) exists = true;
+        });
+
+      return !exists;
+    });
+    // notAssignedMembers : are not assigned to task
+    // assignedMembers : are assigned to task
+    return [notAssignedMembers, assignedMembers];
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -221,6 +248,30 @@ const inviteSlice = createSlice({
       })
       .addCase(addManager.rejected, (state, action) => {
         state.userErrorMessage = action.payload;
+      })
+      .addCase(getTaskMembers.pending, (state, action) => {
+        console.log('getTaskMembers pending');
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(getTaskMembers.fulfilled, (state, action) => {
+        console.log('getTaskMembers fulfilled');
+        console.log(action.payload);
+        const [notAssignedMembers, assignedMembers] = action.payload;
+        state.notAssignedMembers = notAssignedMembers;
+        state.taskMembers = assignedMembers;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+      })
+      .addCase(getTaskMembers.rejected, (state, action) => {
+        console.log('getTaskMembers rejected');
+        console.log(action.payload);
+        console.log(action);
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
       })
       .addCase(submitInvitations.fulfilled, (state, action) => {
         state.userSuccessMessage = `Users have been Invited succesfully`;

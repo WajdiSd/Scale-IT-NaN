@@ -48,6 +48,12 @@ const assignMembers = async (members) => {
   return response.data;
 };
 
+// get task members
+const getTaskMembers = async (id) => {
+  const response = await axiosInstance.get(API_URL + id + '/members');
+  return response.data;
+};
+
 //update task
 const updateTask = async (data) => {
   const idproject = data.projectId;
@@ -68,6 +74,7 @@ const taskService = {
   deleteTask,
   assignMembers,
   updateTask,
+  getTaskMembers,
 };
 
 export default taskService;
