@@ -26,6 +26,7 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 import UserList from 'src/sections/@dashboard/project/UserList';
 import useAuth from 'src/hooks/useAuth';
 
+
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
@@ -74,6 +75,7 @@ export default function GeneralProject() {
           </Box>
         ) : (
           <Grid container spacing={3}>
+
             <Grid item xs={12} md={7}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
                 <BankingWidgetSummary

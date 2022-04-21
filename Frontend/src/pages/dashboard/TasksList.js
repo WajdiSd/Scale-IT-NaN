@@ -256,7 +256,6 @@ export default function TasksList() {
   return (
     <Page title="Invoice: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
-      
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Tasks"
