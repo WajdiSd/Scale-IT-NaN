@@ -135,10 +135,37 @@ const test = asyncHandler(async (req, res) => {
     message: "test",
   });
 });
+//
+const getMemberTasksContribution = asyncHandler(async (req, res) => {
+  const project = await Project.findById({
+    _id: req.params.projectId,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  } else {
+    const Membertasks = await Task.find({
+      project: req.params.projectId,
+      "members.memberId": req.params.memberId,
+      isDeleted: false,
+    });
+    const totaltasks = await Task.find({
+      project: req.params.projectId,
+      isDeleted: false,
+    });
+    contribution = Membertasks.length / totaltasks.length;
+
+    res.status(200).json({
+      contribution: contribution,
+    });
+  }
+});
 
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getMemberTasksContribution,
 };

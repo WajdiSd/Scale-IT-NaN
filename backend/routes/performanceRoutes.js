@@ -4,6 +4,7 @@ const {
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getMemberTasksContribution,
 } = require("../controllers/performanceController");
 const router = express.Router();
 
@@ -11,5 +12,9 @@ const router = express.Router();
 router.get("/leaderboard-workspace/:workspaceid", getleaderboardbyworkspace);
 router.get("/leaderboard-project/:projectid", getleaderboardbyproject);
 router.get("/test", test);
+router.get(
+  "/getcontribbution/:projectId/:memberId",
+  getMemberTasksContribution
+);
 
 module.exports = router;
