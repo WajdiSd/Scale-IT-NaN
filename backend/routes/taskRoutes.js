@@ -19,7 +19,7 @@ const { protect } = require("../middleware/authMiddleware");
 router.post("/add", protect, addTask);
 router.put("/update/:id/:idproject/:iduser", protect, updateTask);
 router.put("/updatestate/:id", updateTaskState);
-router.put("/assign-members/:id", assignTaskToMembers);
+router.put("/assign-members/:id", protect, assignTaskToMembers);
 router.put("/delete/:id", protect, deleteTask);
 router.put("/recover/:id", protect, recoverTask);
 router.get(
@@ -29,6 +29,6 @@ router.get(
 );
 router.get("/tasksbyproject/:projectid", getTasksByProject);
 router.get("/:id/members", protect, getTaskMembers);
-router.put("/remove-members/:projectId/:idtask/:idtl", removeMemversFromTask);
+router.put("/remove-members/:projectId/:idtask/:idtl",protect, removeMemversFromTask);
 
 module.exports = router;
