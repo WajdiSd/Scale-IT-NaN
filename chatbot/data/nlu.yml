@@ -98,3 +98,6 @@ nlu:
   - intent: node_test
     examples: |
       - api
+  - intent: get_slot
+    examples: |
+      - slot
