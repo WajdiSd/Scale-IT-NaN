@@ -20,7 +20,7 @@ const getBoard = async (projectid) => {
   return response.data;
 };
 
-//update tasks state
+//add task
 const updateTaskStatus = async (data) => {
   const response = await axiosInstance.put(API_URL + 'updatestate/' + data.taskid, data);
   return response.data;
@@ -35,12 +35,32 @@ const removeMemberFromTask = async (data) => {
   return response.data;
 };
 
+const deleteTask = async (data) => {
+  const taskid = data.taskId;
+  data.taskid = undefined;
+  const response = await axiosInstance.put(API_URL + 'delete/' + taskid, data);
+  return response.data;
+};
+
+// assign members to task
+const assignMembers = async (members) => {
+  const response = await axiosInstance.put(API_URL + 'assign-members/' + members.id, members.emails);
+  return response.data;
+};
+
+// get task members
+const getTaskMembers = async (id) => {
+  const response = await axiosInstance.get(API_URL + id + '/members');
+  return response.data;
+};
+
 //update task
 const updateTask = async (data) => {
   const idproject = data.projectId;
   const idmember = data.idmember;
   const idtask = data.idTask;
-  const response = await axiosInstance.put(API_URL + 'update/'+ idtask + '/' + idproject + '/' + idmember,data);
+  const response = await axiosInstance.put(API_URL + 'update/' + idtask + '/' + idproject + '/' + idmember, data);
+
   return response.data;
 };
 
@@ -49,8 +69,12 @@ const taskService = {
   getUserTasks,
   updateTaskStatus,
   getBoard,
-  updateTask,
+  deleteTask,
   removeMemberFromTask,
+  deleteTask,
+  assignMembers,
+  updateTask,
+  getTaskMembers,
 };
 
 export default taskService;

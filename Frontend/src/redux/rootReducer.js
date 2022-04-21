@@ -9,10 +9,10 @@ import calendarReducer from './slices/calendar';
 import kanbanReducer from './slices/kanban';
 import authReducer from './slices/authSlice';
 import workspacesReducer from './slices/workspaceSlice';
-import workspaceInviteReducer from './slices/workspaceInviteSlice';
+import inviteReducer from './slices/inviteSlice';
 import projectReducer from './slices/projectSlice';
 import taskReducer from './slices/tasksSlice';
-
+import chatbotReducer from './slices/chatbotSlice';
 // ----------------------------------------------------------------------
 
 const rootPersistConfig = {
@@ -54,20 +54,41 @@ const tasksPersistConfig = {
   key: 'tasks',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['tasks', 'tasks_to_do', 'tasks_doing', 'tasks_doing', 'tasks_done', 'tasks_review', 'isProjectManager', 'isTeamLeader', 'task', 'usersInTask'],
+  whitelist: [
+    'tasks',
+    'tasks_to_do',
+    'tasks_doing',
+    'tasks_doing',
+    'tasks_done',
+    'tasks_review',
+    'isProjectManager',
+    'isTeamLeader',
+    'task',
+    'usersInTask',
+  ],
 };
+const chatbotPersistConfig = {
+  key: 'chatbot',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: [
+    
+  ],
+};
+
 
 const rootReducer = combineReducers({
   mail: mailReducer,
   chat: chatReducer,
   calendar: calendarReducer,
   kanban: kanbanReducer,
-  workspaceInvite: workspaceInviteReducer,
+  invite: inviteReducer,
   product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
   projects: persistReducer(projectsPersistConfig, projectReducer),
   tasks: persistReducer(tasksPersistConfig, taskReducer),
+  chatbot: persistReducer(chatbotPersistConfig, chatbotReducer),
 });
 
 export { rootPersistConfig, rootReducer };

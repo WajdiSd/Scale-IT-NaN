@@ -9,15 +9,15 @@ import {
   setUserSuccess,
   resetUserSuccess,
   submitInvitations,
-} from 'src/redux/slices/workspaceInviteSlice';
+} from 'src/redux/slices/inviteSlice';
 import { useSelector, useDispatch } from 'src/redux/store';
 
 // ----------------------------------------------------------------------
 
 const useWorkspaceInvite = () => {
-  const users = useSelector((state) => state.workspaceInvite.users);
-  const userError = useSelector((state) => state.workspaceInvite.userErrorMessage);
-  const userSuccess = useSelector((state) => state.workspaceInvite.userSuccessMessage);
+  const users = useSelector((state) => state.invite.users);
+  const userError = useSelector((state) => state.invite.userErrorMessage);
+  const userSuccess = useSelector((state) => state.invite.userSuccessMessage);
   const [member, setMember] = useState('');
   const [manager, setManager] = useState('');
 

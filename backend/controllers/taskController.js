@@ -251,7 +251,10 @@ const recoverTask = asyncHandler(async (req, res) => {
 
 // @route get /api/task/getUserTasks/projectId/memberId
 const getUserTasks = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
+  const project = await Project.findById({
+    _id: req.params.projectId,
+    isDeleted: false,
+  });
   if (!project) {
     res.status(404);
     throw new Error("project not found");
@@ -266,6 +269,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
   if (req.params.isExecutive) {
     const tasks = await Task.find({
       project: req.params.projectId,
+      isDeleted: false,
     });
     res.status(200).json({
       tasks: tasks,
@@ -274,6 +278,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
     const tasksToDo = await Task.find({
       project: req.params.projectId,
       "members.memberId": req.params.memberId,
+      isDeleted: false,
     });
     res.status(200).json({
       tasks: tasksToDo,
@@ -366,12 +371,13 @@ const getTasksByProject = asyncHandler(async (req, res) => {
  * @desc assign a list of members to a task
  * @var(memberEmails,list of member emails )
  * @route PUT /api/task/assign-members/:id
- * id; task id
+ * id: task id
  */
 const assignTaskToMembers = asyncHandler(async (req, res) => {
-  const { memberEmails } = req.body;
+  const memberEmails = req.body;
 
   const task = await Task.findById(req.params.id);
+
   if (!task) {
     res.status(400);
     throw new Error("Task not found");
@@ -477,6 +483,29 @@ const removeMemversFromTask = asyncHandler(async (req, res, next) => {
   }
 });
 
+const getTaskMembers = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+
+  if (!task) {
+    res.status(404);
+    throw new Error("task not found");
+  }
+
+  const users = [];
+
+  const getUsers = new Promise(async (resolve, reject) => {
+    await task.members.forEach(async (member, index, array) => {
+      const user = await Member.findById(member.memberId);
+      users.push(user);
+      if (index === array.length - 1) resolve();
+    });
+  });
+
+  getUsers.then(() => {
+    return res.status(200).json(users);
+  });
+});
+
 module.exports = {
   addTask,
   updateTask,
@@ -487,4 +516,5 @@ module.exports = {
   getTasksByProject,
   assignTaskToMembers,
   removeMemversFromTask,
+  getTaskMembers,
 };
