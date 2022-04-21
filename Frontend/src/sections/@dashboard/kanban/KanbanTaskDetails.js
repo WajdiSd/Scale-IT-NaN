@@ -16,6 +16,11 @@ import {
   Typography,
   OutlinedInput,
   Badge,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
@@ -63,8 +68,10 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
   const fileInputRef = useRef(null);
   const [taskCompleted, setTaskCompleted] = useState(card.completed);
   const [prioritize, setPrioritize] = useState('low');
-  const { usersInProject } = useProject();
+  const { usersInProject, isTL } = useProject();
   const [membersInTask, setMembersInTask] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [userid, setUserid] = useState('');
 
   const { name, description, startDate, expectedEndDate, members, attachments, _id } = card;
   useEffect(() => {
@@ -90,6 +97,15 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
   } = useDatePicker({
     date: [startDate, expectedEndDate],
   });
+
+  const handleClickOpen = (userid) => {
+    setOpen(true);
+    setUserid(userid);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const removemembersfromtask = (id) => {
     const data = {
@@ -184,22 +200,39 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             <Stack direction="row">
               <LabelStyle sx={{ mt: 1.5 }}>Assignee</LabelStyle>
               <Stack direction="row" flexWrap="wrap" alignItems="center">
-                {membersInTask.map((user) => (
-                  <Badge
-                    badgeContent="x"
-                    color="error"
-                    overlap="circular"
-                    onClick={() => removemembersfromtask(user.memberId)}
-                  >
-                    {/* <MailIcon color="action" /> */}
-                    <Avatar
-                      key={user.memberId}
-                      alt={user.firstName}
-                      src={user.firstName}
-                      sx={{ m: 0.5, width: 36, height: 36 }}
-                    />
-                  </Badge>
-                ))}
+                {isTL ? (
+                  <>
+                    {membersInTask.map((user) => (
+                      <Badge
+                        badgeContent="x"
+                        color="error"
+                        overlap="circular"
+                        // onClick={() => removemembersfromtask(user.memberId)}
+                        onClick={() => handleClickOpen(user.memberId)}
+                      >
+                        {/* <MailIcon color="action" /> */}
+                        <Avatar
+                          key={user.memberId}
+                          alt={user.firstName}
+                          src={user.firstName}
+                          sx={{ m: 0.5, width: 36, height: 36 }}
+                        />
+                      </Badge>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {membersInTask.map((user) => (
+                      <Avatar
+                        key={user.memberId}
+                        alt={user.firstName}
+                        src={user.firstName}
+                        sx={{ m: 0.5, width: 36, height: 36 }}
+                      />
+                    ))}
+                  </>
+                )}
+
                 <Tooltip title="Add assignee">
                   <IconButtonAnimate sx={{ p: 1, ml: 0.5, border: (theme) => `dashed 1px ${theme.palette.divider}` }}>
                     <Iconify icon={'eva:plus-fill'} width={20} height={20} />
@@ -309,6 +342,25 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
 
         {/* <KanbanTaskCommentInput /> */}
       </Drawer>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Remove this member from this task ?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to remove this member from this task permanently?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={() => removemembersfromtask(userid)} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
