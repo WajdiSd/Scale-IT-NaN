@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
+const { MemberInProject } = require("../helpers/functions");
 const Workspace = require("../models/workspaceModel");
 const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
@@ -136,9 +137,49 @@ const test = asyncHandler(async (req, res) => {
   });
 });
 
+// @route get /api/performance/getLateTasksPercentage/idproj/idmember
+const getLateTasksPercentage = asyncHandler(async (req, res) => {
+ //verify if project is valid
+ const project = await Project.findById({
+  _id: req.params.idproj,
+  isDeleted: false,
+  });
+if (!project) {
+  res.status(404);
+  throw new Error("project not found");
+}
+//verify if member is in project
+let exists = await MemberInProject(req.params.idmember, req.params.idproj);
+if (!exists) {
+  res.status(404);
+  throw new Error("user is not in project");
+} else {
+ //calculate number of tasks finished late
+ let totaltasks = await Task.find( {
+  project: req.params.idproj,
+  "members.memberId": req.params.idmember,
+  isDeleted: false,
+});
+ var totalLateTasks = 0;
+ var numberOfTasks = 0;
+ for (var task of totaltasks) {
+      numberOfTasks=numberOfTasks+1;
+      if (task.endDate > task.expectedEndDate) { 
+        totalLateTasks=totalLateTasks+1;}
+      }
+  var percentage = (totalLateTasks/numberOfTasks)*100;
+  res.status(200).json({
+    totallatetasks: totalLateTasks,
+    numberOfTasks: numberOfTasks,
+    percentage: percentage,
+  });
+}
+});
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getLateTasksPercentage,
 };

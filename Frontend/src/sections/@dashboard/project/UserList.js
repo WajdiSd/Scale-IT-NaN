@@ -286,7 +286,6 @@ export default function UserList() {
             </Button>
           }
         />)}
-
         <Card>
           <Tabs
             allowScrollButtonsMobile
