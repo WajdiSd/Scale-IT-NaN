@@ -12,9 +12,21 @@ intents:
   - bot_challenge
   - profile
   - node_test
+  - get_slot
+
+slots:
+  userid:
+    type: text
+    influence_conversation: false
+    mappings: []
+  username:
+    type: text
+    influence_conversation: false
+    mappings: []
+
 responses:
   utter_greet:
-    - text: "Hey! How are you?"
+    - text: "Hey {username} ! How are you?"
 
   utter_cheer_up:
     - text: "Here is something to cheer you up:"
@@ -41,5 +53,6 @@ responses:
 actions:
   - "..."
   - utter_greet
-  - utter_subscribed
+  - user_action
+  - set_slot_action
   - node_api

@@ -29,6 +29,6 @@ router.get(
 );
 router.get("/tasksbyproject/:projectid", getTasksByProject);
 router.get("/:id/members", protect, getTaskMembers);
-router.put("/remove-members/:projectId/:idtask/:idtl", removeMemversFromTask);
+router.put("/remove-members/:projectId/:idtask/:idtl",protect, removeMemversFromTask);
 
 module.exports = router;
