@@ -39,6 +39,6 @@ router.put("/updateaccount/:iduser", protect, updateUser);
 //Check if Exists
 router.get("/user/:email", protect, checkIfUserExistsByEmail);
 
-router.get("/connecteduser", protect, getConnectedUser);
+router.get("/connecteduser/:id", getConnectedUser);
 
 module.exports = router;

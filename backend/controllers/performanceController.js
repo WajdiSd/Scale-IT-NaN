@@ -7,65 +7,6 @@ const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
 const { getPerformanceByMember } = require("../helpers/functions");
 
-/**
- * todo: change "push in tables" by compteur .
- */
-// const getPerformanceByMember = asyncHandler(async (req, res) => {
-//   const task = await Task.find({
-//     "members.memberId": req.params.memberId,
-//     status: "done",
-//   });
-
-//   const ftfe = [];
-//   const fcit = [];
-//   const fcfaster = [];
-//   const ftit = [];
-
-//   const ftat = [];
-//   const fcat = [];
-
-//   task.map((task) => {
-//     if (task.expectedEndDate > task.endDate) {
-//       if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-//         fcit.push(task);
-//       if (
-//         task.expectedEndDate.getTime() - task.startDate.getTime() >= 8 &&
-//         task.endDate - task.startDate <=
-//           (task.expectedEndDate - task.startDate) * (2 / 3)
-//       )
-//         fcfaster.push(task);
-//       if (
-//         task.endDate - task.startDate <=
-//         (task.expectedEndDate - task.startDate) * (2 / 3)
-//       )
-//         ftfe.push(task);
-
-//       ftit.push(task);
-//     } else {
-//       if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-//         fcat.push(task);
-
-//       ftat.push(task);
-//     }
-//   });
-
-//   console.log("ftfe", ftfe);
-//   console.log("fcit", fcit);
-//   console.log("fcfaster", fcfaster);
-//   console.log("ftat", ftat);
-//   console.log("ftit", ftit);
-//   console.log("fcat", fcat);
-
-//   const performance =
-//     ftfe.length* 3 +
-//     fcit.length * 4.5 +
-//     fcfaster.length * 6 +
-//     ftit.length * 2 +
-//     (ftat.length * 1 + fcat.length * 1.5);
-//   res.status(200).json({
-//     performance: performance,
-//   });
-
 const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
   let leaderboard = [];
   const workspace = await Workspace.findById(req.params.workspaceid);
@@ -137,43 +78,141 @@ const test = asyncHandler(async (req, res) => {
   });
 });
 
+const getMemberTasksContribution = asyncHandler(async (req, res) => {
+  const project = await Project.findById({
+    _id: req.params.projectId,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  } else {
+    const Membertasks = await Task.find({
+      project: req.params.projectId,
+      "members.memberId": req.params.memberId,
+      isDeleted: false,
+    });
+    const totaltasks = await Task.find({
+      project: req.params.projectId,
+      isDeleted: false,
+    });
+    contribution = Membertasks.length / totaltasks.length;
+
+    res.status(200).json({
+      contribution: contribution,
+    });
+  }
+});
+
+const getRankProjectLeaderboard = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const project = await Project.findById(req.params.projectid);
+  if (!project) {
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    const userscores = await UserScore.find();
+    for (const user of userscores) {
+      for (const s of user.score_project) {
+        if (s.projectId == req.params.projectid) {
+          const memb = await Member.findById(user.member);
+          let obj = {
+            member: user.member,
+            score: s.score,
+            email: memb.email,
+            first: memb.firstName,
+            last: memb.lastName,
+          };
+
+          // console.log(obj);
+          leaderboard.push(obj);
+        }
+      }
+    }
+    let rank = 0;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].member.equals(req.params.memberId)) rank = i + 1;
+    }
+    res.status(200).json({
+      rank: rank,
+    });
+  }
+});
+
+const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const workspace = await Workspace.findById(req.params.workspaceid);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    const userscores = await UserScore.find();
+    for (const user of userscores) {
+      for (const s of user.score_workspace) {
+        if (s.workspaceId == req.params.workspaceid) {
+          const memb = await Member.findById(user.member);
+          let obj = {
+            member: user.member,
+            score: s.score,
+            email: memb.email,
+            first: memb.firstName,
+            last: memb.lastName,
+          };
+
+          // console.log(obj);
+          leaderboard.push(obj);
+        }
+      }
+    }
+
+    let rank = 0;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].member.equals(req.params.memberId)) rank = i + 1;
+    }
+    res.status(200).json({
+      rank: rank,
+    });
+  }
+});
+
 // @route get /api/performance/getLateTasksPercentage/idproj/idmember
 const getLateTasksPercentage = asyncHandler(async (req, res) => {
- //verify if project is valid
- const project = await Project.findById({
-  _id: req.params.idproj,
-  isDeleted: false,
+  //verify if project is valid
+  const project = await Project.findById({
+    _id: req.params.idproj,
+    isDeleted: false,
   });
-if (!project) {
-  res.status(404);
-  throw new Error("project not found");
-}
-//verify if member is in project
-let exists = await MemberInProject(req.params.idmember, req.params.idproj);
-if (!exists) {
-  res.status(404);
-  throw new Error("user is not in project");
-} else {
- //calculate number of tasks finished late
- let totaltasks = await Task.find( {
-  project: req.params.idproj,
-  "members.memberId": req.params.idmember,
-  isDeleted: false,
-});
- var totalLateTasks = 0;
- var numberOfTasks = 0;
- for (var task of totaltasks) {
-      numberOfTasks=numberOfTasks+1;
-      if (task.endDate > task.expectedEndDate) { 
-        totalLateTasks=totalLateTasks+1;}
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  //verify if member is in project
+  let exists = await MemberInProject(req.params.idmember, req.params.idproj);
+  if (!exists) {
+    res.status(404);
+    throw new Error("user is not in project");
+  } else {
+    //calculate number of tasks finished late
+    let totaltasks = await Task.find({
+      project: req.params.idproj,
+      "members.memberId": req.params.idmember,
+      isDeleted: false,
+    });
+    var totalLateTasks = 0;
+    var numberOfTasks = 0;
+    for (var task of totaltasks) {
+      numberOfTasks = numberOfTasks + 1;
+      if (task.endDate > task.expectedEndDate) {
+        totalLateTasks = totalLateTasks + 1;
       }
-  var percentage = (totalLateTasks/numberOfTasks)*100;
-  res.status(200).json({
-    totallatetasks: totalLateTasks,
-    numberOfTasks: numberOfTasks,
-    percentage: percentage,
-  });
-}
+    }
+    var percentage = (totalLateTasks / numberOfTasks) * 100;
+    res.status(200).json({
+      totallatetasks: totalLateTasks,
+      numberOfTasks: numberOfTasks,
+      percentage: percentage,
+    });
+  }
 });
 
 module.exports = {
@@ -181,5 +220,8 @@ module.exports = {
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getMemberTasksContribution,
+  getRankProjectLeaderboard,
+  getRankWorkspaceLeaderboard,
   getLateTasksPercentage,
 };
