@@ -135,7 +135,7 @@ const test = asyncHandler(async (req, res) => {
     message: "test",
   });
 });
-//
+
 const getMemberTasksContribution = asyncHandler(async (req, res) => {
   const project = await Project.findById({
     _id: req.params.projectId,
@@ -162,10 +162,83 @@ const getMemberTasksContribution = asyncHandler(async (req, res) => {
   }
 });
 
+const getRankProjectLeaderboard = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const project = await Project.findById(req.params.projectid);
+  if (!project) {
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    const userscores = await UserScore.find();
+    for (const user of userscores) {
+      for (const s of user.score_project) {
+        if (s.projectId == req.params.projectid) {
+          const memb = await Member.findById(user.member);
+          let obj = {
+            member: user.member,
+            score: s.score,
+            email: memb.email,
+            first: memb.firstName,
+            last: memb.lastName,
+          };
+
+          // console.log(obj);
+          leaderboard.push(obj);
+        }
+      }
+    }
+    let rank = 0;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].member.equals(req.params.memberId)) rank = i + 1;
+    }
+    res.status(200).json({
+      rank: rank,
+    });
+  }
+});
+
+const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
+  let leaderboard = [];
+  const workspace = await Workspace.findById(req.params.workspaceid);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    const userscores = await UserScore.find();
+    for (const user of userscores) {
+      for (const s of user.score_workspace) {
+        if (s.workspaceId == req.params.workspaceid) {
+          const memb = await Member.findById(user.member);
+          let obj = {
+            member: user.member,
+            score: s.score,
+            email: memb.email,
+            first: memb.firstName,
+            last: memb.lastName,
+          };
+
+          // console.log(obj);
+          leaderboard.push(obj);
+        }
+      }
+    }
+
+    let rank = 0;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (leaderboard[i].member.equals(req.params.memberId)) rank = i + 1;
+    }
+    res.status(200).json({
+      rank: rank,
+    });
+  }
+});
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
   getMemberTasksContribution,
+  getRankProjectLeaderboard,
+  getRankWorkspaceLeaderboard,
 };
