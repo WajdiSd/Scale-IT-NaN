@@ -176,10 +176,50 @@ if (!exists) {
 }
 });
 
+// @route get /api/performance/getTasksInTimePercentage/idproj/idmember
+const getTasksInTimePercentage = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const project = await Project.findById({
+   _id: req.params.idproj,
+   isDeleted: false,
+   });
+ if (!project) {
+   res.status(404);
+   throw new Error("project not found");
+ }
+ //verify if member is in project
+ let exists = await MemberInProject(req.params.idmember, req.params.idproj);
+ if (!exists) {
+   res.status(404);
+   throw new Error("user is not in project");
+ } else {
+  //calculate number of tasks finished early
+  let totaltasks = await Task.find( {
+   project: req.params.idproj,
+   "members.memberId": req.params.idmember,
+   isDeleted: false,
+ });
+  var totalTasksInTime = 0;
+  var numberOfTasks = 0;
+  for (var task of totaltasks) {
+       numberOfTasks=numberOfTasks+1;
+       if (task.endDate <= task.expectedEndDate) { 
+        totalTasksInTime=totalTasksInTime+1;}
+       }
+   var percentage = (totalTasksInTime/numberOfTasks)*100;
+   res.status(200).json({
+    totalTasksInTime: totalTasksInTime,
+     numberOfTasks: numberOfTasks,
+     percentage: percentage,
+   });
+ }
+ });
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
   getLateTasksPercentage,
+  getTasksInTimePercentage,
 };
