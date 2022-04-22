@@ -97,7 +97,6 @@ export default function Settings() {
       />
 
       {!open && <ToggleButton open={open} notDefault={notDefault} onToggle={handleToggle} />}
-      {!open && <ToggleButtonBot open={open} notDefault={notDefault} onToggle={handleToggle} />}
 
 
       <AnimatePresence>

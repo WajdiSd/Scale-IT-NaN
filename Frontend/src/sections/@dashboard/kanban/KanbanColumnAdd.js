@@ -58,7 +58,7 @@ export default function KanbanColumnAdd() {
 
   return (
     <Paper sx={{ minWidth: 280, width: 280 }}>
-      {!open && (
+      {/*!open && (
         <Button
           fullWidth
           size="large"
@@ -69,7 +69,7 @@ export default function KanbanColumnAdd() {
         >
           Add section
         </Button>
-      )}
+      )*/}
 
       {open && (
         <ClickAwayListener onClickAway={handleCreateColumn}>

@@ -14,6 +14,7 @@ import Iconify from '../../../components/Iconify';
 import KanbanAddTask from './KanbanTaskAdd';
 import KanbanTaskCard from './KanbanTaskCard';
 import KanbanColumnToolBar from './KanbanColumnToolBar';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +28,8 @@ export default function KanbanColumn({ column, index }) {
   const { enqueueSnackbar } = useSnackbar();
   const { board } = useSelector((state) => state.kanban);
   const [open, setOpen] = useState(false);
+  const {isTL } = useProject();
+
   
   const { name, cardIds, _id } = column;
 
@@ -93,8 +96,8 @@ export default function KanbanColumn({ column, index }) {
                 </Stack>
               )}
             </Droppable>
-
-            <Stack spacing={2} sx={{ pb: 3 }}>
+            {
+              isTL && <Stack spacing={2} sx={{ pb: 3 }}>
               {open && <KanbanAddTask onAddTask={handleAddTask} onCloseAddTask={handleCloseAddTask} />}
 
               <Button
@@ -108,6 +111,8 @@ export default function KanbanColumn({ column, index }) {
                 Add Task
               </Button>
             </Stack>
+            }
+            
           </Stack>
         </Paper>
       )}

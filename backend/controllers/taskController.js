@@ -84,7 +84,6 @@ const updateTask = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("could not update task", err);
     });
-    res.status(200).json(task);
   }
   res.status(201).json({ msg: "task updated successfully" });
 });

@@ -8,28 +8,32 @@ import uuidv4 from '../../../utils/uuidv4';
 // components
 import Iconify from '../../../components/Iconify';
 import EmojiPicker from '../../../components/EmojiPicker';
+import useAuth from 'src/hooks/useAuth';
+
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
   minHeight: 56,
   display: 'flex',
-  position: 'relative',
+  position: 'fixed',
+  bottom: 0,
   alignItems: 'center',
   paddingLeft: theme.spacing(2),
+  backgroundColor: 'white',
 }));
 
 // ----------------------------------------------------------------------
 
 ChatMessageInput.propTypes = {
   disabled: PropTypes.bool,
-  conversationId: PropTypes.string,
   onSend: PropTypes.func,
 };
 
-export default function ChatMessageInput({ disabled, conversationId, onSend }) {
+export default function ChatMessageInput({ disabled, onSend }) {
   const fileInputRef = useRef(null);
   const [message, setMessage] = useState('');
+  const { user } = useAuth();
 
   const handleAttach = () => {
     fileInputRef.current?.click();
@@ -45,15 +49,14 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
     if (!message) {
       return '';
     }
-    if (onSend && conversationId) {
+    if (onSend) {
       onSend({
-        conversationId,
         messageId: uuidv4(),
         message,
         contentType: 'text',
         attachments: [],
         createdAt: new Date(),
-        senderId: '8864c717-587d-472a-929a-8e5f298024da-0',
+        senderId: user._id,
       });
     }
     return setMessage('');
@@ -61,6 +64,8 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
 
   return (
     <RootStyle>
+            <Divider orientation="vertical" flexItem />
+
       <Input
         disabled={disabled}
         fullWidth

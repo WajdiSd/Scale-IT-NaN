@@ -15,6 +15,10 @@ import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
 import { useDispatch } from 'react-redux';
 import { logout, resetAuth } from 'src/redux/slices/authSlice';
+import { resetWorkspace } from 'src/redux/slices/workspaceSlice';
+import { resetProject } from 'src/redux/slices/projectSlice';
+import { resetTask } from 'src/redux/slices/tasksSlice';
+import { resetChatbot } from 'src/redux/slices/chatbotSlice';
 
 // ----------------------------------------------------------------------
 
@@ -58,8 +62,12 @@ export default function AccountPopover() {
 
   const handleLogout = async () => {
     try {
-      dispatch(logout());
       dispatch(resetAuth());
+      dispatch(resetWorkspace());
+      dispatch(resetProject());
+      dispatch(resetTask());
+      dispatch(resetChatbot());
+      dispatch(logout());
       navigate(PATH_AUTH.login, { replace: true });
 
       if (isMountedRef.current) {
