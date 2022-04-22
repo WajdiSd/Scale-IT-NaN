@@ -11,6 +11,9 @@ const {
   getRankProjectLeaderboard,
   getRankWorkspaceLeaderboard,
   getLateTasksPercentage,
+  getTasksInTimePercentage,
+  getLateProjectsPercentage,
+  getProjectsInTimePercentage,
 } = require("../controllers/performanceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -42,5 +45,7 @@ router.get(
 );
 
 router.get("/latetasks/:idproj/:idmember", getLateTasksPercentage);
-
+router.get("/tasksintime/:idproj/:idmember", getTasksInTimePercentage);
+router.get("/lateprojects/:idworkspace/:idmember", getLateProjectsPercentage);
+router.get("/projectsintime/:idworkspace/:idmember", getProjectsInTimePercentage);
 module.exports = router;
