@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
 const Member = require("../models/memberModel");
-const { MemberInProject } = require("../helpers/functions");
+const { MemberInProject,MemberInWorkspace } = require("../helpers/functions");
 const Workspace = require("../models/workspaceModel");
 const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
@@ -176,7 +176,7 @@ if (!exists) {
 }
 });
 
-// @route get /api/performance/getTasksInTimePercentage/idproj/idmember
+// @route get /api/performance/getLateTasksPercentage/idproj/idmember
 const getTasksInTimePercentage = asyncHandler(async (req, res) => {
   //verify if project is valid
   const project = await Project.findById({
@@ -215,6 +215,46 @@ const getTasksInTimePercentage = asyncHandler(async (req, res) => {
  }
  });
 
+// @route get /api/performance/getLateProjectsPercentage/idworkspace/idmember
+const getLateProjectsPercentage = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const workspace = await Workspace.findById({
+   _id: req.params.idworkspace,
+   isDeleted: false,
+   });
+ if (!workspace) {
+   res.status(404);
+   throw new Error("workspace not found");
+ }
+ //verify if member is in project
+ let exists = await MemberInWorkspace(req.params.idmember, req.params.idworkspace);
+ if (!exists) {
+   res.status(404);
+   throw new Error("user is not in workspace");
+ } else {
+  //calculate number of projects finished late
+  let totalprojects = await Project.find( {
+    workspace: req.params.idworkspace,
+   "assigned_members.memberId": req.params.idmember,
+   isDeleted: false,
+ });
+  var totalLateProjects = 0;
+  var numberOfProjects = 0;
+  for (var project of totalprojects) {
+      numberOfProjects=numberOfProjects+1;
+       if (project.endDate > project.expectedEndDate) { 
+        totalLateProjects=totalLateProjects+1;}
+       }
+   var percentage = (totalLateProjects/numberOfProjects)*100;
+   res.status(200).json({
+    totalLateProjects: totalLateProjects,
+    numberOfProjects: numberOfProjects,
+     percentage: percentage,
+   });
+ }
+ });
+
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
@@ -222,4 +262,5 @@ module.exports = {
   test,
   getLateTasksPercentage,
   getTasksInTimePercentage,
+  getLateProjectsPercentage,
 };
