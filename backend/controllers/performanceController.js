@@ -385,7 +385,45 @@ const getLateProjectsPercentage = asyncHandler(async (req, res) => {
  }
  });
 
- 
+// @route get /api/performance/getProjectsInTimePercentage/idworkspace/idmember
+const getProjectsInTimePercentage = asyncHandler(async (req, res) => {
+    //verify if project is valid
+    const workspace = await Workspace.findById({
+     _id: req.params.idworkspace,
+     isDeleted: false,
+     });
+   if (!workspace) {
+     res.status(404);
+     throw new Error("workspace not found");
+   }
+   //verify if member is in project
+   let exists = await MemberInWorkspace(req.params.idmember, req.params.idworkspace);
+   if (!exists) {
+     res.status(404);
+     throw new Error("user is not in workspace");
+   } else {
+    //calculate number of projects finished early
+    let totalprojects = await Project.find( {
+      workspace: req.params.idworkspace,
+     "assigned_members.memberId": req.params.idmember,
+     isDeleted: false,
+   });
+    var totalLateProjects = 0;
+    var numberOfProjects = 0;
+    for (var project of totalprojects) {
+        numberOfProjects=numberOfProjects+1;
+         if (project.endDate <= project.expectedEndDate) { 
+          totalLateProjects=totalLateProjects+1;}
+         }
+     var percentage = (totalLateProjects/numberOfProjects)*100;
+     res.status(200).json({
+      totalLateProjects: totalLateProjects,
+      numberOfProjects: numberOfProjects,
+       percentage: percentage,
+     });
+   }
+   });
+   
 
 
 module.exports = {
@@ -403,4 +441,5 @@ module.exports = {
   getLateTasksPercentage,
   getTasksInTimePercentage,
   getLateProjectsPercentage,
+  getProjectsInTimePercentage,
 };
