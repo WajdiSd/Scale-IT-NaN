@@ -38,7 +38,12 @@ stories:
   - story: ask node
     steps:
       - intent: node_test
-      - action: node_api
+      - action: user_action
+
+  - story: set slot
+    steps:
+      - intent: get_slot
+      - action: set_slot_action
 
   # - story: ask faq
   #   steps:
