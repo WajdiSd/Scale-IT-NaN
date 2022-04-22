@@ -68,7 +68,7 @@ export const chatbotSlice = createSlice({
       });
       let message = {
         messageId: uuidv4(),
-        message: action.payload[0].text,
+        message: action.payload[0]? action.payload[0].text: 'I do not understand',
         contentType: 'text',
         attachments: [],
         createdAt: new Date(),
