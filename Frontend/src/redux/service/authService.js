@@ -55,6 +55,7 @@ const logout = () => {
   localStorage.removeItem('redux-user');
   localStorage.removeItem('redux-workspaces');
   localStorage.removeItem('redux-projects');
+  localStorage.removeItem('redux-chatbot');
 };
 
 const sendCode = async (userData) => {

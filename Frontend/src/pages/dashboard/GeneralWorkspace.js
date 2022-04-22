@@ -19,11 +19,15 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { MotionInView, varFade } from 'src/components/animate';
 import WorkspaceLandingAdd from 'src/sections/@dashboard/workspace/WorkspaceLandingAdd';
 import EmptyComponent from '../../components/EmptyComponent'
+import { setParticiants } from 'src/redux/slices/chatbotSlice';
+import { uuid } from 'uuidv4';
+import useChat from 'src/hooks/useChat';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralWorkspace() {
   const { user } = useAuth();
+  const {conversation, participants} = useChat();
   const { workspaces, isLoading} = useWorkspace();
   const theme = useTheme();
   const { themeStretch } = useSettings();
@@ -53,7 +57,31 @@ export default function GeneralWorkspace() {
     }
   };
 
+  const setParticipants = () => {
+    try {
+        const data=[
+          {
+            id: user._id,
+            name : user.firstName,
+            type: "me",
+            avatar: "",
+          },
+          {
+            id: uuid(),
+            name : "Mrs. Brain",
+            type: "chatbot",
+            avatar: "",
+          }
+      ]
+        dispatch(setParticiants(data))
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    if(participants.length==0)
+      setParticipants();
     getUserWorkspaces();
   }, []);
 
@@ -61,12 +89,14 @@ export default function GeneralWorkspace() {
     <Page title="General: App">
       <Container maxWidth={themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={12}>
             <WorkspaceLandingAdd displayName={user?.firstName} />
           </Grid>
-          <Grid item xs={12} md={4}>
+          {/*
+            <Grid item xs={12} md={4}>
             <AppFeatured />
           </Grid>
+          */}
       </Grid>
       {
         isLoading? 

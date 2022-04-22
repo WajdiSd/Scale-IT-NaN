@@ -20,67 +20,47 @@ import ChatMessageList from './ChatMessageList';
 import ChatHeaderDetail from './ChatHeaderDetail';
 import ChatMessageInput from './ChatMessageInput';
 import ChatHeaderCompose from './ChatHeaderCompose';
+import useChat from 'src/hooks/useChat';
+import { addMessage, askBot } from 'src/redux/slices/chatbotSlice';
 
 // ----------------------------------------------------------------------
-
-const conversationSelector = (state) => {
-  const { conversations, activeConversationId } = state.chat;
-  const conversation = activeConversationId ? conversations.byId[activeConversationId] : null;
-  if (conversation) {
-    return conversation;
-  }
-  const initState = {
-    id: '',
-    messages: [],
-    participants: [],
-    unreadCount: 0,
-    type: '',
-  };
-  return initState;
-};
 
 export default function ChatWindow() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { conversationKey } = useParams();
-  const { contacts, recipients, participants, activeConversationId } = useSelector((state) => state.chat);
-  const conversation = useSelector((state) => conversationSelector(state));
+  const { contacts, recipients, activeConversationId } = useSelector((state) => state.chat);
+  const {conversation, participants} = useChat();
 
  // const mode = conversationKey ? 'DETAIL' : 'COMPOSE';
   const displayParticipants = participants.filter((item) => item.id !== '8864c717-587d-472a-929a-8e5f298024da-0');
 
   useEffect(() => {
     const getDetails = async () => {
-      dispatch(getParticipants(conversationKey));
+      //set participants
+
+      //dispatch(getParticipants(conversationKey));
       try {
-        await dispatch(getConversation(conversationKey));
+        //await dispatch(getConversation(conversationKey));
       } catch (error) {
         console.error(error);
         navigate(PATH_DASHBOARD.chat.new);
       }
     };
-    if (conversationKey) {
-      getDetails();
-    } else if (activeConversationId) {
-      dispatch(resetActiveConversation());
-    }
+    getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationKey]);
-
-  useEffect(() => {
-    if (activeConversationId) {
-      dispatch(markConversationAsRead(activeConversationId));
-    }
-  }, [dispatch, activeConversationId]);
+  }, []);
 
   const handleAddRecipients = (recipients) => {
     dispatch(addRecipients(recipients));
   };
 
   const handleSendMessage = async (value) => {
+    console.log(value);
     try {
-      dispatch(onSendMessage(value));
+      dispatch(addMessage(value));
+      dispatch(askBot(value));
     } catch (error) {
       console.error(error);
     }
@@ -97,18 +77,16 @@ export default function ChatWindow() {
       <Box sx={{ flexGrow: 1, display: 'flex', overflow: 'hidden' }}>
         <Stack sx={{ flexGrow: 1 }}>
           <ChatMessageList conversation={conversation} />
-
-          <Divider />
-
-          <ChatMessageInput
-            conversationId={activeConversationId}
-            onSend={handleSendMessage}
-            disabled={pathname === PATH_DASHBOARD.chat.new}
-          />
+          
         </Stack>
 
         {/*mode === 'DETAIL' && <ChatRoom conversation={conversation} participants={displayParticipants} />*/}
       </Box>
+
+      <ChatMessageInput
+            onSend={handleSendMessage}
+            disabled={pathname === PATH_DASHBOARD.chat.new}
+          />
     </Stack>
   );
 }

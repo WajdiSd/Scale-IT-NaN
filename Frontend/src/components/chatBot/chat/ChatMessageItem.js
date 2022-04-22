@@ -5,8 +5,11 @@ import { styled } from '@mui/material/styles';
 import { Avatar, Box, Typography } from '@mui/material';
 // components
 import Image from '../../../components/Image';
+import useAuth from 'src/hooks/useAuth';
+import createAvatar from 'src/utils/createAvatar';
 
 // ----------------------------------------------------------------------
+
 
 const RootStyle = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -36,19 +39,17 @@ ChatMessageItem.propTypes = {
 };
 
 export default function ChatMessageItem({ message, conversation, onOpenLightbox }) {
-  //const sender = conversation.participants.find((participant) => participant.id === message.senderId);
-  const sender = {
-    avatar: 'https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_7.jpg',
-    name: 'Name'
-  };
+const {user} = useAuth();
+
+  const sender = conversation.participants.find((participant) => participant.id === message.senderId);
   const senderDetails =
-    message.senderId === '8864c717-587d-472a-929a-8e5f298024da-0'
+    message.senderId === user._id
       ? { type: 'me' }
       : { avatar: sender?.avatar, name: sender?.name };
 
-  const isMe = senderDetails.type === 'me';
+  const isMe = sender.type === 'me';
   const isImage = message.contentType === 'image';
-  const firstName = senderDetails.name && senderDetails.name.split(' ')[0];
+  const firstName = senderDetails.name;
 
   return (
     <RootStyle>
@@ -60,8 +61,10 @@ export default function ChatMessageItem({ message, conversation, onOpenLightbox 
           }),
         }}
       >
+
         {senderDetails.type !== 'me' && (
-          <Avatar alt={senderDetails.name} src={senderDetails.avatar} sx={{ width: 32, height: 32, mr: 2 }} />
+          <Avatar src="/avatars/brain.png" alt={senderDetails.name} sx={{ width: 32, height: 32, mr: 2 }}>
+            </Avatar>
         )}
 
         <div>
@@ -91,7 +94,7 @@ export default function ChatMessageItem({ message, conversation, onOpenLightbox 
                 sx={{ borderRadius: 1, cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
               />
             ) : (
-              <Typography variant="body2">{message.body}</Typography>
+              <Typography variant="body2">{message.message}</Typography>
             )}
           </ContentStyle>
         </div>

@@ -53,7 +53,7 @@ function OneAvatar() {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ position: 'relative' }}>
-        <Avatar src='https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_7.jpg' alt='Mrs. Brain' />
+        <Avatar src="/avatars/brain.png" alt='Mrs. Brain' />
         <BadgeStatus status='online' sx={{ position: 'absolute', right: 2, bottom: 2 }} />
       </Box>
       <Box sx={{ ml: 2 }}>

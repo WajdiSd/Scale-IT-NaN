@@ -72,7 +72,7 @@ const chatbotPersistConfig = {
   storage,
   keyPrefix: 'redux-',
   whitelist: [
-    
+    'conversation', 'participants'
   ],
 };
 
