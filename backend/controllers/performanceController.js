@@ -5,6 +5,9 @@ const { MemberInProject } = require("../helpers/functions");
 const Workspace = require("../models/workspaceModel");
 const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
+const {
+  getWorkspaceHr,
+} = require("../helpers/functions");
 const { getPerformanceByMember } = require("../helpers/functions");
 
 const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
@@ -78,7 +81,28 @@ const test = asyncHandler(async (req, res) => {
   });
 });
 
-const getMemberTasksContribution = asyncHandler(async (req, res) => {
+const getScoreProject = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.memberid);
+  if (!member) {
+    res.status(400);
+    throw new Error("invalid member id");
+  } else {
+    const userscores = await UserScore.find({ member: req.params.memberid });
+    let score = 0;
+    for (const user of userscores) {
+      for (const s of user.score_project) {
+        if (s.projectId == req.params.projectid) {
+          score = s.score;
+          break;
+        }
+      }
+    }
+    res.status(200).json({
+      score: score,});
+    }
+  });
+    
+  const getMemberTasksContribution = asyncHandler(async (req, res) => {
   const project = await Project.findById({
     _id: req.params.projectId,
     isDeleted: false,
@@ -139,6 +163,27 @@ const getRankProjectLeaderboard = asyncHandler(async (req, res) => {
   }
 });
 
+const getScoreWorkspace = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.memberid);
+  if (!member) {
+    res.status(400);
+    throw new Error("invalid member id");
+  } else {
+    const userscores = await UserScore.find({ member: req.params.memberid });
+    let score = 0;
+    for (const user of userscores) {
+      for (const s of user.score_workspace) {
+        if (s.workspaceId == req.params.workspaceid) {
+          score = s.score;
+          break;
+        }
+      }
+    }
+    res.status(200).json({
+      score: score,});
+    }
+  });
+
 const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
   let leaderboard = [];
   const workspace = await Workspace.findById(req.params.workspaceid);
@@ -172,6 +217,53 @@ const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
     res.status(200).json({
       rank: rank,
     });
+  }
+});
+
+const getAllFinishedProjectsInTimePourcentage = asyncHandler(
+  async (req, res) => {
+    const hr = await getWorkspaceHr(req.params.workspaceid);
+    if (hr.member.equals(req.member._id)) {
+      const allProjects = await Project.find({
+        workspace: req.params.workspaceid,
+      });
+      const fininshedProjects = await Project.find({
+        workspace: req.params.workspaceid,
+        status: "finished",
+      });
+      res.status(200).json({
+        allProjects: allProjects,
+        finishedProjects: fininshedProjects,
+        finishedProjectsInTimePourcentage:
+          (fininshedProjects.length * 100) / allProjects.length,
+      });
+    } else {
+      res.status(204);
+      throw new Error("you are not the workspace hr");
+    }
+  }
+);
+
+const getAllFinishedProjectsLatePourcentage = asyncHandler(async (req, res) => {
+  const hr = await getWorkspaceHr(req.params.workspaceid);
+  if (hr.member.equals(req.member._id)) {
+    const allProjects = await Project.find({
+      workspace: req.params.workspaceid,
+    });
+    const fininshedProjects = await Project.find({
+      workspace: req.params.workspaceid,
+      status: "finished with delay",
+    });
+
+    res.status(200).json({
+      allProjects: allProjects,
+      finishedProjects: fininshedProjects,
+      finishedProjectsLatePourcentage:
+        (fininshedProjects.length * 100) / allProjects.length,
+    });
+  } else {
+    res.status(204);
+    throw new Error("you are not the workspace hr");
   }
 });
 
@@ -220,6 +312,10 @@ module.exports = {
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getScoreProject,
+  getScoreWorkspace,
+  getAllFinishedProjectsInTimePourcentage,
+  getAllFinishedProjectsLatePourcentage,
   getMemberTasksContribution,
   getRankProjectLeaderboard,
   getRankWorkspaceLeaderboard,
