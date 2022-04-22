@@ -17,5 +17,4 @@ router.get("/test", test);
 router.get("/latetasks/:idproj/:idmember", getLateTasksPercentage);
 router.get("/tasksintime/:idproj/:idmember", getTasksInTimePercentage);
 router.get("/lateprojects/:idworkspace/:idmember", getLateProjectsPercentage);
-
 module.exports = router;
