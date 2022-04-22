@@ -4,66 +4,10 @@ const Member = require("../models/memberModel");
 const Workspace = require("../models/workspaceModel");
 const UserScore = require("../models/userscoreModel");
 const Task = require("../models/taskModel");
-const { getPerformanceByMember } = require("../helpers/functions");
-
-/**
- * todo: change "push in tables" by compteur .
- */
-// const getPerformanceByMember = asyncHandler(async (req, res) => {
-//   const task = await Task.find({
-//     "members.memberId": req.params.memberId,
-//     status: "done",
-//   });
-
-//   const ftfe = [];
-//   const fcit = [];
-//   const fcfaster = [];
-//   const ftit = [];
-
-//   const ftat = [];
-//   const fcat = [];
-
-//   task.map((task) => {
-//     if (task.expectedEndDate > task.endDate) {
-//       if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-//         fcit.push(task);
-//       if (
-//         task.expectedEndDate.getTime() - task.startDate.getTime() >= 8 &&
-//         task.endDate - task.startDate <=
-//           (task.expectedEndDate - task.startDate) * (2 / 3)
-//       )
-//         fcfaster.push(task);
-//       if (
-//         task.endDate - task.startDate <=
-//         (task.expectedEndDate - task.startDate) * (2 / 3)
-//       )
-//         ftfe.push(task);
-
-//       ftit.push(task);
-//     } else {
-//       if (task.expectedEndDate.getTime() - task.startDate.getTime() >= 8)
-//         fcat.push(task);
-
-//       ftat.push(task);
-//     }
-//   });
-
-//   console.log("ftfe", ftfe);
-//   console.log("fcit", fcit);
-//   console.log("fcfaster", fcfaster);
-//   console.log("ftat", ftat);
-//   console.log("ftit", ftit);
-//   console.log("fcat", fcat);
-
-//   const performance =
-//     ftfe.length* 3 +
-//     fcit.length * 4.5 +
-//     fcfaster.length * 6 +
-//     ftit.length * 2 +
-//     (ftat.length * 1 + fcat.length * 1.5);
-//   res.status(200).json({
-//     performance: performance,
-//   });
+const {
+  getPerformanceByMember,
+  getWorkspaceHr,
+} = require("../helpers/functions");
 
 const getleaderboardbyworkspace = asyncHandler(async (req, res) => {
   let leaderboard = [];
@@ -136,9 +80,103 @@ const test = asyncHandler(async (req, res) => {
   });
 });
 
+const getScoreProject = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.memberid);
+  if (!member) {
+    res.status(400);
+    throw new Error("invalid member id");
+  } else {
+    const userscores = await UserScore.find({ member: req.params.memberid });
+    let score = 0;
+    for (const user of userscores) {
+      for (const s of user.score_project) {
+        if (s.projectId == req.params.projectid) {
+          score = s.score;
+          break;
+        }
+      }
+    }
+    res.status(200).json({
+      score: score,
+    });
+  }
+});
+
+const getScoreWorkspace = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.memberid);
+  if (!member) {
+    res.status(400);
+    throw new Error("invalid member id");
+  } else {
+    const userscores = await UserScore.find({ member: req.params.memberid });
+    let score = 0;
+    for (const user of userscores) {
+      for (const s of user.score_workspace) {
+        if (s.workspaceId == req.params.workspaceid) {
+          score = s.score;
+          break;
+        }
+      }
+    }
+    res.status(200).json({
+      score: score,
+    });
+  }
+});
+
+const getAllFinishedProjectsInTimePourcentage = asyncHandler(
+  async (req, res) => {
+    const hr = await getWorkspaceHr(req.params.workspaceid);
+    if (hr.member.equals(req.member._id)) {
+      const allProjects = await Project.find({
+        workspace: req.params.workspaceid,
+      });
+      const fininshedProjects = await Project.find({
+        workspace: req.params.workspaceid,
+        status: "finished",
+      });
+      res.status(200).json({
+        allProjects: allProjects,
+        finishedProjects: fininshedProjects,
+        finishedProjectsInTimePourcentage:
+          (fininshedProjects.length * 100) / allProjects.length,
+      });
+    } else {
+      res.status(204);
+      throw new Error("you are not the workspace hr");
+    }
+  }
+);
+
+const getAllFinishedProjectsLatePourcentage = asyncHandler(async (req, res) => {
+  const hr = await getWorkspaceHr(req.params.workspaceid);
+  if (hr.member.equals(req.member._id)) {
+    const allProjects = await Project.find({
+      workspace: req.params.workspaceid,
+    });
+    const fininshedProjects = await Project.find({
+      workspace: req.params.workspaceid,
+      status: "finished with delay",
+    });
+
+    res.status(200).json({
+      allProjects: allProjects,
+      finishedProjects: fininshedProjects,
+      finishedProjectsLatePourcentage:
+        (fininshedProjects.length * 100) / allProjects.length,
+    });
+  } else {
+    res.status(204);
+    throw new Error("you are not the workspace hr");
+  }
+});
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
   getleaderboardbyproject,
   test,
+  getScoreProject,
+  getScoreWorkspace,
+  getAllFinishedProjectsInTimePourcentage,
+  getAllFinishedProjectsLatePourcentage,
 };

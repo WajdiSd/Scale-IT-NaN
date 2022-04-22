@@ -298,6 +298,21 @@ async function updatescoremembersinproject(projectId) {
   }
 }
 
+
+async function getWorkspaceHr(workspaceId) {
+  const workspace = await Workspace.findById(workspaceId);
+  if (!workspace) {
+    console.log("invalid workspace id");
+  } else {
+    let hr = {};
+    for (member of workspace.assigned_members) {
+      if(member.isHR)
+        hr = member;
+    }
+    return hr;
+  }
+}
+
 module.exports = {
   MemberInWorkspace,
   ProjectHasTeamLeader,
@@ -305,4 +320,5 @@ module.exports = {
   getPerformanceByMember,
   updatescoremembersinworkspace,
   updatescoremembersinproject,
+  getWorkspaceHr,
 };
