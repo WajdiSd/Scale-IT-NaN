@@ -11,8 +11,15 @@ intents:
   - mood_unhappy
   - bot_challenge
   - profile
-  - node_test
-  - get_slot
+  - get_username
+  - get_userid_slot
+  - get_workspaceid_slot
+  - get_scoreworkspace
+  - get_rankworkspace
+  - get_roleworkspace
+
+entities:
+  - workspaceid
 
 slots:
   userid:
@@ -23,10 +30,23 @@ slots:
     type: text
     influence_conversation: false
     mappings: []
+  workspaceid:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: workspaceid
+  projectid:
+    type: text
+    influence_conversation: false
+    mappings: []
 
 responses:
   utter_greet:
     - text: "Hey {username} ! How are you?"
+
+  utter_workspaceid:
+    - text: "workspace id : {workspaceid}"
 
   utter_cheer_up:
     - text: "Here is something to cheer you up:"
@@ -53,6 +73,9 @@ responses:
 actions:
   - "..."
   - utter_greet
-  - user_action
-  - set_slot_action
+  - get_slot_username
+  - set_slot_userid
   - node_api
+  - score_member_workspace
+  - rank_member_workspace
+  - role_member_workspace
