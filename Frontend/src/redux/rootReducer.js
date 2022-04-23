@@ -13,6 +13,7 @@ import inviteReducer from './slices/inviteSlice';
 import projectReducer from './slices/projectSlice';
 import taskReducer from './slices/tasksSlice';
 import chatbotReducer from './slices/chatbotSlice';
+import performanceReducer from './slices/performanceSlice';
 // ----------------------------------------------------------------------
 
 const rootPersistConfig = {
@@ -75,6 +76,14 @@ const chatbotPersistConfig = {
     'conversation', 'participants'
   ],
 };
+const performancePersistConfig = {
+  key: 'performance',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: [
+    'scoreInWorkspace',
+  ],
+};
 
 
 const rootReducer = combineReducers({
@@ -89,6 +98,7 @@ const rootReducer = combineReducers({
   projects: persistReducer(projectsPersistConfig, projectReducer),
   tasks: persistReducer(tasksPersistConfig, taskReducer),
   chatbot: persistReducer(chatbotPersistConfig, chatbotReducer),
+  performance: persistReducer(performancePersistConfig, performanceReducer),
 });
 
 export { rootPersistConfig, rootReducer };

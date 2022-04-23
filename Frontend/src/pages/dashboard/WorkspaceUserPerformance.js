@@ -1,15 +1,12 @@
-import PropTypes from 'prop-types';
 // @mui
-import { Grid, Stack } from '@mui/material';
-//
-import ProfileAbout from './ProfileAbout';
-import ProfilePostCard from './ProfilePostCard';
-import ProfilePostInput from './ProfilePostInput';
-import ProfileFollowInfo from './ProfileFollowInfo';
-import ProfileSocialInfo from './ProfileSocialInfo';
-
-// ----------------------------------------------------------------------
-import { AnalyticsTasks,
+import { Grid, Container, Typography } from '@mui/material';
+// hooks
+import useSettings from '../../hooks/useSettings';
+// components
+import Page from '../../components/Page';
+// sections
+import {
+  AnalyticsTasks,
   AnalyticsNewsUpdate,
   AnalyticsOrderTimeline,
   AnalyticsCurrentVisits,
@@ -17,19 +14,51 @@ import { AnalyticsTasks,
   AnalyticsTrafficBySite,
   AnalyticsWidgetSummary,
   AnalyticsCurrentSubject,
-  AnalyticsConversionRates, } from '../../general/analytics';
+  AnalyticsConversionRates,
+} from '../../sections/@dashboard/general/analytics';
+
+// ----------------------------------------------------------------------
+import { useDispatch } from '../../redux/store';
+import { getScoreByWorkspace } from '../../redux/slices/performanceSlice';
+import useAuth from 'src/hooks/useAuth';
+import useWorkspace from 'src/hooks/useWorkspace';
+import usePerformance from 'src/hooks/usePerformance';
+import { useEffect } from 'react';
+
 // ----------------------------------------------------------------------
 
-Profile.propTypes = {
-  myProfile: PropTypes.object,
-};
+export default function GeneralAnalytics() {
+  const { themeStretch } = useSettings();
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+  const { workspace } = useWorkspace();
+  const { scoreInWorkspace } = usePerformance();
 
-export default function Profile({ myProfile }) {
+  const memberId = user._id;
+  const workspaceId = workspace._id;
+
+  const getScoreInWorkspace = () => {
+    try {
+        dispatch(getScoreByWorkspace({memberId, workspaceId}));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getScoreInWorkspace();
+  }, []);
+
   return (
-    <Grid container spacing={3}>
-      <Grid container spacing={3}>
+    <Page title="General: Analytics">
+      <Container maxWidth={themeStretch ? false : 'xl'}>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+            check your work quality
+        </Typography>
+
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AnalyticsWidgetSummary title="Your Score" total={scoreInWorkspace} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
@@ -81,6 +110,7 @@ export default function Profile({ myProfile }) {
             <AnalyticsTasks />
           </Grid>
         </Grid>
-    </Grid>
+      </Container>
+    </Page>
   );
 }
