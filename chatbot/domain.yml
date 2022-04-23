@@ -16,6 +16,7 @@ intents:
   - get_workspaceid_slot
   - get_scoreworkspace
   - get_rankworkspace
+  - get_roleworkspace
 
 entities:
   - workspaceid
@@ -77,3 +78,4 @@ actions:
   - node_api
   - score_member_workspace
   - rank_member_workspace
+  - role_member_workspace

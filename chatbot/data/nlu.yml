@@ -120,3 +120,12 @@ nlu:
       - my rank in this workspace ?
       - what's my rank in this workspace ?
       - workspace rank
+
+  - intent: get_roleworkspace
+    examples: |
+      - role workspace
+      - my role in this workspace ?
+      - what's my role in this workspace ?
+      - workspace role
+      - what's my role in this workspace ?
+      - my workspace role

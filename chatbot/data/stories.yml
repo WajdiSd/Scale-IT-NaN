@@ -60,6 +60,10 @@ stories:
       - intent: get_rankworkspace
       - action: rank_member_workspace
 
+  - story: get member role in workspace
+    steps:
+      - intent: get_roleworkspace
+      - action: role_member_workspace
   # - story: ask faq
   #   steps:
   #     - intent: greet

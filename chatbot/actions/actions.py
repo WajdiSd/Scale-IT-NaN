@@ -169,3 +169,34 @@ class getrankworkspace(Action):
                  # extract a joke from returned json response
         dispatcher.utter_message(text)  # send the message back to the user
         return []
+
+class getroleinworkspace(Action):
+
+    def name(self) -> Text:
+        return "role_member_workspace"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        workspaceid = tracker.get_slot("workspaceid")
+        print("userid")
+        print(userid)
+
+        print("workspaceid")
+        print(workspaceid)
+
+
+        request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
+        print("request")
+        print(request)
+
+        role = request["role"]
+        print("role")
+        print(role)
+        text =str(role)
+                 # extract a joke from returned json response
+        dispatcher.utter_message(text)  # send the message back to the user
+        return []
