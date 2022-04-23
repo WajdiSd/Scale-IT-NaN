@@ -20,6 +20,7 @@ import {
   TablePagination,
   FormControlLabel,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -60,7 +61,7 @@ const ROLE_OPTIONS = ['all', 'Project Manager', 'Team Leader', 'Member'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
+  { id: 'workspace', label: 'Workspace', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
   { id: 'isVerified', label: 'Verified', align: 'center' },
   { id: 'status', label: 'Status', align: 'left' },
@@ -90,7 +91,8 @@ export default function UserList() {
   } = useTable();
 
   const { themeStretch, themeMode } = useSettings();
-  const {usersInProject, project, isTL} = useProject();
+
+  const {usersInProject, project, isTL, isLoading} = useProject();
   const {user} = useAuth();
 
   const navigate = useNavigate();
@@ -286,6 +288,23 @@ export default function UserList() {
             </Button>
           }
         />)}
+        {
+        isLoading? 
+        ( 
+        <Box
+          sx={{
+            mt: 10,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={150} color="success" />
+        </Box>
+        )
+        :
+        (
         <Card>
           <Tabs
             allowScrollButtonsMobile
@@ -397,6 +416,8 @@ export default function UserList() {
             />
           </Box>
         </Card>
+        )
+        }
       </Container>
     </Page>
   );

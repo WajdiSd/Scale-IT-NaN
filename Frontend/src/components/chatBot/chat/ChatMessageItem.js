@@ -7,6 +7,7 @@ import { Avatar, Box, Typography } from '@mui/material';
 import Image from '../../../components/Image';
 import useAuth from 'src/hooks/useAuth';
 import createAvatar from 'src/utils/createAvatar';
+import useChat from 'src/hooks/useChat';
 
 // ----------------------------------------------------------------------
 
@@ -40,8 +41,9 @@ ChatMessageItem.propTypes = {
 
 export default function ChatMessageItem({ message, conversation, onOpenLightbox }) {
 const {user} = useAuth();
+const {participants} = useChat();
 
-  const sender = conversation.participants.find((participant) => participant.id === message.senderId);
+  const sender = participants?.find((participant) => participant.id === message.senderId);
   const senderDetails =
     message.senderId === user._id
       ? { type: 'me' }

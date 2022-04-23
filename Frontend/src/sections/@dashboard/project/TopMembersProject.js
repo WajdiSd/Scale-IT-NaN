@@ -15,6 +15,7 @@ import { getProjectleaderboard } from 'src/redux/slices/projectSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useProject from 'src/hooks/useProject';
+import EmptyComponent from 'src/components/EmptyComponent';
 
 // ----------------------------------------------------------------------
 
@@ -54,9 +55,16 @@ export default function TopMembersProject() {
     <Card>
       <CardHeader title="Top Members" />
       <Stack spacing={3} sx={{ p: 3 }}>
-        {leaderboardProject?.map((member, index) => (
-          <MemberItem key={member.member} member={member} index={index} />
-        ))}
+        {
+        leaderboardProject.length==0 ? 
+        (            <Typography sx={{ color: 'text.secondary' }}>Start tasks first...</Typography>
+        ):
+        (
+          leaderboardProject?.map((member, index) => (
+            <MemberItem key={member.member} member={member} index={index} />
+          ))
+        )
+        }
       </Stack>
     </Card>
   );

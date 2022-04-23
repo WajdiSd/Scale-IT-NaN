@@ -17,6 +17,7 @@ import Iconify from '../../../components/Iconify';
 import TextMaxLine from '../../../components/TextMaxLine';
 import TextIconLabel from '../../../components/TextIconLabel';
 import SvgIconStyle from '../../../components/SvgIconStyle';
+import createAvatar from 'src/utils/createAvatar';
 
 // ----------------------------------------------------------------------
 
@@ -60,22 +61,10 @@ export default function WorkspaceCard({ workspace, index }) {
             color: 'background.paper',
           }}
         />
-        <Avatar
-          alt={"mohsen"}
-          src={"https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_1.jpg"}
-          sx={{
-            left: 24,
-            zIndex: 9,
-            width: 32,
-            height: 32,
-            bottom: -16,
-            position: 'absolute',
-          }}
-        />
-        <Image alt="cover" src={"http://localhost:5000/logo.png"} ratio="4/3" />
+        <Image alt="cover" src={"/logo/logo.png"} ratio="4/3" />
       </Box>
 
-      <PostContent _id={workspace._id} title={name} view={20} comment={20} share={20} createdAt={createdAt} />
+      <PostContent _id={workspace?._id} title={name} view={workspace?.assigned_members.length} comment={20} share={20} createdAt={createdAt} />
     </Card>
   );
 }
@@ -101,9 +90,9 @@ export function PostContent({ _id, title, view, comment, share, createdAt, index
   const latestPostSmall = index === 1 || index === 2;
 
   const POST_INFO = [
-    { number: comment, icon: 'eva:message-circle-fill' },
+    //{ number: comment, icon: 'eva:message-circle-fill' },
     { number: view, icon: 'eva:eye-fill' },
-    { number: share, icon: 'eva:share-fill' },
+    //{ number: share, icon: 'eva:share-fill' },
   ];
 
   return (
@@ -140,7 +129,6 @@ export function PostContent({ _id, title, view, comment, share, createdAt, index
           {title}
         </TextMaxLine>
       </Link>
-
       <Stack
         flexWrap="wrap"
         direction="row"
@@ -155,12 +143,12 @@ export function PostContent({ _id, title, view, comment, share, createdAt, index
         }}
       >
         {POST_INFO.map((info, index) => (
-          <TextIconLabel
-            key={index}
-            icon={<Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />}
-            value={fShortenNumber(info.number)}
-            sx={{ typography: 'caption', ml: index === 0 ? 0 : 1.5 }}
-          />
+            <TextIconLabel
+              key={index}
+              icon={<Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />}
+              value={fShortenNumber(info.number)}
+              sx={{ typography: 'caption', ml: index === 0 ? 0 : 1.5 }}
+            />
         ))}
       </Stack>
     </CardContent>

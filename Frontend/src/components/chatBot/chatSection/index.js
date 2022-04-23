@@ -23,6 +23,8 @@ import SettingColorPresets from './SettingColorPresets';
 import ToggleButtonBot from '../ToggleButtonBot';
 import useSettings from 'src/hooks/useSettings';
 import ChatWindow from '../chat/ChatWindow';
+import { useDispatch } from 'react-redux';
+import { resetDiscussion } from 'src/redux/slices/chatbotSlice';
 
 // ----------------------------------------------------------------------
 
@@ -49,8 +51,13 @@ const RootStyle = styled(m.div)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function ChatSection() {
-  const { themeMode, themeDirection, themeColorPresets, themeStretch, themeLayout, onResetSetting } = useSettings();
+  const { themeMode, themeDirection, themeColorPresets, themeStretch, themeLayout } = useSettings();
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const onResetSetting = () => {
+    dispatch(resetDiscussion())
+  };
 
   const notDefault =
     themeMode !== defaultSettings.themeMode ||

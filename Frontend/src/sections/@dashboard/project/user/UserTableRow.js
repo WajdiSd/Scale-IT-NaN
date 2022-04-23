@@ -9,6 +9,7 @@ import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import useProject from 'src/hooks/useProject';
 import useAuth from 'src/hooks/useAuth';
+import useWorkspace from 'src/hooks/useWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ UserTableRow.propTypes = {
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader, onAssignProjectManager }) {
   const theme = useTheme();
   const {user} = useAuth();
+  const {workspace} = useWorkspace();
 
   const { _id, company, role, isVerified, isTeamLeader, isDeleted, isProjectManager, status, phone, updatedAt, lastName, firstName, isValidated, gender, email } = row;
   const {isTL, isPM} = useProject();
@@ -56,7 +58,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         </Typography>
       </TableCell>
 
-      <TableCell align="left">{company}</TableCell>
+      <TableCell align="left">{workspace?.name}</TableCell>
 
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
        {

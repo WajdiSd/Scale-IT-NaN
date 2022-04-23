@@ -46,7 +46,7 @@ export default function ProjectStatus() {
 
   return (
     <Card>
-      <CardHeader title="Status" subheader={`Update project Status : ${project?.status}`} />
+      <CardHeader sx={{ textAlign: 'center' }} title={ `Status: ${project?.status}`} />
 
       <Stack spacing={3} sx={{ p: 3 }}>
         {/* {_bankingContacts.map((contact) => (

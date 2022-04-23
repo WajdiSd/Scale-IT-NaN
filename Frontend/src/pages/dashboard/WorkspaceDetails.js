@@ -184,7 +184,7 @@ export default function WorkspaceDetails() {
             position: 'relative',
           }}
         >
-          <WorkspaceCover />
+          <WorkspaceCover name={workspace?.name} />
 
           <TabsWrapperStyle>
             <Tabs

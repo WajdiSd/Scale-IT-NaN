@@ -27,6 +27,10 @@ export const chatbotSlice = createSlice({
         (state.isLoading = false),
         (state.message = '');
     },
+    resetDiscussion: (state) => {
+      console.log("resetDiscussion");
+        (state.conversation = {messages:[]});
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -127,5 +131,5 @@ export const askBot = createAsyncThunk('chatbot/askBot', async (body, thunkAPI) 
     return thunkAPI.rejectWithValue(message);
   }
 });
-export const { resetChatbot } = chatbotSlice.actions;
+export const { resetChatbot, resetDiscussion } = chatbotSlice.actions;
 export default chatbotSlice.reducer;

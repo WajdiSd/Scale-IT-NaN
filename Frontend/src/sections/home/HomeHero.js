@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Button, Box, Link, Container, Typography, Stack } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_AUTH, PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Image from '../../components/Image';
 import Iconify from '../../components/Iconify';
@@ -89,7 +89,7 @@ export default function HomeHero() {
                 Start a <br />
                 new project <br /> with
                 <Typography component="span" variant="h1" sx={{ color: 'primary.main' }}>
-                  &nbsp;Minimal
+                  &nbsp;Scale IT
                 </Typography>
               </Typography>
             </m.div>
@@ -100,8 +100,9 @@ export default function HomeHero() {
                 better.
               </Typography>
             </m.div>
-
-            <Stack spacing={2.5} alignItems="center" direction={{ xs: 'column', md: 'row' }}>
+            {
+            /*
+              <Stack spacing={2.5} alignItems="center" direction={{ xs: 'column', md: 'row' }}>
               <m.div variants={varFade().inRight}>
                 <TextIconLabel
                   icon={
@@ -148,20 +149,24 @@ export default function HomeHero() {
                 />
               </m.div>
             </Stack>
+              */}
+            
 
             <m.div variants={varFade().inRight}>
               <Button
                 size="large"
                 variant="contained"
                 component={RouterLink}
-                to={PATH_DASHBOARD.root}
+                to={PATH_AUTH.register}
                 startIcon={<Iconify icon={'eva:flash-fill'} width={20} height={20} />}
               >
-                Live Preview
+                Get Started
               </Button>
             </m.div>
 
-            <Stack spacing={2.5}>
+            {
+              /*
+              <Stack spacing={2.5}>
               <m.div variants={varFade().inRight}>
                 <Typography variant="overline" sx={{ color: 'primary.light' }}>
                   Available For
@@ -178,6 +183,9 @@ export default function HomeHero() {
                 ))}
               </Stack>
             </Stack>
+              */
+            }
+            
           </ContentStyle>
         </Container>
       </RootStyle>

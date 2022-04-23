@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosInstance from 'src/utils/axios';
 import { dispatch } from '../store';
 
-const API_URL = 'http://localhost:5005/webhooks/rest/webhook';
+const API_URL = process.env.REACT_APP_CHATBOT_API_ENDPOINT;
 
 // setParticiants
 const setParticiants = async (userData) => {
