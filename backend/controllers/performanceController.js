@@ -434,6 +434,33 @@ const getProjectsInTimePercentage = asyncHandler(async (req, res) => {
   }
 });
 
+const roleinworkspace = asyncHandler(async (req, res) => {
+  //verif member who wants to remove is member and HR
+  var role = "Member";
+  const workspace = await Workspace.findById(req.params.idworkspace);
+  if (!workspace) {
+    res.status(400);
+    throw new Error("invalid workspace id");
+  } else {
+    for (let i = 0; i < workspace.assigned_members.length; i++) {
+      if (
+        workspace.assigned_members[i].member == req.params.idmember &&
+        workspace.assigned_members[i].isHR == true
+      )
+        role = "Humain Resources";
+      if (
+        workspace.assigned_members[i].member == req.params.idmember &&
+        workspace.assigned_members[i].isProjectManager == true
+      )
+        role = "Project Manager";
+    }
+
+    res.status(200).json({
+      role: role,
+    });
+  }
+});
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
@@ -450,4 +477,5 @@ module.exports = {
   getTasksInTimePercentage,
   getLateProjectsPercentage,
   getProjectsInTimePercentage,
+  roleinworkspace,
 };
