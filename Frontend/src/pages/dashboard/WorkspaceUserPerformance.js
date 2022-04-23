@@ -19,7 +19,7 @@ import {
 
 // ----------------------------------------------------------------------
 import { useDispatch } from '../../redux/store';
-import { getScoreByWorkspace } from '../../redux/slices/performanceSlice';
+import { getScoreByWorkspace, getRankByWorkspace } from '../../redux/slices/performanceSlice';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
 import usePerformance from 'src/hooks/usePerformance';
@@ -32,7 +32,7 @@ export default function GeneralAnalytics() {
   const dispatch = useDispatch();
   const { user } = useAuth();
   const { workspace } = useWorkspace();
-  const { scoreInWorkspace } = usePerformance();
+  const { scoreInWorkspace, rankInWorkspace } = usePerformance();
 
   const memberId = user._id;
   const workspaceId = workspace._id;
@@ -40,6 +40,7 @@ export default function GeneralAnalytics() {
   const getScoreInWorkspace = () => {
     try {
         dispatch(getScoreByWorkspace({memberId, workspaceId}));
+        dispatch(getRankByWorkspace({workspaceId, memberId}));
     } catch (error) {
       console.error(error);
     }
@@ -58,11 +59,11 @@ export default function GeneralAnalytics() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="Your Score" total={scoreInWorkspace} icon={'ant-design:android-filled'} />
+            <AnalyticsWidgetSummary title="Score" total={scoreInWorkspace} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AnalyticsWidgetSummary title="Rank in leaderboard" total={rankInWorkspace} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>

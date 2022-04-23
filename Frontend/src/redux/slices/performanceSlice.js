@@ -5,6 +5,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 
 const initialState = {
   scoreInWorkspace: '',
+  ranksInWorkspace: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -46,10 +47,17 @@ export const performanceSlice = createSlice({
           state.isLoading = false;
           state.isSuccess = true;
           state.message = 'Successfully fetched score';
-          console.log(action.payload);
-          console.log(state.message);
         })
-
+        .addCase(getRankByWorkspace.rejected, (state, action) => {
+          state.isLoading = false;
+          console.log(action);
+        })
+        .addCase(getRankByWorkspace.fulfilled, (state, action) => {
+          state.rankInWorkspace = action.payload.rank;
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.message = 'Successfully fetched rank';
+        })
       }
 })
 
@@ -65,7 +73,17 @@ export const getScoreByWorkspace = createAsyncThunk(
     }
 );
 
-
+export const getRankByWorkspace = createAsyncThunk(
+    'performance/getRankByWorkspace',
+    async (data, thunkAPI) => {
+        try {
+            const response = await performanceService.getRankByWorkspace(data.workspaceId, data.memberId);
+            return response;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error);
+        }
+    }
+);
 
 
 export const { resetPerformance } = performanceSlice.actions;
