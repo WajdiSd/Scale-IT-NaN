@@ -25,7 +25,7 @@ import General from 'src/sections/@dashboard/workspace/General';
 import WorkspaceCover from 'src/sections/@dashboard/workspace/WorkspaceCover';
 import MembersWorkspace from 'src/sections/@dashboard/workspace/MembersWorkspace';
 import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
-
+import WorkspaceUserPerformance from './WorkspaceUserPerformance';
 // slices
 import { getWorkspace, getworspaceleaderboard } from 'src/redux/slices/workspaceSlice';
 import { useSnackbar } from 'notistack';
@@ -143,6 +143,11 @@ export default function WorkspaceDetails() {
       value: 'Leaderboard',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
       component: <TopMembers />,
+    },
+    {
+      value: 'Performance',
+      icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
+      component: <WorkspaceUserPerformance />,
     },
   ];
 
