@@ -147,7 +147,6 @@ export default function TasksList() {
   );
 
   useEffect(() => {
-    console.log('calling useEffet');
     if (refreshTasks) {
       setRefreshTasks(false);
       const data = {
@@ -156,10 +155,7 @@ export default function TasksList() {
         isExecutive: isTL || isPM || idProjectManager || isHr,
       };
 
-      dispatch(getUserTasks(data)).then((res) => {
-        console.log('inside useEffect res');
-        console.log(res);
-      });
+      dispatch(getUserTasks(data));
     }
 
     setDataFiltered(
@@ -173,15 +169,9 @@ export default function TasksList() {
         filterEndDate,
       })
     );
-    console.log('dataFiltered');
-    console.log(dataFiltered);
-
-    console.log('memberTasks');
-    console.log(memberTasks);
   }, [refreshTasks, memberTasks]);
 
   const handleCloseInvite = () => {
-    console.log("I'm here");
     setTaskId('');
     setOpen(false);
   };
@@ -498,8 +488,6 @@ export default function TasksList() {
                 />
 
                 <TableBody>
-                  {console.log('dataFiltered in component')}
-                  {console.log(dataFiltered)}
                   {dataFiltered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <TasksTableRow
                       key={row._id}

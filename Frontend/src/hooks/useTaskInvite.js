@@ -24,8 +24,6 @@ const useTaskInvite = (id) => {
   const submitInvite = (handleClose, setRefreshTasks) => {
     dispatch(submitInvitationsToTask(id)).then((res) => {
       if (!res.error) {
-        console.log('inside dispatch');
-        console.log(res);
         handleClose();
         setRefreshTasks(true);
       }

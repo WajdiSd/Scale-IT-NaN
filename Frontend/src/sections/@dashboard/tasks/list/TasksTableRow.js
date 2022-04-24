@@ -65,7 +65,6 @@ export default function TasksTableRow({
         }
       });
     });
-    console.log(members);
   }, [dataFiltered]);
 
   const [openMenu, setOpenMenuActions] = useState(null);
