@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import workspaceService from '../service/workspaceService';
 import projectService from '../service/projectService';
 import taskService from '../service/taskService';
+import { getUserTasks } from './tasksSlice';
 
 const initialState = {
   users: [],
@@ -68,6 +69,10 @@ export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsT
   try {
     const state = thunkAPI.getState();
     const users = state.invite.users;
+    const memberId = state.auth.user._id;
+    const isPM = state.auth.isProjectManager;
+    const isHr = state.auth.isHr;
+    const projectId = state.projects.project._id;
 
     if (!users) {
       setUserError('No Valid Users Passed!');
@@ -82,7 +87,9 @@ export const submitInvitationsToTask = createAsyncThunk('task/submitInvitationsT
     };
 
     const memberSubmit = members.emails.length > 0 ? await taskService.assignMembers(members) : null;
+
     thunkAPI.dispatch(resetInvite());
+    thunkAPI.dispatch(getUserTasks({ memberId, projectId, isExecutive: isPM || isHr }));
 
     return memberSubmit;
   } catch (error) {
@@ -250,14 +257,11 @@ const inviteSlice = createSlice({
         state.userErrorMessage = action.payload;
       })
       .addCase(getTaskMembers.pending, (state, action) => {
-        console.log('getTaskMembers pending');
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
       })
       .addCase(getTaskMembers.fulfilled, (state, action) => {
-        console.log('getTaskMembers fulfilled');
-        console.log(action.payload);
         const [notAssignedMembers, assignedMembers] = action.payload;
         state.notAssignedMembers = notAssignedMembers;
         state.taskMembers = assignedMembers;
@@ -266,9 +270,6 @@ const inviteSlice = createSlice({
         state.isError = false;
       })
       .addCase(getTaskMembers.rejected, (state, action) => {
-        console.log('getTaskMembers rejected');
-        console.log(action.payload);
-        console.log(action);
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
