@@ -118,7 +118,7 @@ function MemberCard({ member }) {
     >
       <Avatar
         alt={firstName}
-        src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
+        src={'/images/avatars/avatar_13.jpg'}
         sx={{ width: 64, height: 64, mb: 3 }}
       />
       <Link variant="subtitle1" color="text.primary">

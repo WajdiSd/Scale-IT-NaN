@@ -13,15 +13,17 @@ import useAuth from 'src/hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
-const RootStyle = styled('div')(({ theme }) => ({
+const RootStyle = styled('div')(({ theme }) => {
+  return {
   minHeight: 56,
   display: 'flex',
   position: 'fixed',
   bottom: 0,
   alignItems: 'center',
   paddingLeft: theme.spacing(2),
-  backgroundColor: 'white',
-}));
+  backgroundColor:theme.palette.background.default,
+  };
+});
 
 // ----------------------------------------------------------------------
 

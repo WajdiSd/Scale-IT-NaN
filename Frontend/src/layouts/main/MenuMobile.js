@@ -129,7 +129,7 @@ function MenuMobileItem({ item, isOpen, onOpen }) {
                   bgcolor: 'background.neutral',
                   backgroundRepeat: 'no-repeat',
                   backgroundImage:
-                    'url(https://minimals.cc/assets/illustrations/illustration_dashboard.png)',
+                    'url(/images/illustrations/illustration_dashboard.png)',
                   '& > *:not(.MuiTouchRipple-root)': { display: 'none' },
                 },
               }}

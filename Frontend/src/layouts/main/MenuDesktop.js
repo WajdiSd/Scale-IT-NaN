@@ -213,7 +213,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                                 hover: { scale: 1.02 },
                                 tap: { scale: 0.98 },
                               }}
-                              src="https://minimals.cc/assets/illustrations/illustration_dashboard.png"
+                              src="/images/illustrations/illustration_dashboard.png"
                             />
                           </CardActionArea>
                         ) : (

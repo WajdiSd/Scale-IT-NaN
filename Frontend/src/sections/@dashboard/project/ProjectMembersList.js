@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogActions,
   Slider as MuiSlider,
+  CircularProgress,
 } from '@mui/material';
 // utils
 import { fCurrency } from 'src/utils/formatNumber';
@@ -54,7 +55,7 @@ export default function ProjectMembersList() {
 
   //console.log(usersInProject);
 
-  const {usersInProject} = useProject();
+  const {usersInProject, isLoading } = useProject();
 
   
   const getContactInfo = _bankingQuickTransfer.find((_, index) => index === selectContact);
@@ -80,11 +81,13 @@ export default function ProjectMembersList() {
   };
 
   useEffect(() => {
+    console.log(usersInProject);
+    console.log(isLoading);
     if (amount) {
       handleAutoWidth();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount]);
+  }, []);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -127,14 +130,33 @@ export default function ProjectMembersList() {
     <>
       <RootStyle>
         <CardHeader title="Team" />
-        <Box sx={{ p: 3 }}>
+        {
+        isLoading? 
+        ( 
+        <Box
+          sx={{
+            mt: 10,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={150} color="success" />
+        </Box>
+        )
+        :
+        (
+          <Box sx={{ p: 3 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="overline" sx={{ color: 'text.secondary' }}>
               Recent
             </Typography>
+            {/*
             <Link component={RouterLink} to="#test" sx={{ typography: 'button' }}>
               View All
             </Link>
+            */}
           </Stack>
 
           <Box sx={{ position: 'relative' }}>
@@ -159,7 +181,7 @@ export default function ProjectMembersList() {
                     <Box sx={{ width: 40, height: 40 }}>
                       <Tooltip key={contact?._id} title={contact?.firstName} arrow placement="top">
                         <Avatar
-                          src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
+                          src={'/images/avatars/avatar_13.jpg'}
                           sx={{
                             opacity: 0.48,
                             cursor: 'pointer',
@@ -179,66 +201,10 @@ export default function ProjectMembersList() {
             </CarouselArrows>
           </Box>
         </Box>
-      </RootStyle>
-
-      <ConfirmTransferDialog
-        open={openConfirm}
-        autoWidth={autoWidth}
-        amount={amount}
-        contactInfo={getContactInfo}
-        onClose={handleCloseConfirm}
-        onBlur={handleBlur}
-        onChange={handleInputChange}
-      />
-    </>
-  );
-}
-
-// ----------------------------------------------------------------------
-
-
-// ----------------------------------------------------------------------
-
-ConfirmTransferDialog.propTypes = {
-  amount: PropTypes.number,
-  autoWidth: PropTypes.any,
-  contactInfo: PropTypes.shape({
-    avatar: PropTypes.string,
-    email: PropTypes.string,
-    name: PropTypes.string,
-  }),
-  onBlur: PropTypes.func,
-  onChange: PropTypes.func,
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-};
-
-function ConfirmTransferDialog({ open, amount, autoWidth, contactInfo, onClose, onBlur, onChange }) {
-  return (
-    <Dialog open={open} fullWidth maxWidth="xs" onClose={onClose}>
-      <DialogTitle>Transfer to</DialogTitle>
-
-      <Stack spacing={3} sx={{ p: 3, pb: 0 }}>
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Avatar src={contactInfo?.avatar} sx={{ width: 48, height: 48 }} />
-          <div>
-            <Typography variant="subtitle2">{contactInfo?.name}</Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {contactInfo?.email}
-            </Typography>
-          </div>
-        </Stack>
-
+        )
+        }
         
-
-        <TextField fullWidth multiline rows={2} placeholder="Write a message..." />
-      </Stack>
-      <DialogActions>
-        <Button variant="contained" disabled={amount === 0} onClick={onClose}>
-          Confirm & Transfer
-        </Button>
-        <Button onClick={onClose}>Cancel</Button>
-      </DialogActions>
-    </Dialog>
+      </RootStyle>
+    </>
   );
 }
