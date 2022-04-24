@@ -33,7 +33,7 @@ const CardItemStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(3),
   backgroundRepeat: 'no-repeat',
   color: theme.palette.common.white,
-  backgroundImage: 'url("https://minimals.cc/assets/bg_card.png")',
+  backgroundImage: 'url("/images/covers/bg_card.png")',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',

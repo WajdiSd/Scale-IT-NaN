@@ -65,7 +65,7 @@ const {participants} = useChat();
       >
 
         {senderDetails.type !== 'me' && (
-          <Avatar src="/avatars/brain.png" alt={senderDetails.name} sx={{ width: 32, height: 32, mr: 2 }}>
+          <Avatar src="/images/avatars/brain.png" alt={senderDetails.name} sx={{ width: 32, height: 32, mr: 2 }}>
             </Avatar>
         )}
 

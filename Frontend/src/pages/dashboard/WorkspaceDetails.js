@@ -152,7 +152,7 @@ export default function WorkspaceDetails() {
   ];
 
   return (
-    <Page title="Workspace: Details">
+    <Page title={`Workspace: ${ workspace?.name}`}>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={projectError.length > 0}

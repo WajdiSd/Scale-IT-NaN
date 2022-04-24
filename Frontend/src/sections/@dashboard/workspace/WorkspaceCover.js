@@ -122,7 +122,7 @@ export default function WorkspaceCover({name}) {
       </InfoStyle>
       <Image
         alt="profile cover"
-        src="https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg"
+        src="/images/covers/cover_1.jpg"
         sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>

@@ -81,11 +81,13 @@ export default function ProjectMembersList() {
   };
 
   useEffect(() => {
+    console.log(usersInProject);
+    console.log(isLoading);
     if (amount) {
       handleAutoWidth();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount]);
+  }, []);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -179,7 +181,7 @@ export default function ProjectMembersList() {
                     <Box sx={{ width: 40, height: 40 }}>
                       <Tooltip key={contact?._id} title={contact?.firstName} arrow placement="top">
                         <Avatar
-                          src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'}
+                          src={'/images/avatars/avatar_13.jpg'}
                           sx={{
                             opacity: 0.48,
                             cursor: 'pointer',

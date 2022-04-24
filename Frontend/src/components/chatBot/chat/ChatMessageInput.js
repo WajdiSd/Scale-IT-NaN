@@ -14,7 +14,6 @@ import useAuth from 'src/hooks/useAuth';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => {
-  console.log(theme.palette);
   return {
   minHeight: 56,
   display: 'flex',

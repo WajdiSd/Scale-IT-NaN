@@ -88,7 +88,7 @@ export default function Register() {
             </Typography>
             <Image
               alt="register"
-              src="https://minimals.cc/assets/illustrations/illustration_register.png"
+              src="/images/illustrations/illustration_register.png"
             />
           </SectionStyle>
         )}

@@ -51,7 +51,7 @@ export default function WorkspaceCard({ workspace, index }) {
     >
       <Box sx={{ position: 'relative' }}>
         <SvgIconStyle
-          src="https://minimal-assets-api.vercel.app/assets/icons/shape-avatar.svg"
+          src="/icons/shape-avatar.svg"
           sx={{
             width: 80,
             height: 36,

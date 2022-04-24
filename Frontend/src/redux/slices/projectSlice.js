@@ -306,6 +306,20 @@ export const projectSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+      .addCase(restoreMembersFromProject.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(restoreMembersFromProject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(restoreMembersFromProject.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+      })
       ;
   },
 });
@@ -348,6 +362,21 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (da
 export const removeMembersFromProject = createAsyncThunk('project/removeMembersFromProject', async (data, thunkAPI) => {
   try {
     const project = await projectService.removeMembersFromProject(data.idproject, data.idtl, data.userIds);
+    if (project) {
+      await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
+      return project;
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+// restore Members From Project
+export const restoreMembersFromProject = createAsyncThunk('project/restoreMembersFromProject', async (data, thunkAPI) => {
+  try {
+    const project = await projectService.restoreMembersFromProject(data.idproject, data.idtl, data.userIds);
     if (project) {
       await thunkAPI.dispatch(getFullMemberByProject(data.idproject));
       return project;

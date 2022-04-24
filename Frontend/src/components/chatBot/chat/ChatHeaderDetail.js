@@ -53,7 +53,7 @@ function OneAvatar() {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ position: 'relative' }}>
-        <Avatar src="/avatars/brain.png" alt='Mrs. Brain' />
+        <Avatar src="/images/avatars/brain.png" alt='Mrs. Brain' />
         <BadgeStatus status='online' sx={{ position: 'absolute', right: 2, bottom: 2 }} />
       </Box>
       <Box sx={{ ml: 2 }}>
