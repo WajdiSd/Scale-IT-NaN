@@ -14,6 +14,7 @@ const {
   updateUserPassword,
   resendEmail,
   checkIfUserExistsByEmail,
+  getConnectedUser,
 } = require("../controllers/memberController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -37,5 +38,7 @@ router.put("/updateaccount/:iduser", protect, updateUser);
 
 //Check if Exists
 router.get("/user/:email", protect, checkIfUserExistsByEmail);
+
+router.get("/connecteduser/:id", getConnectedUser);
 
 module.exports = router;

@@ -8,7 +8,6 @@ import ChatMessageItem from './ChatMessageItem';
 // ----------------------------------------------------------------------
 
 ChatMessageList.propTypes = {
-  conversation: PropTypes.object.isRequired,
 };
 
 export default function ChatMessageList({ conversation }) {
@@ -27,9 +26,8 @@ export default function ChatMessageList({ conversation }) {
     scrollMessagesToBottom();
   }, [conversation.messages]);
 
-  const imagesLightbox = conversation.messages
-    .filter((messages) => messages.contentType === 'image')
-    .map((messages) => messages.body);
+  const imagesLightbox = conversation?.messages?.filter((message) => message.contentType === 'image')
+    .map((message) => message.body);
 
   const handleOpenLightbox = (url) => {
     const selectedImage = imagesLightbox.findIndex((index) => index === url);
@@ -47,23 +45,26 @@ export default function ChatMessageList({ conversation }) {
   return (
     <>
       <Scrollbar scrollableNodeProps={{ ref: scrollRef }} sx={{ p: 3, height: 1 }}>
-        {/*conversation.messages.map((message) => (
+        {conversation?.messages?.map((message) => (
           <ChatMessageItem
-            key={message.id}
+            key={message.messageId}
             message={message}
             conversation={conversation}
             onOpenLightbox={handleOpenLightbox}
           />
-        ))*/}
-        <ChatMessageItem
+        ))
+        }
+        {/*
+          <ChatMessageItem
             key='0'
             message={msg}
             conversation={conversation}
             onOpenLightbox={handleOpenLightbox}
           />
+      */}
       </Scrollbar>
 
-      <LightboxModal
+      {/*<LightboxModal
         images={imagesLightbox}
         mainSrc={imagesLightbox[selectedImage]}
         photoIndex={selectedImage}
@@ -71,6 +72,7 @@ export default function ChatMessageList({ conversation }) {
         isOpen={openLightbox}
         onCloseRequest={() => setOpenLightbox(false)}
       />
+      */}
     </>
   );
 }

@@ -41,7 +41,7 @@ TasksTableRow.propTypes = {
 export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onInviteRow, onDeleteRow }) {
   const theme = useTheme();
   const { user } = useAuth();
-  const { usersInProject } = useProject();
+  const { usersInProject , isTL, isPM} = useProject();
 
   const { name, description, startDate, expectedEndDate, status, endDate, priority, members } = row;
   const [membersInTask, setMembersInTask] = useState([]);
@@ -154,7 +154,9 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
                 View
               </MenuItem>
 
-              <MenuItem
+              {
+                isTL && <>
+                <MenuItem
                 onClick={() => {
                   onInviteRow();
                   handleCloseMenu();
@@ -184,6 +186,9 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
                 <Iconify icon={'eva:trash-2-outline'} />
                 Delete
               </MenuItem>
+                </>
+              }
+              
             </>
           }
         />

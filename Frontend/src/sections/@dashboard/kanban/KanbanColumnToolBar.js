@@ -5,6 +5,7 @@ import { Stack, OutlinedInput, MenuItem, IconButton } from '@mui/material';
 // components
 import Iconify from '../../../components/Iconify';
 import MenuPopover from '../../../components/MenuPopover';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +17,7 @@ KanbanColumnToolBar.propTypes = {
 
 export default function KanbanColumnToolBar({ columnName, onDelete, onUpdate }) {
   const renameRef = useRef(null);
+  const {isTL } = useProject();
 
   const [value, setValue] = useState(columnName);
 
@@ -62,6 +64,7 @@ export default function KanbanColumnToolBar({ columnName, onDelete, onUpdate }) 
           onChange={handleChangeColumnName}
           onKeyUp={handleUpdateColumn}
           inputRef={renameRef}
+          readOnly={!isTL}
           sx={{
             typography: 'h6',
             fontWeight: 'fontWeightBold',
@@ -70,10 +73,11 @@ export default function KanbanColumnToolBar({ columnName, onDelete, onUpdate }) 
             },
           }}
         />
-
-        <IconButton size="small" onClick={handleOpen} color={open ? 'inherit' : 'default'}>
+        {
+          isTL && <IconButton size="small" onClick={handleOpen} color={open ? 'inherit' : 'default'}>
           <Iconify icon={'eva:more-horizontal-fill'} width={20} height={20} />
         </IconButton>
+        }
       </Stack>
 
       <MenuPopover

@@ -14,11 +14,14 @@ import ThemeLocalization from './components/ThemeLocalization';
 import MotionLazyContainer from './components/animate/MotionLazyContainer';
 import { useSelector } from './redux/store';
 import ChatSection from './components/chatBot/chatSection';
+import useAuth from './hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
 
+  const {isAuthenticated} = useAuth();
+  console.log(isAuthenticated);
   const test = useSelector(
     (state) => state
   )
@@ -34,7 +37,9 @@ export default function App() {
                 <ProgressBarStyle />
                 <ChartStyle />
                 <Settings />
-                <ChatSection/>
+                {isAuthenticated && <ChatSection/>}
+                
+                
                 <ScrollToTop />
                 <Router />
               </MotionLazyContainer>

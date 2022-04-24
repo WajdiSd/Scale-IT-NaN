@@ -1,5 +1,5 @@
 import sumBy from 'lodash/sumBy';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 import moment from 'moment';
@@ -55,6 +55,9 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { useSnackbar } from 'notistack';
 import AssignMembersToTask from 'src/sections/@dashboard/tasks/AssignMembersToTask';
 import UpdateTaskForm from 'src/sections/@dashboard/tasks/UpdateTaskForm';
+import { ToastContainer, toast } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.css';
+
 
 // ----------------------------------------------------------------------
 
@@ -75,8 +78,6 @@ const TABLE_HEAD = [
 export default function TasksList() {
   const theme = useTheme();
 
-  const { themeStretch } = useSettings();
-
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ export default function TasksList() {
   const { id, projectid } = useParams();
   const { project, isTL, isPM } = useProject();
   const { workspace } = useWorkspace();
+  const { themeStretch, themeMode } = useSettings();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -108,6 +110,18 @@ export default function TasksList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'startDate' });
 
+
+  let toastId = useRef(null);
+
+
+  const notify = (text) => {
+    toastId.current = 
+    themeMode === 'dark'? toast(text, { autoClose: false, type: toast.TYPE.INFO })
+    :
+    toast.dark(text, { autoClose: false, type: toast.TYPE.INFO })
+  }
+  const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
+
   const [filterName, setFilterName] = useState('');
 
   const [filterService, setFilterService] = useState('all');
@@ -124,6 +138,7 @@ export default function TasksList() {
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
   useEffect(() => {
+    setRefreshTasks(false)
     const data = {
       memberId: user._id,
       projectId: projectid,
@@ -157,18 +172,26 @@ export default function TasksList() {
   const handleDeleteRow = (id) => {
     const teamLeadId = user._id;
     const projectId = projectid;
-    dispatch(deleteTask({ teamLeadId: teamLeadId, projectId: projectId, taskId: id }));
-    const deleteRow = memberTasks.filter((row) => row.id !== id);
-    setRefreshTasks(true);
+    notify("Deleting task...")
+
+    dispatch(deleteTask({ teamLeadId: teamLeadId, projectId: projectId, taskId: id })).then((res) => {
+      if(res.payload){
+        setRefreshTasks(true);
+        update('Deleted task successfully');
+        const deleteRow = memberTasks.filter((row) => row.id !== id);
+      }
+    });
     //const deleteRow = tableData.filter((row) => row.id !== id);
     setSelected([]);
     //setTableData(deleteRow);
   };
 
   const handleAddTask = (data) => {
+    notify("Adding task...")
+
     dispatch(addTask(data)).then((res) => {
       if (!res.error) {
-        enqueueSnackbar('Successfully added task');
+        update('Successfully added task');
         setRefreshTasks(true);
       } else
         enqueueSnackbar('unable to add task', {
@@ -178,16 +201,26 @@ export default function TasksList() {
   };
 
   const handleUpdateTask = (data) => {
+
+    notify("Updating task...")
+
     dispatch(updateTask(data)).then((res) => {
       console.log(res);
       if (!res.error) {
-        enqueueSnackbar('Successfully updated task');
+        update('Successfully updated task');
         setRefreshTasks(true);
       } else
-        enqueueSnackbar('unable to update task', {
+      update('unable to update task', {
           variant: 'error',
         });
     });
+  };
+
+  const handleSubmitInvite = () => {
+
+    notify("Updating task...")
+
+   
   };
 
   const handleEditRow = (task) => {
@@ -251,9 +284,21 @@ export default function TasksList() {
     setIsOpenUpdateModal(false);
   };
   return (
-    <Page title="Invoice: List">
+    <Page title="Tasks: List">
+      
       <AssignMembersToTask open={open} taskId={taskId} handleClose={handleCloseInvite} />
       <Container maxWidth={themeStretch ? false : 'lg'}>
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Tasks"
@@ -499,7 +544,7 @@ function applySortFilter({
   if (filterName) {
     memberTasks = memberTasks.filter(
       (item) =>
-        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLoweminimalrCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }

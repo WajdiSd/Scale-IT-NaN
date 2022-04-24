@@ -22,7 +22,8 @@ export const workspaceSlice = createSlice({
     resetWorkspace: (state) => {
       (state.workspaces = []),
         (state.workspace = null),
-        (leaderboardWorkspace = [])((state.usersInWorkspace = [])),
+        (state.leaderboardWorkspace = []),
+        (state.usersInWorkspace = []),
         (state.isError = false),
         (state.isSuccess = false),
         (state.isLoading = false),

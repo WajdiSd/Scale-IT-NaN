@@ -89,7 +89,7 @@ export default function Login() {
             </Typography>
             <Image
               alt="login"
-              src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_login.png"
+              src="https://minimals.cc/assets/illustrations/illustration_login.png"
             />
           </SectionStyle>
         )}

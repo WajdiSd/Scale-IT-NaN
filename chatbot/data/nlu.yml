@@ -95,6 +95,37 @@ nlu:
       - how can i change
       - how can i delete my account
       - how can i edit my information
-  - intent: node_test
+  - intent: get_username
     examples: |
-      - api
+      - username
+  - intent: get_userid_slot
+    examples: |
+      - userid
+  - intent: get_workspaceid_slot
+    examples: |
+      - workspaceid [624b124e1739d313b38e4376](workspaceid)
+      - my workspace id [624b677aa9d07c82847abe8b](workspaceid)
+      - [624d4ec84fe678f3cac2bb21](workspaceid) idworkspace
+
+  - intent: get_scoreworkspace
+    examples: |
+      - score workspace
+      - my score in this workspace ?
+      - what's my score in this workspace ?
+      - workspace score
+
+  - intent: get_rankworkspace
+    examples: |
+      - rank workspace
+      - my rank in this workspace ?
+      - what's my rank in this workspace ?
+      - workspace rank
+
+  - intent: get_roleworkspace
+    examples: |
+      - role workspace
+      - my role in this workspace ?
+      - what's my role in this workspace ?
+      - workspace role
+      - what's my role in this workspace ?
+      - my workspace role

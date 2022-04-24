@@ -22,7 +22,6 @@ import SettingFullscreen from './SettingFullscreen';
 import SettingColorPresets from './SettingColorPresets';
 import ToggleButtonBot from '../ToggleButtonBot';
 import useSettings from 'src/hooks/useSettings';
-import Chat from '../Chat';
 import ChatWindow from '../chat/ChatWindow';
 
 // ----------------------------------------------------------------------
@@ -75,6 +74,9 @@ export default function ChatSection() {
 
   useEffect(() => {
     if (open) {
+
+      
+
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -105,7 +107,7 @@ export default function ChatSection() {
           <>
             <RootStyle {...varSidebar}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 2, pr: 1, pl: 2.5 }}>
-                <Typography variant="subtitle1">Settings</Typography>
+                <Typography variant="subtitle1">Assistant</Typography>
                 <div>
                   <IconButtonAnimate onClick={onResetSetting}>
                     <Iconify icon={'ic:round-refresh'} width={20} height={20} />

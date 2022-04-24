@@ -4,6 +4,8 @@ import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { resetWorkspace, getWorkspaces} from './workspaceSlice'; 
 import { resetProject } from './projectSlice';
+import { resetTask } from './tasksSlice';
+import { resetChatbot } from './chatbotSlice';
 
 // const isHr = createAction('isHr');
 // const isNotHr = createAction('isNotHr');
@@ -122,9 +124,7 @@ export const updateUser = createAsyncThunk('auth/updateUser', async (data, thunk
 });
 
 export const logout = createAsyncThunk('auth/logout', async (req,thunkAPI) => {
-  thunkAPI.dispatch(resetAuth());
-  thunkAPI.dispatch(resetWorkspace());
-  thunkAPI.dispatch(resetProject());
+  
   await authService.logout();
 });
 /**
@@ -197,6 +197,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     resetAuth: (state) => {
+      state.user = null;
       state.isHr = false;
       state.idProjectManager = null;
       state.isProjectManager = false;

@@ -477,6 +477,16 @@ const updateUser = asyncHandler(async (req, res) => {
   });
 });
 
+const getConnectedUser = asyncHandler(async (req, res) => {
+  console.log(req.params.id);
+  const member = await Member.findById(req.params.id);
+
+  res.status(200).json({
+    sender: member._id,
+    message: member.firstName,
+  });
+});
+
 module.exports = {
   registerMember,
   loginMember,
@@ -491,4 +501,5 @@ module.exports = {
   updateUserPassword,
   resendEmail,
   checkIfUserExistsByEmail,
+  getConnectedUser,
 };

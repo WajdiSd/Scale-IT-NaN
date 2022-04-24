@@ -34,7 +34,7 @@ export default function WorkspaceInvite() {
           
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
-            { name: workspace?.name, href: PATH_DASHBOARD.workspaces.details+workspace._id },
+            { name: workspace?.name, href: PATH_DASHBOARD.workspaces.details+workspace?._id },
             { name: 'invite' },
           ]}
         />
