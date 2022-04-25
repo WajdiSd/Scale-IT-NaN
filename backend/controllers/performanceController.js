@@ -187,6 +187,7 @@ const getScoreWorkspace = asyncHandler(async (req, res) => {
 const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
   let leaderboard = [];
   const workspace = await Workspace.findById(req.params.workspaceid);
+  console.log(workspace);
   if (!workspace) {
     res.status(400);
     throw new Error("invalid workspace id");
@@ -223,20 +224,27 @@ const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
 const getAllFinishedProjectsInTimePourcentage = asyncHandler(
   async (req, res) => {
     const hr = await getWorkspaceHr(req.params.workspaceid);
+    console.log(hr);
     if (hr.member.equals(req.member._id)) {
       const allProjects = await Project.find({
         workspace: req.params.workspaceid,
       });
+      console.log("reqqmember",req.member);
       const fininshedProjects = await Project.find({
         workspace: req.params.workspaceid,
         status: "finished",
       });
-      res.status(200).json({
-        allProjects: allProjects,
-        finishedProjects: fininshedProjects,
-        finishedProjectsInTimePourcentage:
-          (fininshedProjects.length * 100) / allProjects.length,
-      });
+      if(allProjects.length == 0) {
+        res.status(200).json({
+          finishedProjects: 0,
+        });
+      }
+      else {
+        res.status(200).json({
+          finishedProjectsInTimePourcentage:
+            (fininshedProjects.length * 100) / allProjects.length,
+        });
+      }
     } else {
       res.status(204);
       throw new Error("you are not the workspace hr");
@@ -255,12 +263,18 @@ const getAllFinishedProjectsLatePourcentage = asyncHandler(async (req, res) => {
       status: "finished with delay",
     });
 
-    res.status(200).json({
-      allProjects: allProjects,
-      finishedProjects: fininshedProjects,
-      finishedProjectsLatePourcentage:
-        (fininshedProjects.length * 100) / allProjects.length,
-    });
+    if(allProjects.length == 0){
+      res.status(200).json({
+        finishedProjectsLatePourcentage: 0,
+      });
+    }
+    else {
+      res.status(200).json({
+        finishedProjectsLatePourcentage:
+          (fininshedProjects.length * 100) / allProjects.length,
+      });
+    }
+    
   } else {
     res.status(204);
     throw new Error("you are not the workspace hr");
@@ -298,12 +312,22 @@ const getLateTasksPercentage = asyncHandler(async (req, res) => {
         totalLateTasks = totalLateTasks + 1;
       }
     }
+    if(numberOfTasks!==0){
+      console.log(totalLateTasks,numberOfTasks);
     var percentage = (totalLateTasks / numberOfTasks) * 100;
     res.status(200).json({
       totallatetasks: totalLateTasks,
       numberOfTasks: numberOfTasks,
       percentage: percentage,
     });
+    } else {
+      res.status(200).json({
+        totallatetasks: totalLateTasks,
+        numberOfTasks: numberOfTasks,
+        percentage: 0,
+      });
+    }
+    
   }
 });
 
@@ -337,12 +361,22 @@ const getTasksInTimePercentage = asyncHandler(async (req, res) => {
        if (task.endDate <= task.expectedEndDate) { 
         totalTasksInTime=totalTasksInTime+1;}
        }
-   var percentage = (totalTasksInTime/numberOfTasks)*100;
-   res.status(200).json({
+  if(numberOfTasks!==0){
+    console.log(totalTasksInTime,numberOfTasks);
+    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: percentage,
+     });
+  }
+  res.status(200).json({
     totalTasksInTime: totalTasksInTime,
      numberOfTasks: numberOfTasks,
-     percentage: percentage,
+     percentage: 0,
    });
+   
+   
  }
  });
 

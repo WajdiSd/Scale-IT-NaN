@@ -26,14 +26,14 @@ import { PATH_DASHBOARD } from 'src/routes/paths';
 import UserList from 'src/sections/@dashboard/project/UserList';
 import useAuth from 'src/hooks/useAuth';
 import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject';
-
+import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
-  const { user } = useAuth();
+  const { user,isHr } = useAuth();
   const { project, usersInProject, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
@@ -101,12 +101,12 @@ export default function GeneralProject() {
               <BankingCurrentBalance />
             </Grid>
 
-            <Grid item xs={12} md={8}>
+            {!isHr&&<Grid item xs={12} md={8}>
               <Stack spacing={3}>
-                <BankingBalanceStatistics />
-                <BankingExpensesCategories />
+                {/* <AnalyticsFinishedTasks/> */}
+                <FinishedTasksStats/>
               </Stack>
-            </Grid>
+            </Grid>}
 
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
