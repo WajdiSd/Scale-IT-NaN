@@ -38,11 +38,7 @@ router.get(
   protect,
   getProjectsByTeamLeader
 );
-router.get(
-  "/listbymember/:idworkspace/:idmember",
-  protect,
-  getProjectsByMember
-);
+router.get("/listbymember/:idworkspace/:idmember", getProjectsByMember);
 router.get("/list/fullmembers/:idproject", protect, getFullMembersByProject);
 
 router.post("/add", protect, addProject);

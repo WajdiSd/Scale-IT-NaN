@@ -120,23 +120,15 @@ class getscoreworkspace(Action):
 
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
-        print("userid")
-        print(userid)
-
-        print("workspaceid")
-        print(workspaceid)
 
 
         request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyworkspace/{userid}/{workspaceid}").text)
-        print("request")
-        print(request)
 
         score = request["score"]
-        print("score")
-        print(score)
         text =str(score)
+        res= f"your score is {text}, you always can do better !"
                  # extract a joke from returned json response
-        dispatcher.utter_message(text)  # send the message back to the user
+        dispatcher.utter_message(res)  # send the message back to the user
         return []
 
 class getrankworkspace(Action):
@@ -151,23 +143,14 @@ class getrankworkspace(Action):
 
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
-        print("userid")
-        print(userid)
-
-        print("workspaceid")
-        print(workspaceid)
-
 
         request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankworkspaceleaderboard/{workspaceid}/{userid}").text)
-        print("request")
-        print(request)
 
         rank = request["rank"]
-        print("rank")
-        print(rank)
         text =str(rank)
+        res= f"your rank is {text}, not bad after all !"
                  # extract a joke from returned json response
-        dispatcher.utter_message(text)  # send the message back to the user
+        dispatcher.utter_message(res)  # send the message back to the user
         return []
 
 class getroleinworkspace(Action):
@@ -182,21 +165,34 @@ class getroleinworkspace(Action):
 
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
-        print("userid")
-        print(userid)
-
-        print("workspaceid")
-        print(workspaceid)
-
 
         request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
-        print("request")
-        print(request)
 
         role = request["role"]
-        print("role")
-        print(role)
         text =str(role)
+        res= f"your role is {text}"
+        
                  # extract a joke from returned json response
-        dispatcher.utter_message(text)  # send the message back to the user
+        dispatcher.utter_message(res)  # send the message back to the user
+        return []
+
+class getprojectsinworkspace(Action):
+
+    def name(self) -> Text:
+        return "projects_member_workspace"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        workspaceid = tracker.get_slot("workspaceid")
+
+        request = json.loads(requests.get(f"http://localhost:5000/api/project/listbymember/{workspaceid}/{userid}").text)
+        print(request)
+        projects = request["data"]
+        
+                 # extract a joke from returned json response
+        dispatcher.utter_message(json_message=projects)  # send the message back to the user
         return []
