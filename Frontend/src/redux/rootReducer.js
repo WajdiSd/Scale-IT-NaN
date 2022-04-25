@@ -82,6 +82,11 @@ const performancePersistConfig = {
   keyPrefix: 'redux-',
   whitelist: [
     'scoreInWorkspace',
+    'rankInWorkspace',
+    'finishedTasksInTimePourcentage',
+    'finishedTasksLatePourcentage',
+    'finishedProjectsInTimePourcentage',
+    'finishedProjectsLatePourcentage',
   ],
 };
 
