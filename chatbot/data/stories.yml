@@ -35,16 +35,35 @@ stories:
       - intent: profile
       - action: utter_profile
 
-  - story: ask node
+  - story: get username
     steps:
-      - intent: node_test
-      - action: user_action
+      - intent: get_username
+      - action: get_slot_username
 
-  - story: set slot
+  - story: set userid slot
     steps:
-      - intent: get_slot
-      - action: set_slot_action
+      - intent: get_userid_slot
+      - action: set_slot_userid
 
+  - story: set workspaceid slot
+    steps:
+      - intent: get_workspaceid_slot
+      - action: utter_workspaceid
+
+  - story: get member score in workspace
+    steps:
+      - intent: get_scoreworkspace
+      - action: score_member_workspace
+
+  - story: get member rank in workspace
+    steps:
+      - intent: get_rankworkspace
+      - action: rank_member_workspace
+
+  - story: get member role in workspace
+    steps:
+      - intent: get_roleworkspace
+      - action: role_member_workspace
   # - story: ask faq
   #   steps:
   #     - intent: greet

@@ -16,6 +16,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { DialogAnimate } from 'src/components/animate';
 import WorkspaceForm from './WorkspaceForm';
+import createAvatar from 'src/utils/createAvatar';
+import Avatar from 'src/components/Avatar';
 
 // ----------------------------------------------------------------------
 
@@ -48,9 +50,9 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function WorkspaceCover() {
+export default function WorkspaceCover({name}) {
   const { user } = useAuth();
-  const { workspace, usersInWorkspace } = useWorkspace();
+  const { workspace, usersInWorkspace, isLoading } = useWorkspace();
   const [hRName, setHRName] = useState('');
   const { id } = useParams();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -78,8 +80,9 @@ export default function WorkspaceCover() {
 
   return (
     <RootStyle>
+      
       <InfoStyle>
-        <MyAvatar
+      <Avatar
           sx={{
             mx: 'auto',
             borderWidth: 2,
@@ -88,7 +91,11 @@ export default function WorkspaceCover() {
             width: { xs: 80, md: 128 },
             height: { xs: 80, md: 128 },
           }}
-        />
+          alt={name}
+          color={createAvatar(name).color}
+        >
+          {createAvatar(name).name}
+        </Avatar>
         <Box
           sx={{
             ml: { md: 3 },
@@ -115,7 +122,7 @@ export default function WorkspaceCover() {
       </InfoStyle>
       <Image
         alt="profile cover"
-        src="https://minimal-assets-api.vercel.app/assets/images/covers/cover_1.jpg"
+        src="/images/covers/cover_1.jpg"
         sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>

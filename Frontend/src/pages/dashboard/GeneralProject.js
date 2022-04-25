@@ -15,7 +15,7 @@ import {
 } from '../../sections/@dashboard/general/banking';
 import ProjectMembersList from 'src/sections/@dashboard/project/ProjectMembersList';
 import ProjectStatus from 'src/sections/@dashboard/project/ProjectStatus';
-import { getFullMemberByProject, getProject } from 'src/redux/slices/projectSlice';
+import { getFullMemberByProject, getProject, getProjectleaderboard } from 'src/redux/slices/projectSlice';
 import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
@@ -41,12 +41,14 @@ export default function GeneralProject() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
+    console.log("useEffect");
     const obj = {
       idProject: projectid,
       idUser: user._id,
     };
     dispatch(getProject(obj));
+    dispatch(getProjectleaderboard(projectid))
+
   }, []);
 
   return (

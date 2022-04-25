@@ -8,7 +8,7 @@ import useProject from 'src/hooks/useProject';
 import { useParams } from 'react-router';
 
 // @mui
-import { Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle, Grid } from '@mui/material';
+import { Divider, Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle, Grid } from '@mui/material';
 
 // components
 import Iconify from '../../../components/Iconify';
@@ -84,7 +84,7 @@ export default function ProjectCard({ loaded, projects }) {
           <>
             {isHr && unarchivedProjects.length > 0 ? (
               <>
-                <Typography variant="h2">Projects in your workspace.</Typography>
+                <Typography sx={{ mb: 3 }} variant="h5">Projects in your workspace.</Typography>
 
                 <Box
                   sx={{
@@ -108,6 +108,7 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
+                <Divider sx={{ my: 3 }}/>
               </>
             ) : (
               ''
@@ -116,7 +117,7 @@ export default function ProjectCard({ loaded, projects }) {
               ''
             ) : (
               <>
-                <Typography variant="h2">Projects you manage.</Typography>
+                <Typography variant="h5">Projects you manage.</Typography>
                 <Box
                   sx={{
                     display: 'grid',
@@ -143,15 +144,17 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
+                <Divider sx={{ my: 3 }}/>
               </>
             )}
             {ledProjects.length === 0 ? (
               ''
             ) : (
               <>
-                <Typography variant="h2">Projects you lead.</Typography>
+                <Typography variant="h5" sx={{ mt: 3 }}>Projects you lead.</Typography>
                 <Box
                   sx={{
+                    my:3,
                     display: 'grid',
                     gap: 3,
                     gridTemplateColumns: {
@@ -176,15 +179,17 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
+                <Divider sx={{ my: 3 }}/>
               </>
             )}
             {normalProjects.length === 0 ? (
               ''
             ) : (
               <>
-                <Typography variant="h2">Projects you're in.</Typography>
+                <Typography variant="h5" sx={{ mt: 3 }}>Projects you're in.</Typography>
                 <Box
                   sx={{
+                    my:3,
                     display: 'grid',
                     gap: 3,
                     gridTemplateColumns: {
@@ -208,6 +213,7 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
+                <Divider/>
               </>
             )}
           </>

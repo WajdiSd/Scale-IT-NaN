@@ -121,7 +121,7 @@ export default function AddWorkspace() {
   };
 
   return (
-    <Page title="General: App">
+    <Page title="Workspace: New">
       <Container maxWidth={themeStretch ? false : 'xl'}>
       <HeaderBreadcrumbs
           heading="Workspace"
@@ -145,7 +145,7 @@ export default function AddWorkspace() {
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
                   <div>
-                    <LabelStyle>Add New Workspace </LabelStyle>
+                  <Typography variant="h5">Add New Workspace</Typography>
                   </div>
                   <RHFTextField name="name" label="Workspace Name" />
 

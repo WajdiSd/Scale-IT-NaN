@@ -21,8 +21,13 @@ const useTaskInvite = (id) => {
 
   const dispatch = useDispatch();
 
-  const submitInvite = () => {
-    dispatch(submitInvitationsToTask(id));
+  const submitInvite = (handleClose, setRefreshTasks) => {
+    dispatch(submitInvitationsToTask(id)).then((res) => {
+      if (!res.error) {
+        handleClose();
+        setRefreshTasks(true);
+      }
+    });
   };
 
   const fetchTaskMembers = () => {

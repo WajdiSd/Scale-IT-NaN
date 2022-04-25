@@ -153,7 +153,7 @@ export default function GeneralWorkspace() {
           (
             <>
         <CardHeader title="Workspaces that you joined" subheader="" />
-        <Grid container spacing={3}>
+        <Grid container spacing={3} mt={3}>
           {userJoinedspaces?.length>0
             ? userJoinedspaces.map((workspace, index) =>
                 workspace ? (

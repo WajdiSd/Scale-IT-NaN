@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+import { useParams } from 'react-router';
+
 // @mui
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Typography } from '@mui/material';
@@ -12,6 +14,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import MyAvatar from '../../../components/MyAvatar';
 import { useEffect, useState } from 'react';
 import useWorkspaceId from 'src/hooks/useWorkspaceId';
+import useProject from 'src/hooks/useProject';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +36,11 @@ NavbarAccount.propTypes = {
 };
 
 export default function NavbarAccount({ isInWorkspace, isCollapse }) {
-  const { user, isHr } = useAuth();
+  const { user, isHr, isProjectManager } = useAuth();
+  const { isTL, isPM } = useProject();
+
   const { rootWorkspace } = useWorkspaceId();
+  const { id, projectid } = useParams();
 
   const _id = rootWorkspace;
 
@@ -71,7 +77,30 @@ export default function NavbarAccount({ isInWorkspace, isCollapse }) {
               {user?.firstName} {user?.lastName}
             </Typography>
             <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
-              {user?.role}
+            {
+                id?
+                (
+                  projectid?
+                  (isTL?
+                    ('Team Leader')
+                    :
+                    (isPM?
+                      ('Project Manager')
+                      :
+                      ('Member')
+                    )
+                  )
+                  :
+                  (
+                    isHr?
+                  ('HR'):(isProjectManager? 'Project Manager' : "Member")
+                  )
+                )
+                :
+                (
+                  ''
+                )
+              }
             </Typography>
           </Box>
         </RootStyle>

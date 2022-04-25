@@ -89,7 +89,7 @@ export default function Login() {
             </Typography>
             <Image
               alt="login"
-              src="https://minimals.cc/assets/illustrations/illustration_login.png"
+              src="/images/illustrations/illustration_login.png"
             />
           </SectionStyle>
         )}

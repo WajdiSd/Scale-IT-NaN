@@ -21,7 +21,6 @@ import useAuth from './hooks/useAuth';
 export default function App() {
 
   const {isAuthenticated} = useAuth();
-  console.log(isAuthenticated);
   const test = useSelector(
     (state) => state
   )
@@ -38,8 +37,6 @@ export default function App() {
                 <ChartStyle />
                 <Settings />
                 {isAuthenticated && <ChatSection/>}
-                
-                
                 <ScrollToTop />
                 <Router />
               </MotionLazyContainer>

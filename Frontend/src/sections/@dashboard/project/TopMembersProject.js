@@ -15,6 +15,7 @@ import { getProjectleaderboard } from 'src/redux/slices/projectSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useProject from 'src/hooks/useProject';
+import EmptyComponent from 'src/components/EmptyComponent';
 
 // ----------------------------------------------------------------------
 
@@ -44,20 +45,45 @@ export default function TopMembersProject() {
     }
   };
   const displayAuthor = orderBy(_appAuthors, ['favourite'], ['desc']);
-  const { leaderboardProject } = useProject();
+  const { leaderboardProject, isLoading } = useProject();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getLeaderboard();
+    //getLeaderboard();
   }, []);
   return (
     <Card>
       <CardHeader title="Top Members" />
-      <Stack spacing={3} sx={{ p: 3 }}>
-        {leaderboardProject?.map((member, index) => (
-          <MemberItem key={member.member} member={member} index={index} />
-        ))}
-      </Stack>
+      {
+        !leaderboardProject ? 
+      (
+          <Box
+          sx={{
+            mt: 10,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={100} color="success" />
+        </Box>
+        )
+        :
+        (<Stack spacing={3} sx={{ p: 3 }}>
+          {
+          leaderboardProject.length==0 ? 
+          (            <Typography sx={{ color: 'text.secondary' }}>Start tasks first...</Typography>
+          ):
+          (
+            leaderboardProject?.map((member, index) => (
+              <MemberItem key={member.member} member={member} index={index} />
+            ))
+          )
+          }
+        </Stack>)
+        }
+      
     </Card>
   );
 }

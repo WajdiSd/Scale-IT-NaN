@@ -31,11 +31,9 @@ const ITEM_HEIGHT = 64;
 
 // ----------------------------------------------------------------------
 
-export default function AssignMembersToTask({ open, taskId, handleClose, refresh }) {
-  const { usersInProject } = useProject();
+export default function AssignMembersToTask({ open, taskId, handleClose, setRefreshTasks }) {
   const {
     users,
-    taskMembers,
     notAssignedMembers,
     addMemberUser,
     removeUserHook,
@@ -54,8 +52,7 @@ export default function AssignMembersToTask({ open, taskId, handleClose, refresh
   }, [open]);
 
   function handleSubmit() {
-    submitInvite();
-    handleClose();
+    submitInvite(handleClose, setRefreshTasks);
   }
 
   function handleMemberInput(email) {
