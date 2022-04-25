@@ -58,7 +58,6 @@ import UpdateTaskForm from 'src/sections/@dashboard/tasks/UpdateTaskForm';
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
 
-
 // ----------------------------------------------------------------------
 
 const PRIORITY_OPTIONS = ['all', 'Low', 'Medium', 'High'];
@@ -110,17 +109,15 @@ export default function TasksList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'startDate' });
 
-
   let toastId = useRef(null);
 
-
   const notify = (text) => {
-    toastId.current = 
-    themeMode === 'dark'? toast(text, { autoClose: false, type: toast.TYPE.INFO })
-    :
-    toast.dark(text, { autoClose: false, type: toast.TYPE.INFO })
-  }
-  const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
+    toastId.current =
+      themeMode === 'dark'
+        ? toast(text, { autoClose: false, type: toast.TYPE.INFO })
+        : toast.dark(text, { autoClose: false, type: toast.TYPE.INFO });
+  };
+  const update = (text) => toast.update(toastId.current, { render: text, type: toast.TYPE.SUCCESS, autoClose: 5000 });
 
   const [filterName, setFilterName] = useState('');
 
@@ -130,28 +127,53 @@ export default function TasksList() {
 
   const [filterEndDate, setFilterEndDate] = useState(null);
 
-  const [refreshTasks, setRefreshTasks] = useState(false);
+  const [refreshTasks, setRefreshTasks] = useState(true);
 
   const [open, setOpen] = useState(false);
   const [taskId, setTaskId] = useState('');
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
-  useEffect(() => {
-    setRefreshTasks(false)
-    const data = {
-      memberId: user._id,
-      projectId: projectid,
-      isExecutive: isTL || isPM || idProjectManager || isHr,
-    };
+  const [dataFiltered, setDataFiltered] = useState(
+    applySortFilter({
+      memberTasks,
+      comparator: getComparator(order, orderBy),
+      filterName,
+      filterService,
+      filterStatus,
+      filterStartDate,
+      filterEndDate,
+    })
+  );
 
-    dispatch(getUserTasks(data));
-  }, [refreshTasks]);
+  useEffect(() => {
+    if (refreshTasks) {
+      setRefreshTasks(false);
+      const data = {
+        memberId: user._id,
+        projectId: projectid,
+        isExecutive: isTL || isPM || idProjectManager || isHr,
+      };
+
+      dispatch(getUserTasks(data));
+    }
+
+    setDataFiltered(
+      applySortFilter({
+        memberTasks,
+        comparator: getComparator(order, orderBy),
+        filterName,
+        filterService,
+        filterStatus,
+        filterStartDate,
+        filterEndDate,
+      })
+    );
+  }, [refreshTasks, memberTasks]);
 
   const handleCloseInvite = () => {
     setTaskId('');
     setOpen(false);
-    setRefreshTasks(true);
   };
 
   const handleInviteRow = (id) => {
@@ -172,10 +194,10 @@ export default function TasksList() {
   const handleDeleteRow = (id) => {
     const teamLeadId = user._id;
     const projectId = projectid;
-    notify("Deleting task...")
+    notify('Deleting task...');
 
     dispatch(deleteTask({ teamLeadId: teamLeadId, projectId: projectId, taskId: id })).then((res) => {
-      if(res.payload){
+      if (res.payload) {
         setRefreshTasks(true);
         update('Deleted task successfully');
         const deleteRow = memberTasks.filter((row) => row.id !== id);
@@ -187,7 +209,7 @@ export default function TasksList() {
   };
 
   const handleAddTask = (data) => {
-    notify("Adding task...")
+    notify('Adding task...');
 
     dispatch(addTask(data)).then((res) => {
       if (!res.error) {
@@ -201,8 +223,7 @@ export default function TasksList() {
   };
 
   const handleUpdateTask = (data) => {
-
-    notify("Updating task...")
+    notify('Updating task...');
 
     dispatch(updateTask(data)).then((res) => {
       console.log(res);
@@ -210,17 +231,14 @@ export default function TasksList() {
         update('Successfully updated task');
         setRefreshTasks(true);
       } else
-      update('unable to update task', {
+        update('unable to update task', {
           variant: 'error',
         });
     });
   };
 
   const handleSubmitInvite = () => {
-
-    notify("Updating task...")
-
-   
+    notify('Updating task...');
   };
 
   const handleEditRow = (task) => {
@@ -231,16 +249,6 @@ export default function TasksList() {
   const handleViewRow = (id) => {
     navigate(PATH_DASHBOARD.invoice.view(id));
   };
-
-  const dataFiltered = applySortFilter({
-    memberTasks,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    filterService,
-    filterStatus,
-    filterStartDate,
-    filterEndDate,
-  });
 
   const denseHeight = dense ? 56 : 76;
 
@@ -285,20 +293,24 @@ export default function TasksList() {
   };
   return (
     <Page title="Tasks: List">
-      
-      <AssignMembersToTask open={open} taskId={taskId} handleClose={handleCloseInvite} />
-      <Container maxWidth={themeStretch ? false : 'lg'}>
-      <ToastContainer
-        position="top-right"
-        autoClose={false}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
+      <AssignMembersToTask
+        open={open}
+        taskId={taskId}
+        handleClose={handleCloseInvite}
+        setRefreshTasks={setRefreshTasks}
       />
+      <Container maxWidth={themeStretch ? false : 'lg'}>
+        <ToastContainer
+          position="top-right"
+          autoClose={false}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Tasks"
@@ -480,6 +492,7 @@ export default function TasksList() {
                     <TasksTableRow
                       key={row._id}
                       row={row}
+                      dataFiltered={dataFiltered}
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onViewRow={() => handleViewRow(row._id)}

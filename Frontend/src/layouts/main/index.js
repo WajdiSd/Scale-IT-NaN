@@ -39,7 +39,7 @@ export default function MainLayout() {
             <Typography variant="caption" component="p">
               © All rights reserved
               <br /> made by &nbsp;
-              <Link href="https://minimals.cc/">minimals.cc</Link>
+              <Link href="#">NaN</Link>
             </Typography>
           </Container>
         </Box>

@@ -20,6 +20,7 @@ import {
   TablePagination,
   FormControlLabel,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -45,7 +46,7 @@ import { DialogAnimate } from 'src/components/animate';
 import InviteMembersToProjectForm from './InviteMembersToProjectForm';
 
 import { useDispatch } from '../../../redux/store';
-import { assignProjectManager, getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
+import { assignProjectManager, getFullMemberByProject, inviteMemberToProject, removeMembersFromProject, restoreMembersFromProject, updateTeamLeader } from 'src/redux/slices/projectSlice';
 import { useSnackbar } from 'notistack';
 import useAuth from 'src/hooks/useAuth';
 import { ToastContainer, toast } from 'material-react-toastify';
@@ -60,7 +61,7 @@ const ROLE_OPTIONS = ['all', 'Project Manager', 'Team Leader', 'Member'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
+  { id: 'workspace', label: 'Workspace', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
   { id: 'isVerified', label: 'Verified', align: 'center' },
   { id: 'status', label: 'Status', align: 'left' },
@@ -90,7 +91,8 @@ export default function UserList() {
   } = useTable();
 
   const { themeStretch, themeMode } = useSettings();
-  const {usersInProject, project, isTL} = useProject();
+
+  const {usersInProject, project, isTL, isLoading} = useProject();
   const {user} = useAuth();
 
   const navigate = useNavigate();
@@ -160,10 +162,7 @@ export default function UserList() {
   }
   const update = (text) => toast.update(toastId.current, { render: text,type: toast.TYPE.SUCCESS, autoClose: 5000 });
 
-  useEffect(() => {
-    console.log("useEffect");
-    setReloadData(false)
-  }, [reloadData]);
+  
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -194,10 +193,43 @@ export default function UserList() {
     }
   };
 
+  const handleRestoreRow = (id) => {
+    const data = {
+      userIds: [id],
+      idproject: projectid,
+      idtl: user._id,
+    };
+    try {
+    notify("Restoring member...")
+
+      dispatch(restoreMembersFromProject(data)).then(()=>{
+      update("Member restored")
+        setReloadData(true);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleDeleteRows = (selected) => {
-    //const deleteRows = usersInProject.filter((row) => !selected.includes(row.id));
-    //setSelected([]);
-    //setusersInProject(deleteRows);
+    console.log(selected);
+    const data = {
+      userIds: selected,
+      idproject: projectid,
+      idtl: user._id,
+    };
+    try {
+    notify("Removing members...")
+
+      dispatch(removeMembersFromProject(data)).then(()=>{
+      update("Members removed")
+        setReloadData(true);
+        setSelected([]);
+
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleEditRow = (id) => {
@@ -364,6 +396,7 @@ export default function UserList() {
                         selected={selected.includes(row?._id)}
                         onSelectRow={() => onSelectRow(row?._id)}
                         onDeleteRow={() => handleDeleteRow(row?._id)}
+                        onRestoreRow={() => handleRestoreRow(row?._id)}
                         onEditRow={() => handleEditRow(row?._id)}
                         onAssignTeamLeader={() => handleAssignTeamLeader(row?._id)}
                         onAssignProjectManager={() => onAssignProjectManager(row?._id)}

@@ -20,7 +20,7 @@ const CARDS = [
     description: 'Easy to customize and extend each component, saving you time and money.',
   },
   {
-    icon: '/logo/logo_single.svg',
+    icon: '/logo/logo.svg',
     title: 'Branding',
     description: 'Consistent design in colors, fonts ... makes brand recognition easy.',
   },
@@ -98,11 +98,11 @@ export default function HomeMinimal() {
         >
           <MotionInView variants={varFade().inUp}>
             <Typography component="div" variant="overline" sx={{ mb: 2, color: 'text.disabled' }}>
-              Minimal
+              NaN
             </Typography>
           </MotionInView>
           <MotionInView variants={varFade().inDown}>
-            <Typography variant="h2">What minimal helps you?</Typography>
+            <Typography variant="h2">What Scale IT helps you?</Typography>
           </MotionInView>
         </Box>
 

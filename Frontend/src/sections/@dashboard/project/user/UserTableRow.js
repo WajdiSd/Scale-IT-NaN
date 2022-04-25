@@ -9,6 +9,7 @@ import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import useProject from 'src/hooks/useProject';
 import useAuth from 'src/hooks/useAuth';
+import useWorkspace from 'src/hooks/useWorkspace';
 
 // ----------------------------------------------------------------------
 
@@ -21,9 +22,10 @@ UserTableRow.propTypes = {
   onAssignTeamLeader: PropTypes.func,
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onAssignTeamLeader, onAssignProjectManager }) {
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, onRestoreRow,onAssignTeamLeader, onAssignProjectManager }) {
   const theme = useTheme();
   const {user} = useAuth();
+  const {workspace} = useWorkspace();
 
   const { _id, company, role, isVerified, isTeamLeader, isDeleted, isProjectManager, status, phone, updatedAt, lastName, firstName, isValidated, gender, email } = row;
   const {isTL, isPM} = useProject();
@@ -50,13 +52,13 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={firstName+' '+lastName} src={'https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_13.jpg'} sx={{ mr: 2 }} />
+        <Avatar alt={firstName+' '+lastName} src={'/images/avatars/avatar_13.jpg'} sx={{ mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
           {firstName+' '+lastName}
         </Typography>
       </TableCell>
 
-      <TableCell align="left">{company}</TableCell>
+      <TableCell align="left">{workspace?.name}</TableCell>
 
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
        {
@@ -118,10 +120,11 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                           <MenuItem
                             onClick={() => {
                               handleCloseMenu();
+                              onRestoreRow();
                             }}
-                            sx={{ color: 'error.main' }}
+                            sx={{ color: 'success.main' }}
                           >
-                            <Iconify icon={'eva:trash-2-outline'} />
+                            <Iconify icon={'ant-design:undo-outlined'} />
                             Restore
                           </MenuItem>
                         )

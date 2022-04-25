@@ -135,6 +135,8 @@ export const addTask = createAsyncThunk('task/addTask', async (data, thunkAPI) =
 // Fetch projects in workspace for HR and ProjectManagers
 export const getUserTasks = createAsyncThunk('task/getUserTasks', async (object, thunkAPI) => {
   try {
+    console.log('object');
+    console.log(object);
     const listProjects = await taskService.getUserTasks(object);
 
     return listProjects;

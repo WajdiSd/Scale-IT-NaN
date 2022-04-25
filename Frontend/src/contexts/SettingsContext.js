@@ -3,7 +3,7 @@ import { createContext } from 'react';
 // hooks
 import useLocalStorage from '../hooks/useLocalStorage';
 // utils
-import getColorPresets, { colorPresets, defaultPreset } from '../utils/getColorPresets';
+import getColorPresets, { colorPresets, defaultPreset, bluePreset } from '../utils/getColorPresets';
 // config
 import { defaultSettings } from '../config';
 
@@ -18,7 +18,7 @@ const initialState = {
   onToggleStretch: () => {},
   onChangeLayout: () => {},
   onResetSetting: () => {},
-  setColor: defaultPreset,
+  setColor: bluePreset,
   colorOption: [],
 };
 
@@ -61,8 +61,6 @@ function SettingsProvider({ children }) {
   };
 
   const onChangeColor = (event) => {
-    console.log("event.target.value");
-    console.log(event.target.value);
     setSettings({
       ...settings,
       themeColorPresets: event.target.value,

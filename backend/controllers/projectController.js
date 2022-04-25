@@ -726,6 +726,45 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
   }
 });
 
+/**
+ * @desc restore a list of members from a project
+ * @var(members,list of member ids )
+ * @route PUT /api/project/restore-members/:idproject/:idtl
+ * idpm : id of current user inviting
+ */
+ const restoreMembers = asyncHandler(async (req, res, next) => {
+  var verif = false;
+  const userIds = req.body;
+  const project = await Project.findById(req.params.idproject);
+  for (let i = 0; i < project.assigned_members.length; i++) {
+    if (
+      project.assigned_members[i].memberId == req.params.idtl &&
+      project.assigned_members[i].isTeamLeader == true
+    )
+      verif = true;
+  }
+
+  if (!verif) {
+    res.status(404);
+    throw new Error("changes are not made by a TL!");
+  } else {
+    for (let i = 0; i < userIds.length; i++) {
+      await Project.findOneAndUpdate(
+        { _id: req.params.idproject, "assigned_members.memberId": userIds[i] },
+        {
+          $set: {
+            "assigned_members.$.isDeleted": false,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+    return res.status(200).json(userIds);
+  }
+});
+
 // Check if user exists in Project
 // @desc Check if user exists in Project
 // @route post /api/project/:projectid/:email
@@ -774,4 +813,5 @@ module.exports = {
   abortproject,
   finishproject,
   assignNewProjectManager,
+  restoreMembers,
 };

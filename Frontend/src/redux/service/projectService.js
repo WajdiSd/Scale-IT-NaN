@@ -34,6 +34,12 @@ const removeMembersFromProject = async (idproject, idtl, userIds) => {
   return response.data;
 };
 
+//restore members
+const restoreMembersFromProject = async (idproject, idtl, userIds) => {
+  const response = await axiosInstance.put(API_URL + 'restore-members/' + idproject + '/' + idtl, userIds);
+  return response.data;
+};
+
 //restores project
 const restoreProject = async (projectId, workspaceId, memberId) => {
   const response = await axiosInstance.put(API_URL + 'undelete/' + projectId, { workspaceId, memberId });
@@ -126,6 +132,7 @@ const projectService = {
   assignProjectManager,
   checkIfUserExistsInProject,
   getProjectleaderboard,
+  restoreMembersFromProject,
 };
 
 export default projectService;

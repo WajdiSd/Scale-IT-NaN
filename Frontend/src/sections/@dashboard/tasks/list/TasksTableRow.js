@@ -38,15 +38,25 @@ TasksTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
 };
 
-export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onInviteRow, onDeleteRow }) {
+export default function TasksTableRow({
+  row,
+  selected,
+  onSelectRow,
+  onViewRow,
+  onEditRow,
+  onInviteRow,
+  onDeleteRow,
+  dataFiltered,
+}) {
   const theme = useTheme();
   const { user } = useAuth();
-  const { usersInProject , isTL, isPM} = useProject();
+  const { usersInProject, isTL, isPM } = useProject();
 
   const { name, description, startDate, expectedEndDate, status, endDate, priority, members } = row;
   const [membersInTask, setMembersInTask] = useState([]);
 
   useEffect(() => {
+    setMembersInTask([]);
     members.map((memberinTask) => {
       usersInProject.map((memberInfo) => {
         if (memberinTask.memberId == memberInfo._id) {
@@ -55,7 +65,7 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
         }
       });
     });
-  }, []);
+  }, [dataFiltered]);
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -154,41 +164,40 @@ export default function TasksTableRow({ row, selected, onSelectRow, onViewRow, o
                 View
               </MenuItem>
 
-              {
-                isTL && <>
-                <MenuItem
-                onClick={() => {
-                  onInviteRow();
-                  handleCloseMenu();
-                }}
-              >
-                <Iconify icon={'eva:plus-fill'} />
-                Invite
-              </MenuItem>
+              {isTL && (
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      onInviteRow();
+                      handleCloseMenu();
+                    }}
+                  >
+                    <Iconify icon={'eva:plus-fill'} />
+                    Invite
+                  </MenuItem>
 
-              <MenuItem
-                onClick={() => {
-                  onEditRow();
-                  handleCloseMenu();
-                }}
-              >
-                <Iconify icon={'eva:edit-fill'} />
-                Edit
-              </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      onEditRow();
+                      handleCloseMenu();
+                    }}
+                  >
+                    <Iconify icon={'eva:edit-fill'} />
+                    Edit
+                  </MenuItem>
 
-              <MenuItem
-                onClick={() => {
-                  onDeleteRow();
-                  handleCloseMenu();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
-              </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      onDeleteRow();
+                      handleCloseMenu();
+                    }}
+                    sx={{ color: 'error.main' }}
+                  >
+                    <Iconify icon={'eva:trash-2-outline'} />
+                    Delete
+                  </MenuItem>
                 </>
-              }
-              
+              )}
             </>
           }
         />

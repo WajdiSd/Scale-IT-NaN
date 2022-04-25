@@ -81,7 +81,7 @@ export default function WorkspaceInviteFriends() {
       <Image
         visibleByDefault
         disabledEffect
-        src="https://minimals.cc/assets/illustrations/illustration_invite.png"
+        src="/images/illustrations/illustration_invite.png"
         sx={{
           left: 40,
           zIndex: 9,
