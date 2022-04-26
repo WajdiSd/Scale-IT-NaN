@@ -1,29 +1,20 @@
 //pdf import
-import React, { PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
 import jsPDF from 'jspdf';
+
 //end pdfimport
 
 
 //pdf
 //pass infos
-/*
-pdfGenerator.propTypes = {
-    score: PropTypes.string,
-  };
-*/
 
-export default class pdfGenerator extends PureComponent{
-  constructor(props){
-    super(props)
-    this.state = {
 
-    }
-  }
-  
+
+export default class pdfGenerator extends Component{
   //Function
 jsPdfGenerator = () =>{
   //new doc
-  var doc = new jsPDF('p','pt');
+  var doc = new jsPDF('landscape','px','a4','false');
   //personalize
   doc.text(20,20,'Report');
   doc.setFont('courier');
@@ -33,7 +24,8 @@ jsPdfGenerator = () =>{
 
   //render
   render(){
-    return(<button onClick={this.jsPdfGenerator}>Get REPORT</button>)
-  }
+    return(
+    <button onClick={this.jsPdfGenerator}>Get REPORT</button>
+    )}
 
 }
