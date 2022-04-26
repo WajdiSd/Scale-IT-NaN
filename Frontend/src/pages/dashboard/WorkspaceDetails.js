@@ -28,6 +28,8 @@ import ProjectCard from 'src/sections/@dashboard/project/ProjectCard';
 import WorkspaceUserPerformance from './WorkspaceUserPerformance';
 // slices
 import { getWorkspace, getworspaceleaderboard } from 'src/redux/slices/workspaceSlice';
+import { askBot } from 'src/redux/slices/chatbotSlice';
+
 import { useSnackbar } from 'notistack';
 import TopMembers from 'src/components/TopMembers';
 
@@ -93,9 +95,19 @@ export default function WorkspaceDetails() {
     }
   };
 
+  const sendWorkspaceInfo = () => {
+    console.log("sendWorkspaceInfo")
+    try {
+      dispatch(askBot({message: `workspaceid ${idWorkspace}`, senderId: user._id}));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     resetProjectsStore();
     getUserWorkspace();
+    sendWorkspaceInfo();
   }, []);
 
   const [currentTab, setCurrentTab] = useState('Projects');

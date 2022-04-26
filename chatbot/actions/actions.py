@@ -70,10 +70,11 @@ class getusernameAction(Action):
         # print(userid)
         request = json.loads(requests.get(f"http://localhost:5000/api/members/connecteduser/{userid}").text)
         username = request["message"]
-        print(username)
+        res= f"Hey {username} ! How are you?"
+
                  # extract a joke from returned json response
-        dispatcher.utter_message(username)  # send the message back to the user
-        return [SlotSet("username" , username)] 
+        dispatcher.utter_message(res)  # send the message back to the user
+        return [] 
 
 
 class getUserid(Action):
@@ -88,6 +89,7 @@ class getUserid(Action):
         userid = tracker.sender_id
         print("setting userid slot")
         print(userid)
+        dispatcher.utter_message("Welcome to Scale IT")  # send the message back to the user
         return [SlotSet("userid" , userid)] 
         # SlotSet("userid" , "622ef3a0399260d13597b4cf")
        

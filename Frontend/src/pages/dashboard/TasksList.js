@@ -134,18 +134,6 @@ export default function TasksList() {
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
-  const [dataFiltered, setDataFiltered] = useState(
-    applySortFilter({
-      memberTasks,
-      comparator: getComparator(order, orderBy),
-      filterName,
-      filterService,
-      filterStatus,
-      filterStartDate,
-      filterEndDate,
-    })
-  );
-
   useEffect(() => {
     if (refreshTasks) {
       setRefreshTasks(false);
@@ -157,18 +145,6 @@ export default function TasksList() {
 
       dispatch(getUserTasks(data));
     }
-
-    setDataFiltered(
-      applySortFilter({
-        memberTasks,
-        comparator: getComparator(order, orderBy),
-        filterName,
-        filterService,
-        filterStatus,
-        filterStartDate,
-        filterEndDate,
-      })
-    );
   }, [refreshTasks, memberTasks]);
 
   const handleCloseInvite = () => {
@@ -247,8 +223,18 @@ export default function TasksList() {
   };
 
   const handleViewRow = (id) => {
-    navigate(PATH_DASHBOARD.invoice.view(id));
+    //navigate(PATH_DASHBOARD.invoice.view(id));
   };
+
+  const dataFiltered = applySortFilter({
+    memberTasks,
+    comparator: getComparator(order, orderBy),
+    filterName,
+    filterService,
+    filterStatus,
+    filterStartDate,
+    filterEndDate,
+  })
 
   const denseHeight = dense ? 56 : 76;
 
@@ -553,11 +539,11 @@ function applySortFilter({
   });
 
   memberTasks = stabilizedThis?.map((el) => el[0]);
-
+  console.log(memberTasks);
   if (filterName) {
     memberTasks = memberTasks.filter(
       (item) =>
-        item.name.toLoweminimalrCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
