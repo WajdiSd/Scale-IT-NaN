@@ -14,8 +14,8 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   message: '',
-  allfinishedTasksInTimePourcentage: '',
-  allfinishedTasksLatePourcentage: '',
+  allfinishedTasksInTimePercentage: '',
+  allfinishedTasksLatePercentage: '',
 };  
 
 
@@ -42,8 +42,8 @@ export const performanceSlice = createSlice({
             (state.finishedProjectsLatePourcentage = ''),
             (state.finishedTasksInTimePourcentage = ''),
             (state.finishedTasksLatePourcentage = ''),
-            (state.allfinishedTasksInTimePourcentage = ''),
-            (state.allfinishedTasksLatePourcentage = ''),
+            (state.allfinishedTasksInTimePercentage = ''),
+            (state.allfinishedTasksLatePercentage = ''),
 
             (state.isError = false),
             (state.isSuccess = false),
@@ -118,13 +118,13 @@ export const performanceSlice = createSlice({
           state.message = 'Successfully fetched finished tasks in time pourcentage';
           console.log(action);
         })
-        //test C getAllTasksInTimePercentage
+        //test C 
         .addCase(getAllTasksInTimePercentage.rejected, (state, action) => {
           state.isLoading = false;
           console.log("getAllTasksInTimePercentage rejected");
         })
         .addCase(getAllTasksInTimePercentage.fulfilled, (state, action) => {
-          state.allfinishedTasksInTimePourcentage = action.payload.percentage;
+          state.allfinishedTasksInTimePercentage = action.payload.percentage;
           state.isLoading = false;
           state.isSuccess = true;
           state.message = 'Successfully fetched all finished tasks in time pourcentage';
@@ -135,7 +135,7 @@ export const performanceSlice = createSlice({
           console.log("getAllLateTasksPercentage rejected");
         })
         .addCase(getAllLateTasksPercentage.fulfilled, (state, action) => {
-          state.allfinishedTasksLatePourcentage = action.payload.percentage;
+          state.allfinishedTasksLatePercentage = action.payload.percentage;
           state.isLoading = false;
           state.isSuccess = true;
           state.message = 'Successfully fetched all finished tasks in time pourcentage';
@@ -185,7 +185,7 @@ export const getFinishedProjectsLatePourcentage = createAsyncThunk(
   'performance/getFinishedProjectsLatePourcentage',
   async (workspaceId, thunkAPI) => {
       try {
-          const response = await performanceService.getFinishedProjectsLatePourcentage(workspaceId);
+          const response = await performanceService.getAllLateTasksPercentage(workspaceId);
           return response;
       } catch (error) {
           return thunkAPI.rejectWithValue(error);
@@ -221,7 +221,7 @@ export const getAllTasksInTimePercentage = createAsyncThunk(
   'performance/getAllTasksInTimePercentage',
   async (data, thunkAPI) => {
       try {
-          const response = await performanceService.getAllTasksInTimePercentage(data.projectid);
+          const response = await performanceService.getAllTasksInTimePercentage(data);
           return response;
       } catch (error) {
           return thunkAPI.rejectWithValue(error);
@@ -233,7 +233,7 @@ export const getAllLateTasksPercentage = createAsyncThunk(
   'performance/getAllLateTasksPercentage',
   async (data, thunkAPI) => {
       try {
-          const response = await performanceService.getAllLateTasksPercentage(data.projectid);
+          const response = await performanceService.getAllLateTasksPercentage(data);
           return response;
       } catch (error) {
           return thunkAPI.rejectWithValue(error);

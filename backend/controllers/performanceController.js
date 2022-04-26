@@ -529,7 +529,7 @@ const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
   res.status(200).json({
     totalTasksInTime: totalTasksInTime,
      numberOfTasks: numberOfTasks,
-     percentage: (totalTasksInTime/numberOfTasks)*100,
+     percentage: 0,
    });
  });
 
@@ -549,18 +549,18 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
    project: req.params.idproj,
    isDeleted: false,
  });
-  var totalTasksInTime = 0;
+  var totallateTasks = 0;
   var numberOfTasks = 0;
   for (var task of totaltasks) {
        numberOfTasks=numberOfTasks+1;
        if (task.endDate > task.expectedEndDate) { 
-        totalTasksInTime=totalTasksInTime+1;}
+        totallateTasks=totallateTasks+1;}
        }
   if(numberOfTasks!==0){
-    console.log(totalTasksInTime,numberOfTasks);
-    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    console.log(totallateTasks,numberOfTasks);
+    var percentage = (totallateTasks/numberOfTasks)*100;
     res.status(200).json({
-      totalTasksInTime: totalTasksInTime,
+      totallateTasks: totallateTasks,
        numberOfTasks: numberOfTasks,
        percentage: percentage,
      });
@@ -568,7 +568,7 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
   res.status(200).json({
     totalTasksInTime: totalTasksInTime,
      numberOfTasks: numberOfTasks,
-     percentage: (totalTasksInTime/numberOfTasks)*100,
+     percentage: 0,
    });
  });
 

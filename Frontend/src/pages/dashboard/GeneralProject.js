@@ -27,6 +27,7 @@ import UserList from 'src/sections/@dashboard/project/UserList';
 import useAuth from 'src/hooks/useAuth';
 import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject';
 import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
+import ProjectFinishedTasksStats from 'src/sections/@dashboard/project/ProjectFinishedTasksStats';
 //pdf related
 import jsPDF from 'jspdf';
 import { pdfGenerator } from 'src/components/pdf/pdfGenerator';
@@ -177,6 +178,13 @@ export default function GeneralProject() {
                 <FinishedTasksStats/>
               </Stack>
             </Grid>}
+            
+            {isHr&&<Grid item xs={12} md={8}>
+              <Stack spacing={3}>
+                <ProjectFinishedTasksStats/>
+              </Stack>
+            </Grid>}
+            
 
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
