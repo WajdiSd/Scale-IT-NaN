@@ -121,7 +121,7 @@ export default function GeneralProject() {
           return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-            <button onClick={jsPdfGenerator}>Report</button>
+         <button onClick={jsPdfGenerator}>Report</button>
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"
@@ -184,7 +184,6 @@ export default function GeneralProject() {
                 <ProjectFinishedTasksStats/>
               </Stack>
             </Grid>}
-            
 
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
