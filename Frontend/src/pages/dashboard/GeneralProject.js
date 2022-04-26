@@ -27,6 +27,13 @@ import UserList from 'src/sections/@dashboard/project/UserList';
 import useAuth from 'src/hooks/useAuth';
 import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject';
 import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
+//pdf related
+import jsPDF from 'jspdf';
+import { pdfGenerator } from 'src/components/pdf/pdfGenerator';
+import { Button } from 'reactstrap';
+import logo from 'src/logo.png'
+import html2canvas from 'html2canvas';
+//END pdf related 
 
 // ----------------------------------------------------------------------
 
@@ -51,9 +58,28 @@ export default function GeneralProject() {
 
   }, []);
 
+  //Get pdf funtion
+    const jsPdfGenerator = () =>{
+          //new doc
+          var doc = new jsPDF('landscape','px','a4','false');
+          //personalize
+          doc.addImage(logo,'png',65,20,500,400)
+          doc.addPage()
+          doc.setFont('Helvertica','bold')
+          doc.text(100,100,'Project report')
+          doc.text(60,60,'Project s NAME :')
+          doc.text(60,80,'Project s DESCRIPTION :')
+          doc.setFont('Helvertica','Normal')
+          doc.text(200,60,project?.name)
+          doc.text(200,80,project?.description)
+
+          doc.save(project?.name+"Report.pdf")
+    }
   return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
+      <Button onClick={jsPdfGenerator}>Get REPORT</Button>
+
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"
@@ -64,6 +90,7 @@ export default function GeneralProject() {
             { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
           ]}
         />
+
         {isLoading && usersInProject?.length == 0 ? (
           <Box
             sx={{
@@ -76,10 +103,10 @@ export default function GeneralProject() {
           >
             <CircularProgress size={150} color="success" />
           </Box>
-        ) : (
+        ) : (            
           <Grid container spacing={3}>
-
-            <Grid item xs={12} md={7}>
+            <jsPdfGenerator/>    
+                <Grid item xs={12} md={7}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
                 <BankingWidgetSummary
                   title="Income"
@@ -94,7 +121,7 @@ export default function GeneralProject() {
                   icon={'eva:diagonal-arrow-right-up-fill'}
                   percent={-0.5}
                   total={8938}
-                  chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+                  chartData={[500, 136, 76, 108, 74, 54, 57, 84]}
                 />
               </Stack>
             </Grid>
@@ -113,7 +140,9 @@ export default function GeneralProject() {
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
                 <ProjectStatus />
+                <div id="list">
                 <ProjectMembersList />
+                </div>
                 <TopMembersProject />
               </Stack>
             </Grid>
