@@ -17,6 +17,7 @@ intents:
   - get_scoreworkspace
   - get_rankworkspace
   - get_roleworkspace
+  - get_projects
 
 entities:
   - workspaceid
@@ -79,3 +80,4 @@ actions:
   - score_member_workspace
   - rank_member_workspace
   - role_member_workspace
+  - projects_member_workspace
