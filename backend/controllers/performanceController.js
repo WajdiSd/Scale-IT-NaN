@@ -163,7 +163,6 @@ const getRankProjectLeaderboard = asyncHandler(async (req, res) => {
 });
 
 const getScoreWorkspace = asyncHandler(async (req, res) => {
-  console.log(req.params);
   const member = await Member.findById(req.params.memberid);
   if (!member) {
     res.status(400);

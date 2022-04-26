@@ -129,3 +129,10 @@ nlu:
       - workspace role
       - what's my role in this workspace ?
       - my workspace role
+  - intent: get_projects
+    examples: |
+      - my projects
+      - projects in this workspace
+      - my projects in this workspace ?
+      - can i see my projects in this workspace
+      - projects
