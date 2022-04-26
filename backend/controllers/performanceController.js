@@ -494,6 +494,84 @@ const roleinworkspace = asyncHandler(async (req, res) => {
   }
 });
 
+// @route get /api/performance/getAllTasksInTimePercentage/idproj
+const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const project = await Project.findById({
+   _id: req.params.idproj,
+   isDeleted: false,
+   });
+ if (!project) {
+   res.status(404);
+   throw new Error("project not found");
+ }
+  //calculate number of tasks finished early
+  let totaltasks = await Task.find( {
+   project: req.params.idproj,
+   isDeleted: false,
+ });
+  var totalTasksInTime = 0;
+  var numberOfTasks = 0;
+  for (var task of totaltasks) {
+       numberOfTasks=numberOfTasks+1;
+       if (task.endDate <= task.expectedEndDate) { 
+        totalTasksInTime=totalTasksInTime+1;}
+       }
+  if(numberOfTasks!==0){
+    console.log(totalTasksInTime,numberOfTasks);
+    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: percentage,
+     });
+  }
+  res.status(200).json({
+    totalTasksInTime: totalTasksInTime,
+     numberOfTasks: numberOfTasks,
+     percentage: (totalTasksInTime/numberOfTasks)*100,
+   });
+ });
+
+ // @route get /api/performance/getAllTasksInTimePercentage/idproj
+const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const project = await Project.findById({
+   _id: req.params.idproj,
+   isDeleted: false,
+   });
+ if (!project) {
+   res.status(404);
+   throw new Error("project not found");
+ }
+  //calculate number of tasks finished early
+  let totaltasks = await Task.find( {
+   project: req.params.idproj,
+   isDeleted: false,
+ });
+  var totalTasksInTime = 0;
+  var numberOfTasks = 0;
+  for (var task of totaltasks) {
+       numberOfTasks=numberOfTasks+1;
+       if (task.endDate > task.expectedEndDate) { 
+        totalTasksInTime=totalTasksInTime+1;}
+       }
+  if(numberOfTasks!==0){
+    console.log(totalTasksInTime,numberOfTasks);
+    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: percentage,
+     });
+  }
+  res.status(200).json({
+    totalTasksInTime: totalTasksInTime,
+     numberOfTasks: numberOfTasks,
+     percentage: (totalTasksInTime/numberOfTasks)*100,
+   });
+ });
+
 module.exports = {
   getPerformanceByMember,
   getleaderboardbyworkspace,
@@ -511,4 +589,6 @@ module.exports = {
   getLateProjectsPercentage,
   getProjectsInTimePercentage,
   roleinworkspace,
+  getAllTasksInTimePercentage,
+  getAllLateTasksPercentage,
 };

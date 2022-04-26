@@ -121,7 +121,6 @@ export default function GeneralProject() {
           return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-      <button onClick={jsPdfGenerator}>Get REPORT</button>
 
         <HeaderBreadcrumbs
           key={project?.name}
