@@ -19,26 +19,30 @@ import {
 
 // ----------------------------------------------------------------------
 import { useDispatch } from '../../redux/store';
-import { getScoreByWorkspace, getRankByWorkspace } from '../../redux/slices/performanceSlice';
+import { getScoreByWorkspace, getRankByWorkspace, getFinishedProjectsInTimePourcentage, getFinishedProjectsLatePourcentage } from '../../redux/slices/performanceSlice';
 import useAuth from 'src/hooks/useAuth';
 import useWorkspace from 'src/hooks/useWorkspace';
 import usePerformance from 'src/hooks/usePerformance';
 import { useEffect } from 'react';
+import { useParams } from 'react-router';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralAnalytics() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
-  const { user } = useAuth();
+  const { user, isHr } = useAuth();
   const { workspace } = useWorkspace();
-  const { scoreInWorkspace, rankInWorkspace } = usePerformance();
+  const { scoreInWorkspace, rankInWorkspace, finishedProjectsInTimePourcentage, finishedProjectsLatePourcentage } = usePerformance();
 
+  const { id } = useParams(); // this is the workspace id 
   const memberId = user._id;
-  const workspaceId = workspace._id;
+  const workspaceId = id;
 
   const getScoreInWorkspace = () => {
     try {
+        dispatch(getFinishedProjectsInTimePourcentage(workspaceId));
+        dispatch(getFinishedProjectsLatePourcentage(workspaceId));
         dispatch(getScoreByWorkspace({memberId, workspaceId}));
         dispatch(getRankByWorkspace({workspaceId, memberId}));
     } catch (error) {
@@ -79,13 +83,9 @@ export default function GeneralAnalytics() {
             <AnalyticsWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AnalyticsWebsiteVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsCurrentVisits />
-          </Grid>
+          {isHr&&<Grid item xs={12} md={6} lg={4}>
+            <AnalyticsCurrentVisits intime={finishedProjectsInTimePourcentage} late={finishedProjectsLatePourcentage} />
+          </Grid>}
 
           <Grid item xs={12} md={6} lg={8}>
             <AnalyticsConversionRates />
