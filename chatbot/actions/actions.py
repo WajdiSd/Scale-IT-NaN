@@ -191,7 +191,7 @@ class getprojectsinworkspace(Action):
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
 
-        request = json.loads(requests.get(f"http://localhost:5000/api/project/listbymember/{workspaceid}/{userid}").text)
+        request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
         print(request)
         projects = request["data"]
         
