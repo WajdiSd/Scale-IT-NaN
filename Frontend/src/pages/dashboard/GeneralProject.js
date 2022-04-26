@@ -33,6 +33,7 @@ import { pdfGenerator } from 'src/components/pdf/pdfGenerator';
 import { Button } from 'reactstrap';
 import logo from 'src/logo.png'
 import html2canvas from 'html2canvas';
+
 //END pdf related 
 
 // ----------------------------------------------------------------------
@@ -66,14 +67,21 @@ export default function GeneralProject() {
           doc.addImage(logo,'png',65,20,500,400)
           doc.addPage()
           doc.setFont('Helvertica','bold')
-          doc.text(100,100,'Project report')
+          doc.text(10,10,'Project report')
           doc.text(60,60,'Project s NAME :')
           doc.text(60,80,'Project s DESCRIPTION :')
           doc.setFont('Helvertica','Normal')
           doc.text(200,60,project?.name)
           doc.text(200,80,project?.description)
-
+          /*
+          const data = document.querySelector("#list");
+          doc.html(data).then(() => {
+            doc.save(project?.name+"Report.pdf")
+          });*/
           doc.save(project?.name+"Report.pdf")
+
+       
+
     }
   return (
     <Page title="General: Projects">
@@ -140,14 +148,14 @@ export default function GeneralProject() {
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
                 <ProjectStatus />
-                <div id="list">
                 <ProjectMembersList />
-                </div>
-                <TopMembersProject />
+                <TopMembersProject /> 
               </Stack>
             </Grid>
             <Grid item xs={12} md={12}>
-              <UserList />
+            <div id="list">
+            <UserList />
+            </div>
             </Grid>
           </Grid>
         )}
