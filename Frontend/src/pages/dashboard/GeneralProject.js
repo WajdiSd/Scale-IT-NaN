@@ -112,7 +112,6 @@ export default function GeneralProject() {
           //const data = document.querySelector("#list");
           /*doc.html(data).then(() => {
             doc.save(project?.name+"Report.pdf")
-
           });*/
           //Download PDF
           doc.save(project?.name+"Report.pdf")
@@ -121,7 +120,7 @@ export default function GeneralProject() {
           return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-
+            <button onClick={jsPdfGenerator}>Report</button>
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"

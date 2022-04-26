@@ -34,13 +34,26 @@ const getFinishedTasksLatePourcentage = async (idproj,idmember) => {
     return response.data;
 };
 
+const getAllTasksInTimePercentage = async (idproj) => {
+    const response = await axiosInstance.get(API_URL + 'alltasksintime/' + idproj);
+    return response.data;
+}
+
+const getAllLateTasksPercentage = async (idproj) => {
+    const response = await axiosInstance.get(API_URL + 'alllatetasks/' + idproj);
+    return response.data;
+};
+
+
 const performanceService = {
     getScoreByWorkspace,
     getRankByWorkspace,
     getFinishedProjectsInTimePourcentage,
     getFinishedProjectsLatePourcentage,
     getFinishedTasksInTimePourcentage,
-    getFinishedTasksLatePourcentage
+    getFinishedTasksLatePourcentage,
+    getAllTasksInTimePercentage,
+    getAllLateTasksPercentage,
 };
 
 export default performanceService;
