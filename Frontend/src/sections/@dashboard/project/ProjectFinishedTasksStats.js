@@ -9,10 +9,7 @@ import { fNumber } from 'src/utils/formatNumber.js';
 import BaseOptionChart from 'src/components/chart/BaseOptionChart.js';
 import { useEffect } from 'react';
 import { useDispatch } from 'src/redux/store'; 
-import { getFinishedTasksInTimePourcentage, getFinishedTasksLatePourcentage } from 'src/redux/slices/performanceSlice';
-import useWorkspace from 'src/hooks/useWorkspace';
-import useProject from 'src/hooks/useProject';
-import useAuth from 'src/hooks/useAuth';
+import { getAllTasksInTimePercentage, getAllLateTasksPercentage } from 'src/redux/slices/performanceSlice';
 import usePerformance from 'src/hooks/usePerformance';
 import { useParams } from 'react-router';
 
@@ -40,26 +37,24 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 
-export default function FinishedTasksStats() {
+export default function ProjectFinishedTasksStats() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {projectid} = useParams();
-  console.log("*******************%%%%%%%%%%%%%%%%%%%%%%");
   console.log(projectid);
-  const { user } = useAuth();
-  const memberId = user?._id;
 
   useEffect(() => {
-    dispatch(getFinishedTasksInTimePourcentage({projectid, memberId}));
-    console.log("dispatching getFinishedTasksInTimePourcentage with", projectid, memberId);
-    dispatch(getFinishedTasksLatePourcentage({projectid, memberId}));
+    dispatch(getAllTasksInTimePercentage(projectid));
+    console.log("TASKS dispatch", projectid);
+    dispatch(getAllLateTasksPercentage(projectid));
   },[]);
   
-  const { finishedTasksInTimePourcentage, finishedTasksLatePourcentage } = usePerformance();
+  const { allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage } = usePerformance();
 
-  console.log("---------------------------------");
-  console.log({ finishedTasksInTimePourcentage, finishedTasksLatePourcentage })
-  const CHART_DATA = [finishedTasksInTimePourcentage, finishedTasksLatePourcentage];
+  console.log("***********"+allfinishedTasksInTimePercentage);
+  console.log("***********"+allfinishedTasksLatePercentage);
+  console.log({ allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage });
+  const data = [allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage];
 
 
   const chartOptions = merge(BaseOptionChart(), {
@@ -67,7 +62,7 @@ export default function FinishedTasksStats() {
       theme.palette.primary.light,
       theme.palette.primary.dark,
     ],
-    labels: ['in time', 'late'],
+    labels: ['All tasks finished IN TIME', 'All tasks finished LATE'],
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     tooltip: {
@@ -101,9 +96,9 @@ export default function FinishedTasksStats() {
 
   return (
     <Card>
-      <CardHeader title="Finished tasks stats" />
+      <CardHeader title="All tasks done IN TIME/LATE in project." />
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
+        <ReactApexChart type="donut" series={data} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );

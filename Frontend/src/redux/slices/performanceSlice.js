@@ -14,7 +14,10 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   message: '',
-};
+  allfinishedTasksInTimePercentage: '',
+  allfinishedTasksLatePercentage: '',
+};  
+
 
 export const performanceSlice = createSlice({
     name: 'performance',
@@ -39,6 +42,9 @@ export const performanceSlice = createSlice({
             (state.finishedProjectsLatePourcentage = ''),
             (state.finishedTasksInTimePourcentage = ''),
             (state.finishedTasksLatePourcentage = ''),
+            (state.allfinishedTasksInTimePercentage = ''),
+            (state.allfinishedTasksLatePercentage = ''),
+
             (state.isError = false),
             (state.isSuccess = false),
             (state.isLoading = false),
@@ -112,6 +118,30 @@ export const performanceSlice = createSlice({
           state.message = 'Successfully fetched finished tasks in time pourcentage';
           console.log(action);
         })
+        //test C 
+        .addCase(getAllTasksInTimePercentage.rejected, (state, action) => {
+          state.isLoading = false;
+          console.log("getAllTasksInTimePercentage rejected");
+        })
+        .addCase(getAllTasksInTimePercentage.fulfilled, (state, action) => {
+          state.allfinishedTasksInTimePercentage = action.payload.percentage;
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.message = 'Successfully fetched all finished tasks in time pourcentage';
+          console.log(action);
+        })
+        .addCase(getAllLateTasksPercentage.rejected, (state, action) => {
+          state.isLoading = false;
+          console.log("getAllLateTasksPercentage rejected");
+        })
+        .addCase(getAllLateTasksPercentage.fulfilled, (state, action) => {
+          state.allfinishedTasksLatePercentage = action.payload.percentage;
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.message = 'Successfully fetched all finished tasks in time pourcentage';
+          console.log(action);
+        })
+
       }
 })
 
@@ -155,7 +185,7 @@ export const getFinishedProjectsLatePourcentage = createAsyncThunk(
   'performance/getFinishedProjectsLatePourcentage',
   async (workspaceId, thunkAPI) => {
       try {
-          const response = await performanceService.getFinishedProjectsLatePourcentage(workspaceId);
+          const response = await performanceService.getAllLateTasksPercentage(workspaceId);
           return response;
       } catch (error) {
           return thunkAPI.rejectWithValue(error);
@@ -186,6 +216,31 @@ export const getFinishedTasksLatePourcentage = createAsyncThunk(
       }
   }
 )
+
+export const getAllTasksInTimePercentage = createAsyncThunk(
+  'performance/getAllTasksInTimePercentage',
+  async (data, thunkAPI) => {
+      try {
+          const response = await performanceService.getAllTasksInTimePercentage(data);
+          return response;
+      } catch (error) {
+          return thunkAPI.rejectWithValue(error);
+      }
+  }
+);
+
+export const getAllLateTasksPercentage = createAsyncThunk(
+  'performance/getAllLateTasksPercentage',
+  async (data, thunkAPI) => {
+      try {
+          const response = await performanceService.getAllLateTasksPercentage(data);
+          return response;
+      } catch (error) {
+          return thunkAPI.rejectWithValue(error);
+      }
+  }
+)
+
 
 export const { resetPerformance } = performanceSlice.actions;
 export default performanceSlice.reducer;
