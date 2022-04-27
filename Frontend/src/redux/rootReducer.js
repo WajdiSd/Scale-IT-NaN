@@ -87,6 +87,8 @@ const performancePersistConfig = {
     'finishedTasksLatePourcentage',
     'finishedProjectsInTimePourcentage',
     'finishedProjectsLatePourcentage',
+    'allfinishedTasksInTimePercentage',
+    'allfinishedTasksLatePercentage',
   ],
 };
 
