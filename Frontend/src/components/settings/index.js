@@ -3,7 +3,7 @@ import { AnimatePresence, m } from 'framer-motion';
 import { useState, useEffect } from 'react';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import { Backdrop, Divider, Typography, Stack, FormControlLabel, Radio } from '@mui/material';
+import { Backdrop, Divider, Typography, Stack, FormControlLabel, Radio, Badge } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // utils
@@ -96,8 +96,10 @@ export default function Settings() {
         sx={{ background: 'transparent', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       />
 
-      {!open && <ToggleButton open={open} notDefault={notDefault} onToggle={handleToggle} />}
-
+      {!open && 
+      <ToggleButton open={open} notDefault={notDefault} onToggle={handleToggle} />
+      }
+      
 
       <AnimatePresence>
         {open && (
