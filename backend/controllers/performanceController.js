@@ -524,12 +524,13 @@ const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
        numberOfTasks: numberOfTasks,
        percentage: percentage,
      });
+  }else{
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: 0,
+     });
   }
-  res.status(200).json({
-    totalTasksInTime: totalTasksInTime,
-     numberOfTasks: numberOfTasks,
-     percentage: 0,
-   });
  });
 
  // @route get /api/performance/getAllTasksInTimePercentage/idproj
@@ -563,12 +564,13 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
        numberOfTasks: numberOfTasks,
        percentage: percentage,
      });
+  }else{
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: 0,
+     });
   }
-  res.status(200).json({
-    totalTasksInTime: totalTasksInTime,
-     numberOfTasks: numberOfTasks,
-     percentage: 0,
-   });
  });
 
 module.exports = {
