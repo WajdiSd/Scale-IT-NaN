@@ -33,6 +33,11 @@ import jsPDF from 'jspdf';
 import { pdfGenerator } from 'src/components/pdf/pdfGenerator';
 import logo from 'src/logo.png'
 import html2canvas from 'html2canvas';
+import {
+  Button
+} from '@mui/material';
+import Iconify from 'src/components/Iconify';
+
 
 //END pdf related 
 
@@ -42,7 +47,7 @@ export default function GeneralProject() {
   const { themeStretch } = useSettings();
 
   const { user,isHr } = useAuth();
-  const { project, usersInProject, isLoading } = useProject();
+  const { project, usersInProject,isTL,isPM, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
 
@@ -74,7 +79,7 @@ export default function GeneralProject() {
           //Labels
           doc.setFont('Helvertica','bold')
           doc.text(10,20,'Project report')          
-          doc.text(520,20,'Status :')
+          doc.text(440,20,'Status :')
           doc.text(60,60,'Project NAME :')
           doc.text(60,80,'Project DESCRIPTION :')
           doc.text(60,100,'Created AT :')
@@ -83,7 +88,7 @@ export default function GeneralProject() {
           doc.text(60,160,'Project MEMBERS :')
          //Dynamic Data
           doc.setFont('Helvertica','Normal')
-          doc.text(560,20,project?.status)
+          doc.text(500,20,project?.status)
           doc.text(200,60,project?.name)
           doc.text(200,80,project?.description)
           doc.text(200,100,project?.createdAt)
@@ -110,18 +115,26 @@ export default function GeneralProject() {
           }
             );
           //adding components
-          //const data = document.querySelector("#list");
-          /*doc.html(data).then(() => {
-            doc.save(project?.name+"Report.pdf")
-          });*/
+          /*
+          const data = document.querySelector("#finished");
+          doc.html(data).then(() => {
+            doc.save(project?.name+"Report.pdf")*
+          })*/
+          
           //Download PDF
           doc.save(project?.name+"Report.pdf")
-    }
+    } 
   
           return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-         <button onClick={jsPdfGenerator}>Report</button>
+         <Button
+              variant="contained"
+              startIcon={<Iconify icon={'eva:plus-fill'} />}
+              onClick={jsPdfGenerator}
+            >
+              Get REPORT
+            </Button>
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"
@@ -172,16 +185,18 @@ export default function GeneralProject() {
               <BankingCurrentBalance />
             </Grid>
 
-            {!isHr&&<Grid item xs={12} md={8}>
+            {!isHr&&!isTL&&!isPM&&<Grid item xs={12} md={8}>
               <Stack spacing={3}>
                 {/* <AnalyticsFinishedTasks/> */}
                 <FinishedTasksStats/>
               </Stack>
             </Grid>}
             
-            {isHr&&<Grid item xs={12} md={8}>
+            {(isHr||isTL||isPM)&&<Grid item xs={12} md={8}>
               <Stack spacing={3}>
+              <div id="finish">  
                 <ProjectFinishedTasksStats/>
+                 </div>
               </Stack>
             </Grid>}
 
@@ -193,9 +208,7 @@ export default function GeneralProject() {
               </Stack>
             </Grid>
             <Grid item xs={12} md={12}>
-            <div id="list">
             <UserList />
-            </div>
             </Grid>
           </Grid>
         )}
