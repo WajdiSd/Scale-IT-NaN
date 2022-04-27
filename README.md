@@ -86,7 +86,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-This back-end was developed under the supervision of Ms Badiaa BOUHDID , <br>
+This project was developed under the supervision of Ms Badiaa BOUHDID , <br>
 by NaN team.
 
 <p align="right">(<a href="#top">back to top</a>)</p>

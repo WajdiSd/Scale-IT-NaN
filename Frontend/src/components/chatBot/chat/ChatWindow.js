@@ -70,7 +70,6 @@ export default function ChatWindow() {
     <Stack sx={{ flexGrow: 1, minWidth: '1px' }}>
      
         <ChatHeaderDetail/>
-      
 
       <Divider />
 
