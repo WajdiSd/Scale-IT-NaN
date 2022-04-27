@@ -8,7 +8,17 @@ import useProject from 'src/hooks/useProject';
 import { useParams } from 'react-router';
 
 // @mui
-import { Divider, Box, Card, Typography, CircularProgress, Button, InputAdornment, DialogTitle, Grid } from '@mui/material';
+import {
+  Divider,
+  Box,
+  Card,
+  Typography,
+  CircularProgress,
+  Button,
+  InputAdornment,
+  DialogTitle,
+  Grid,
+} from '@mui/material';
 
 // components
 import Iconify from '../../../components/Iconify';
@@ -27,7 +37,8 @@ ProjectCard.propTypes = {
 export default function ProjectCard({ loaded, projects }) {
   const { isProjectManager, user, isHr } = useAuth();
   const { deleteProjectHook, restoreProjectHook, updateProjectHook, unarchivedProjects } = useProject();
-  const { query, managedProjects, ledProjects, normalProjects, searchProjects } = useProjectFilter(projects);
+  const { query, projectsFilter, managedProjects, ledProjects, normalProjects, searchProjects } =
+    useProjectFilter(projects);
   const { id } = useParams();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -78,13 +89,15 @@ export default function ProjectCard({ loaded, projects }) {
       <Card sx={{ p: 3 }}>
         {!projects || projects.length === 0 ? (
           <Grid item xs={12} sm={12} md={12}>
-            <EmptyComponent/>
+            <EmptyComponent />
           </Grid>
         ) : (
           <>
-            {isHr && unarchivedProjects.length > 0 ? (
+            {isHr && projectsFilter.length > 0 ? (
               <>
-                <Typography sx={{ mb: 3 }} variant="h5">Projects in your workspace.</Typography>
+                <Typography sx={{ mb: 3 }} variant="h5">
+                  Projects in your workspace.
+                </Typography>
 
                 <Box
                   sx={{
@@ -97,7 +110,7 @@ export default function ProjectCard({ loaded, projects }) {
                     },
                   }}
                 >
-                  {unarchivedProjects.map((project) => (
+                  {projectsFilter.map((project) => (
                     <ProjectItem
                       key={project._id}
                       workspaceId={id}
@@ -108,7 +121,7 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
-                <Divider sx={{ my: 3 }}/>
+                <Divider sx={{ my: 3 }} />
               </>
             ) : (
               ''
@@ -144,17 +157,19 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
-                <Divider sx={{ my: 3 }}/>
+                <Divider sx={{ my: 3 }} />
               </>
             )}
             {ledProjects.length === 0 ? (
               ''
             ) : (
               <>
-                <Typography variant="h5" sx={{ mt: 3 }}>Projects you lead.</Typography>
+                <Typography variant="h5" sx={{ mt: 3 }}>
+                  Projects you lead.
+                </Typography>
                 <Box
                   sx={{
-                    my:3,
+                    my: 3,
                     display: 'grid',
                     gap: 3,
                     gridTemplateColumns: {
@@ -179,17 +194,19 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
-                <Divider sx={{ my: 3 }}/>
+                <Divider sx={{ my: 3 }} />
               </>
             )}
             {normalProjects.length === 0 ? (
               ''
             ) : (
               <>
-                <Typography variant="h5" sx={{ mt: 3 }}>Projects you're in.</Typography>
+                <Typography variant="h5" sx={{ mt: 3 }}>
+                  Projects you're in.
+                </Typography>
                 <Box
                   sx={{
-                    my:3,
+                    my: 3,
                     display: 'grid',
                     gap: 3,
                     gridTemplateColumns: {
@@ -213,7 +230,7 @@ export default function ProjectCard({ loaded, projects }) {
                     />
                   ))}
                 </Box>
-                <Divider/>
+                <Divider />
               </>
             )}
           </>

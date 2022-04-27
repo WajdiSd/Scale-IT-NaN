@@ -92,16 +92,15 @@ export default function AboutTestimonials() {
 
               <MotionInView variants={varFade().inUp}>
                 <Typography variant="h2" sx={{ mb: 3, color: 'common.white' }}>
-                  Who love <br />
-                  my work
+                  Who loves <br />
+                  our work
                 </Typography>
               </MotionInView>
 
               <MotionInView variants={varFade().inUp}>
                 <Typography sx={{ color: 'common.white' }}>
-                  Our goal is to create a product and service that you’re satisfied with and use it every day. This is
-                  why we’re constantly working on our services to make it better every day and really listen to what our
-                  users has to say.
+                  Our goal is to create a product and service that you’re satisfied with and that you'll use every day.
+                  This is why we’re constantly working on our services and why we listen to what your feedback.
                 </Typography>
               </MotionInView>
 

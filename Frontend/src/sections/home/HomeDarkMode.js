@@ -56,7 +56,7 @@ export default function HomeDarkMode() {
             <ContentStyle>
               <MotionInView variants={varFade().inUp}>
                 <Typography component="div" variant="overline" sx={{ mb: 2, color: 'text.disabled' }}>
-                  Easy switch between styles.
+                  Customizable interface
                 </Typography>
               </MotionInView>
 

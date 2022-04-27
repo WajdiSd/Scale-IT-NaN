@@ -5,7 +5,7 @@ import Slider from 'react-slick';
 import { useTheme } from '@mui/material/styles';
 import { Box, Stack, Card, Button, Container, Typography } from '@mui/material';
 // _mock_
-import { _carouselsMembers } from '../../_mock';
+import { _carouselsMembers, _teamMembers } from '../../_mock';
 // components
 import Image from '../../components/Image';
 import Iconify from '../../components/Iconify';
@@ -71,15 +71,15 @@ export default function AboutTeam() {
             color: (theme) => (theme.palette.mode === 'light' ? 'text.secondary' : 'common.white'),
           }}
         >
-          Minimal will provide you support if you have any problems, our support team will reply within a day and we
-          also have detailed documentation.
+          NaN will provide you support if you have any problems, our support team will reply within a day and we also
+          have detailed documentation.
         </Typography>
       </MotionInView>
 
       <Box sx={{ position: 'relative' }}>
         <CarouselArrows filled onNext={handleNext} onPrevious={handlePrevious}>
           <Slider ref={carouselRef} {...settings}>
-            {_carouselsMembers.map((member) => (
+            {_teamMembers.map((member) => (
               <MotionInView key={member.id} variants={varFade().in} sx={{ px: 1.5, py: 10 }}>
                 <MemberCard member={member} />
               </MotionInView>

@@ -1,10 +1,12 @@
 import { m } from 'framer-motion';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Button, Box, Container, Typography } from '@mui/material';
+import { Button, Box, Container, Typography, Link } from '@mui/material';
 // components
 import Image from '../../components/Image';
 import { MotionInView, varFade } from '../../components/animate';
+import { PATH_PAGE } from '../../routes/paths';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -57,7 +59,7 @@ export default function HomeAdvertisement() {
           <MotionInView variants={varFade().inDown} sx={{ color: 'common.white', mb: 5 }}>
             <Typography variant="h2">
               Get started with
-              <br /> minimal kit today
+              <br /> Scale IT today
             </Typography>
           </MotionInView>
           <MotionInView variants={varFade().inDown}>
@@ -66,7 +68,7 @@ export default function HomeAdvertisement() {
               variant="contained"
               target="_blank"
               rel="noopener"
-              href="https://material-ui.com/store/items/minimal-dashboard/"
+              href={PATH_PAGE.pricing}
               sx={{
                 whiteSpace: 'nowrap',
                 boxShadow: (theme) => theme.customShadows.z8,
@@ -75,7 +77,7 @@ export default function HomeAdvertisement() {
                 '&:hover': { bgcolor: 'grey.300' },
               }}
             >
-              Purchase Now
+              Get on Board
             </Button>
           </MotionInView>
         </Box>
