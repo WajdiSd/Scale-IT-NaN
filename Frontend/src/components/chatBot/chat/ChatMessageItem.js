@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
+import { useState } from 'react';
+
 // @mui
 import { styled } from '@mui/material/styles';
 import { Avatar, Box, Typography } from '@mui/material';
@@ -42,7 +44,7 @@ ChatMessageItem.propTypes = {
 export default function ChatMessageItem({ message, conversation, onOpenLightbox }) {
 const {user} = useAuth();
 const {participants} = useChat();
-
+const [msgContent,setMessageContent] = useState(message.message)
   const sender = participants?.find((participant) => participant.id === message.senderId);
   const senderDetails =
     message.senderId === user._id
@@ -96,7 +98,20 @@ const {participants} = useChat();
                 sx={{ borderRadius: 1, cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
               />
             ) : (
-              <Typography variant="body2">{message.message}</Typography>
+              <Typography variant="body2">{
+                typeof(msgContent)=== 'object'?
+                msgContent.map((mes) => {
+                  let msg= "- "
+                  for (const [key, value] of Object.entries(mes)) {
+                   if(!key.includes("id")) 
+                   msg+= `\n ${key}: ${value} `;
+                  }
+                  return msg
+                  ;
+                })                :
+                msgContent
+                
+                }</Typography>
             )}
           </ContentStyle>
         </div>

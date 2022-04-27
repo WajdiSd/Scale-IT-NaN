@@ -32,6 +32,7 @@ app.use("/api/workspace", require("./routes/workspaceRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/performance", require("./routes/performanceRoutes"));
+app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 
 app.use(errorHandler);
 

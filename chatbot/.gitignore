@@ -7,5 +7,5 @@ models/*
 # except for .gitkeep, so that folder itself is included
 !models/.gitkeep 
 results
-
+actions/__pycache__
 .rasa/cache

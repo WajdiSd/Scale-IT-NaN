@@ -19,7 +19,7 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import { MotionInView, varFade } from 'src/components/animate';
 import WorkspaceLandingAdd from 'src/sections/@dashboard/workspace/WorkspaceLandingAdd';
 import EmptyComponent from '../../components/EmptyComponent'
-import { setParticiants } from 'src/redux/slices/chatbotSlice';
+import { askBot, senduserId, setParticiants } from 'src/redux/slices/chatbotSlice';
 import { uuid } from 'uuidv4';
 import useChat from 'src/hooks/useChat';
 
@@ -36,7 +36,7 @@ export default function GeneralWorkspace() {
   const [userJoinedspaces, setUserJoinedspaces] = useState([]);
 
   const dispatch = useDispatch();
-
+  
   const getUserWorkspaces = () => {
     try {
         workspaces.map((workspace) => {
@@ -52,6 +52,16 @@ export default function GeneralWorkspace() {
             }
           });
         });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const senduserInfo = () => {
+    console.log("senduserInfo")
+    try {
+      dispatch(askBot({message: "userid", senderId: user._id}));
+      dispatch(askBot({message: "username", senderId: user._id}));
     } catch (error) {
       console.error(error);
     }
@@ -83,6 +93,7 @@ export default function GeneralWorkspace() {
     if(participants.length==0)
       setParticipants();
     getUserWorkspaces();
+    senduserInfo();
   }, []);
 
   return (
