@@ -107,52 +107,41 @@ export default function MainHeader() {
           {isDesktop && <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
 
           {user ? (
-            <Button variant="contained" color="success" sx={{ paddingX: '25px' }}>
-              <Link
-                to={PATH_AFTER_LOGIN}
+            <Button
+              to={PATH_AFTER_LOGIN}
+              component={RouterLink}
+              variant="contained"
+              color="success"
+              sx={{
+                paddingX: '25px',
+                ...(isHome && { color: 'common.white' }),
+                '&.active': {
+                  color: 'primary.main',
+                },
+              }}
+            >
+              Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button
+                to={PATH_AUTH.register}
                 component={RouterLink}
+                variant="outlined"
                 sx={{
+                  marginRight: '15px',
+                  paddingX: '40px',
                   ...(isHome && { color: 'common.white' }),
-                  ...(isOffset && { color: 'text.primary' }),
+                  ...(isOffset && { color: 'primary.main' }),
                   '&.active': {
                     color: 'primary.main',
                   },
                 }}
               >
-                Dashboard
-              </Link>
-            </Button>
-          ) : (
-            <>
-              <Button variant="outlined" sx={{ marginRight: '15px', paddingX: '40px' }}>
-                <Link
-                  to={PATH_AUTH.register}
-                  component={RouterLink}
-                  sx={{
-                    ...(isHome && { color: 'common.white' }),
-                    ...(isOffset && { color: 'text.primary' }),
-                    '&.active': {
-                      color: 'primary.main',
-                    },
-                  }}
-                >
-                  Register
-                </Link>
+                Register
               </Button>
-              <Button variant="contained" sx={{ paddingX: '30px' }}>
-                <Link
-                  to={PATH_AUTH.login}
-                  component={RouterLink}
-                  sx={{
-                    ...{ color: 'common.white' },
-                    ...(isOffset && { color: 'text.white' }),
-                    '&.active': {
-                      color: 'primary.main',
-                    },
-                  }}
-                >
-                  Login
-                </Link>
+              <Button to={PATH_AUTH.login} component={RouterLink} variant="contained" sx={{ paddingX: '30px' }}>
+                Login
               </Button>
             </>
           )}
