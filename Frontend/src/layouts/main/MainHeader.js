@@ -1,10 +1,26 @@
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Button, AppBar, Toolbar, Container } from '@mui/material';
+import {
+  Box,
+  Link,
+  Grid,
+  List,
+  Stack,
+  Popover,
+  ListItem,
+  ListSubheader,
+  CardActionArea,
+  Button,
+  AppBar,
+  Toolbar,
+  Container,
+} from '@mui/material';
 // hooks
 import useOffSetTop from '../../hooks/useOffSetTop';
+import useAuth from 'src/hooks/useAuth';
 import useResponsive from '../../hooks/useResponsive';
+import { NavLink as RouterLink } from 'react-router-dom';
 // utils
 import cssStyles from '../../utils/cssStyles';
 // config
@@ -16,6 +32,9 @@ import Label from '../../components/Label';
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
 import navConfig from './MenuConfig';
+
+import { PATH_AFTER_LOGIN } from '../../config';
+import { PATH_AUTH } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +73,8 @@ export default function MainHeader() {
 
   const isDesktop = useResponsive('up', 'md');
 
+  const { user } = useAuth();
+
   const isHome = pathname === '/';
 
   return (
@@ -76,21 +97,65 @@ export default function MainHeader() {
         >
           <Logo />
 
-          <Label color="info" sx={{ ml: 1 }}>
-            v5.0.0
-          </Label>
+          {isDesktop && (
+            <Label color="info" sx={{ ml: 1 }}>
+              v5.0.0
+            </Label>
+          )}
           <Box sx={{ flexGrow: 1 }} />
 
           {isDesktop && <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
 
-          <Button
-            variant="contained"
-            target="_blank"
-            rel="noopener"
-            href="https://material-ui.com/store/items/minimal-dashboard/"
-          >
-            Purchase Now
-          </Button>
+          {user ? (
+            <Button variant="contained" color="success" sx={{ paddingX: '25px' }}>
+              <Link
+                to={PATH_AFTER_LOGIN}
+                component={RouterLink}
+                sx={{
+                  ...(isHome && { color: 'common.white' }),
+                  ...(isOffset && { color: 'text.primary' }),
+                  '&.active': {
+                    color: 'primary.main',
+                  },
+                }}
+              >
+                Dashboard
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="outlined" sx={{ marginRight: '15px', paddingX: '40px' }}>
+                <Link
+                  to={PATH_AUTH.register}
+                  component={RouterLink}
+                  sx={{
+                    ...(isHome && { color: 'common.white' }),
+                    ...(isOffset && { color: 'text.primary' }),
+                    '&.active': {
+                      color: 'primary.main',
+                    },
+                  }}
+                >
+                  Register
+                </Link>
+              </Button>
+              <Button variant="contained" sx={{ paddingX: '30px' }}>
+                <Link
+                  to={PATH_AUTH.login}
+                  component={RouterLink}
+                  sx={{
+                    ...{ color: 'common.white' },
+                    ...(isOffset && { color: 'text.white' }),
+                    '&.active': {
+                      color: 'primary.main',
+                    },
+                  }}
+                >
+                  Login
+                </Link>
+              </Button>
+            </>
+          )}
 
           {!isDesktop && <MenuMobile isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
         </Container>
