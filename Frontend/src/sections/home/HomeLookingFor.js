@@ -25,13 +25,13 @@ export default function HomeLookingFor() {
           <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
             <MotionInView variants={varFade().inDown}>
               <Typography variant="overline" component="div" sx={{ color: 'text.disabled' }}>
-                Looking For a
+                Looking For
               </Typography>
             </MotionInView>
 
             <MotionInView variants={varFade().inDown}>
               <Typography variant="h2" sx={{ mt: 2, mb: 5 }}>
-                Landing Page Template?
+                NaN's other products?
               </Typography>
             </MotionInView>
 
@@ -42,10 +42,10 @@ export default function HomeLookingFor() {
                 variant="outlined"
                 target="_blank"
                 rel="noopener"
-                href="https://material-ui.com/store/items/zone-landing-page/"
+                href="https://github.com/WajdiSd/Scale-IT-NaN"
                 endIcon={<Iconify icon={'ic:round-arrow-right-alt'} />}
               >
-                Visit Zone Landing
+                Visit Our Website
               </Button>
             </MotionInView>
           </Grid>

@@ -37,15 +37,15 @@ export default function HomePage() {
         <ContentStyle>
           <HomeMinimal />
 
-          <HomeHugePackElements />
+          {/* <HomeHugePackElements /> */}
 
           <HomeDarkMode />
 
-          <HomeColorPresets />
+          {/* <HomeColorPresets /> */}
 
-          <HomeCleanInterfaces />
+          {/* <HomeCleanInterfaces /> */}
 
-          <HomePricingPlans />
+          {/* <HomePricingPlans /> */}
 
           <HomeLookingFor />
 

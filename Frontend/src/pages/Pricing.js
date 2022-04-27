@@ -25,13 +25,13 @@ export default function Pricing() {
         <Container>
           <Typography variant="h3" align="center" paragraph>
             Flexible plans for your
-            <br /> community&apos;s size and needs
+            <br /> company&apos;s size and needs
           </Typography>
-          <Typography align="center" sx={{ color: 'text.secondary' }}>
-            Choose your plan and make modern online conversation magic
+          <Typography align="center" sx={{ color: 'text.secondary', marginBottom: '15px' }}>
+            Choose your plan and make modern project management magic
           </Typography>
 
-          <Box sx={{ my: 5 }}>
+          {/* <Box sx={{ my: 5 }}>
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
               <Typography variant="overline" sx={{ mr: 1.5 }}>
                 MONTHLY
@@ -44,7 +44,7 @@ export default function Pricing() {
             <Typography variant="caption" align="right" sx={{ color: 'text.secondary', display: 'block' }}>
               * Plus applicable taxes
             </Typography>
-          </Box>
+          </Box> */}
 
           <Grid container spacing={3}>
             {_pricingPlans.map((card, index) => (
