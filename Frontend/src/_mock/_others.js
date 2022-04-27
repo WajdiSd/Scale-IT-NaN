@@ -17,6 +17,39 @@ export const _carouselsMembers = [...Array(5)].map((_, index) => ({
   avatar: `https://minimal-assets-api.vercel.app/assets/images/members/member-${index + 1}.jpg`,
 }));
 
+export const _teamMembers = [
+  {
+    id: 0,
+    name: 'Wajdi Sadouki',
+    role: 'Frontend Developer',
+    avatar: `/images/team/wajdi.jpg`,
+  },
+  {
+    id: 1,
+    name: 'Mohamed Anas Ben Aïssa',
+    role: 'Backend Developer',
+    avatar: `/images/team/anas.jpg`,
+  },
+  {
+    id: 2,
+    name: 'Cyrine Louati',
+    role: 'Backend Developer',
+    avatar: `/images/team/cyrine.jpg`,
+  },
+  {
+    id: 3,
+    name: 'Omar Karboul',
+    role: 'AI Guru',
+    avatar: `/images/team/omar.jpg`,
+  },
+  {
+    id: 4,
+    name: 'Bilel Taktak',
+    role: 'UX Designer',
+    avatar: `/images/team/bilel.jpg`,
+  },
+];
+
 // ----------------------------------------------------------------------
 
 export const _invoice = {
@@ -70,7 +103,7 @@ export const _addressBooks = [...Array(5)].map((_, index) => ({
 // ----------------------------------------------------------------------
 
 export const _skills = [...Array(3)].map((_, index) => ({
-  label: ['Development', 'Design', 'Marketing'][index],
+  label: ['Design', 'Web Development', 'AI'][index],
   value: _mock.number.percent(index),
 }));
 

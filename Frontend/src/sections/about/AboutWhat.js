@@ -69,7 +69,7 @@ export default function AboutWhat() {
           <Grid item xs={12} md={6} lg={5}>
             <MotionInView variants={varFade().inRight}>
               <Typography variant="h2" sx={{ mb: 3 }}>
-                What is minimal?
+                What is Scale IT?
               </Typography>
             </MotionInView>
 
@@ -79,10 +79,10 @@ export default function AboutWhat() {
                   color: (theme) => (theme.palette.mode === 'light' ? 'text.secondary' : 'common.white'),
                 }}
               >
-                Our theme is the most advanced and user-friendly theme you will find on the market, we have
-                documentation and video to help set your site really easily, pre-installed demos you can import in one
-                click and everything from the theme options to page content can be edited from the front-end. This is
-                the theme you are looking for.
+                Our product is the most intuitive and easy to use project out there. Here at NaN, we value everyone of
+                our clients projects. Which is why we decided to create a web app that'll make every company's life
+                easier by creating a simple interface for you to use and integrating an AI Assistant that will do
+                anything to guide and motivate your team.
               </Typography>
             </MotionInView>
 

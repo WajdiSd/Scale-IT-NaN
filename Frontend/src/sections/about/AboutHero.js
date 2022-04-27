@@ -10,8 +10,7 @@ import { MotionContainer, TextAnimate, varFade } from '../../components/animate'
 const RootStyle = styled('div')(({ theme }) => ({
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  backgroundImage:
-    'url(/images/overlay.svg), url(https://minimal-assets-api.vercel.app/assets/images/about/hero.jpg)',
+  backgroundImage: 'url(/images/overlay.svg), url(https://minimal-assets-api.vercel.app/assets/images/about/hero.jpg)',
   padding: theme.spacing(10, 0),
   [theme.breakpoints.up('md')]: {
     height: 560,
@@ -51,8 +50,8 @@ export default function AboutHero() {
                 fontWeight: 'fontWeightMedium',
               }}
             >
-              Let's work together and
-              <br /> make awesome site easily
+              A team ready to do anything to
+              <br /> make your projects work easier and better
             </Typography>
           </m.div>
         </ContentStyle>
