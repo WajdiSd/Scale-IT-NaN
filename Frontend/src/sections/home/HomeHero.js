@@ -70,11 +70,7 @@ export default function HomeHero() {
   return (
     <MotionContainer>
       <RootStyle>
-        <HeroOverlayStyle
-          alt="overlay"
-          src="/images/overlay.svg"
-          variants={varFade().in}
-        />
+        <HeroOverlayStyle alt="overlay" src="/images/overlay.svg" variants={varFade().in} />
 
         <HeroImgStyle
           alt="hero"
@@ -96,12 +92,11 @@ export default function HomeHero() {
 
             <m.div variants={varFade().inRight}>
               <Typography sx={{ color: 'common.white' }}>
-                The starting point for your next project based on easy-to-customize MUI helps you build apps faster and
-                better.
+                An intuitive interface made to accompany you in managing your next project/company. The easiest way to
+                grow.
               </Typography>
             </m.div>
-            {
-            /*
+            {/*
               <Stack spacing={2.5} alignItems="center" direction={{ xs: 'column', md: 'row' }}>
               <m.div variants={varFade().inRight}>
                 <TextIconLabel
@@ -150,7 +145,6 @@ export default function HomeHero() {
               </m.div>
             </Stack>
               */}
-            
 
             <m.div variants={varFade().inRight}>
               <Button
@@ -164,8 +158,7 @@ export default function HomeHero() {
               </Button>
             </m.div>
 
-            {
-              /*
+            {/*
               <Stack spacing={2.5}>
               <m.div variants={varFade().inRight}>
                 <Typography variant="overline" sx={{ color: 'primary.light' }}>
@@ -183,9 +176,7 @@ export default function HomeHero() {
                 ))}
               </Stack>
             </Stack>
-              */
-            }
-            
+              */}
           </ContentStyle>
         </Container>
       </RootStyle>

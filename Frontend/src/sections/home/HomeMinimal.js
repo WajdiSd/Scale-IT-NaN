@@ -9,20 +9,20 @@ import { MotionInView, varFade } from '../../components/animate';
 
 const CARDS = [
   {
-    icon: 'https://minimal-assets-api.vercel.app/assets/icons/ic_design.svg',
-    title: 'UI & UX Design',
+    icon: '/icons/ic_analytics_red.svg',
+    title: 'Easy to Access Data',
     description:
-      'The set is built on the principles of the atomic design system. It helps you to create projects fastest and easily customized packages for your projects.',
+      "Every statistic you will need for your company is centralized, from project progression to members' efficiency",
   },
   {
-    icon: 'https://minimal-assets-api.vercel.app/assets/icons/ic_code.svg',
-    title: 'Development',
-    description: 'Easy to customize and extend each component, saving you time and money.',
+    icon: '/icons/ic_dashboard_purple.svg',
+    title: 'Intuitive',
+    description: "Easy to use interface with guidance along each step you'll take in using Scale IT.",
   },
   {
     icon: '/logo/logo.svg',
-    title: 'Branding',
-    description: 'Consistent design in colors, fonts ... makes brand recognition easy.',
+    title: 'Personalized Assistance',
+    description: 'Miss Brain was created for you and your employees. She will serve you well.',
   },
 ];
 
@@ -102,7 +102,7 @@ export default function HomeMinimal() {
             </Typography>
           </MotionInView>
           <MotionInView variants={varFade().inDown}>
-            <Typography variant="h2">What Scale IT helps you?</Typography>
+            <Typography variant="h2">What Scale IT helps you achieve?</Typography>
           </MotionInView>
         </Box>
 
