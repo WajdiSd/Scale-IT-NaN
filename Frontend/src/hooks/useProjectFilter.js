@@ -54,7 +54,7 @@ const useProjectFilter = (projects) => {
     );
   };
 
-  return { query, managedProjects, ledProjects, normalProjects, searchProjects };
+  return { query, projectsFilter, managedProjects, ledProjects, normalProjects, searchProjects };
 };
 
 export default useProjectFilter;
