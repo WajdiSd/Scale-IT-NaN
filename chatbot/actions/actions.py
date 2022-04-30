@@ -77,6 +77,28 @@ class getusernameAction(Action):
         return [] 
 
 
+class getworkspacenameAction(Action):
+
+    def name(self) -> Text:
+        return "get_slot_workspacename"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        workspaceid = tracker.get_slot("workspaceid")
+
+        if(workspaceid == None):
+            dispatcher.utter_message("you didn't enter any workspaces")
+        else :
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/workspacename/{workspaceid}").text)
+            print(request)
+            workspacename = request["name"]
+            res= f"you have entered the {workspacename} workspace "
+            dispatcher.utter_message(res)  
+        return [] 
+
 class getUserid(Action):
 
     def name(self) -> Text:
@@ -123,14 +145,17 @@ class getscoreworkspace(Action):
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
 
+        if(workspaceid == None):
+            dispatcher.utter_message("you didn't enter any workspaces")
+        else :
+            request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyworkspace/{userid}/{workspaceid}").text)
 
-        request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyworkspace/{userid}/{workspaceid}").text)
-
-        score = request["score"]
-        text =str(score)
-        res= f"your score is {text}, you always can do better !"
-                 # extract a joke from returned json response
-        dispatcher.utter_message(res)  # send the message back to the user
+            score = request["score"]
+            text =str(score)
+            res= f"your score is {text}, you always can do better !"
+                    # extract a joke from returned json response
+            dispatcher.utter_message(res)  # send the message back to the user
+        
         return []
 
 class getrankworkspace(Action):
@@ -146,13 +171,18 @@ class getrankworkspace(Action):
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
 
-        request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankworkspaceleaderboard/{workspaceid}/{userid}").text)
+        if(workspaceid == None):
+            dispatcher.utter_message("you didn't enter any workspaces")
+        else :
+            request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankworkspaceleaderboard/{workspaceid}/{userid}").text)
 
-        rank = request["rank"]
-        text =str(rank)
-        res= f"your rank is {text}, not bad after all !"
+            rank = request["rank"]
+            text =str(rank)
+            res= f"your rank is {text}, not bad after all !"
                  # extract a joke from returned json response
-        dispatcher.utter_message(res)  # send the message back to the user
+            dispatcher.utter_message(res)  # send the message back to the user
+
+        
         return []
 
 class getroleinworkspace(Action):
@@ -168,14 +198,17 @@ class getroleinworkspace(Action):
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
 
-        request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
+        if(workspaceid == None):
+            dispatcher.utter_message("you didn't enter any workspaces")
+        else: 
+            request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
 
-        role = request["role"]
-        text =str(role)
-        res= f"your role is {text}"
-        
+            role = request["role"]
+            text =str(role)
+            res= f"your role is {text}"
+            dispatcher.utter_message(res)
                  # extract a joke from returned json response
-        dispatcher.utter_message(res)  # send the message back to the user
+          # send the message back to the user
         return []
 
 class getprojectsinworkspace(Action):
@@ -191,10 +224,14 @@ class getprojectsinworkspace(Action):
         userid = tracker.get_slot("userid")
         workspaceid = tracker.get_slot("workspaceid")
 
-        request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
-        print(request)
-        projects = request["data"]
-        
-                 # extract a joke from returned json response
-        dispatcher.utter_message(json_message=projects)  # send the message back to the user
+        if(workspaceid == None):
+            dispatcher.utter_message("you didn't enter any workspaces")
+        else: 
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
+            print(request)
+            projects = request["data"]
+            
+                    # extract a joke from returned json response
+            dispatcher.utter_message(json_message=projects)  # send the message back to the user
+                
         return []

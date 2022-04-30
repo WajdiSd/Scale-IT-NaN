@@ -48,7 +48,8 @@ stories:
   - story: set workspaceid slot
     steps:
       - intent: get_workspaceid_slot
-      - action: utter_workspaceid
+      # - action: utter_workspaceid
+      - action: get_slot_workspacename
 
   - story: get member score in workspace
     steps:

@@ -31,6 +31,10 @@ slots:
     type: text
     influence_conversation: false
     mappings: []
+  workspacename:
+    type: text
+    influence_conversation: false
+    mappings: []
   workspaceid:
     type: text
     influence_conversation: false
@@ -81,3 +85,4 @@ actions:
   - rank_member_workspace
   - role_member_workspace
   - projects_member_workspace
+  - get_slot_workspacename

@@ -29,6 +29,21 @@ const getProjectsByMemberchatbot = asyncHandler(async (req, res) => {
   });
 });
 
+const getWorkspaceName = asyncHandler(async (req, res) => {
+  const workspace = await Workspace.findOne(
+    {
+      _id: req.params.idworkspace,
+    },
+    { name: 1 }
+  );
+  if (!workspace) {
+    return res.status(404).json({ message: "No workspace found" });
+  } else {
+    res.status(200).json(workspace);
+  }
+});
+
 module.exports = {
   getProjectsByMemberchatbot,
+  getWorkspaceName,
 };
