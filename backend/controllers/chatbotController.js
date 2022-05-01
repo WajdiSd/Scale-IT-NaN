@@ -43,7 +43,22 @@ const getWorkspaceName = asyncHandler(async (req, res) => {
   }
 });
 
+const getProjectName = asyncHandler(async (req, res) => {
+  const project = await Project.findOne(
+    {
+      _id: req.params.idproject,
+    },
+    { name: 1 }
+  );
+  if (!project) {
+    return res.status(404).json({ message: "No project found" });
+  } else {
+    res.status(200).json(project);
+  }
+});
+
 module.exports = {
   getProjectsByMemberchatbot,
   getWorkspaceName,
+  getProjectName,
 };

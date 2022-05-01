@@ -51,20 +51,41 @@ stories:
       # - action: utter_workspaceid
       - action: get_slot_workspacename
 
+  - story: set projectid slot
+    steps:
+      - intent: get_projectid_slot
+      # - action: utter_workspaceid
+      - action: get_slot_projectname
+
   - story: get member score in workspace
     steps:
       - intent: get_scoreworkspace
       - action: score_member_workspace
+
+  - story: get member score in project
+    steps:
+      - intent: get_scoreproject
+      - action: score_member_project
 
   - story: get member rank in workspace
     steps:
       - intent: get_rankworkspace
       - action: rank_member_workspace
 
+  - story: get member rank in project
+    steps:
+      - intent: get_rankproject
+      - action: rank_member_project
+
   - story: get member role in workspace
     steps:
       - intent: get_roleworkspace
       - action: role_member_workspace
+
+  - story: get member role in project
+    steps:
+      - intent: get_roleproject
+      - action: role_member_project
 
   - story: get member projects in workspace
     steps:

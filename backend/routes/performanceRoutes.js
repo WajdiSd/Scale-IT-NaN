@@ -17,6 +17,7 @@ const {
   roleinworkspace,
   getAllTasksInTimePercentage,
   getAllLateTasksPercentage,
+  roleinproject,
 } = require("../controllers/performanceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -64,6 +65,7 @@ router.get(
 );
 
 router.get("/roleinworkspace/:idworkspace/:idmember", roleinworkspace);
+router.get("/roleinproject/:idproject/:idmember", roleinproject);
 
 router.get("/alllatetasks/:idproj", getAllLateTasksPercentage);
 router.get("/alltasksintime/:idproj", getAllTasksInTimePercentage);
