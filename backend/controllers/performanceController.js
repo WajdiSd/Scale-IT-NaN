@@ -229,17 +229,16 @@ const getAllFinishedProjectsInTimePourcentage = asyncHandler(
       const allProjects = await Project.find({
         workspace: req.params.workspaceid,
       });
-      console.log("reqqmember",req.member);
+      console.log("reqqmember", req.member);
       const fininshedProjects = await Project.find({
         workspace: req.params.workspaceid,
         status: "finished",
       });
-      if(allProjects.length == 0) {
+      if (allProjects.length == 0) {
         res.status(200).json({
           finishedProjects: 0,
         });
-      }
-      else {
+      } else {
         res.status(200).json({
           finishedProjectsInTimePourcentage:
             (fininshedProjects.length * 100) / allProjects.length,
@@ -263,18 +262,16 @@ const getAllFinishedProjectsLatePourcentage = asyncHandler(async (req, res) => {
       status: "finished with delay",
     });
 
-    if(allProjects.length == 0){
+    if (allProjects.length == 0) {
       res.status(200).json({
         finishedProjectsLatePourcentage: 0,
       });
-    }
-    else {
+    } else {
       res.status(200).json({
         finishedProjectsLatePourcentage:
           (fininshedProjects.length * 100) / allProjects.length,
       });
     }
-    
   } else {
     res.status(204);
     throw new Error("you are not the workspace hr");
@@ -312,14 +309,14 @@ const getLateTasksPercentage = asyncHandler(async (req, res) => {
         totalLateTasks = totalLateTasks + 1;
       }
     }
-    if(numberOfTasks!==0){
-      console.log(totalLateTasks,numberOfTasks);
-    var percentage = (totalLateTasks / numberOfTasks) * 100;
-    res.status(200).json({
-      totallatetasks: totalLateTasks,
-      numberOfTasks: numberOfTasks,
-      percentage: percentage,
-    });
+    if (numberOfTasks !== 0) {
+      console.log(totalLateTasks, numberOfTasks);
+      var percentage = (totalLateTasks / numberOfTasks) * 100;
+      res.status(200).json({
+        totallatetasks: totalLateTasks,
+        numberOfTasks: numberOfTasks,
+        percentage: percentage,
+      });
     } else {
       res.status(200).json({
         totallatetasks: totalLateTasks,
@@ -327,7 +324,6 @@ const getLateTasksPercentage = asyncHandler(async (req, res) => {
         percentage: 0,
       });
     }
-    
   }
 });
 
@@ -335,50 +331,49 @@ const getLateTasksPercentage = asyncHandler(async (req, res) => {
 const getTasksInTimePercentage = asyncHandler(async (req, res) => {
   //verify if project is valid
   const project = await Project.findById({
-   _id: req.params.idproj,
-   isDeleted: false,
-   });
- if (!project) {
-   res.status(404);
-   throw new Error("project not found");
- }
- //verify if member is in project
- let exists = await MemberInProject(req.params.idmember, req.params.idproj);
- if (!exists) {
-   res.status(404);
-   throw new Error("user is not in project");
- } else {
-  //calculate number of tasks finished early
-  let totaltasks = await Task.find( {
-   project: req.params.idproj,
-   "members.memberId": req.params.idmember,
-   isDeleted: false,
- });
-  var totalTasksInTime = 0;
-  var numberOfTasks = 0;
-  for (var task of totaltasks) {
-       numberOfTasks=numberOfTasks+1;
-       if (task.endDate <= task.expectedEndDate) { 
-        totalTasksInTime=totalTasksInTime+1;}
-       }
-  if(numberOfTasks!==0){
-    console.log(totalTasksInTime,numberOfTasks);
-    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    _id: req.params.idproj,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  //verify if member is in project
+  let exists = await MemberInProject(req.params.idmember, req.params.idproj);
+  if (!exists) {
+    res.status(404);
+    throw new Error("user is not in project");
+  } else {
+    //calculate number of tasks finished early
+    let totaltasks = await Task.find({
+      project: req.params.idproj,
+      "members.memberId": req.params.idmember,
+      isDeleted: false,
+    });
+    var totalTasksInTime = 0;
+    var numberOfTasks = 0;
+    for (var task of totaltasks) {
+      numberOfTasks = numberOfTasks + 1;
+      if (task.endDate <= task.expectedEndDate) {
+        totalTasksInTime = totalTasksInTime + 1;
+      }
+    }
+    if (numberOfTasks !== 0) {
+      console.log(totalTasksInTime, numberOfTasks);
+      var percentage = (totalTasksInTime / numberOfTasks) * 100;
+      res.status(200).json({
+        totalTasksInTime: totalTasksInTime,
+        numberOfTasks: numberOfTasks,
+        percentage: percentage,
+      });
+    }
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
-       numberOfTasks: numberOfTasks,
-       percentage: percentage,
-     });
+      numberOfTasks: numberOfTasks,
+      percentage: 0,
+    });
   }
-  res.status(200).json({
-    totalTasksInTime: totalTasksInTime,
-     numberOfTasks: numberOfTasks,
-     percentage: 0,
-   });
-   
-   
- }
- });
+});
 
 // @route get /api/performance/getLateProjectsPercentage/idworkspace/idmember
 const getLateProjectsPercentage = asyncHandler(async (req, res) => {
@@ -493,83 +488,112 @@ const roleinworkspace = asyncHandler(async (req, res) => {
   }
 });
 
+const roleinproject = asyncHandler(async (req, res) => {
+  var role = "Member";
+  const project = await Project.findById(req.params.idproject);
+  if (!project) {
+    /*if not, error*/
+    res.status(400);
+    throw new Error("invalid project id");
+  } else {
+    /*if yes, verify if changes are made by a pm */
+    for (let i = 0; i < project.assigned_members.length; i++) {
+      if (
+        project.assigned_members[i].memberId == req.params.idmember &&
+        project.assigned_members[i].isProjectManager == true
+      )
+        role = "project Manager";
+      if (
+        project.assigned_members[i].memberId == req.params.idmember &&
+        project.assigned_members[i].isTeamLeader == true
+      )
+        role = "Team Leader";
+    }
+    res.status(200).json({
+      role: role,
+    });
+  }
+});
+
 // @route get /api/performance/getAllTasksInTimePercentage/idproj
 const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
   //verify if project is valid
   const project = await Project.findById({
-   _id: req.params.idproj,
-   isDeleted: false,
-   });
- if (!project) {
-   res.status(404);
-   throw new Error("project not found");
- }
+    _id: req.params.idproj,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
   //calculate number of tasks finished early
-  let totaltasks = await Task.find( {
-   project: req.params.idproj,
-   isDeleted: false,
- });
+  let totaltasks = await Task.find({
+    project: req.params.idproj,
+    isDeleted: false,
+  });
   var totalTasksInTime = 0;
   var numberOfTasks = 0;
   for (var task of totaltasks) {
-       numberOfTasks=numberOfTasks+1;
-       if (task.endDate <= task.expectedEndDate) { 
-        totalTasksInTime=totalTasksInTime+1;}
-       }
-  if(numberOfTasks!==0){
-    console.log(totalTasksInTime,numberOfTasks);
-    var percentage = (totalTasksInTime/numberOfTasks)*100;
+    numberOfTasks = numberOfTasks + 1;
+    if (task.endDate <= task.expectedEndDate) {
+      totalTasksInTime = totalTasksInTime + 1;
+    }
+  }
+  if (numberOfTasks !== 0) {
+    console.log(totalTasksInTime, numberOfTasks);
+    var percentage = (totalTasksInTime / numberOfTasks) * 100;
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
-       numberOfTasks: numberOfTasks,
-       percentage: percentage,
-     });
+      numberOfTasks: numberOfTasks,
+      percentage: percentage,
+    });
   }
   res.status(200).json({
     totalTasksInTime: totalTasksInTime,
-     numberOfTasks: numberOfTasks,
-     percentage: 0,
-   });
- });
+    numberOfTasks: numberOfTasks,
+    percentage: 0,
+  });
+});
 
- // @route get /api/performance/getAllTasksInTimePercentage/idproj
+// @route get /api/performance/getAllTasksInTimePercentage/idproj
 const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
   //verify if project is valid
   const project = await Project.findById({
-   _id: req.params.idproj,
-   isDeleted: false,
-   });
- if (!project) {
-   res.status(404);
-   throw new Error("project not found");
- }
+    _id: req.params.idproj,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
   //calculate number of tasks finished early
-  let totaltasks = await Task.find( {
-   project: req.params.idproj,
-   isDeleted: false,
- });
+  let totaltasks = await Task.find({
+    project: req.params.idproj,
+    isDeleted: false,
+  });
   var totallateTasks = 0;
   var numberOfTasks = 0;
   for (var task of totaltasks) {
-       numberOfTasks=numberOfTasks+1;
-       if (task.endDate > task.expectedEndDate) { 
-        totallateTasks=totallateTasks+1;}
-       }
-  if(numberOfTasks!==0){
-    console.log(totallateTasks,numberOfTasks);
-    var percentage = (totallateTasks/numberOfTasks)*100;
+    numberOfTasks = numberOfTasks + 1;
+    if (task.endDate > task.expectedEndDate) {
+      totallateTasks = totallateTasks + 1;
+    }
+  }
+  if (numberOfTasks !== 0) {
+    console.log(totallateTasks, numberOfTasks);
+    var percentage = (totallateTasks / numberOfTasks) * 100;
     res.status(200).json({
       totallateTasks: totallateTasks,
-       numberOfTasks: numberOfTasks,
-       percentage: percentage,
-     });
+      numberOfTasks: numberOfTasks,
+      percentage: percentage,
+    });
   }
   res.status(200).json({
     totalTasksInTime: totalTasksInTime,
-     numberOfTasks: numberOfTasks,
-     percentage: 0,
-   });
- });
+    numberOfTasks: numberOfTasks,
+    percentage: 0,
+  });
+});
 
 module.exports = {
   getPerformanceByMember,
@@ -590,4 +614,5 @@ module.exports = {
   roleinworkspace,
   getAllTasksInTimePercentage,
   getAllLateTasksPercentage,
+  roleinproject,
 };

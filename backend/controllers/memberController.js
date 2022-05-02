@@ -478,7 +478,6 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 const getConnectedUser = asyncHandler(async (req, res) => {
-  console.log(req.params.id);
   const member = await Member.findById(req.params.id);
 
   res.status(200).json({
