@@ -93,7 +93,6 @@ class getworkspacenameAction(Action):
             dispatcher.utter_message("you didn't enter any workspace")
         else :
             request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/workspacename/{workspaceid}").text)
-            print(request)
             workspacename = request["name"]
             res= f"you have entered the {workspacename} workspace "
             dispatcher.utter_message(res)  
@@ -115,7 +114,6 @@ class getprojectnameAction(Action):
             dispatcher.utter_message("you didn't enter any project")
         else :
             request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/projectename/{projectid}").text)
-            print(request)
             projectname = request["name"]
             res= f"you have entered the {projectname} project "
             dispatcher.utter_message(res)  
@@ -131,8 +129,6 @@ class getUserid(Action):
     ) -> List[Dict[Text, Any]]:
        
         userid = tracker.sender_id
-        print("setting userid slot")
-        print(userid)
         dispatcher.utter_message("Welcome to Scale IT")  # send the message back to the user
         return [SlotSet("userid" , userid)] 
         # SlotSet("userid" , "622ef3a0399260d13597b4cf")
@@ -197,7 +193,6 @@ class getscoreproject(Action):
             dispatcher.utter_message("you didn't enter any project")
         else :
             request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyproject/{userid}/{projectid}").text)
-            print(request)
             score = request["score"]
             text =str(score)
             res= f"your score in this project is {text}, you always can do better !"
@@ -251,7 +246,6 @@ class getrankproject(Action):
             dispatcher.utter_message("you didn't enter any project")
         else :
             request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankprojectleaderboard/{projectid}/{userid}").text)
-            print(request)
             rank = request["rank"]
             text =str(rank)
             res= f"your rank in this project is {text}, not bad after all !"
@@ -305,7 +299,6 @@ class getroleinproject(Action):
             dispatcher.utter_message("you didn't enter any project")
         else: 
             request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinproject/{projectid}/{userid}").text)
-            print(request)
             role = request["role"]
             text =str(role)
             res= f"your role is {text}"
@@ -331,10 +324,135 @@ class getprojectsinworkspace(Action):
             dispatcher.utter_message("you didn't enter any workspace")
         else: 
             request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
-            print(request)
             projects = request["data"]
             
                     # extract a joke from returned json response
             dispatcher.utter_message(json_message=projects)  # send the message back to the user
+                
+        return []
+
+class getalltasksinproject(Action):
+
+    def name(self) -> Text:
+        return "tasks_member_inproject"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        projectid = tracker.get_slot("projectid")
+
+        if(projectid == None):
+            dispatcher.utter_message("you didn't enter any project")
+        else:
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/alltasks/{projectid}/{userid}").text)
+            tasks = request["tasks"]
+            
+                    # extract a joke from returned json response
+            dispatcher.utter_message(json_message=tasks)  # send the message back to the user
+                
+        return []
+
+class gettodotasksinproject(Action):
+
+    def name(self) -> Text:
+        return "todotasks_member_inproject"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        projectid = tracker.get_slot("projectid")
+
+        if(projectid == None):
+            dispatcher.utter_message("you didn't enter any project")
+        else:
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/todotasks/{projectid}/{userid}").text)
+            todotasks = request["tasks"]
+            if(todotasks == []):
+                dispatcher.utter_message("you have no tasks to do")
+            else:
+                dispatcher.utter_message(json_message=todotasks)  
+                
+        return []
+
+class getdoingtasksinproject(Action):
+
+    def name(self) -> Text:
+        return "doingtasks_member_inproject"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        projectid = tracker.get_slot("projectid")
+
+        if(projectid == None):
+            dispatcher.utter_message("you didn't enter any project")
+        else:
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/doingtasks/{projectid}/{userid}").text)
+            doingtasks = request["tasks"]
+            
+            if(doingtasks == []):
+                dispatcher.utter_message("you are not doing any tasks")
+            else:
+                dispatcher.utter_message(json_message=doingtasks)
+                
+        return []
+
+class getreviewtasksinproject(Action):
+
+    def name(self) -> Text:
+        return "reviewtasks_member_inproject"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        projectid = tracker.get_slot("projectid")
+
+        if(projectid == None):
+            dispatcher.utter_message("you didn't enter any project")
+        else:
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/reviewtasks/{projectid}/{userid}").text)
+            reviewtasks = request["tasks"]
+            
+            if(reviewtasks == []):
+                dispatcher.utter_message("you have no tasks in review")
+            else:
+                dispatcher.utter_message(json_message=reviewtasks)
+                
+        return []
+
+class getdonetasksinproject(Action):
+
+    def name(self) -> Text:
+        return "donetasks_member_inproject"
+
+    async def run(
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+       
+
+        userid = tracker.get_slot("userid")
+        projectid = tracker.get_slot("projectid")
+
+        if(projectid == None):
+            dispatcher.utter_message("you didn't enter any project")
+        else:
+            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/donetasks/{projectid}/{userid}").text)
+            donetasks = request["tasks"]
+            if(donetasks == []):
+                dispatcher.utter_message("you didn't finish any task yet ")
+            else:
+                dispatcher.utter_message(json_message=donetasks)
                 
         return []

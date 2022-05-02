@@ -22,6 +22,11 @@ intents:
   - get_rankproject
   - get_roleproject
   - get_projects
+  - get_tasks
+  - get_ToDotasks
+  - get_Doingtasks
+  - get_Reviewtasks
+  - get_Donetasks
 
 entities:
   - workspaceid
@@ -94,3 +99,8 @@ actions:
   - score_member_project
   - rank_member_project
   - role_member_project
+  - tasks_member_inproject
+  - todotasks_member_inproject
+  - doingtasks_member_inproject
+  - reviewtasks_member_inproject
+  - donetasks_member_inproject

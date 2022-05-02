@@ -163,3 +163,43 @@ nlu:
       - my projects in this workspace ?
       - can i see my projects in this workspace
       - projects
+
+  - intent: get_tasks
+    examples: |
+      - my tasks
+      - tasks in this project
+      - my tasks in this project ?
+      - can i see my tasks in this project
+      - tasks
+
+  - intent: get_ToDotasks
+    examples: |
+      - my to do tasks
+      - to do tasks in this project
+      - my  tasks in this project ?
+      - can i see my to do tasks in this project
+      - to do tasks
+
+  - intent: get_Doingtasks
+    examples: |
+      - my doing tasks
+      - doing tasks in this project
+      - my doing tasks in this project ?
+      - can i see my doing tasks in this project
+      - doing tasks
+
+  - intent: get_Reviewtasks
+    examples: |
+      - my review tasks
+      - review tasks in this project
+      - my review tasks in this project ?
+      - can i see my review tasks in this project
+      - review tasks
+
+  - intent: get_Donetasks
+    examples: |
+      - my done tasks
+      - done tasks in this project
+      - my done tasks in this project ?
+      - can i see my done tasks in this project
+      - tasks done
