@@ -48,27 +48,75 @@ stories:
   - story: set workspaceid slot
     steps:
       - intent: get_workspaceid_slot
-      - action: utter_workspaceid
+      # - action: utter_workspaceid
+      - action: get_slot_workspacename
+
+  - story: set projectid slot
+    steps:
+      - intent: get_projectid_slot
+      # - action: utter_workspaceid
+      - action: get_slot_projectname
 
   - story: get member score in workspace
     steps:
       - intent: get_scoreworkspace
       - action: score_member_workspace
 
+  - story: get member score in project
+    steps:
+      - intent: get_scoreproject
+      - action: score_member_project
+
   - story: get member rank in workspace
     steps:
       - intent: get_rankworkspace
       - action: rank_member_workspace
+
+  - story: get member rank in project
+    steps:
+      - intent: get_rankproject
+      - action: rank_member_project
 
   - story: get member role in workspace
     steps:
       - intent: get_roleworkspace
       - action: role_member_workspace
 
+  - story: get member role in project
+    steps:
+      - intent: get_roleproject
+      - action: role_member_project
+
   - story: get member projects in workspace
     steps:
       - intent: get_projects
       - action: projects_member_workspace
+
+  - story: get member tasks in project
+    steps:
+      - intent: get_tasks
+      - action: tasks_member_inproject
+
+  - story: get member todo tasks in project
+    steps:
+      - intent: get_ToDotasks
+      - action: todotasks_member_inproject
+
+  - story: get member doing tasks in project
+    steps:
+      - intent: get_Doingtasks
+      - action: doingtasks_member_inproject
+
+  - story: get member review tasks in project
+    steps:
+      - intent: get_Reviewtasks
+      - action: reviewtasks_member_inproject
+
+  - story: get member done tasks in project
+    steps:
+      - intent: get_Donetasks
+      - action: donetasks_member_inproject
+
   # - story: ask faq
   #   steps:
   #     - intent: greet

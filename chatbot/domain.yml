@@ -14,13 +14,23 @@ intents:
   - get_username
   - get_userid_slot
   - get_workspaceid_slot
+  - get_projectid_slot
   - get_scoreworkspace
   - get_rankworkspace
   - get_roleworkspace
+  - get_scoreproject
+  - get_rankproject
+  - get_roleproject
   - get_projects
+  - get_tasks
+  - get_ToDotasks
+  - get_Doingtasks
+  - get_Reviewtasks
+  - get_Donetasks
 
 entities:
   - workspaceid
+  - projectid
 
 slots:
   userid:
@@ -28,6 +38,10 @@ slots:
     influence_conversation: false
     mappings: []
   username:
+    type: text
+    influence_conversation: false
+    mappings: []
+  workspacename:
     type: text
     influence_conversation: false
     mappings: []
@@ -40,14 +54,13 @@ slots:
   projectid:
     type: text
     influence_conversation: false
-    mappings: []
+    mappings:
+      - type: from_entity
+        entity: projectid
 
 responses:
   utter_greet:
     - text: "Hey {username} ! How are you?"
-
-  utter_workspaceid:
-    - text: "workspace id : {workspaceid}"
 
   utter_cheer_up:
     - text: "Here is something to cheer you up:"
@@ -81,3 +94,13 @@ actions:
   - rank_member_workspace
   - role_member_workspace
   - projects_member_workspace
+  - get_slot_workspacename
+  - get_slot_projectname
+  - score_member_project
+  - rank_member_project
+  - role_member_project
+  - tasks_member_inproject
+  - todotasks_member_inproject
+  - doingtasks_member_inproject
+  - reviewtasks_member_inproject
+  - donetasks_member_inproject
