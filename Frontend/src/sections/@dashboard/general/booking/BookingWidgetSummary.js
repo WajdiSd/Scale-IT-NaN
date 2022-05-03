@@ -26,7 +26,7 @@ export default function BookingWidgetSummary({ title, total, icon }) {
   return (
     <RootStyle>
       <div>
-        <Typography variant="h3">{fShortenNumber(total)}</Typography>
+        <Typography variant="h3">{fShortenNumber(total)} %</Typography>
         <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
           {title}
         </Typography>

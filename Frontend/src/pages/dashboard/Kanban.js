@@ -4,7 +4,7 @@ import { Container, Stack } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { persistColumn, persistCard, updateTaskStatus, getBoard } from '../../redux/slices/kanban';
+import { persistColumn, persistCard, updateTaskStatus, getBoard, resetKanban } from '../../redux/slices/kanban';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -23,7 +23,6 @@ import { useSnackbar } from 'notistack';
 
 import { askBot } from 'src/redux/slices/chatbotSlice';
 
-
 // ----------------------------------------------------------------------
 
 export default function Kanban() {
@@ -32,7 +31,6 @@ export default function Kanban() {
   const navigate = useNavigate();
   const [refreshTasks, setRefreshTasks] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
 
   const { user } = useAuth();
   const { board } = useKanban();
@@ -101,11 +99,11 @@ export default function Kanban() {
       cardIds: finishCardIds,
     };
 
-    if((finish.name=='done' || (finish.name=='review' && start.name=='done' )) && !isTL){
-      enqueueSnackbar("Action not allowed",{
-        variant: 'error'
-      })
-    }else{
+    if ((finish.name == 'done' || (finish.name == 'review' && start.name == 'done')) && !isTL) {
+      enqueueSnackbar('Action not allowed', {
+        variant: 'error',
+      });
+    } else {
       let data = {
         taskid: draggableId,
         status: finish.name,
@@ -121,17 +119,14 @@ export default function Kanban() {
         })
       );
 
-      if(finish.name=='review' && start.name=='doing' ){
+      if (finish.name == 'review' && start.name == 'doing') {
         try {
-          dispatch(askBot({ message: "congratulations task ", senderId: user._id }));
+          dispatch(askBot({ message: 'congratulations task ', senderId: user._id }));
         } catch (error) {
           console.error(error);
         }
       }
-
     }
-
-    
 
     /*
     dispatch(

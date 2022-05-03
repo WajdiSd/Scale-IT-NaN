@@ -29,6 +29,8 @@ import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject
 import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
 import ProjectFinishedTasksStats from 'src/sections/@dashboard/project/ProjectFinishedTasksStats';
 import { askBot } from 'src/redux/slices/chatbotSlice';
+import { getProjectProgress } from 'src/redux/slices/performanceSlice';
+
 //pdf related
 import jsPDF from 'jspdf';
 import { pdfGenerator } from 'src/components/pdf/pdfGenerator';
@@ -36,15 +38,19 @@ import logo from 'src/logo.png';
 import html2canvas from 'html2canvas';
 import { Button } from '@mui/material';
 import Iconify from 'src/components/Iconify';
-
+import { BookingWidgetSummary } from 'src/sections/@dashboard/general/booking';
+import { BookingIllustration, CheckInIllustration, CheckOutIllustration } from 'src/assets';
+import { useSelector } from 'src/redux/store';
+import usePerformance from 'src/hooks/usePerformance';
+import ProjectProgressIllustration from 'src/assets/illustration_projectprogress';
 //END pdf related
 
 // ----------------------------------------------------------------------
 
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
-
   const { user, isHr } = useAuth();
+  const { projectprogress } = usePerformance();
   const { project, usersInProject, isTL, isPM, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
@@ -60,7 +66,18 @@ export default function GeneralProject() {
     }
   };
 
+  const projectprog = () => {
+    console.log('progress');
+    try {
+      dispatch(getProjectProgress(projectid));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    projectprog();
+    console.log(projectprogress);
     sendProjectInfo();
     console.log('useEffect');
     const obj = {
@@ -168,34 +185,27 @@ export default function GeneralProject() {
         ) : (
           <Grid container spacing={3}>
             <jsPdfGenerator />
-            <Grid item xs={12} md={7}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
-                <BankingWidgetSummary
-                  title="Income"
-                  icon={'eva:diagonal-arrow-left-down-fill'}
-                  percent={2.6}
-                  total={18765}
-                  chartData={[111, 136, 76, 108, 74, 54, 57, 84]}
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <BookingWidgetSummary
+                  title="Project Progress"
+                  total={projectprogress}
+                  icon={<ProjectProgressIllustration />}
                 />
-                <BankingWidgetSummary
-                  title="Expenses"
-                  color="warning"
-                  icon={'eva:diagonal-arrow-right-up-fill'}
-                  percent={-0.5}
-                  total={8938}
-                  chartData={[500, 136, 76, 108, 74, 54, 57, 84]}
-                />
-              </Stack>
-            </Grid>
+              </Grid>
 
-            <Grid item xs={12} md={5}>
-              <BankingCurrentBalance />
+              <Grid item xs={12} md={4}>
+                <BookingWidgetSummary title="Check In" total={311000} icon={<CheckInIllustration />} />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <BookingWidgetSummary title="Check Out" total={124000} icon={<CheckOutIllustration />} />
+              </Grid>
             </Grid>
 
             {!isHr && !isTL && !isPM && (
               <Grid item xs={12} md={8}>
                 <Stack spacing={3}>
-                  {/* <AnalyticsFinishedTasks/> */}
                   <FinishedTasksStats />
                 </Stack>
               </Grid>

@@ -31,6 +31,11 @@ const slice = createSlice({
   name: 'kanban',
   initialState,
   reducers: {
+    resetKanban: (state) => {
+      state.isLoading = false;
+      state.error = null;
+      state.board = null;
+    },
     // START LOADING
     startLoading(state) {
       state.isLoading = true;
@@ -111,38 +116,35 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(updateTaskStatus.pending, (state, action) => {
-      console.log("updateTaskStatus pending");
-      state.isLoading = true;
-      
-    })
-    .addCase(updateTaskStatus.fulfilled, (state, action) => {
-      console.log("updateTaskStatus fulfilled");
-      state.isLoading = false;
-      
-    })
-    .addCase(updateTaskStatus.rejected, (state, action) => {
-      console.log("updateTaskStatus rejected");
-      state.isLoading = false;
-      state.error = action.payload
-      
-    })
+      .addCase(updateTaskStatus.pending, (state, action) => {
+        console.log('updateTaskStatus pending');
+        state.isLoading = true;
+      })
+      .addCase(updateTaskStatus.fulfilled, (state, action) => {
+        console.log('updateTaskStatus fulfilled');
+        state.isLoading = false;
+      })
+      .addCase(updateTaskStatus.rejected, (state, action) => {
+        console.log('updateTaskStatus rejected');
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 
 // Reducer
 export default slice.reducer;
-
+export const { resetKanban } = slice.actions;
 export const { actions } = slice;
 
 // ----------------------------------------------------------------------
 
 export function getBoard(projectid) {
-  console.log("getBoard");
+  console.log('getBoard');
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axiosInstance.get('task/tasksbyproject/'+projectid);
+      const response = await axiosInstance.get('task/tasksbyproject/' + projectid);
       console.log(response);
       dispatch(slice.actions.getBoardSuccess(response.data));
     } catch (error) {
@@ -207,7 +209,7 @@ export function persistColumn(newColumnOrder) {
 // ----------------------------------------------------------------------
 
 export function persistCard(columns) {
-  console.log("retert");
+  console.log('retert');
   return () => {
     dispatch(slice.actions.persistCard(columns));
   };
@@ -231,9 +233,9 @@ export function deleteTask({ cardId, columnId }) {
 
 // Create new project
 export const updateTaskStatus = createAsyncThunk('kanban/updateTaskStatus', async (data, thunkAPI) => {
-  console.log("dfsdfsf");
+  console.log('dfsdfsf');
   try {
-    return await taskService.updateTaskStatus(data)    
+    return await taskService.updateTaskStatus(data);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

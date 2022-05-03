@@ -72,9 +72,7 @@ const chatbotPersistConfig = {
   key: 'chatbot',
   storage,
   keyPrefix: 'redux-',
-  whitelist: [
-    'conversation', 'participants'
-  ],
+  whitelist: ['conversation', 'participants'],
 };
 const performancePersistConfig = {
   key: 'performance',
@@ -89,9 +87,9 @@ const performancePersistConfig = {
     'finishedProjectsLatePourcentage',
     'allfinishedTasksInTimePercentage',
     'allfinishedTasksLatePercentage',
+    'projectprogress',
   ],
 };
-
 
 const rootReducer = combineReducers({
   mail: mailReducer,

@@ -18,6 +18,7 @@ const {
   getAllTasksInTimePercentage,
   getAllLateTasksPercentage,
   roleinproject,
+  getprojectprogress,
 } = require("../controllers/performanceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -69,5 +70,6 @@ router.get("/roleinproject/:idproject/:idmember", roleinproject);
 
 router.get("/alllatetasks/:idproj", getAllLateTasksPercentage);
 router.get("/alltasksintime/:idproj", getAllTasksInTimePercentage);
+router.get("/projectprogress/:idproj", getprojectprogress);
 
 module.exports = router;
