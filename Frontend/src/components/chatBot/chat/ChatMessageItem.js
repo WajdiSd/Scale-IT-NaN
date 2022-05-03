@@ -10,6 +10,7 @@ import Image from '../../../components/Image';
 import useAuth from 'src/hooks/useAuth';
 import createAvatar from 'src/utils/createAvatar';
 import useChat from 'src/hooks/useChat';
+import AppTopRelated from './AppTopRelated';
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +54,7 @@ const [msgContent,setMessageContent] = useState(message.message)
 
   const isMe = sender.type === 'me';
   const isImage = message.contentType === 'image';
+  const isCustom = message.contentType === 'custom';
   const firstName = senderDetails.name;
 
   return (
@@ -98,20 +100,15 @@ const [msgContent,setMessageContent] = useState(message.message)
                 sx={{ borderRadius: 1, cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
               />
             ) : (
-              <Typography variant="body2">{
-                typeof(msgContent)=== 'object'?
-                msgContent.map((mes) => {
-                  let msg= "- "
-                  for (const [key, value] of Object.entries(mes)) {
-                   if(!key.includes("id")) 
-                   msg+= `\n ${key}: ${value} `;
-                  }
-                  return msg
-                  ;
-                })                :
-                msgContent
-                
-                }</Typography>
+              isCustom?
+              (<AppTopRelated key={message.messageId} msgContent={msgContent}/>)
+              :
+              (
+                <Typography variant="body2">
+                  {msgContent}
+                  </Typography>
+              )
+              
             )}
           </ContentStyle>
         </div>
