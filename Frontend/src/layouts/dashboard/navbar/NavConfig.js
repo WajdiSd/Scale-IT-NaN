@@ -34,7 +34,7 @@ const navConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
   {
-    subheader: 'general',
+    subheader: 'management',
     items: [
       {
         title: 'workspaces',
@@ -42,17 +42,32 @@ const navConfig = [
         icon: ICONS.workspace,
         children: [],
       },
+      {
+        title: 'user',
+        path: PATH_DASHBOARD.user.root,
+        icon: ICONS.user,
+        children: [
+          { title: 'profile', path: PATH_DASHBOARD.user.profile },
+          //{ title: 'cards', path: PATH_DASHBOARD.user.cards },
+          //{ title: 'list', path: PATH_DASHBOARD.user.list },
+          //{ title: 'create', path: PATH_DASHBOARD.user.newUser },
+          //{ title: 'edit', path: PATH_DASHBOARD.user.editById },
+          //{ title: 'account', path: PATH_DASHBOARD.user.account },
+        ],
+      },
       { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       //{ title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
       { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
       //{ title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       //{ title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
+      
+      
     ],
   },
 
   // MANAGEMENT
   // ----------------------------------------------------------------------
-  {
+  /*{
     subheader: 'management',
     items: [
       // MANAGEMENT : WORKSPACE
@@ -100,11 +115,11 @@ const navConfig = [
       //   ],
       // },
     ],
-  },
+  },*/
 
   // APP
   // ----------------------------------------------------------------------
-  {
+  /*{
     subheader: 'app',
     items: [
       // {
@@ -125,7 +140,7 @@ const navConfig = [
         icon: ICONS.kanban,
       },
     ],
-  },
+  },*/
 ];
 
 export default navConfig;

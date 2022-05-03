@@ -143,7 +143,7 @@ export default function Router() {
           ],
         },
         //{ path: 'calendar', element: <Calendar /> },
-        { path: 'kanban', element: <Kanban /> },
+        //{ path: 'kanban', element: <Kanban /> },
       ],
     },
 

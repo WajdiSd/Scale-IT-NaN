@@ -96,7 +96,7 @@ export default function DashboardHeader({ isInWorkspace, onOpenSidebar, isCollap
           </IconButtonAnimate>
         )}
 
-        <Searchbar />
+        {/*<Searchbar />*/}
         <Box sx={{ flexGrow: 1 }} />
 
         {isDesktop && isInWorkspace && isHr && (

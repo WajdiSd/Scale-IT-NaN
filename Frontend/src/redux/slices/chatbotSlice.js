@@ -71,15 +71,18 @@ export const chatbotSlice = createSlice({
         participant.type=='chatbot'? chatbotId = participant.id: null;
       });
 
-      let message = {
-        messageId: uuidv4(),
-        message: action.payload[0]? (action.payload[0].custom? action.payload[0].custom : action.payload[0].text): 'I do not understand',
-        contentType: action.payload[0]?.custom? 'custom':'text',
-        attachments: [],
-        createdAt: new Date(),
-        senderId: chatbotId,
+      if(action.payload.length>0){
+        let message = {
+          messageId: uuidv4(),
+          message: action.payload[0]? (action.payload[0].custom? action.payload[0].custom : action.payload[0].text): 'I do not understand',
+          contentType: action.payload[0]?.custom? 'custom':'text',
+          attachments: [],
+          createdAt: new Date(),
+          senderId: chatbotId,
+        }
+        state.conversation.messages.push(message);
       }
-      state.conversation.messages.push(message);
+      
 
       state.isLoading = false;
       state.isSuccess = true;

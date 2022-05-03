@@ -53,7 +53,7 @@ export const PATH_DASHBOARD = {
     conversation: path(ROOTS_DASHBOARD, '/chat/:conversationKey'),
   },
   //calendar: path(ROOTS_DASHBOARD, '/calendar'),
-  kanban: path(ROOTS_DASHBOARD, '/kanban'),
+  //kanban: path(ROOTS_DASHBOARD, '/kanban'),
   workspaces: {
     details: path(ROOTS_DASHBOARD, '/workspace/'),
     memberInvite: path(ROOTS_DASHBOARD, '/workspace/'),

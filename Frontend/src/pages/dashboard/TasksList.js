@@ -64,7 +64,7 @@ const PRIORITY_OPTIONS = ['all', 'Low', 'Medium', 'High'];
 
 const TABLE_HEAD = [
   { id: 'task', label: 'Task', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
+  { id: 'createDate', label: 'Created', align: 'left' },
   { id: 'expectedDueDate', label: 'Due', align: 'left' },
   { id: 'assignees', label: 'Assignees', align: 'center', width: 140 },
   { id: 'priority', label: 'Priority', align: 'center', width: 140 },

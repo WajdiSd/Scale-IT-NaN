@@ -38,7 +38,7 @@ const getProject = asyncHandler(async (req, res, next) => {
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find({});
+  const projects = await Project.find({}).sort('-createdAt');
   console.log("projects");
   console.log(projects);
   if (projects.length === 0) {
@@ -58,7 +58,7 @@ const getProjects = asyncHandler(async (req, res) => {
 const getProjectsByWorkspace = asyncHandler(async (req, res) => {
   const projects = await Project.find({
     workspace: req.params.idworkspace,
-  });
+  }).sort('-createdAt');
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -78,7 +78,7 @@ const getProjectsByMember = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isDeleted": false,
-  });
+  }).sort('-createdAt');
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -98,7 +98,7 @@ const getProjectsByManager = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isProjectManager": true,
-  });
+  }).sort('-createdAt');
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -118,7 +118,7 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isTeamLeader": true,
-  });
+  }).sort('-createdAt');
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],

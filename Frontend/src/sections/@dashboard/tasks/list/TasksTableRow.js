@@ -84,8 +84,8 @@ export default function TasksTableRow({
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={user.firstName} color={createAvatar(user.firstName).color} sx={{ mr: 2 }}>
-          {createAvatar(user.firstName).name}
+        <Avatar alt={name} color={createAvatar(name).color} sx={{ mr: 2 }}>
+          {createAvatar(name).name}
         </Avatar>
 
         <Stack>

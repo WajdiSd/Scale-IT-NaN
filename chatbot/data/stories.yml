@@ -131,3 +131,6 @@ stories:
   #     - intent: faq
   #     - action: utter_faq
   #     - action: action_faq_link
+  - story: action_default_fallback
+    steps:
+      - action: action_default_fallback
