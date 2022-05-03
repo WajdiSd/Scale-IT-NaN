@@ -88,6 +88,9 @@ class getworkspacenameAction(Action):
        
 
         workspaceid = tracker.get_slot("workspaceid")
+        print(workspaceid)
+        x=next(tracker.get_latest_entity_values("workspaceid"), None)
+        print(x)
 
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")

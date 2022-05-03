@@ -96,9 +96,10 @@ export default function WorkspaceDetails() {
   };
 
   const sendWorkspaceInfo = () => {
-    console.log("sendWorkspaceInfo")
+    console.log('sendWorkspaceInfo');
+    console.log(idWorkspace);
     try {
-      dispatch(askBot({message: `workspaceid ${idWorkspace}`, senderId: user._id}));
+      dispatch(askBot({ message: `setting workspaceid ${idWorkspace}`, senderId: user._id }));
     } catch (error) {
       console.error(error);
     }
@@ -164,7 +165,7 @@ export default function WorkspaceDetails() {
   ];
 
   return (
-    <Page title={`Workspace: ${ workspace?.name}`}>
+    <Page title={`Workspace: ${workspace?.name}`}>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={projectError.length > 0}
