@@ -545,15 +545,17 @@ const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
       numberOfTasks: numberOfTasks,
-      percentage: percentage,
-    });
+       percentage: percentage,
+     });
+  }else{
+    res.status(200).json({
+      totalTasksInTime: totalTasksInTime,
+       numberOfTasks: numberOfTasks,
+       percentage: 0,
+     });
   }
-  res.status(200).json({
-    totalTasksInTime: totalTasksInTime,
-    numberOfTasks: numberOfTasks,
-    percentage: 0,
-  });
-});
+ });
+
 
 // @route get /api/performance/getAllTasksInTimePercentage/idproj
 const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
@@ -583,17 +585,18 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
     console.log(totallateTasks, numberOfTasks);
     var percentage = (totallateTasks / numberOfTasks) * 100;
     res.status(200).json({
-      totallateTasks: totallateTasks,
-      numberOfTasks: numberOfTasks,
-      percentage: percentage,
-    });
+       totallateTasks: totallateTasks,
+       numberOfTasks: numberOfTasks,
+       percentage: percentage,
+     });
+  }else{
+    res.status(200).json({
+       totallateTasks: totallateTasks,
+       numberOfTasks: numberOfTasks,
+       percentage: 0,
+     });
   }
-  res.status(200).json({
-    totalTasksInTime: totalTasksInTime,
-    numberOfTasks: numberOfTasks,
-    percentage: 0,
-  });
-});
+ });
 
 module.exports = {
   getPerformanceByMember,
