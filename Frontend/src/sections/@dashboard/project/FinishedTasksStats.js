@@ -44,21 +44,16 @@ export default function FinishedTasksStats() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {projectid} = useParams();
-  console.log("*******************%%%%%%%%%%%%%%%%%%%%%%");
-  console.log(projectid);
   const { user } = useAuth();
   const memberId = user?._id;
 
   useEffect(() => {
     dispatch(getFinishedTasksInTimePourcentage({projectid, memberId}));
-    console.log("dispatching getFinishedTasksInTimePourcentage with", projectid, memberId);
     dispatch(getFinishedTasksLatePourcentage({projectid, memberId}));
   },[]);
   
   const { finishedTasksInTimePourcentage, finishedTasksLatePourcentage } = usePerformance();
 
-  console.log("---------------------------------");
-  console.log({ finishedTasksInTimePourcentage, finishedTasksLatePourcentage })
   const CHART_DATA = [finishedTasksInTimePourcentage, finishedTasksLatePourcentage];
 
 

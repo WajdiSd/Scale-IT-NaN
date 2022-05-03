@@ -41,19 +41,14 @@ export default function ProjectFinishedTasksStats() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {projectid} = useParams();
-  console.log(projectid);
 
   useEffect(() => {
     dispatch(getAllTasksInTimePercentage(projectid));
-    console.log("TASKS dispatch", projectid);
     dispatch(getAllLateTasksPercentage(projectid));
   },[]);
   
   const { allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage } = usePerformance();
 
-  console.log("***********"+allfinishedTasksInTimePercentage);
-  console.log("***********"+allfinishedTasksLatePercentage);
-  console.log({ allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage });
   const data = [allfinishedTasksInTimePercentage, allfinishedTasksLatePercentage];
 
 

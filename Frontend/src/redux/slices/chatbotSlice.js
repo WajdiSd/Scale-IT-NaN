@@ -74,7 +74,7 @@ export const chatbotSlice = createSlice({
       let message = {
         messageId: uuidv4(),
         message: action.payload[0]? (action.payload[0].custom? action.payload[0].custom : action.payload[0].text): 'I do not understand',
-        contentType: action.payload[0].custom? 'custom':'text',
+        contentType: action.payload[0]?.custom? 'custom':'text',
         attachments: [],
         createdAt: new Date(),
         senderId: chatbotId,

@@ -585,13 +585,13 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
     console.log(totallateTasks, numberOfTasks);
     var percentage = (totallateTasks / numberOfTasks) * 100;
     res.status(200).json({
-      totallateTasks: totallateTasks,
+       totallateTasks: totallateTasks,
        numberOfTasks: numberOfTasks,
        percentage: percentage,
      });
   }else{
     res.status(200).json({
-      totalTasksInTime: totalTasksInTime,
+       totallateTasks: totallateTasks,
        numberOfTasks: numberOfTasks,
        percentage: 0,
      });
