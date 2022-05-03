@@ -545,17 +545,16 @@ const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
       numberOfTasks: numberOfTasks,
-       percentage: percentage,
-     });
-  }else{
+      percentage: percentage,
+    });
+  } else {
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
-       numberOfTasks: numberOfTasks,
-       percentage: 0,
-     });
+      numberOfTasks: numberOfTasks,
+      percentage: 0,
+    });
   }
- });
-
+});
 
 // @route get /api/performance/getAllTasksInTimePercentage/idproj
 const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
@@ -585,18 +584,53 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
     console.log(totallateTasks, numberOfTasks);
     var percentage = (totallateTasks / numberOfTasks) * 100;
     res.status(200).json({
-       totallateTasks: totallateTasks,
-       numberOfTasks: numberOfTasks,
-       percentage: percentage,
-     });
-  }else{
+      totallateTasks: totallateTasks,
+      numberOfTasks: numberOfTasks,
+      percentage: percentage,
+    });
+  } else {
     res.status(200).json({
-       totallateTasks: totallateTasks,
-       numberOfTasks: numberOfTasks,
-       percentage: 0,
-     });
+      totallateTasks: totallateTasks,
+      numberOfTasks: numberOfTasks,
+      percentage: 0,
+    });
   }
- });
+});
+
+const getprojectprogress = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const project = await Project.findById({
+    _id: req.params.idproj,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  //calculate number of tasks finished early
+  let totaltasks = await Task.find({
+    project: req.params.idproj,
+    isDeleted: false,
+  });
+  var totaldoneTasks = 0;
+  for (var task of totaltasks) {
+    if (task.status == "done") {
+      totaldoneTasks = totaldoneTasks + 1;
+    }
+  }
+  console.log(totaldoneTasks);
+  console.log(totaltasks.length);
+  if (totaldoneTasks !== 0) {
+    var percentage = (totaldoneTasks / totaltasks.length) * 100;
+    res.status(200).json({
+      percentage: percentage,
+    });
+  } else {
+    res.status(200).json({
+      percentage: 0,
+    });
+  }
+});
 
 module.exports = {
   getPerformanceByMember,
@@ -618,4 +652,5 @@ module.exports = {
   getAllTasksInTimePercentage,
   getAllLateTasksPercentage,
   roleinproject,
+  getprojectprogress,
 };

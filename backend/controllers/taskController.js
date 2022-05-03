@@ -269,7 +269,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
     const tasks = await Task.find({
       project: req.params.projectId,
       isDeleted: false,
-    }).sort('-startDate');
+    }).sort("-startDate");
     res.status(200).json({
       tasks: tasks,
     });
@@ -278,7 +278,7 @@ const getUserTasks = asyncHandler(async (req, res) => {
       project: req.params.projectId,
       "members.memberId": req.params.memberId,
       isDeleted: false,
-    }).sort('-startDate');
+    }).sort("-startDate");
     res.status(200).json({
       tasks: tasksToDo,
     });
@@ -305,7 +305,9 @@ const getTasksByProject = asyncHandler(async (req, res) => {
 */
   const tasks = await Task.find({
     project: req.params.projectid,
-  }).sort('-startDate');
+    isDeleted: false,
+  }).sort("-startDate");
+  console.log(tasks);
   let columns,
     columnOrder,
     cards = [];
