@@ -103,14 +103,20 @@ nlu:
       - userid
   - intent: get_workspaceid_slot
     examples: |
-      - workspaceid [624b124e1739d313b38e4376](workspaceid)
-      - my workspace id [624b677aa9d07c82847abe8b](workspaceid)
-      - [624d4ec84fe678f3cac2bb21](workspaceid) idworkspace
+      - setting workspaceid [624b124e1739d313b38e4376](workspaceid)
+      - setting my workspace id [624b677aa9d07c82847abe8b](workspaceid)
+      - [624d4ec84fe678f3cac2bb21](workspaceid) setting idworkspace
+
+  - intent: get_workspaceid_slot_none
+    examples: |
+      - none workspaceid [None](workspaceid)
+      - none workspace id [None](workspaceid)
+      - [None](workspaceid) none idworkspace
   - intent: get_projectid_slot
     examples: |
-      - projectid [624b14331739d313b38e4403](projectid)
-      - my project id [624d4f72e04217d03e74b680](projectid)
-      - [62516ce9dbb08d4c59f16d64](projectid) idproject
+      - getting projectid [624b14331739d313b38e4403](projectid)
+      - getting my project id [624d4f72e04217d03e74b680](projectid)
+      - [62516ce9dbb08d4c59f16d64](projectid) getting idproject
   - intent: get_scoreworkspace
     examples: |
       - score workspace

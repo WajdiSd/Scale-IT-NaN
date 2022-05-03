@@ -54,7 +54,7 @@ export default function GeneralProject() {
   const sendProjectInfo = () => {
     console.log('sendProjectInfo');
     try {
-      dispatch(askBot({ message: `projectid ${projectid}`, senderId: user._id }));
+      dispatch(askBot({ message: `getting projectid ${projectid}`, senderId: user._id }));
     } catch (error) {
       console.error(error);
     }
