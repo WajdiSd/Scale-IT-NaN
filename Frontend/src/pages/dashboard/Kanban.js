@@ -21,6 +21,9 @@ import useWorkspace from 'src/hooks/useWorkspace';
 import useKanban from 'src/hooks/useKanban';
 import { useSnackbar } from 'notistack';
 
+import { askBot } from 'src/redux/slices/chatbotSlice';
+
+
 // ----------------------------------------------------------------------
 
 export default function Kanban() {
@@ -117,6 +120,15 @@ export default function Kanban() {
           [updatedFinish._id]: updatedFinish,
         })
       );
+
+      if(finish.name=='review' && start.name=='doing' ){
+        try {
+          dispatch(askBot({ message: "congratulations task ", senderId: user._id }));
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
     }
 
     

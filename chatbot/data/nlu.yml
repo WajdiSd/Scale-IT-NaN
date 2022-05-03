@@ -209,3 +209,6 @@ nlu:
       - my done tasks in this project ?
       - can i see my done tasks in this project
       - tasks done
+  - intent: congratulate_task
+    examples: |
+      - congratulations task
