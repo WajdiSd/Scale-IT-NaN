@@ -116,6 +116,11 @@ stories:
     steps:
       - intent: get_Donetasks
       - action: donetasks_member_inproject
+  
+  - story: congratulate user task done
+    steps:
+      - intent: congratulate_task
+      - action: utter_congratulate_task
 
   # - story: ask faq
   #   steps:
@@ -126,3 +131,6 @@ stories:
   #     - intent: faq
   #     - action: utter_faq
   #     - action: action_faq_link
+  - story: action_default_fallback
+    steps:
+      - action: action_default_fallback

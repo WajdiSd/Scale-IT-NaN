@@ -107,34 +107,23 @@ export default function MainHeader() {
           {isDesktop && <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}
 
           {user ? (
-            <Button
-              to={PATH_AFTER_LOGIN}
-              component={RouterLink}
-              variant="contained"
-              color="success"
-              sx={{
-                paddingX: '25px',
-                ...(isHome && { color: 'common.white' }),
-                '&.active': {
-                  color: 'primary.main',
-                },
-              }}
-            >
-              Dashboard
-            </Button>
+            <Button to={PATH_AFTER_LOGIN} component={RouterLink} variant="contained" sx={{ paddingX: '30px' }}>
+            Dashboard
+          </Button>
           ) : (
             <>
               <Button
                 to={PATH_AUTH.register}
                 component={RouterLink}
-                variant="outlined"
+                variant="contained"
                 sx={{
                   marginRight: '15px',
-                  paddingX: '40px',
-                  ...(isHome && { color: 'common.white' }),
-                  ...(isOffset && { color: 'primary.main' }),
-                  '&.active': {
-                    color: 'primary.main',
+                  paddingX: '25px',
+                  ...(isHome && { color: 'primary.main', backgroundColor:  'common.white'}),
+                  ...(isOffset && { color: 'common.white', backgroundColor:  'primary.main'}),
+                  '&.hover': {
+                    color: 'common.white!important',
+                    backgroundColor:  'primary.main!important'
                   },
                 }}
               >

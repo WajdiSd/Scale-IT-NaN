@@ -92,17 +92,23 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
       autoHighlight
       popupIcon={null}
       PopperComponent={PopperStyle}
-      options={searchResults}
-      onInputChange={(event, value) => handleChangeSearch(value)}
+      options={assignedUsers}
       getOptionLabel={(member) => member.firstName+' '+member.lastName}
       noOptionsText={<SearchNotFound searchQuery={searchQuery} />}
       isOptionEqualToValue={(option, value) => option._id === value._id}
+      onChange={(event, value) => {
+        if (value) 
+          handleSetTeamLeadId(value._id) 
+        else 
+          handleSetTeamLeadId(null)
+        }
+      } // prints the selected value
+
       renderInput={(params) => (
         <RHFTextField
           {...params}
           name="teamLeader"
           placeholder="Select Team Leader..."
-          onKeyUp={(event, value) => handleKeyUp(event)}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
@@ -122,7 +128,7 @@ export default function MemberSearchAutocomplete({handleSetTeamLeadId}) {
         return (
           <li {...props}>
             {/*<Image alt={cover} src={cover} sx={{ width: 48, height: 48, borderRadius: 1, flexShrink: 0, mr: 1.5 }} />*/}
-            <Link underline="none" onClick={() => {handleSetTeamLeadId(_id)}}>
+            <Link underline="none">
               {parts.map((part, index) => (
                 <Typography
                   key={index}

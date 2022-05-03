@@ -39,10 +39,8 @@ export default function GeneralWorkspace() {
 
   const getUserWorkspaces = () => {
     try {
-      workspaces.map((workspace) => {
-        let validated = false;
-
-        workspace.assigned_members.forEach((member) => {
+      workspaces?.map((workspace) => {
+        workspace?.assigned_members?.forEach((member) => {
           if (member.member == user._id) {
             if (member.isHR) {
               setUserWorkspaces((oldArray) => [...oldArray, workspace]);

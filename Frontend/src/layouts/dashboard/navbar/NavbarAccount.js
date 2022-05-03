@@ -50,7 +50,7 @@ export default function NavbarAccount({ isInWorkspace, isCollapse }) {
 
   return (
     <>
-      <Link underline="none" color="inherit" component={RouterLink} to={PATH_DASHBOARD.user.account}>
+      <Link underline="none" color="inherit" component={RouterLink} to={PATH_DASHBOARD.user.profile}>
         <RootStyle
           sx={{
             ...(isCollapse && {

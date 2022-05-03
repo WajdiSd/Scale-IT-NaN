@@ -9,7 +9,7 @@ const getWorkspaces = asyncHandler(async (req, res) => {
   const workspaces = await Workspace.find({
     "assigned_members.member": req.params.idmember,
     isDeleted: false,
-  });
+  }).sort('-createdAt');
   res.status(200).json(workspaces);
 });
 

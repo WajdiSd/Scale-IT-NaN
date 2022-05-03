@@ -45,7 +45,6 @@ export default function TasksAnalytic({ title, total, icon, color, percent, pric
         </Typography>
 
         <Typography variant="subtitle2" sx={{ color }}>
-          {fCurrency(price)}
         </Typography>
       </Stack>
     </Stack>

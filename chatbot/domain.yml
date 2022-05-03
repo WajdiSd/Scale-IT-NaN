@@ -28,6 +28,7 @@ intents:
   - get_Reviewtasks
   - get_Donetasks
   - get_workspaceid_slot_none
+  - congratulate_task
 
 entities:
   - workspaceid
@@ -84,6 +85,9 @@ responses:
 
   utter_profile:
     - text: "you can manage your profile by clicking on the user icon on the top right of the screen then click on settings"
+  
+  utter_congratulate_task:
+    - text: "Well done! you have completed a task."
 
 actions:
   - "..."

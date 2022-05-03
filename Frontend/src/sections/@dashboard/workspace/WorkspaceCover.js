@@ -82,7 +82,11 @@ export default function WorkspaceCover({name}) {
     <RootStyle>
       
       <InfoStyle>
-      <Avatar
+      {isLoading ? (
+          <></>
+        ) : (
+          <>
+          <Avatar
           sx={{
             mx: 'auto',
             borderWidth: 2,
@@ -118,7 +122,10 @@ export default function WorkspaceCover({name}) {
             )}
           </Typography>
           <Typography sx={{ opacity: 0.72 }}>By {hRName}</Typography>
-        </Box>
+        </Box></>
+        )
+      }
+      
       </InfoStyle>
       <Image
         alt="profile cover"

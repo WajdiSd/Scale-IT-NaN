@@ -74,7 +74,6 @@ export default function GeneralProject() {
   //Get pdf funtion
   const jsPdfGenerator = () => {
     //new doc
-    console.log(project);
     var y = 180;
     var x = 80;
     var i = 0;
@@ -128,15 +127,12 @@ export default function GeneralProject() {
           })*/
 
     //Download PDF
-    doc.save(project?.name + 'Report.pdf');
+    doc.save(project?.name + ' Report.pdf');
   };
 
   return (
     <Page title="General: Projects">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />} onClick={jsPdfGenerator}>
-          Get REPORT
-        </Button>
         <HeaderBreadcrumbs
           key={project?.name}
           heading="Project"
@@ -146,6 +142,15 @@ export default function GeneralProject() {
             { key: 2, name: 'project', href: '' },
             { key: 3, name: project?.name, href: `${PATH_DASHBOARD.workspaces.details}${id}/project/${projectid}` },
           ]}
+          action={
+            isTL ? (
+              <Button variant="contained" onClick={jsPdfGenerator} startIcon={<Iconify icon={'eva:plus-fill'} />}>
+                Get Report
+              </Button>
+            ) : (
+              <></>
+            )
+          }
         />
 
         {isLoading && usersInProject?.length == 0 ? (
