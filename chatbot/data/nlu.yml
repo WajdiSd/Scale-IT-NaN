@@ -106,6 +106,12 @@ nlu:
       - setting workspaceid [624b124e1739d313b38e4376](workspaceid)
       - setting my workspace id [624b677aa9d07c82847abe8b](workspaceid)
       - [624d4ec84fe678f3cac2bb21](workspaceid) setting idworkspace
+
+  - intent: get_workspaceid_slot_none
+    examples: |
+      - none workspaceid [None](workspaceid)
+      - none workspace id [None](workspaceid)
+      - [None](workspaceid) none idworkspace
   - intent: get_projectid_slot
     examples: |
       - getting projectid [624b14331739d313b38e4403](projectid)
