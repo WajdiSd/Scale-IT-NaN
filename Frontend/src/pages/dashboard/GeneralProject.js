@@ -29,7 +29,7 @@ import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject
 import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
 import ProjectFinishedTasksStats from 'src/sections/@dashboard/project/ProjectFinishedTasksStats';
 import { askBot } from 'src/redux/slices/chatbotSlice';
-import { getProjectProgress } from 'src/redux/slices/performanceSlice';
+import { getMemberContribution, getnbrTasksLeft, getProjectProgress } from 'src/redux/slices/performanceSlice';
 
 //pdf related
 import jsPDF from 'jspdf';
@@ -43,6 +43,7 @@ import { BookingIllustration, CheckInIllustration, CheckOutIllustration } from '
 import { useSelector } from 'src/redux/store';
 import usePerformance from 'src/hooks/usePerformance';
 import ProjectProgressIllustration from 'src/assets/illustration_projectprogress';
+import TasksLeftWidget from 'src/sections/@dashboard/general/booking/TasksLeftWidget';
 //END pdf related
 
 // ----------------------------------------------------------------------
@@ -50,7 +51,7 @@ import ProjectProgressIllustration from 'src/assets/illustration_projectprogress
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
   const { user, isHr } = useAuth();
-  const { projectprogress } = usePerformance();
+  const { projectprogress, membercontribution, numbertasksleft } = usePerformance();
   const { project, usersInProject, isTL, isPM, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
@@ -75,9 +76,37 @@ export default function GeneralProject() {
     }
   };
 
+  const membercontrib = () => {
+    console.log('contrib');
+    try {
+      const data = {
+        idprojet: projectid,
+        idmember: user._id,
+      };
+      dispatch(getMemberContribution(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const nbrtsksleft = () => {
+    console.log('tasks left');
+    try {
+      const data = {
+        idprojet: projectid,
+        idmember: user._id,
+      };
+      dispatch(getnbrTasksLeft(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    nbrtsksleft();
     projectprog();
     console.log(projectprogress);
+    membercontrib();
     sendProjectInfo();
     console.log('useEffect');
     const obj = {
@@ -195,11 +224,15 @@ export default function GeneralProject() {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <BookingWidgetSummary title="Check In" total={311000} icon={<CheckInIllustration />} />
+                <BookingWidgetSummary
+                  title="Member Contribution"
+                  total={membercontribution}
+                  icon={<CheckInIllustration />}
+                />
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <BookingWidgetSummary title="Check Out" total={124000} icon={<CheckOutIllustration />} />
+                <TasksLeftWidget title="Number of tasks left" total={numbertasksleft} icon={<CheckOutIllustration />} />
               </Grid>
             </Grid>
 
