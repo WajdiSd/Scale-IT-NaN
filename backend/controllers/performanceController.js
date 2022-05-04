@@ -646,6 +646,7 @@ const getnbrtasksleft = asyncHandler(async (req, res) => {
   //calculate number of tasks finished early
   let totaltasks = await Task.find({
     project: req.params.idproj,
+    "members.memberId": req.params.idmember,
     isDeleted: false,
   });
   var totalleftTasks = 0;
@@ -680,4 +681,5 @@ module.exports = {
   getAllLateTasksPercentage,
   roleinproject,
   getprojectprogress,
+  getnbrtasksleft,
 };

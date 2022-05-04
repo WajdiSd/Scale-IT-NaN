@@ -48,7 +48,12 @@ const getprojectprogress = async (idproj) => {
 };
 
 const getmembercontribution = async (data) => {
-  const response = await axiosInstance.get(API_URL + 'getcontribbution/' + data.idprojet+'/'+data.idmember);
+  const response = await axiosInstance.get(API_URL + 'getcontribbution/' + data.idprojet + '/' + data.idmember);
+  return response.data;
+};
+
+const getnbrtasksleft = async (data) => {
+  const response = await axiosInstance.get(API_URL + 'getnbrtasksleft/' + data.idprojet + '/' + data.idmember);
   return response.data;
 };
 
@@ -63,6 +68,7 @@ const performanceService = {
   getAllLateTasksPercentage,
   getprojectprogress,
   getmembercontribution,
+  getnbrtasksleft,
 };
 
 export default performanceService;

@@ -19,6 +19,7 @@ const {
   getAllLateTasksPercentage,
   roleinproject,
   getprojectprogress,
+  getnbrtasksleft,
 } = require("../controllers/performanceController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -46,6 +47,8 @@ router.get(
   "/getcontribbution/:projectId/:memberId",
   getMemberTasksContribution
 );
+
+router.get("/getnbrtasksleft/:idproj/:idmember", getnbrtasksleft);
 
 router.get(
   "/getrankprojectleaderboard/:projectid/:memberId",

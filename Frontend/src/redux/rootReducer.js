@@ -89,6 +89,7 @@ const performancePersistConfig = {
     'allfinishedTasksLatePercentage',
     'projectprogress',
     'membercontribution',
+    'numbertasksleft',
   ],
 };
 

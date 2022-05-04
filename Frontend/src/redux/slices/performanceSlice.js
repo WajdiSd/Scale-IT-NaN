@@ -18,6 +18,7 @@ const initialState = {
   allfinishedTasksLatePercentage: '',
   projectprogress: '',
   membercontribution: '',
+  numbertasksleft: '',
 };
 
 export const performanceSlice = createSlice({
@@ -50,6 +51,7 @@ export const performanceSlice = createSlice({
         (state.isLoading = false),
         (state.projectprogress = ''),
         (state.membercontribution = ''),
+        (state.numbertasksleft = ''),
         (state.message = '');
     },
   },
@@ -180,6 +182,21 @@ export const performanceSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         console.log(action);
+      })
+      .addCase(getnbrTasksLeft.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        console.log('getnbrTasksLeft rejected');
+      })
+      .addCase(getnbrTasksLeft.pending, (state, action) => {
+        state.isLoading = true;
+        console.log('getnbrTasksLeft pending');
+      })
+      .addCase(getnbrTasksLeft.fulfilled, (state, action) => {
+        state.numbertasksleft = action.payload.total;
+        state.isLoading = false;
+        state.isSuccess = true;
+        console.log(action);
       });
   },
 });
@@ -286,6 +303,15 @@ export const getProjectProgress = createAsyncThunk('performance/getProjectProgre
 export const getMemberContribution = createAsyncThunk('performance/getMemberContribution', async (data, thunkAPI) => {
   try {
     const response = await performanceService.getmembercontribution(data);
+    return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const getnbrTasksLeft = createAsyncThunk('performance/getnbrTasksLeft', async (data, thunkAPI) => {
+  try {
+    const response = await performanceService.getnbrtasksleft(data);
     return response;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
