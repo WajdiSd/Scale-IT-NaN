@@ -114,12 +114,13 @@ const getMemberTasksContribution = asyncHandler(async (req, res) => {
       project: req.params.projectId,
       "members.memberId": req.params.memberId,
       isDeleted: false,
+      status: "done",
     });
     const totaltasks = await Task.find({
       project: req.params.projectId,
       isDeleted: false,
     });
-    contribution = Membertasks.length / totaltasks.length;
+    contribution = (Membertasks.length / totaltasks.length) * 100;
 
     res.status(200).json({
       contribution: contribution,
@@ -630,6 +631,32 @@ const getprojectprogress = asyncHandler(async (req, res) => {
       percentage: 0,
     });
   }
+});
+
+const getnbrtasksleft = asyncHandler(async (req, res) => {
+  //verify if project is valid
+  const project = await Project.findById({
+    _id: req.params.idproj,
+    isDeleted: false,
+  });
+  if (!project) {
+    res.status(404);
+    throw new Error("project not found");
+  }
+  //calculate number of tasks finished early
+  let totaltasks = await Task.find({
+    project: req.params.idproj,
+    isDeleted: false,
+  });
+  var totalleftTasks = 0;
+  for (var task of totaltasks) {
+    if (task.status != "done") {
+      totalleftTasks = totalleftTasks + 1;
+    }
+  }
+  res.status(200).json({
+    total: totalleftTasks,
+  });
 });
 
 module.exports = {

@@ -29,7 +29,7 @@ import TopMembersProject from 'src/sections/@dashboard/project/TopMembersProject
 import FinishedTasksStats from 'src/sections/@dashboard/project/FinishedTasksStats';
 import ProjectFinishedTasksStats from 'src/sections/@dashboard/project/ProjectFinishedTasksStats';
 import { askBot } from 'src/redux/slices/chatbotSlice';
-import { getProjectProgress } from 'src/redux/slices/performanceSlice';
+import { getMemberContribution, getProjectProgress } from 'src/redux/slices/performanceSlice';
 
 //pdf related
 import jsPDF from 'jspdf';
@@ -50,7 +50,7 @@ import ProjectProgressIllustration from 'src/assets/illustration_projectprogress
 export default function GeneralProject() {
   const { themeStretch } = useSettings();
   const { user, isHr } = useAuth();
-  const { projectprogress } = usePerformance();
+  const { projectprogress, membercontribution } = usePerformance();
   const { project, usersInProject, isTL, isPM, isLoading } = useProject();
   const { workspace } = useWorkspace();
   const { id, projectid } = useParams();
@@ -75,9 +75,23 @@ export default function GeneralProject() {
     }
   };
 
+  const membercontrib = () => {
+    console.log('contrib');
+    try {
+      const data = {
+        idprojet: projectid,
+        idmember: user._id,
+      };
+      dispatch(getMemberContribution(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     projectprog();
     console.log(projectprogress);
+    membercontrib();
     sendProjectInfo();
     console.log('useEffect');
     const obj = {
@@ -195,7 +209,11 @@ export default function GeneralProject() {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <BookingWidgetSummary title="Check In" total={311000} icon={<CheckInIllustration />} />
+                <BookingWidgetSummary
+                  title="Member Contribution"
+                  total={membercontribution}
+                  icon={<CheckInIllustration />}
+                />
               </Grid>
 
               <Grid item xs={12} md={4}>

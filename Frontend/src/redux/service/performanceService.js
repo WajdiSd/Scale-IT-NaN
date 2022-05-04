@@ -47,6 +47,11 @@ const getprojectprogress = async (idproj) => {
   return response.data;
 };
 
+const getmembercontribution = async (data) => {
+  const response = await axiosInstance.get(API_URL + 'getcontribbution/' + data.idprojet+'/'+data.idmember);
+  return response.data;
+};
+
 const performanceService = {
   getScoreByWorkspace,
   getRankByWorkspace,
@@ -57,6 +62,7 @@ const performanceService = {
   getAllTasksInTimePercentage,
   getAllLateTasksPercentage,
   getprojectprogress,
+  getmembercontribution,
 };
 
 export default performanceService;
