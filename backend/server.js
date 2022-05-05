@@ -27,12 +27,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// Step 1:
-app.use(express.static(path.resolve(__dirname, "./Frontend/build")));
-// Step 2:
-app.get("*", function (request, response) {
-  response.sendFile(path.resolve(__dirname, "./Frontend/build", "index.html"));
-});
 
 
 app.use("/api/members", require("./routes/memberRoutes"));

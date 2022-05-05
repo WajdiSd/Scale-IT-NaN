@@ -1,8 +1,6 @@
 {
   "scripts": {
     "build": "cd Frontend && npm run build",
-    "install-client": "cd Frontend && yarn",
-    "heroku-postbuild": "npm run install-client && npm run build",
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
