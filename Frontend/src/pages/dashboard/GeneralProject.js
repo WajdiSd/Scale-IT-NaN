@@ -44,6 +44,8 @@ import { useSelector } from 'src/redux/store';
 import usePerformance from 'src/hooks/usePerformance';
 import ProjectProgressIllustration from 'src/assets/illustration_projectprogress';
 import TasksLeftWidget from 'src/sections/@dashboard/general/booking/TasksLeftWidget';
+import MemberContributionIllustration from 'src/assets/illustration_membercontribution';
+import MemberToDoIllustration from 'src/assets/illustration_memberstodo';
 //END pdf related
 
 // ----------------------------------------------------------------------
@@ -227,12 +229,16 @@ export default function GeneralProject() {
                 <BookingWidgetSummary
                   title="Member Contribution"
                   total={membercontribution}
-                  icon={<CheckInIllustration />}
+                  icon={<MemberContributionIllustration />}
                 />
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <TasksLeftWidget title="Number of tasks left" total={numbertasksleft} icon={<CheckOutIllustration />} />
+                <TasksLeftWidget
+                  title="Number of tasks left"
+                  total={numbertasksleft}
+                  icon={<MemberToDoIllustration />}
+                />
               </Grid>
             </Grid>
 

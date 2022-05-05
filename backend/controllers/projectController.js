@@ -38,9 +38,7 @@ const getProject = asyncHandler(async (req, res, next) => {
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find({}).sort('-createdAt');
-  console.log("projects");
-  console.log(projects);
+  const projects = await Project.find({}).sort("-createdAt");
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -58,7 +56,7 @@ const getProjects = asyncHandler(async (req, res) => {
 const getProjectsByWorkspace = asyncHandler(async (req, res) => {
   const projects = await Project.find({
     workspace: req.params.idworkspace,
-  }).sort('-createdAt');
+  }).sort("-createdAt");
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -78,7 +76,7 @@ const getProjectsByMember = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isDeleted": false,
-  }).sort('-createdAt');
+  }).sort("-createdAt");
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -98,7 +96,7 @@ const getProjectsByManager = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isProjectManager": true,
-  }).sort('-createdAt');
+  }).sort("-createdAt");
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -118,7 +116,7 @@ const getProjectsByTeamLeader = asyncHandler(async (req, res) => {
     workspace: req.params.idworkspace,
     "assigned_members.memberId": req.params.idmember,
     "assigned_members.isTeamLeader": true,
-  }).sort('-createdAt');
+  }).sort("-createdAt");
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -632,7 +630,6 @@ const updateProject = asyncHandler(async (req, res) => {
  * idtl : id of current user inviting
  */
 const inviteMembers = asyncHandler(async (req, res, next) => {
-  console.log(req.params);
   var veriff = false;
   const emails = req.body.members;
 
@@ -732,7 +729,7 @@ const deleteMembers = asyncHandler(async (req, res, next) => {
  * @route PUT /api/project/restore-members/:idproject/:idtl
  * idpm : id of current user inviting
  */
- const restoreMembers = asyncHandler(async (req, res, next) => {
+const restoreMembers = asyncHandler(async (req, res, next) => {
   var verif = false;
   const userIds = req.body;
   const project = await Project.findById(req.params.idproject);

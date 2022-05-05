@@ -72,8 +72,6 @@ const getleaderboardbyproject = asyncHandler(async (req, res) => {
 });
 
 const test = asyncHandler(async (req, res) => {
-  console.log("el bot");
-
   res.status(200).json({
     message: "test",
   });
@@ -188,7 +186,6 @@ const getScoreWorkspace = asyncHandler(async (req, res) => {
 const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
   let leaderboard = [];
   const workspace = await Workspace.findById(req.params.workspaceid);
-  console.log(workspace);
   if (!workspace) {
     res.status(400);
     throw new Error("invalid workspace id");
@@ -225,12 +222,10 @@ const getRankWorkspaceLeaderboard = asyncHandler(async (req, res) => {
 const getAllFinishedProjectsInTimePourcentage = asyncHandler(
   async (req, res) => {
     const hr = await getWorkspaceHr(req.params.workspaceid);
-    console.log(hr);
     if (hr.member.equals(req.member._id)) {
       const allProjects = await Project.find({
         workspace: req.params.workspaceid,
       });
-      console.log("reqqmember", req.member);
       const fininshedProjects = await Project.find({
         workspace: req.params.workspaceid,
         status: "finished",
@@ -311,7 +306,6 @@ const getLateTasksPercentage = asyncHandler(async (req, res) => {
       }
     }
     if (numberOfTasks !== 0) {
-      console.log(totalLateTasks, numberOfTasks);
       var percentage = (totalLateTasks / numberOfTasks) * 100;
       res.status(200).json({
         totallatetasks: totalLateTasks,
@@ -360,7 +354,6 @@ const getTasksInTimePercentage = asyncHandler(async (req, res) => {
       }
     }
     if (numberOfTasks !== 0) {
-      console.log(totalTasksInTime, numberOfTasks);
       var percentage = (totalTasksInTime / numberOfTasks) * 100;
       res.status(200).json({
         totalTasksInTime: totalTasksInTime,
@@ -541,7 +534,6 @@ const getAllTasksInTimePercentage = asyncHandler(async (req, res) => {
     }
   }
   if (numberOfTasks !== 0) {
-    console.log(totalTasksInTime, numberOfTasks);
     var percentage = (totalTasksInTime / numberOfTasks) * 100;
     res.status(200).json({
       totalTasksInTime: totalTasksInTime,
@@ -582,7 +574,6 @@ const getAllLateTasksPercentage = asyncHandler(async (req, res) => {
     }
   }
   if (numberOfTasks !== 0) {
-    console.log(totallateTasks, numberOfTasks);
     var percentage = (totallateTasks / numberOfTasks) * 100;
     res.status(200).json({
       totallateTasks: totallateTasks,
@@ -619,8 +610,6 @@ const getprojectprogress = asyncHandler(async (req, res) => {
       totaldoneTasks = totaldoneTasks + 1;
     }
   }
-  console.log(totaldoneTasks);
-  console.log(totaltasks.length);
   if (totaldoneTasks !== 0) {
     var percentage = (totaldoneTasks / totaltasks.length) * 100;
     res.status(200).json({
