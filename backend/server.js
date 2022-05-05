@@ -36,9 +36,9 @@ app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
-  app.use(express.static(path.join(__dirname + "../Frontend/build")));
+  app.use(express.static(path.resolve(__dirname, '../', 'Frontend', 'build')));
   app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "../Frontend/build/index.html"));
+  res.sendFile(path.resolve(__dirname, '../', 'Frontend', 'build', 'index.html'));
   });
  }
  
