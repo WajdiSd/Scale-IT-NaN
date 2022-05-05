@@ -70,7 +70,7 @@ function MemberItem({ member, index }) {
             color: 'text.secondary',
           }}
         >
-          <Iconify icon={'eva:heart-fill'} sx={{ width: 16, height: 16, mr: 0.5 }} />
+          <Iconify icon={'akar-icons:circle-triangle-up-fill'} sx={{ width: 16, height: 16, mr: 0.5 }} />
           {fShortenNumber(member.score)}
         </Typography>
       </Box>

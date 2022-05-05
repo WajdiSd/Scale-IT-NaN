@@ -94,6 +94,8 @@ export default function WorkspaceCover({name}) {
             borderColor: 'common.white',
             width: { xs: 80, md: 128 },
             height: { xs: 80, md: 128 },
+            fontSize: '4rem',
+            color: 'white!important',
           }}
           alt={name}
           color={createAvatar(name).color}

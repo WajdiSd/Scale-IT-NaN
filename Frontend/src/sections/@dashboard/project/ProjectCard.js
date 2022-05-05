@@ -29,6 +29,7 @@ import InputStyle from 'src/components/InputStyle';
 import ProjectItem from './ProjectItem';
 import { Stack } from '@mui/material';
 import EmptyComponent from 'src/components/EmptyComponent';
+import SearchNotFound from 'src/components/SearchNotFound';
 
 ProjectCard.propTypes = {
   projects: PropTypes.array.isRequired,

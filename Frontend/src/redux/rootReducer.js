@@ -72,7 +72,7 @@ const chatbotPersistConfig = {
   key: 'chatbot',
   storage,
   keyPrefix: 'redux-',
-  whitelist: ['conversation', 'participants'],
+  whitelist: ['conversation', 'participants', 'newMessage'],
 };
 const performancePersistConfig = {
   key: 'performance',
@@ -99,7 +99,6 @@ const rootReducer = combineReducers({
   calendar: calendarReducer,
   kanban: kanbanReducer,
   invite: inviteReducer,
-  product: persistReducer(productPersistConfig, productReducer),
   auth: persistReducer(userPersistConfig, authReducer),
   workspaces: persistReducer(workspacesPersistConfig, workspacesReducer),
   projects: persistReducer(projectsPersistConfig, projectReducer),

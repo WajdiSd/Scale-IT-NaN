@@ -100,7 +100,6 @@ export default function AddWorkspace() {
 
   const onSubmit = async (data) => {
     try {
-      console.log('data', data);
       
       let workspaceData = {
         data: data,
@@ -109,7 +108,7 @@ export default function AddWorkspace() {
       dispatch(addWorkspace(workspaceData))
       .then(res=>{
         enqueueSnackbar("Added workspace successfully");
-        navigate(PATH_DASHBOARD.general.landing);
+        navigate(PATH_DASHBOARD.workspaces.details+res.payload._id);
       });
       // await new Promise((resolve) => setTimeout(resolve, 500));
       // reset();
@@ -124,35 +123,34 @@ export default function AddWorkspace() {
     <Page title="Workspace: New">
       <Container maxWidth={themeStretch ? false : 'xl'}>
       <HeaderBreadcrumbs
-          heading="Workspace"
+          heading="Add New Workspace"
           links={[
             { name: 'Workspace', href: PATH_DASHBOARD.general.landing },
             { name: 'new' },
           ]}
         />
         <Grid container spacing={3} mb={3}>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={12} >
             <AppWelcome displayName={user?.firstName} />
           </Grid>
-          <Grid item xs={12} md={4}>
-            <AppFeatured />
-          </Grid>
+         
         </Grid>
 
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+          <Grid  container spacing={3}>
+            <Grid sx={{mx: 'auto'}} item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
-                  <div>
-                  <Typography variant="h5">Add New Workspace</Typography>
-                  </div>
                   <RHFTextField name="name" label="Workspace Name" />
 
                   <RHFTextField name="description" label="Description" multiline rows={3} />
                   <LoadingButton fullWidth type="submit" variant="contained" size="large" loading={isLoading}>
                     Create
                   </LoadingButton>
+                  <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+                    You will be redirected to your new woskpace.
+                    
+                  </Typography>
                 </Stack>
               </Card>
             </Grid>

@@ -102,8 +102,6 @@ MemberCard.propTypes = {
 
 function MemberCard({ member }) {
   const { gender, lastName, phone, email, avatarUrl, firstName, _id, isHR, isProjectManager } = member;
-  console.log('member');
-  console.log(member);
   const { user } = useAuth();
 
   return (
@@ -158,8 +156,6 @@ function applyFilter(array, query) {
 // ----------------------------------------------------------------------
 
 function MoreMenuButton({ id, isPM, isHumRes }) {
-  console.log('id fel butt');
-  console.log(id);
   const { isHr } = useAuth();
   const { idHR } = useAuth();
   const { workspace } = useWorkspace();
@@ -184,7 +180,6 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
         enqueueSnackbar('Deleted member successfully');
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -200,7 +195,6 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
         window.location.reload();
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -217,7 +211,6 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
 
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -233,7 +226,6 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
         window.location.reload();
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
