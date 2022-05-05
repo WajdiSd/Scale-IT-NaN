@@ -19,12 +19,11 @@ import useAuth from './hooks/useAuth';
 // ----------------------------------------------------------------------
 
 export default function App() {
+  // zz
 
-  const {isAuthenticated} = useAuth();
-  const test = useSelector(
-    (state) => state
-  )
-    console.log(test);
+  const { isAuthenticated } = useAuth();
+  const test = useSelector((state) => state);
+  console.log(test);
 
   return (
     <ThemeProvider>
@@ -36,7 +35,7 @@ export default function App() {
                 <ProgressBarStyle />
                 <ChartStyle />
                 <Settings />
-                {isAuthenticated && <ChatSection/>}
+                {isAuthenticated && <ChatSection />}
                 <ScrollToTop />
                 <Router />
               </MotionLazyContainer>
