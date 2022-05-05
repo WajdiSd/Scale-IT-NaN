@@ -24,7 +24,7 @@ import ToggleButtonBot from '../ToggleButtonBot';
 import useSettings from 'src/hooks/useSettings';
 import ChatWindow from '../chat/ChatWindow';
 import { useDispatch } from 'react-redux';
-import { resetDiscussion } from 'src/redux/slices/chatbotSlice';
+import { resetDiscussion, setRead } from 'src/redux/slices/chatbotSlice';
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +92,7 @@ export default function ChatSection() {
 
   const handleToggle = () => {
     setOpen((prev) => !prev);
+    !open === true? dispatch(setRead()) : null;
   };
 
   const handleClose = () => {

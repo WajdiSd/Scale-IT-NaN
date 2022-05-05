@@ -46,8 +46,6 @@ ToggleButton.propTypes = {
 export default function ToggleButton({ notDefault, open, onToggle }) {
   return (
     <RootStyle>
-      {notDefault && !open && <DotStyle />}
-
       <Tooltip title="Settings" placement="left">
         <IconButtonAnimate
           color="inherit"

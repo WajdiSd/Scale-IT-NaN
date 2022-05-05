@@ -8,6 +8,7 @@ import uuidv4 from '../../utils/uuidv4';
 const initialState = {
   conversation: {messages:[]},
   participants: [],
+  newMessage: false,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -22,6 +23,7 @@ export const chatbotSlice = createSlice({
       console.log("reset chatbot");
         (state.conversation = {messages:[]}),
         (state.participants = []),
+        (state.newMessage = false),
         (state.isError = false),
         (state.isSuccess = false),
         (state.isLoading = false),
@@ -30,6 +32,9 @@ export const chatbotSlice = createSlice({
     resetDiscussion: (state) => {
       console.log("resetDiscussion");
         (state.conversation = {messages:[]});
+    },
+    setRead: (state) => {
+        state.newMessage = false;
     },
   },
   extraReducers: (builder) => {
@@ -72,6 +77,7 @@ export const chatbotSlice = createSlice({
       });
 
       if(action.payload.length>0){
+        state.newMessage = true;
         let message = {
           messageId: uuidv4(),
           message: action.payload[0]? (action.payload[0].custom? action.payload[0].custom : action.payload[0].text): 'I do not understand',
@@ -135,5 +141,5 @@ export const askBot = createAsyncThunk('chatbot/askBot', async (body, thunkAPI) 
     return thunkAPI.rejectWithValue(message);
   }
 });
-export const { resetChatbot, resetDiscussion } = chatbotSlice.actions;
+export const { resetChatbot, resetDiscussion, setRead } = chatbotSlice.actions;
 export default chatbotSlice.reducer;

@@ -186,15 +186,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                     (<></>)
                   )
                   }
-                  <MenuItem
-                    onClick={() => {
-                      handleCloseMenu();
-                      
-                    }}
-                  >
-                    <Iconify icon={'ant-design:eye-filled'} />
-                    View profile
-                  </MenuItem>
                   </>
                 }
               />
