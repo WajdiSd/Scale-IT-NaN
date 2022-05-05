@@ -24,7 +24,6 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors())
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -37,13 +36,6 @@ app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
-
-// Step 1:
-app.use(express.static(path.resolve(__dirname, "./Frontend/build")));
-// Step 2:
-app.get("*", function (request, response) {
-  response.sendFile(path.resolve(__dirname, "./Frontend/build", "index.html"));
-});
 
 app.use(errorHandler);
 
