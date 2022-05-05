@@ -9,7 +9,7 @@ const getWorkspaces = asyncHandler(async (req, res) => {
   const workspaces = await Workspace.find({
     "assigned_members.member": req.params.idmember,
     isDeleted: false,
-  }).sort('-createdAt');
+  }).sort("-createdAt");
   res.status(200).json(workspaces);
 });
 
@@ -117,7 +117,6 @@ const removeMemberFromWorkspace = asyncHandler(async (req, res) => {
           new: true,
         }
       );
-      console.log(workspace);
 
       if (workspace) {
         res.status(200).json({ workspace, idmember: req.params.idmember });
@@ -204,9 +203,7 @@ const updateWorkspace = asyncHandler(async (req, res) => {
         function (err, success) {
           if (err) throw err;
           else {
-            res.send(
-              workspace
-              );
+            res.send(workspace);
           }
         }
       );
@@ -394,9 +391,7 @@ const inviteManyMembers = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < emails.length; i++) {
     let member = await Member.findOne({ email: emails[i] });
     let exists = await MemberInWorkspace(member._id, req.params.id);
-    console.log(exists);
     if (exists) {
-      console.log("member exists");
     } else {
       const invitedMember = {
         member: member._id,

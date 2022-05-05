@@ -62,7 +62,7 @@ export default function ProjectItem({
 
   return (
     <Card sx={{ cursor: 'pointer', position: 'relative' }}>
-      <Image alt="gallery image" ratio="1/1" src={''} />
+      <Image alt="gallery image" ratio="4/3" src={'/logo/logo.png'} />
       <ProjectItemLabel isDeleted={isDeleted} status={status} respectsDeadline={respectsDeadline} />
 
       <CaptionStyle>

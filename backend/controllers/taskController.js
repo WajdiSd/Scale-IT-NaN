@@ -6,7 +6,6 @@ const { MemberInProject } = require("../helpers/functions");
 const { v1: uuidv1, v4: uuidv4 } = require("uuid");
 
 const addTask = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const {
     name,
     description,
@@ -307,7 +306,6 @@ const getTasksByProject = asyncHandler(async (req, res) => {
     project: req.params.projectid,
     isDeleted: false,
   }).sort("-startDate");
-  console.log(tasks);
   let columns,
     columnOrder,
     cards = [];
@@ -450,7 +448,6 @@ const assignTaskToMembers = asyncHandler(async (req, res) => {
 });
 
 const removeMemversFromTask = asyncHandler(async (req, res, next) => {
-  console.log(req.body);
   const { memberIds } = req.body;
   const project = await Project.findById(req.params.projectId);
   if (!project) {

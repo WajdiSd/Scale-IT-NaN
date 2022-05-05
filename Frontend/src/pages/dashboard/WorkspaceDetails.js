@@ -130,7 +130,7 @@ export default function WorkspaceDetails() {
   const PROFILE_TABS = [
     {
       value: 'Projects',
-      icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
+      icon: <Iconify icon={'ant-design:project-outlined'} width={20} height={20} />,
       component: (
         <ProjectCard
           loaded={!isLoading && isSuccess}
@@ -142,24 +142,24 @@ export default function WorkspaceDetails() {
 
     {
       value: 'About',
-      icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
+      icon: <Iconify icon={'bi:info-square'} width={20} height={20} />,
       component: <General idWorkspace={id} myProfile={_userAbout} posts={_userFeeds} />,
     },
     {
       value: 'Members',
-      icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
+      icon: <Iconify icon={'eva:people-outline'} width={20} height={20} />,
       component: (
         <MembersWorkspace members={usersInWorkspace} findMembers={findMembers} onFindMembers={handleFindMembers} />
       ),
     },
     {
       value: 'Leaderboard',
-      icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
+      icon: <Iconify icon={'iconoir:leaderboard-star'} width={20} height={20} />,
       component: <TopMembers />,
     },
     {
       value: 'Performance',
-      icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
+      icon: <Iconify icon={'bi:graph-up-arrow'} width={20} height={20} />,
       component: <WorkspaceUserPerformance />,
     },
   ];

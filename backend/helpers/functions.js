@@ -57,9 +57,8 @@ async function getPerformanceByMember(memberId, workspaceId, projectId) {
   let filter = {
     "members.memberId": memberId,
     status: "done",
-  }
-  if(projectId)
-    filter.project = projectId;
+  };
+  if (projectId) filter.project = projectId;
 
   let task = await Task.find(filter);
 
@@ -73,22 +72,16 @@ async function getPerformanceByMember(memberId, workspaceId, projectId) {
 
   let usertasks = [];
 
-  if(workspaceId){
+  if (workspaceId) {
     for (let t of task) {
       let proj = await Project.findById(t.project);
       if (proj) {
-        //console.log(proj.workspace);
-        //console.log("////");
-        //console.log(workspaceId);
         if (proj.workspace.equals(workspaceId)) {
           usertasks.push(t);
         }
       }
     }
-  }else if(projectId)
-    usertasks = task;
-
-  //console.log(usertasks);
+  } else if (projectId) usertasks = task;
 
   usertasks.map((task) => {
     if (task.expectedEndDate > task.endDate) {
@@ -145,10 +138,6 @@ async function updatescoremembersinworkspace(workspaceId) {
       );
 
       if (newscore) {
-        //console.log(assignee);
-        console.log("workspace id ", workspaceId);
-        //console.log("member id ", assignee.member);
-        console.log("score ", newscore);
         let scoreExists = await UserScore.exists({ member: assignee.member });
 
         if (!scoreExists) {
@@ -170,8 +159,7 @@ async function updatescoremembersinworkspace(workspaceId) {
               member: assignee.member,
               "score_workspace.workspaceId": workspaceId,
             },
-            function (err, success) {
-            }
+            function (err, success) {}
           );
           UserScore.updateOne(
             {
@@ -191,8 +179,7 @@ async function updatescoremembersinworkspace(workspaceId) {
                     member: assignee.member,
                     "score_workspace.workspaceId": workspaceId,
                   },
-                  function (err, success) {
-                  }
+                  function (err, success) {}
                 );
               }
             }
@@ -208,8 +195,7 @@ async function updatescoremembersinworkspace(workspaceId) {
               },
             },
             { new: true },
-            function (err, success) {
-            }
+            function (err, success) {}
           );
         }
       }
@@ -227,14 +213,8 @@ async function updatescoremembersinproject(projectId) {
         assignee.memberId,
         null,
         projectId
-      ); 
+      );
       if (newscore) {
-        console.log("project id ", projectId);
-        //console.log("member id ", assignee.memberId);
-        console.log("score ", newscore);
-
-        
-
         let projectExistsInScore = await UserScore.exists({
           member: assignee.memberId,
           "score_project.projectId": projectId,
@@ -246,9 +226,7 @@ async function updatescoremembersinproject(projectId) {
               member: assignee.memberId,
               "score_project.projectId": projectId,
             },
-            function (err, success) {
-              
-            }
+            function (err, success) {}
           );
 
           UserScore.updateOne(
@@ -268,14 +246,12 @@ async function updatescoremembersinproject(projectId) {
                     member: assignee.memberId,
                     "score_project.projectId": projectId,
                   },
-                  function (err, success) {
-                    
-                  }
+                  function (err, success) {}
                 );
               }
             }
           );
-        } else{
+        } else {
           UserScore.findOneAndUpdate(
             {
               member: assignee.memberId,
@@ -286,18 +262,14 @@ async function updatescoremembersinproject(projectId) {
               },
             },
             { new: true },
-            function (err, success) {
-             
-            }
+            function (err, success) {}
           );
         }
-        
       }
     }
     console.log("updating project leaderboard");
   }
 }
-
 
 async function getWorkspaceHr(workspaceId) {
   const workspace = await Workspace.findById(workspaceId);
@@ -306,8 +278,7 @@ async function getWorkspaceHr(workspaceId) {
   } else {
     let hr = {};
     for (member of workspace.assigned_members) {
-      if(member.isHR)
-        hr = member;
+      if (member.isHR) hr = member;
     }
     return hr;
   }
