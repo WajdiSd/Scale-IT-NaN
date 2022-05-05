@@ -3,6 +3,7 @@
     "build": "cd Frontend && npm run build",
     "install-client": "cd Frontend && yarn",
     "heroku-postbuild": "npm run install-client && npm run build",
+    "install-dependencies": "npm install && cd Frontend && npm install",
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
