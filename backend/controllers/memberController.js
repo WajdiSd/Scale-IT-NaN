@@ -60,7 +60,6 @@ const registerMember = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error(error);
       } else {
-        console.log("Message sent: " + info.response);
         res.status(201).json({
           _id: member._id,
           firstName: member.firstName,
@@ -99,7 +98,6 @@ const resendEmail = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error(error);
     } else {
-      console.log("Message sent: " + info.response);
       res.status(201).json({
         message: "Message sent",
       });
@@ -269,8 +267,6 @@ const recoverPwdViaMail = asyncHandler(async (req, res) => {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
     }
   });
   res.status(200);
@@ -284,7 +280,6 @@ const recoverPwdViaSms = asyncHandler(async (req, res) => {
   var verifCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   code = verifCode;
   const { email } = req.body;
-  console.log(req.body);
   const member = await Member.findOne({ email });
 
   //Declaration des variables, config SMS

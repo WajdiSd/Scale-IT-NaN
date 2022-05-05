@@ -23,7 +23,6 @@ import { useSnackbar } from 'notistack';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import WorkspaceCount from './WorkspaceCount';
 
-
 // ----------------------------------------------------------------------
 
 General.propTypes = {
@@ -39,18 +38,17 @@ export default function General({ idWorkspace, myProfile, posts }) {
   const [open, setOpen] = useState(false);
 
   const DeleteWorkspace = () => {
-    
     try {
       let workspaceData = {
         idWorkspace: idWorkspace,
         userId: user._id,
-      }
+      };
       dispatch(deleteWorkspace(workspaceData)).then((res) => {
         enqueueSnackbar('Deleted workspace successfully');
-        navigate(PATH_DASHBOARD.general.landing,{replace: true});
+        navigate(PATH_DASHBOARD.general.landing, { replace: true });
       });
     } catch (error) {
-      enqueueSnackbar('Unauthorized to delete workspace',{
+      enqueueSnackbar('Unauthorized to delete workspace', {
         variant: 'error',
       });
       console.error(error);
@@ -70,7 +68,7 @@ export default function General({ idWorkspace, myProfile, posts }) {
       <Grid item xs={12} md={4}>
         <Stack spacing={3}>
           <WorkspaceCount />
-          <ProfileSocialInfo profile={myProfile} />
+          {/* <ProfileSocialInfo profile={myProfile} /> */}
           {isHr && (
             <Button sx={{ mt: 5 }} onClick={handleClickOpen} color="error">
               Delete Workspace

@@ -60,7 +60,7 @@ export default function GeneralWorkspace() {
     try {
       dispatch(askBot({ message: 'userid', senderId: user._id }));
       dispatch(askBot({ message: 'username', senderId: user._id }));
-      dispatch(askBot({ message: 'none workspaceid None', senderId: user._id }));
+      // dispatch(askBot({ message: 'none workspaceid None', senderId: user._id }));
     } catch (error) {
       console.error(error);
     }
