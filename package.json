@@ -7,6 +7,9 @@
     "dev": "concurrently \"npm run client\" \"npm run server\"",
     "heroku-postbuild": "npm install && cd Frontend && npm install && npm run build"
   },
+  "engines": {
+    "node": "16.13.2"
+  },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
