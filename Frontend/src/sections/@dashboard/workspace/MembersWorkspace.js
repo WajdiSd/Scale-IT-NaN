@@ -309,10 +309,6 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
           '& .MuiMenuItem-root': { px: 1, typography: 'body2', borderRadius: 0.75 },
         }}
       >
-        <MenuItem>
-          <Iconify icon={'ic:baseline-assignment-ind'} sx={{ ...ICON }} />
-          Show Profil
-        </MenuItem>
 
         {isHr ? (
           !isPM ? (

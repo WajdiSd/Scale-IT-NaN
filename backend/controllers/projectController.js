@@ -39,8 +39,7 @@ const getProject = asyncHandler(async (req, res, next) => {
 
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({}).sort('-createdAt');
-  console.log("projects");
-  console.log(projects);
+  
   if (projects.length === 0) {
     return res.status(200).json({
       data: [],
@@ -634,8 +633,8 @@ const updateProject = asyncHandler(async (req, res) => {
 const inviteMembers = asyncHandler(async (req, res, next) => {
   console.log(req.params);
   var veriff = false;
-  const emails = req.body.members;
-
+  const memberids = req.body.members;
+  console.log(memberids);
   const project = await Project.findById(req.params.idproject);
   if (!project) {
     res.status(400);
@@ -652,8 +651,8 @@ const inviteMembers = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("invalid TeamLeader id");
     } else {
-      for (let i = 0; i < emails.length; i++) {
-        let member = await Member.findOne({ email: emails[i] });
+      for (let i = 0; i < memberids.length; i++) {
+        let member = await Member.findOne({ _id: memberids[i].memberId });
 
         //Member must belong to workspace first
         var belongs = false;

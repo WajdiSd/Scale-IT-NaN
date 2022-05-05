@@ -8,6 +8,9 @@ import cssStyles from '../../utils/cssStyles';
 import Iconify from '../Iconify';
 import { IconButtonAnimate } from '../animate';
 
+import useChat from 'src/hooks/useChat';
+
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('span')(({ theme }) => ({
@@ -44,10 +47,10 @@ ToggleButtonBot.propTypes = {
 };
 
 export default function ToggleButtonBot({ notDefault, open, onToggle }) {
+  const {newMessage} = useChat();
   return (
     <RootStyle>
-      {notDefault && !open && <DotStyle />}
-
+      {!open && newMessage && <DotStyle />}
       <Tooltip title="Chat" placement="left">
         <IconButtonAnimate
           color="inherit"
