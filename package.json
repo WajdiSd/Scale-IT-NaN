@@ -3,7 +3,8 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
-    "dev": "concurrently \"npm run client\" \"npm run server\""
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix Frontend && npm run build --prefix Frontend"
   },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
