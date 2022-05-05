@@ -4,7 +4,8 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
-    "dev": "concurrently \"npm run client\" \"npm run server\""
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "heroku-postbuild": "cd Frontend && npm install && npm run build"
   },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
