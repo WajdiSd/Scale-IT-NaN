@@ -8,7 +8,7 @@ import './utils/highlight';
 import 'simplebar/src/simplebar.css';
 
 // lightbox
-import 'react-image-lightbox/style.css';
+import '../node_modules/react-image-lightbox/style.css';
 
 // map
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -55,21 +55,21 @@ import reportWebVitals from './reportWebVitals';
 // ----------------------------------------------------------------------
 
 ReactDOM.render(
-    <HelmetProvider>
-      <ReduxProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <SettingsProvider>
-              <CollapseDrawerProvider>
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </CollapseDrawerProvider>
-            </SettingsProvider>
-          </LocalizationProvider>
-        </PersistGate>
-      </ReduxProvider>
-    </HelmetProvider>,
+  <HelmetProvider>
+    <ReduxProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <SettingsProvider>
+            <CollapseDrawerProvider>
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </CollapseDrawerProvider>
+          </SettingsProvider>
+        </LocalizationProvider>
+      </PersistGate>
+    </ReduxProvider>
+  </HelmetProvider>,
   document.getElementById('root')
 );
 
