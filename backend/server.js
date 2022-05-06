@@ -9,6 +9,8 @@ const Project = require("./models/projectModel");
 const schedule = require("node-schedule");
 const { engine } = require("express-handlebars");
 
+const fs = require("fs");
+
 const connectDB = require("./config/db");
 var dir = path.join(__dirname, "public");
 const transporter = require("./config/nodemailer");
@@ -37,6 +39,27 @@ app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 // Serve frontend
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../Frontend/build")));
+  // check if directory exists
+  if (fs.existsSync(path.join(__dirname, "../Frontend/build"))) {
+    console.log("Directory exists!");
+  } else {
+    console.log("Directory not found.");
+  }
+
+  try {
+    if (
+      fs.existsSync(
+        path.resolve(__dirname, "../", "Frontend", "build", "index.html")
+      )
+    ) {
+      //file exists
+      console.log("File exists!");
+    } else {
+      console.log("File not found!");
+    }
+  } catch (err) {
+    console.error(err);
+  }
 
   app.get("*", (req, res) =>
     res.sendFile(
