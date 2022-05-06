@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node backend/server.js",
-    "build": "cd Frontend && yarn run build",
+    "build": "cd Frontend && npm run build",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
