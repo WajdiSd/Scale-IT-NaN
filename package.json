@@ -9,6 +9,9 @@
     "heroku-postbuild": "yarn run build"
 
   },
+  "engines": {
+    "node": "16.13.2"
+  },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
