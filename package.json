@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "build": "cd Frontend && npm run build",
+    "build": "cd Frontend && yarn run build",
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "heroku-postbuild": "npm install && cd Frontend && npm install && npm run build"
+    "heroku-prebuild": "yarn install && cd Frontend && yarn install",
+    "heroku-postbuild": "yarn run build"
   },
   "engines": {
     "node": "16.13.2"
