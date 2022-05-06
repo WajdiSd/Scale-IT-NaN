@@ -5,7 +5,7 @@
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true yarn install --prefix Frontend && yarn run build"
+    "heroku-postbuild": "YARN_PRODUCTION=false yarn install --prefix Frontend && yarn run build"
   },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
