@@ -1,10 +1,11 @@
 {
   "scripts": {
     "start": "node backend/server.js",
+    "build": "cd Frontend && yarn run build",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn install --prefix Frontend && npm run build --prefix Frontend"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn install --prefix Frontend && yarn run build --prefix Frontend"
   },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",
