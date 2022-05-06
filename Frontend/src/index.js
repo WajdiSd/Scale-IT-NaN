@@ -8,7 +8,7 @@ import './utils/highlight';
 import 'simplebar/src/simplebar.css';
 
 // lightbox
-import '../node_modules/react-image-lightbox/style.css';
+//import 'react-image-lightbox/style.css';
 
 // map
 import 'mapbox-gl/dist/mapbox-gl.css';
