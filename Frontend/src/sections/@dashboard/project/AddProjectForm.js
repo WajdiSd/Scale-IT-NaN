@@ -72,7 +72,7 @@ export default function AddProjectForm({ onCancel }) {
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
     description: Yup.string().max(5000).required('Description is required'),
-    teamLeader: Yup.string().max(5000).required('teamLeader is required'),
+    //teamLeader: Yup.string().max(5000).required('teamLeader is required'),
   });
 
   const methods = useForm({
