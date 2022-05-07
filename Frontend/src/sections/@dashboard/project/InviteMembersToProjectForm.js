@@ -36,6 +36,7 @@ import { inviteMemberToProject } from 'src/redux/slices/projectSlice';
 import { setUserError } from 'src/redux/slices/inviteSlice';
 import palette from 'src/theme/palette';
 import { userExistsInWorkspace } from 'src/redux/slices/workspaceSlice';
+import AssigneeSeachAutoComplete from './AssigneeSeachAutoComplete';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -68,27 +69,11 @@ InviteMembersToProjectForm.propTypes = {
 };
 
 export default function InviteMembersToProjectForm({ onInviteMembers, onCancel }) {
-  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  let users = [];
-
-  const [invitedMember, setInvitedMember] = useState('');
   const [invitedMembers, setInvitedMembers] = useState([]);
 
-  function handleMemberInput(event) {
-    setInvitedMember(event.target.value);
-  }
-
-  const validateEmail = (email) => {
-    console.log(email);
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
 
   const EventSchema = Yup.object().shape({
     title: Yup.string(),
@@ -99,9 +84,6 @@ export default function InviteMembersToProjectForm({ onInviteMembers, onCancel }
     defaultValues: getInitialValues(),
   });
 
-  const handleRemoveUser = (event) =>
-    setInvitedMembers((invitedMembers) => invitedMembers.filter((user) => user !== event.target.innerHTML));
-
   const {
     reset,
     watch,
@@ -110,100 +92,26 @@ export default function InviteMembersToProjectForm({ onInviteMembers, onCancel }
     formState: { isSubmitting },
   } = methods;
 
-  let isInWorkspace = false;
-  const handleAddMemberToList = (e) => {
-    e.preventDefault();
-    isInWorkspace = dispatch(userExistsInWorkspace({ id, invitedMember }));
-    isInWorkspace.then((res) => {
-      if (res && validateEmail(invitedMember)) {
-        setInvitedMembers((invitedMembers) => [...invitedMembers, invitedMember]);
-        setInvitedMember('');
-      } else {
-        enqueueSnackbar('User not in workspace', { variant: 'error' });
-      }
-    });
+  const handleAddMemberToList = (members) => {
+        
+        let membersID = [];
+        members.forEach(element => {
+          membersID.push({memberId: element._id})
+        });
+        setInvitedMembers(membersID);
+
   };
 
   const values = watch();
 
   return (
     <FormProvider methods={methods}>
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-          <OutlinedInput
-            size="small"
-            placeholder="Member Emails"
-            type="text"
-            value={invitedMember}
-            onChange={handleMemberInput}
-            sx={{
-              width: 0.8,
-              color: 'common.white',
-              fontWeight: 'fontWeightMedium',
-              bgcolor: (theme) => alpha(theme.palette.common.black, 0.16),
-              '& input::placeholder': {
-                color: (theme) => alpha(theme.palette.common.white, 0.48),
-              },
-              '& fieldset': { display: 'none' },
-            }}
-          />
-          <Button onClick={handleAddMemberToList} color="warning" variant="contained">
-            Add Member
-          </Button>
+        <Stack spacing={3} sx={{ p: 3 }}>
+        <AssigneeSeachAutoComplete handleSetAssignee={handleAddMemberToList}/>
         </Stack>
-      </Stack>
-      <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem />}
-        spacing={{ xs: 1, md: 2 }}
-        alignItems="center"
-        justifyContent="start"
-        sx={{
-          width: 1,
-          flexWrap: 'wrap',
-        }}
-      >
-        {invitedMembers.length > 0 ? (
-          invitedMembers.map((user, index) =>
-            true ? (
-              <Chip
-                key={index}
-                label={user}
-                variant="filled"
-                sx={{
-                  p: 1,
-                  m: 1,
-                  color: 'common.white',
-                  fontWeight: 'fontWeightMedium',
-                  bgcolor: (theme) => alpha(palette.light.secondary.dark, 0.7),
-                }}
-              />
-            ) : (
-              ''
-            )
-          )
-        ) : (
-          <Chip
-            label="no members"
-            clickable
-            onClick={handleRemoveUser}
-            variant="filled"
-            sx={{
-              p: 1,
-              m: 1,
-              color: 'common.white',
-              fontWeight: 'fontWeightMedium',
-              bgcolor: (theme) => alpha(palette.light.primary.main, 0.7),
-            }}
-          />
-        )}
-      </Stack>
+     
       <DialogActions>
         <Box sx={{ flexGrow: 1 }} />
-
-        <Button variant="outlined" color="inherit" onClick={onCancel}>
-          Cancel
-        </Button>
 
         <LoadingButton
           type="submit"

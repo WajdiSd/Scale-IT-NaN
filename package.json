@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build": "cd Frontend && npm run build",
     "start": "node backend/server.js",
     "build": "cd Frontend && npm run build",
     "server": "nodemon backend/server.js",

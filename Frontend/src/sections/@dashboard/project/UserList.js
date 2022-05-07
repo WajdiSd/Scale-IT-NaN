@@ -170,8 +170,6 @@ export default function UserList() {
   };
 
   const handleFilterRole = (event) => {
-    console.log('handleFilterRole');
-    console.log(event.target.value);
     setFilterRole(event.target.value);
   };
 
@@ -189,7 +187,6 @@ export default function UserList() {
         setReloadData(true);
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -207,12 +204,10 @@ export default function UserList() {
         setReloadData(true);
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
   const handleDeleteRows = (selected) => {
-    console.log(selected);
     const data = {
       userIds: selected,
       idproject: projectid,
@@ -228,7 +223,6 @@ export default function UserList() {
 
       });
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -238,7 +232,6 @@ export default function UserList() {
 
   const handleAssignTeamLeader = (id) => {
 
-    console.log(id);
     const data = {
       idproject: projectid,
       idpm: user._id,
@@ -255,7 +248,6 @@ export default function UserList() {
 
   const onAssignProjectManager = (id) => {
 
-    console.log(id);
     const data = {
       idproject: projectid,
       idpm: user._id,
@@ -301,7 +293,7 @@ export default function UserList() {
       />
       <DialogAnimate sx={{ minWidth: '50%' }} open={isOpenModal} onClose={handleCloseModal}>
         <DialogTitle>{'Invite Members to project'}</DialogTitle>
-        <InviteMembersToProjectForm onInviteMembers={onInviteMembers} onCancel={handleCloseModal}/>
+        <InviteMembersToProjectForm onInviteMembers={onInviteMembers} onCancel={handleCloseModal} />
       </DialogAnimate>
         {isTL&&(<HeaderBreadcrumbs
           heading=""
@@ -476,9 +468,7 @@ function applySortFilter({ usersInProject, comparator, filterName, filterStatus,
   if (filterRole !== 'all') {
     if (filterRole === 'Team Leader') {
       usersInProject = usersInProject.filter((item) => {
-        console.log('item');
         if (item.isTeamLeader) {
-          console.log(item);
           return item;
         }
       });
