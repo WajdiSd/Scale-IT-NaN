@@ -26,6 +26,7 @@ import ChatWindow from '../chat/ChatWindow';
 import { useDispatch } from 'react-redux';
 import { resetDiscussion, setRead } from 'src/redux/slices/chatbotSlice';
 
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(m.div)(({ theme }) => ({
@@ -55,6 +56,7 @@ export default function ChatSection() {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
+
   const onResetSetting = () => {
     dispatch(resetDiscussion())
   };
@@ -81,9 +83,6 @@ export default function ChatSection() {
 
   useEffect(() => {
     if (open) {
-
-      
-
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -91,6 +90,7 @@ export default function ChatSection() {
   }, [open]);
 
   const handleToggle = () => {
+    
     setOpen((prev) => !prev);
     !open === true? dispatch(setRead()) : null;
   };

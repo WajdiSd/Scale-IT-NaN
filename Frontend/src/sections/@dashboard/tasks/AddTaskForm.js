@@ -135,46 +135,7 @@ export default function AddTaskForm({ onCancel, handleAddTask}) {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ p: 3 }}>
-        <RHFTextField name="name" label="Name" />
-
-        <RHFTextField name="description" label="Description" multiline rows={4} />
-
-
-        <Stack direction="row" alignItems="center">
-              <LabelStyle>Priority</LabelStyle>
-              <RHFTextField
-                fullWidth
-                select
-                size="small"
-                value={prioritize}
-                onChange={handleChangePrioritize}
-                sx={{
-                  '& svg': { display: 'none' },
-                  '& fieldset': { display: 'none' },
-                  '& .MuiSelect-select': { p: 0, display: 'flex', alignItems: 'center' },
-                }}
-              >
-                {PRIORITIZES.map((option) => (
-                  <MenuItem key={option} value={option} sx={{ mx: 1, my: 0.5, borderRadius: 1 }}>
-                    <Box
-                      sx={{
-                        mr: 1,
-                        width: 14,
-                        height: 14,
-                        borderRadius: 0.5,
-                        bgcolor: 'error.main',
-                        ...(option === 'Low' && { bgcolor: 'info.main' }),
-                        ...(option === 'Medium' && { bgcolor: 'warning.main' }),
-                      }}
-                    />
-                    <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
-                      {option}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </RHFTextField>
-        </Stack>
-
+        
         <AssigneeSeachAutoComplete handleSetAssignee={handleSetAssignee}/>
 
         <Controller

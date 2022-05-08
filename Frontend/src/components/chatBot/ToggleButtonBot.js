@@ -9,7 +9,8 @@ import Iconify from '../Iconify';
 import { IconButtonAnimate } from '../animate';
 
 import useChat from 'src/hooks/useChat';
-
+import notificationSound from 'src/assets/notification.mp3';
+import useSound from 'use-sound';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,8 @@ ToggleButtonBot.propTypes = {
 
 export default function ToggleButtonBot({ notDefault, open, onToggle }) {
   const {newMessage} = useChat();
+  const [play] = useSound(notificationSound);
+
   return (
     <RootStyle>
       {!open && newMessage && <DotStyle />}
