@@ -1,12 +1,16 @@
 {
   "scripts": {
-    "build": "cd Frontend && npm run build",
+    "build": "cd Frontend && yarn run build",
     "start": "node backend/server.js",
     "build": "cd Frontend && npm run build",
     "server": "nodemon backend/server.js",
     "client": "cd Frontend/ && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "heroku-postbuild": "YARN_PRODUCTION=false yarn install --prefix Frontend && yarn run build"
+    "heroku-prebuild": "yarn install && cd Frontend && yarn install",
+    "heroku-postbuild": "yarn run build"
+  },
+  "engines": {
+    "node": "16.13.2"
   },
   "dependencies": {
     "@vonage/server-sdk": "^2.10.10",

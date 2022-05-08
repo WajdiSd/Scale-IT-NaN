@@ -29,9 +29,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-
-
-
 app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/workspace", require("./routes/workspaceRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
@@ -39,38 +36,16 @@ app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 
-// Serve frontend
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../Frontend/build")));
-  // check if directory exists
-  if (fs.existsSync(path.join(__dirname, "../Frontend/build"))) {
-    console.log("Directory exists!");
-  } else {
-    console.log("Directory not found.");
-  }
-
-  try {
-    if (
-      fs.existsSync(
-        path.resolve(__dirname, "../", "Frontend", "build", "index.html")
-      )
-    ) {
-      //file exists
-      console.log("File exists!");
-    } else {
-      console.log("File not found!");
-    }
-  } catch (err) {
-    console.error(err);
-  }
-
-  app.get("*", (req, res) =>
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.NODE_ENV === "staging"
+) {
+  app.use(express.static(path.resolve(__dirname, "../", "Frontend", "build")));
+  app.get("*", (req, res) => {
     res.sendFile(
       path.resolve(__dirname, "../", "Frontend", "build", "index.html")
-    )
-  );
-} else {
-  app.get("/", (req, res) => res.send("Please set to production"));
+    );
+  });
 }
 
 app.use(errorHandler);

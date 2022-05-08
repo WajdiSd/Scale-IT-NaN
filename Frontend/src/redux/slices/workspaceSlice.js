@@ -51,6 +51,7 @@ export const workspaceSlice = createSlice({
         state.workspaces = [];
       })
       .addCase(getWorkspaces.fulfilled, (state, action) => {
+        console.log("getWorkspaces.fulfilled");
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;

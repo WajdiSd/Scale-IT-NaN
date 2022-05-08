@@ -89,8 +89,10 @@ export default function GeneralWorkspace() {
   };
 
   useEffect(() => {
-    if (participants.length == 0) setParticipants();
-    getUserWorkspaces();
+    dispatch(getWorkspaces(user._id)).then((res)=>{
+      if (participants.length == 0) setParticipants();
+        getUserWorkspaces();
+    });
     senduserInfo();
   }, []);
 
