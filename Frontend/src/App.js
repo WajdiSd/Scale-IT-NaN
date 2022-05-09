@@ -24,8 +24,6 @@ export default function App() {
   const test = useSelector(
     (state) => state
   )
-    console.log(test);
-
   return (
     <ThemeProvider>
       <ThemeColorPresets>
