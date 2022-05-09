@@ -57,6 +57,7 @@ const registerMember = asyncHandler(async (req, res) => {
     // trigger the sending of the E-mail
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log(error);
         res.status(400);
         throw new Error(error);
       } else {
