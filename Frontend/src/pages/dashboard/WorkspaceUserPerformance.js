@@ -1,5 +1,5 @@
 // @mui
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, CircularProgress, Box } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
@@ -33,7 +33,7 @@ export default function GeneralAnalytics() {
   const dispatch = useDispatch();
   const { user, isHr } = useAuth();
   const { workspace } = useWorkspace();
-  const { scoreInWorkspace, rankInWorkspace, finishedProjectsInTimePourcentage, finishedProjectsLatePourcentage } = usePerformance();
+  const { scoreInWorkspace, rankInWorkspace, finishedProjectsInTimePourcentage, finishedProjectsLatePourcentage, isLoading } = usePerformance();
 
   const { id } = useParams(); // this is the workspace id 
   const memberId = user._id;
@@ -62,31 +62,40 @@ export default function GeneralAnalytics() {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <AnalyticsWidgetSummary title="Score" total={scoreInWorkspace} icon={'ant-design:android-filled'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <AnalyticsWidgetSummary title="Rank in leaderboard" total={rankInWorkspace} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary
-              title="Item Orders"
-              total={1723315}
-              color="warning"
-              icon={'ant-design:windows-filled'}
-            />
-          </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AnalyticsWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
+          {isHr&&<Grid item xs={12} md={6} lg={6} sx={{
+            mx: 'auto'
+          }}
+          >
 
-          {isHr&&<Grid item xs={12} md={6} lg={4}>
-            <AnalyticsCurrentVisits intime={finishedProjectsInTimePourcentage} late={finishedProjectsLatePourcentage} />
-          </Grid>}
 
+          {isLoading ? (
+                    <Box
+                      sx={{
+                        mt: 10,
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <CircularProgress size={150} color="success" />
+                    </Box>
+                  ) :
+                  (<AnalyticsCurrentVisits intime={finishedProjectsInTimePourcentage} late={finishedProjectsLatePourcentage} />)
+                  }
+                  </Grid>
+          }
+
+          {/*
           <Grid item xs={12} md={6} lg={8}>
             <AnalyticsConversionRates />
           </Grid>
@@ -110,6 +119,7 @@ export default function GeneralAnalytics() {
           <Grid item xs={12} md={6} lg={8}>
             <AnalyticsTasks />
           </Grid>
+        */}
         </Grid>
       </Container>
     </Page>

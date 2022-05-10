@@ -65,9 +65,9 @@ export default function Router() {
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
         { path: 'landing', element: <GeneralWorkspace /> },
-        { path: 'app', element: <GeneralApp /> },
+        //{ path: 'app', element: <GeneralApp /> },
         //{ path: 'ecommerce', element: <GeneralEcommerce /> },
-        { path: 'analytics', element: <GeneralAnalytics /> },
+        //{ path: 'analytics', element: <GeneralAnalytics /> },
         //{ path: 'banking', element: <GeneralBanking /> },
         //{ path: 'booking', element: <GeneralBooking /> },
         { path: 'addworkspace', element: <AddWorkspace /> },
@@ -184,10 +184,10 @@ const ResetPassword = Loadable(lazy(() => import('../pages/auth/ResetPassword'))
 const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const ConfirmAccount = Loadable(lazy(() => import('../pages/auth/ConfirmAccount')));
 // Dashboard
-const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
+//const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
 const GeneralWorkspace = Loadable(lazy(() => import('../pages/dashboard/GeneralWorkspace')));
 //const GeneralEcommerce = Loadable(lazy(() => import('../pages/dashboard/GeneralEcommerce')));
-const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
+//const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
 //const GeneralBanking = Loadable(lazy(() => import('../pages/dashboard/GeneralBanking')));
 //const GeneralBooking = Loadable(lazy(() => import('../pages/dashboard/GeneralBooking')));
 const EcommerceShop = Loadable(lazy(() => import('../pages/dashboard/EcommerceShop')));

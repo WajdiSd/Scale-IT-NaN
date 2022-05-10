@@ -101,6 +101,10 @@ export const performanceSlice = createSlice({
         state.isSuccess = true;
         state.message = 'Successfully fetched finished Projects late pourcentage';
       })
+      .addCase(getFinishedProjectsLatePourcentage.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
       .addCase(getFinishedTasksInTimePourcentage.rejected, (state, action) => {
         state.isLoading = false;
         console.log('getFinishedTasksInTimePourcentage rejected');
@@ -114,6 +118,10 @@ export const performanceSlice = createSlice({
       .addCase(getFinishedTasksLatePourcentage.rejected, (state, action) => {
         state.isLoading = false;
         console.log('getFinishedTasksLatePourcentage rejected');
+      })
+      .addCase(getFinishedTasksLatePourcentage.pending, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = false;
       })
       .addCase(getFinishedTasksLatePourcentage.fulfilled, (state, action) => {
         state.finishedTasksLatePourcentage = action.payload.percentage;
