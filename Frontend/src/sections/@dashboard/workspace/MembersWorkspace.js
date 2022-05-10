@@ -365,7 +365,7 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
       >
         <DialogTitle id="alert-dialog-title">{'Are you sure you want to assign this member as PM ?'}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">tAssign this member as a Project Member</DialogContentText>
+          <DialogContentText id="alert-dialog-description">Assign this member as a Project Member</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAssDialogue}>Cancel</Button>
@@ -404,7 +404,7 @@ function MoreMenuButton({ id, isPM, isHumRes }) {
           <DialogContentText id="alert-dialog-description">You will be a regular member</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAssDialogue}>Cancel</Button>
+          <Button onClick={handleCloseAssHRDialogue}>Cancel</Button>
           <Button onClick={AssignHRMember} autoFocus>
             Assign
           </Button>

@@ -28,7 +28,9 @@ import { resetDiscussion, setRead } from 'src/redux/slices/chatbotSlice';
 
 
 // ----------------------------------------------------------------------
+const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 const RootStyle = styled(m.div)(({ theme }) => ({
   ...cssStyles(theme).bgBlur({ color: theme.palette.background.paper, opacity: 0.92 }),
   top: 0,
@@ -37,7 +39,7 @@ const RootStyle = styled(m.div)(({ theme }) => ({
   display: 'flex',
   position: 'fixed',
   overflow: 'hidden',
-  width: 500,
+  width: isMobile? NAVBAR.BASE_WIDTH*1.2 : NAVBAR.BASE_WIDTH*1.5,
   flexDirection: 'column',
   margin: theme.spacing(2),
   paddingBottom: theme.spacing(3),

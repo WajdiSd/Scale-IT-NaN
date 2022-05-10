@@ -23,7 +23,6 @@ export default function App() {
 
   const { isAuthenticated } = useAuth();
   const test = useSelector((state) => state);
-  console.log(test);
 
   return (
     <ThemeProvider>
