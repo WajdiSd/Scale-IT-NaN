@@ -244,13 +244,6 @@ const recoverPwdViaMail = asyncHandler(async (req, res) => {
   //Declaration des variables, config mail
   var nodemailer = require("nodemailer");
   //Coordonnees pour l envoi du mail
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "scaleitbynan@gmail.com",
-      pass: "scaleitbynan2022",
-    },
-  });
 
   var mailOptions = {
     from: "scaleitbynan@gmail.com",
