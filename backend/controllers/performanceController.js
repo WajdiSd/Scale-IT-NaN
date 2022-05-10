@@ -232,7 +232,7 @@ const getAllFinishedProjectsInTimePourcentage = asyncHandler(
       });
       if (allProjects.length == 0) {
         res.status(200).json({
-          finishedProjects: 0,
+          finishedProjectsInTimePourcentage: 0,
         });
       } else {
         res.status(200).json({

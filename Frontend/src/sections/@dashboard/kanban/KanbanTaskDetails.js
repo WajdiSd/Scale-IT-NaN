@@ -72,8 +72,8 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
   const [membersInTask, setMembersInTask] = useState([]);
   const [open, setOpen] = useState(false);
   const [userid, setUserid] = useState('');
-
-  const { name, description, startDate, expectedEndDate, members, attachments, _id } = card;
+  console.log(card);
+  const { name, description, startDate, expectedEndDate, members, attachments, priority, _id } = card;
   useEffect(() => {
     members.map((memberinTask) => {
       usersInProject.map((memberInfo) => {
@@ -280,12 +280,12 @@ export default function KanbanTaskDetails({ card, isOpen, onClose, onDeleteTask 
             </Stack>
 
             <Stack direction="row" alignItems="center">
-              <LabelStyle>Prioritize</LabelStyle>
+              <LabelStyle>Priority</LabelStyle>
               <TextField
                 fullWidth
                 select
                 size="small"
-                value={prioritize}
+                value={priority}
                 onChange={handleChangePrioritize}
                 sx={{
                   '& svg': { display: 'none' },
