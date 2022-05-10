@@ -142,15 +142,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                           </MenuItem>
                         )
                       }
-                  <MenuItem
-                    onClick={() => {
-                      onEditRow();
-                      handleCloseMenu();
-                    }}
-                  >
-                    <Iconify icon={'eva:edit-fill'} />
-                    Edit
-                  </MenuItem>
                   </>
                     )
                   )

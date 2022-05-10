@@ -117,8 +117,6 @@ const getInitialValues = (task) => {
 
       };
       onCancel();
-      console.log(newTask);
-      console.log(user._id);
       handleUpdateTask(newTask);
       reset();
     } catch (error) {
@@ -153,6 +151,7 @@ const getInitialValues = (task) => {
         <Stack direction="row" alignItems="center">
               <LabelStyle>Priority</LabelStyle>
               <RHFTextField
+              name="priority"
                 fullWidth
                 select
                 size="small"
