@@ -4,18 +4,18 @@ import performanceService from '../service/performanceService';
 const user = JSON.parse(localStorage.getItem('user'));
 
 const initialState = {
-  scoreInWorkspace: '',
-  rankInWorkspace: '',
-  finishedProjectsInTimePourcentage: '',
-  finishedProjectsLatePourcentage: '',
-  finishedTasksInTimePourcentage: '',
-  finishedTasksLatePourcentage: '',
+  scoreInWorkspace: 0,
+  rankInWorkspace: 0,
+  finishedProjectsInTimePourcentage: 0,
+  finishedProjectsLatePourcentage: 0,
+  finishedTasksInTimePourcentage: 0,
+  finishedTasksLatePourcentage: 0,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
-  allfinishedTasksInTimePercentage: '',
-  allfinishedTasksLatePercentage: '',
+  allfinishedTasksInTimePercentage: 0,
+  allfinishedTasksLatePercentage: 0,
   projectprogress: '',
   membercontribution: '',
   numbertasksleft: '',
@@ -90,12 +90,13 @@ export const performanceSlice = createSlice({
         console.log(action);
       })
       .addCase(getFinishedProjectsLatePourcentage.rejected, (state, action) => {
+        console.log("getFinishedProjectsLatePourcentage.rejected");
         state.isLoading = false;
         console.log(action);
-        console.log('*****************************************');
       })
       .addCase(getFinishedProjectsLatePourcentage.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log("getFinishedProjectsLatePourcentage.fulfilled");
+        console.log(action);
         state.finishedProjectsLatePourcentage = action.payload.finishedProjectsLatePourcentage;
         state.isLoading = false;
         state.isSuccess = true;

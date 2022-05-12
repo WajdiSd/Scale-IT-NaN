@@ -225,7 +225,13 @@ class getrankworkspace(Action):
 
             rank = request["rank"]
             text =str(rank)
-            res= f"your rank is {text}, not bad after all !"
+            if(text == "0"):
+                res= f"your rank is {text}, you have no tasks finished in this workspace"
+            elif(text == "1"):
+                res= f"your rank is {text}, you are the leader of this workspace"
+            else:
+                res= f"your rank is {text}, not bad after all !"
+            
                  # extract a joke from returned json response
             dispatcher.utter_message(res)  # send the message back to the user
 
@@ -251,7 +257,12 @@ class getrankproject(Action):
             request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankprojectleaderboard/{projectid}/{userid}").text)
             rank = request["rank"]
             text =str(rank)
-            res= f"your rank in this project is {text}, not bad after all !"
+            if(text == "0"):
+                res= f"your rank is {text}, you have no tasks finished in this project"
+            elif(text == "1"):
+                res= f"your rank is {text}, you are the leader of this project"
+            else:
+                res= f"your rank in this project is {text}, not bad after all !"
                  # extract a joke from returned json response
             dispatcher.utter_message(res)  # send the message back to the user
 
@@ -328,9 +339,10 @@ class getprojectsinworkspace(Action):
         else: 
             request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
             projects = request["data"]
-            
-                    # extract a joke from returned json response
-            dispatcher.utter_message(json_message=projects)  # send the message back to the user
+            if(projects == []):
+                dispatcher.utter_message("you have no projects")
+            else:
+                dispatcher.utter_message(json_message=projects)  
                 
         return []
 
@@ -353,8 +365,10 @@ class getalltasksinproject(Action):
             request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/alltasks/{projectid}/{userid}").text)
             tasks = request["tasks"]
             
-                    # extract a joke from returned json response
-            dispatcher.utter_message(json_message=tasks)  # send the message back to the user
+            if(tasks == []):
+                dispatcher.utter_message("you have no tasks")
+            else:
+                dispatcher.utter_message(json_message=tasks)  
                 
         return []
 
