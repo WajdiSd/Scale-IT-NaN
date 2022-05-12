@@ -10,8 +10,6 @@ import BaseOptionChart from 'src/components/chart/BaseOptionChart.js';
 import { useEffect } from 'react';
 import { useDispatch } from 'src/redux/store'; 
 import { getFinishedTasksInTimePourcentage, getFinishedTasksLatePourcentage } from 'src/redux/slices/performanceSlice';
-import useWorkspace from 'src/hooks/useWorkspace';
-import useProject from 'src/hooks/useProject';
 import useAuth from 'src/hooks/useAuth';
 import usePerformance from 'src/hooks/usePerformance';
 import { useParams } from 'react-router';
