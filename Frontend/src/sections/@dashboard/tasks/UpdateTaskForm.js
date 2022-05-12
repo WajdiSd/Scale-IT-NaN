@@ -11,20 +11,14 @@ import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions, Typo
 import { LoadingButton, MobileDatePicker, MobileDateTimePicker } from '@mui/lab';
 // redux
 import { useDispatch } from '../../../redux/store';
-import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
 import { useParams } from 'react-router';
 
 // components
-import Iconify from '../../../components/Iconify';
-import { ColorSinglePicker } from '../../../components/color-utils';
 import { FormProvider, RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import MemberSearchAutocomplete from '../workspace/MemberSearchAutocomplete';
 import useAuth from 'src/hooks/useAuth';
 import { useState } from 'react';
-import { addProject } from 'src/redux/slices/projectSlice';
-import AssigneeSeachAutoComplete from './AssigneeSeachAutoComplete';
 import { styled } from '@mui/material/styles';
-import { updateTask } from 'src/redux/slices/tasksSlice';
 
 // ----------------------------------------------------------------------
 
@@ -58,9 +52,6 @@ const getInitialValues = (task) => {
 };
 
 // ----------------------------------------------------------------------
-
-
-//export default function UpdateTaskForm({ onCancel, handleUpdateTask}) {
   export default function UpdateTaskForm({ onCancel,handleUpdateTask,task}) {
   
   const [prioritize, setPrioritize] = useState(task?.priority);
@@ -71,18 +62,6 @@ const getInitialValues = (task) => {
 
   const {id, projectid} = useParams();
 
- // const [Assignees, setAssignees] = useState([]);
-/*
-  const handleSetAssignee = (members) => {
-    console.log('handleSetAssignee');
-    console.log(members);
-    let membersID = [];
-    members.forEach(element => {
-      membersID.push({memberId: element._id})
-    });
-    setAssignees(membersID);
-  };
-  */
   const EventSchema = Yup.object().shape({
     name: Yup.string().max(255).required('Name is required'),
     description: Yup.string().max(5000).required('Description is required'),
