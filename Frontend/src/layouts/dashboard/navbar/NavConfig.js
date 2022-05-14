@@ -60,8 +60,6 @@ const navConfig = [
       //{ title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
       //{ title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       //{ title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
-      
-      
     ],
   },
 

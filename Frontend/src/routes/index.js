@@ -65,9 +65,11 @@ export default function Router() {
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
         { path: 'landing', element: <GeneralWorkspace /> },
-        //{ path: 'app', element: <GeneralApp /> },
+
+        // { path: 'app', element: <GeneralApp /> },
         //{ path: 'ecommerce', element: <GeneralEcommerce /> },
-        //{ path: 'analytics', element: <GeneralAnalytics /> },
+        // { path: 'analytics', element: <GeneralAnalytics /> },
+
         //{ path: 'banking', element: <GeneralBanking /> },
         //{ path: 'booking', element: <GeneralBooking /> },
         { path: 'addworkspace', element: <AddWorkspace /> },
@@ -94,10 +96,9 @@ export default function Router() {
               children: [
                 { path: 'invite', element: <WorkspaceInvite /> },
                 { path: '', element: <WorkspaceDetails /> },
-                { path: 'project/:projectid' ,element: <GeneralProject/>,},
+                { path: 'project/:projectid', element: <GeneralProject /> },
                 { path: 'project/:projectid/tasks/list', element: <TasksList /> },
                 { path: 'project/:projectid/tasks/Kanban', element: <Kanban /> },
-                
               ],
             },
             ,
@@ -221,11 +222,8 @@ const Payment = Loadable(lazy(() => import('../pages/Payment')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 
-
 //Project
 const GeneralProject = Loadable(lazy(() => import('../pages/dashboard/GeneralProject')));
 
 //tasks
 const TasksList = Loadable(lazy(() => import('../pages/dashboard/TasksList')));
-
-
