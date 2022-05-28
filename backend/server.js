@@ -34,6 +34,7 @@ app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
+app.use("/api/contact", require("./routes/contactRoutes"));
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
   app.use(express.static(path.resolve(__dirname, '../', 'Frontend', 'build')));
