@@ -93,6 +93,12 @@ const checkIfUserExistsByEmail = async (email) => {
   return response.data;
 };
 
+// sendContactEmail
+const sendContactEmail = async (data) => {
+  const response = await axiosInstance.post('contact/mail', data);
+  return response.data;
+};
+
 const authService = {
   register,
   logout,
@@ -106,6 +112,7 @@ const authService = {
   deleteUser,
   resendEmail,
   checkIfUserExistsByEmail,
+  sendContactEmail,
 };
 
 export default authService;

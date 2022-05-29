@@ -192,6 +192,17 @@ export const isProjectManager = createAsyncThunk('auth/isProjectManager', async 
   }
 });
 
+//sendContactEmail
+export const sendContactEmail = createAsyncThunk('auth/sendContactEmail', async (data, thunkAPI) => {
+  try {
+    return await authService.sendContactEmail(data);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
