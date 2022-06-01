@@ -21,7 +21,7 @@ export default function AboutTeam() {
 
   const settings = {
     arrows: false,
-    slidesToShow: 4,
+    slidesToShow: 5,
     centerMode: true,
     centerPadding: '0px',
     rtl: Boolean(theme.direction === 'rtl'),
@@ -87,15 +87,6 @@ export default function AboutTeam() {
           </Slider>
         </CarouselArrows>
       </Box>
-      <Button
-        variant="outlined"
-        color="inherit"
-        size="large"
-        endIcon={<Iconify icon={'ic:round-arrow-right-alt'} width={24} height={24} />}
-        sx={{ mx: 'auto' }}
-      >
-        View all team members
-      </Button>
     </Container>
   );
 }
@@ -111,7 +102,7 @@ MemberCard.propTypes = {
 };
 
 function MemberCard({ member }) {
-  const { name, role, avatar } = member;
+  const { name, role, avatar,linkedin, facebook } = member;
 
   return (
     <Card key={name} sx={{ p: 1 }}>
@@ -123,7 +114,7 @@ function MemberCard({ member }) {
       </Typography>
       <Image src={avatar} ratio="1/1" sx={{ borderRadius: 1.5 }} />
       <Stack alignItems="center" sx={{ mt: 2, mb: 1 }}>
-        <SocialsButton sx={{ color: 'action.active' }} />
+        <SocialsButton sx={{ color: 'action.active' }} links={{linkedin, facebook} }/>
       </Stack>
     </Card>
   );

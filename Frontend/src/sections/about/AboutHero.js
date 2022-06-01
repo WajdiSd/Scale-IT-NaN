@@ -50,8 +50,9 @@ export default function AboutHero() {
                 fontWeight: 'fontWeightMedium',
               }}
             >
-              A team ready to do anything to
-              <br /> make your projects work easier and better
+               A passionate team ready to make your dreams come true
+              <br/>
+              by creating the <strong>best</strong> products and services.
             </Typography>
           </m.div>
         </ContentStyle>

@@ -14,7 +14,7 @@ SocialsButton.propTypes = {
   sx: PropTypes.object,
 };
 
-export default function SocialsButton({ initialColor = false, simple = true, links = {}, sx, ...other }) {
+export default function SocialsButton({ initialColor = false, simple = true, links={}, sx, ...other }) {
   const SOCIALS = [
     {
       name: 'FaceBook',
@@ -23,22 +23,10 @@ export default function SocialsButton({ initialColor = false, simple = true, lin
       path: links.facebook || '#facebook-link',
     },
     {
-      name: 'Instagram',
-      icon: 'ant-design:instagram-filled',
-      socialColor: '#E02D69',
-      path: links.instagram || '#instagram-link',
-    },
-    {
       name: 'Linkedin',
       icon: 'eva:linkedin-fill',
       socialColor: '#007EBB',
       path: links.linkedin || '#linkedin-link',
-    },
-    {
-      name: 'Twitter',
-      icon: 'eva:twitter-fill',
-      socialColor: '#00AAEC',
-      path: links.twitter || '#twitter-link',
     },
   ];
 
@@ -47,7 +35,7 @@ export default function SocialsButton({ initialColor = false, simple = true, lin
       {SOCIALS.map((social) => {
         const { name, icon, path, socialColor } = social;
         return simple ? (
-          <Link key={name} href={path}>
+          <Link key={name} href={path} target="_blank" >
             <Tooltip title={name} placement="top">
               <IconButton
                 color="inherit"
