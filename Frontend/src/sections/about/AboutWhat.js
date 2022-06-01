@@ -100,6 +100,8 @@ export default function AboutWhat() {
                 color="inherit"
                 size="large"
                 endIcon={<Iconify icon={'ic:round-arrow-right-alt'} width={24} height={24} />}
+                href="https://github.com/WajdiSd/Scale-IT-NaN"
+                target="_blank"
               >
                 Check out our work
               </Button>

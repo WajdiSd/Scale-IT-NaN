@@ -24,7 +24,7 @@ export default function About() {
 
         <AboutWhat />
 
-        <AboutVision />
+        {/*<AboutVision />*/}
 
         <Divider orientation="vertical" sx={{ my: 10, mx: 'auto', width: 2, height: 40 }} />
 
