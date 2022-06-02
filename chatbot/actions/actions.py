@@ -46,7 +46,7 @@ class NodeApi(Action):
     ) -> List[Dict[Text, Any]]:
        
 
-        request = json.loads(requests.get("http://localhost:5000/api/performance/test").text)
+        request = json.loads(requests.get("https://scale-it-nan.herokuapp.com/api/performance/test").text)
         text = request["message"]
                  # extract a joke from returned json response
         dispatcher.utter_message(text)  # send the message back to the user
@@ -68,7 +68,7 @@ class getusernameAction(Action):
         userid = tracker.get_slot("userid")
         # print("user id")
         # print(userid)
-        request = json.loads(requests.get(f"http://localhost:5000/api/members/connecteduser/{userid}").text)
+        request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/members/connecteduser/{userid}").text)
         username = request["message"]
         res= f"Hey {username} ! How are you?"
 
@@ -95,7 +95,7 @@ class getworkspacenameAction(Action):
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/workspacename/{workspaceid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/workspacename/{workspaceid}").text)
             workspacename = request["name"]
             res= f"you have entered the {workspacename} workspace "
             dispatcher.utter_message(res)  
@@ -116,7 +116,7 @@ class getprojectnameAction(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/projectename/{projectid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/projectename/{projectid}").text)
             projectname = request["name"]
             res= f"you have entered the {projectname} project "
             dispatcher.utter_message(res)  
@@ -169,7 +169,7 @@ class getscoreworkspace(Action):
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyworkspace/{userid}/{workspaceid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/scorebyworkspace/{userid}/{workspaceid}").text)
 
             score = request["score"]
             text =str(score)
@@ -195,7 +195,7 @@ class getscoreproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/scorebyproject/{userid}/{projectid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/scorebyproject/{userid}/{projectid}").text)
             score = request["score"]
             text =str(score)
             res= f"your score in this project is {text}, you always can do better !"
@@ -221,7 +221,7 @@ class getrankworkspace(Action):
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankworkspaceleaderboard/{workspaceid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/getrankworkspaceleaderboard/{workspaceid}/{userid}").text)
 
             rank = request["rank"]
             text =str(rank)
@@ -254,7 +254,7 @@ class getrankproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else :
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/getrankprojectleaderboard/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/getrankprojectleaderboard/{projectid}/{userid}").text)
             rank = request["rank"]
             text =str(rank)
             if(text == "0"):
@@ -286,7 +286,7 @@ class getroleinworkspace(Action):
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")
         else: 
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/roleinworkspace/{workspaceid}/{userid}").text)
 
             role = request["role"]
             text =str(role)
@@ -312,7 +312,7 @@ class getroleinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else: 
-            request = json.loads(requests.get(f"http://localhost:5000/api/performance/roleinproject/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/performance/roleinproject/{projectid}/{userid}").text)
             role = request["role"]
             text =str(role)
             res= f"your role is {text}"
@@ -337,7 +337,7 @@ class getprojectsinworkspace(Action):
         if(workspaceid == None):
             dispatcher.utter_message("you didn't enter any workspace")
         else: 
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/listbymember/{workspaceid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/listbymember/{workspaceid}/{userid}").text)
             projects = request["data"]
             if(projects == []):
                 dispatcher.utter_message("you have no projects")
@@ -362,7 +362,7 @@ class getalltasksinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else:
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/alltasks/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/alltasks/{projectid}/{userid}").text)
             tasks = request["tasks"]
             
             if(tasks == []):
@@ -388,7 +388,7 @@ class gettodotasksinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else:
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/todotasks/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/todotasks/{projectid}/{userid}").text)
             todotasks = request["tasks"]
             if(todotasks == []):
                 dispatcher.utter_message("you have no tasks to do")
@@ -413,7 +413,7 @@ class getdoingtasksinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else:
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/doingtasks/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/doingtasks/{projectid}/{userid}").text)
             doingtasks = request["tasks"]
             
             if(doingtasks == []):
@@ -439,7 +439,7 @@ class getreviewtasksinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else:
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/reviewtasks/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/reviewtasks/{projectid}/{userid}").text)
             reviewtasks = request["tasks"]
             
             if(reviewtasks == []):
@@ -465,7 +465,7 @@ class getdonetasksinproject(Action):
         if(projectid == None):
             dispatcher.utter_message("you didn't enter any project")
         else:
-            request = json.loads(requests.get(f"http://localhost:5000/api/chatbot/donetasks/{projectid}/{userid}").text)
+            request = json.loads(requests.get(f"https://scale-it-nan.herokuapp.com/api/chatbot/donetasks/{projectid}/{userid}").text)
             donetasks = request["tasks"]
             if(donetasks == []):
                 dispatcher.utter_message("you didn't finish any task yet ")
