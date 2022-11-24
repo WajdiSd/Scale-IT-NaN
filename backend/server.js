@@ -17,6 +17,11 @@ const {
   updatescoremembersinproject,
 } = require("./helpers/functions");
 
+// import library and files
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+// let express to use this
+
 const port = process.env.PORT || 5000;
 dotenv.config();
 connectDB();
@@ -35,6 +40,10 @@ app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 app.use("/api/contact", require("./routes/contactRoutes"));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
   app.use(express.static(path.resolve(__dirname, '../', 'Frontend', 'build')));
