@@ -50,7 +50,7 @@
             }
         },
         
-        "/members/deleteaccount/{id-user}": {
+        "/members/deleteaccount/{id}": {
             "delete": {
                 "tags": ["Members"],
                 "summary": "Delete account",
@@ -61,7 +61,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id-user",
+                        "name": "id",
                         "description": "Id of user",
                         "required": true,
                         "type": "string"
@@ -125,7 +125,7 @@
                 }
             }
         },
-        "workspace/invite-member/{workspace-id}":{
+        "workspace/invite-member/{id}":{
             "put": {
                 "tags": ["Workspace"],
                 "summary": "Invite Member",
@@ -172,7 +172,7 @@
             
         },
 
-        "/workspace/assignPM/{workspace-id}/{member-id}/{hr-id}":{
+        "/workspace/assignPM/{idworkspace}/{idmember}/{idhr}":{
             "put": {
                 "tags": ["Workspace"],
                 "summary": "Assign Project Manager",
@@ -183,21 +183,21 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "workspace-id",
+                        "name": "idworkspace",
                         "description": "Workspace Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "member-id",
+                        "name": "idmember",
                         "description": "Member Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "hr-id",
+                        "name": "idhr",
                         "description": "HR Id",
                         "required": true,
                         "type": "string"
@@ -225,7 +225,7 @@
 
         },
 
-        "workspace/deletePM/{workspace-id}/{member-id}/{hr-id}": {
+        "workspace/deletePM/{idworkspace}/{idmember}/{idhr}": {
             "put": {
                 "tags": ["Workspace"],
                 "summary": "Discharge Project Manager",
@@ -236,21 +236,21 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "workspace-id",
+                        "name": "idworkspace",
                         "description": "Workspace Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "member-id",
+                        "name": "idmember",
                         "description": "Member Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "hr-id",
+                        "name": "idhr",
                         "description": "HR Id",
                         "required": true,
                         "type": "string"
@@ -359,7 +359,7 @@
             }
         },
 
-        "/project/assignteamleader/{project-id}": {
+        "/project/assignteamleader/{idproject}/{idmember}/{idpm}": {
             "put": {
                 "tags": ["Project"],
                 "summary": "Assign Team Leader",
@@ -370,8 +370,22 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "member-id",
+                        "name": "idproject",
                         "description": "Project Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "idmember",
+                        "description": "Member Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "idpm",
+                        "description": "Project Manager Id",
                         "required": true,
                         "type": "string"
                     }
@@ -396,7 +410,7 @@
             }
         },
 
-        "/project/invite-members/{project-id}/{teamlead-id}": {
+        "/project/invite-members/{idproject}/{idtl}": {
             "put": {
                 "tags": ["Project"],
                 "summary": "Invite Members",
@@ -407,14 +421,14 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "project-id",
+                        "name": "idproject",
                         "description": "Project Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "teamlead-id",
+                        "name": "idtl",
                         "description": "Team Lead Id",
                         "required": true,
                         "type": "string"
@@ -452,7 +466,7 @@
         
 
 
-        "/performance/getcontribbution/{project-id}/{member-id}": {
+        "/performance/getcontribbution/{projectId}/{memberId}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the percentage of contribution of a member in a project",
@@ -463,14 +477,14 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "project-id",
+                        "name": "projectId",
                         "description": "Project Id",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "path",
-                        "name": "member-id",
+                        "name": "memberId",
                         "description": "Member Id",
                         "required": true,
                         "type": "string"
@@ -490,7 +504,7 @@
             }
         },
 
-        "/performance/leaderboard-workspace/{workspace-id}": {
+        "/performance/leaderboard-workspace/{workspaceid}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the leaderboard of a workspace",
@@ -522,7 +536,7 @@
 
         },
 
-        "/performance/leaderboard-project/{project-id}": {
+        "/performance/leaderboard-project/{projectid}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the leaderboard of a project",
@@ -553,7 +567,7 @@
             }
         },
 
-        "/performance/finished-projects-in-time-pourcentage/{workspace-id}": {
+        "/performance/finished-projects-in-time-pourcentage/{workspaceid}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the percentage of finished projects in time",
@@ -584,7 +598,7 @@
             }
         },
 
-        "/performance/finished-projects-late-pourcentage/{workspace-id}": {
+        "/performance/finished-projects-late-pourcentage/{workspaceid}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the percentage of finished projects late",
@@ -615,7 +629,7 @@
             }
         },
 
-        "/performance/getrankprojectleaderboard/{project-id}/{member-Id}": {
+        "/performance/getrankprojectleaderboard/{projectid}/{memberId}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the rank of a member in the project leaderboard",
@@ -653,7 +667,7 @@
             }
         },
 
-        "/performance/alltasksintime/{project-id}": {
+        "/performance/alltasksintime/{idproj}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the percentage of tasks finished in time in a project",
@@ -664,7 +678,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "projectid",
+                        "name": "idproj",
                         "description": "Project Id",
                         "required": true,
                         "type": "string"
@@ -683,7 +697,7 @@
                 }
             }
         },
-        "/performance/alllatetasks/{project-id}": {
+        "/performance/alllatetasks/{idproj}": {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the percentage of tasks finished late in a project",
@@ -694,7 +708,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "projectid",
+                        "name": "idproj",
                         "description": "Project Id",
                         "required": true,
                         "type": "string"
@@ -714,7 +728,7 @@
             }
         },
 
-        "/performance/projectprogress/{project-id}" : {
+        "/performance/projectprogress/{idproj}" : {
             "get": {
                 "tags": ["Performance"],
                 "summary": "Returns the progress of a project",
@@ -725,7 +739,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "projectid",
+                        "name": "idproj",
                         "description": "Project Id",
                         "required": true,
                         "type": "string"
