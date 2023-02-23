@@ -9,6 +9,8 @@ const Project = require("./models/projectModel");
 const schedule = require("node-schedule");
 const { engine } = require("express-handlebars");
 
+const fs = require("fs");
+
 const connectDB = require("./config/db");
 var dir = path.join(__dirname, "public");
 const transporter = require("./config/nodemailer");
@@ -27,7 +29,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-
 app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/workspace", require("./routes/workspaceRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
@@ -36,13 +37,17 @@ app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/chatbot", require("./routes/chatbotRoutes"));
 app.use("/api/contact", require("./routes/contactRoutes"));
 
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
-  app.use(express.static(path.resolve(__dirname, '../', 'Frontend', 'build')));
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.NODE_ENV === "staging"
+) {
+  app.use(express.static(path.resolve(__dirname, "../", "Frontend", "build")));
   app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../', 'Frontend', 'build', 'index.html'));
+    res.sendFile(
+      path.resolve(__dirname, "../", "Frontend", "build", "index.html")
+    );
   });
- }
- 
+}
 
 app.use(errorHandler);
 

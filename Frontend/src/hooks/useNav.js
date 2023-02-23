@@ -38,17 +38,15 @@ const ICONS = {
 
 const useNav = () => {
   const { rootWorkspace } = useWorkspaceId();
-  const {workspace} = useWorkspace();
-  const {project} = useProject();
+  const { workspace } = useWorkspace();
+  const { project } = useProject();
   const { isHr } = useAuth();
 
-  const {id, projectid} = useParams();
-
+  const { id, projectid } = useParams();
 
   const [navConfig, setNavConfig] = useState([]);
 
   useEffect(() => {
-
     let navlist = [
       // GENERAL
       // ----------------------------------------------------------------------
@@ -59,9 +57,7 @@ const useNav = () => {
             title: 'workspaces',
             path: PATH_DASHBOARD.workspaces.root,
             icon: ICONS.workspace,
-            children: [
-              
-            ],
+            children: [],
           },
           {
             title: 'user',
@@ -79,9 +75,10 @@ const useNav = () => {
           //{ title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
           //{ title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
           //{ title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
-         // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
+
+          // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
+
           //{ title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
-          
         ],
       },
 
@@ -163,18 +160,17 @@ const useNav = () => {
       },*/
     ];
 
-    if(id && isHr){
+    if (id && isHr) {
       let inviteItem = {
         title: 'invite members',
         path: `${PATH_DASHBOARD.workspaces.memberInvite}${id}/invite`,
         icon: ICONS.workspace,
-      }
+      };
       navlist[0].items[0].children.splice(1, 0, inviteItem);
     }
 
-    if(projectid){
-      let projectsItems = 
-      {
+    if (projectid) {
+      let projectsItems = {
         title: 'projects',
         path: PATH_DASHBOARD.workspaces.root,
         icon: ICONS.workspace,
@@ -199,7 +195,6 @@ const useNav = () => {
       navlist[0].items.splice(1, 0, projectsItems);
     }
 
-    
     setNavConfig(navlist);
   }, [workspace, project]);
 
